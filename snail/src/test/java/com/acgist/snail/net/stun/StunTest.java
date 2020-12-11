@@ -2,33 +2,10 @@ package com.acgist.snail.net.stun;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.config.StunConfig;
-import com.acgist.snail.config.StunConfig.MethodType;
-import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.Performance;
 
 public class StunTest extends Performance {
 
-	@Test
-	public void testMessageType() {
-		short value = StunConfig.MessageType.REQUEST.type(MethodType.BINDING);
-		this.log(value);
-		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.of(value));
-		value = StunConfig.MessageType.INDICATION.type(MethodType.BINDING);
-		this.log(value);
-		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.of(value));
-		value = StunConfig.MessageType.SUCCESS_RESPONSE.type(MethodType.BINDING);
-		this.log(value);
-		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.of(value));
-		value = StunConfig.MessageType.ERROR_RESPONSE.type(MethodType.BINDING);
-		this.log(value);
-		this.log(String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))));
-		this.log(StunConfig.MessageType.of(value));
-	}
-	
 	@Test
 	public void testMmappedAddress() {
 //		StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
@@ -42,17 +19,6 @@ public class StunTest extends Performance {
 //		StunClient client = StunClient.newInstance("stun.softjoys.com");
 		client.mappedAddress();
 		this.pause();
-	}
-	
-	@Test
-	public void testXOR() {
-		short port = 4938;
-		int ip = -1777019015;
-		int realPort = port ^ (StunConfig.MAGIC_COOKIE >> 16);
-		this.log("真实端口：" + realPort);
-		int realIp = ip ^ StunConfig.MAGIC_COOKIE;
-		this.log("真实IP：" + realIp);
-		this.log("真实IP地址：" + NetUtils.decodeIntToIp(realIp));
 	}
 	
 }

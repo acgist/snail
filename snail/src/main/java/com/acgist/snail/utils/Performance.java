@@ -20,6 +20,15 @@ public abstract class Performance {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Performance.class);
 	
 	/**
+	 * <p>是否跳过消耗测试：{@value}</p>
+	 */
+	private static final String COST_SKIP = "skip";
+	/**
+	 * <p>是否跳过消耗测试：{@value}</p>
+	 */
+	private static final String COST_FALSE = "false";
+	
+	/**
 	 * <p>消耗时间统计</p>
 	 */
 	protected final AtomicLong costTime = new AtomicLong();
@@ -47,6 +56,19 @@ public abstract class Performance {
 	}
 	
 	/**
+	 * <p>判断是否跳过消耗测试</p>
+	 * 
+	 * @return 是否跳过消耗测试
+	 */
+	protected final boolean skipCost() {
+		final String cost = System.getProperty("cost");
+		if(COST_SKIP.equalsIgnoreCase(cost) || COST_FALSE.equals(cost)) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * <p>统计开始时间</p>
 	 */
 	protected final void cost() {
@@ -54,10 +76,10 @@ public abstract class Performance {
 	}
 	
 	/**
-	 * <p>结束统计时间</p>
-	 * <p>重置统计时间</p>
+	 * <p>结束统计消耗时间</p>
+	 * <p>重置消耗时间统计</p>
 	 * 
-	 * @return 时间消耗
+	 * @return 消耗时间
 	 */
 	protected final long costed() {
 		final long time = System.currentTimeMillis();
@@ -69,27 +91,39 @@ public abstract class Performance {
 	}
 	
 	/**
-	 * <p>计算执行消耗</p>
+	 * <p>计算执行消耗时间</p>
 	 * 
 	 * @param count 执行次数
 	 * @param coster 消耗任务
+	 * 
+	 * @return 消耗时间
 	 */
-	protected final void costd(int count, Coster coster) {
+	protected final long costed(int count, Coster coster) {
+		if(this.skipCost()) {
+			this.log("跳过消耗测试");
+			return 0L;
+		}
 		this.cost();
 		for (int index = 0; index < count; index++) {
 			coster.execute();
 		}
-		this.costed();
+		return this.costed();
 	}
 	
 	/**
-	 * <p>计算执行消耗</p>
+	 * <p>计算执行消耗时间</p>
 	 * 
 	 * @param count 任务数量
 	 * @param thread 线程数量
 	 * @param coster 消耗任务
+	 * 
+	 * @return 消耗时间
 	 */
-	protected final void costd(int count, int thread, Coster coster) {
+	protected final long costed(int count, int thread, Coster coster) {
+		if(this.skipCost()) {
+			this.log("跳过消耗测试");
+			return 0L;
+		}
 		final var latch = new CountDownLatch(count);
 		final var executor = Executors.newFixedThreadPool(thread);
 		this.cost();
@@ -110,8 +144,9 @@ public abstract class Performance {
 			LOGGER.error("等待异常", e);
 			Thread.currentThread().interrupt();
 		}
-		this.costed();
+		final long costed = this.costed();
 		SystemThreadContext.shutdownNow(executor);
+		return costed;
 	}
 
 	/**

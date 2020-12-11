@@ -10,7 +10,7 @@ public class LoggerTest extends Performance {
 
 	@Test
 	public void testCostd() {
-		this.costd(100000, 10, () -> this.log("----" + System.currentTimeMillis()));
+		this.costed(100000, 10, () -> this.log("----" + System.currentTimeMillis()));
 	}
 
 	@Test

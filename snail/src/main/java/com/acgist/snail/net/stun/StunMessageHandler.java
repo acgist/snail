@@ -93,8 +93,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final byte[] transactionId = new byte[StunConfig.TRANSACTION_ID_LENGTH];
 		buffer.get(transactionId);
 		switch (messageType) {
-		case SUCCESS_RESPONSE:
-		case ERROR_RESPONSE:
+		case RESPONSE_SUCCESS:
+		case RESPONSE_ERROR:
 			this.loopResponseAttribute(buffer);
 			break;
 		default:
@@ -327,8 +327,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * @return 消息
 	 */
 	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] attributeMessage) {
-		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.STUN_HEADER_LENGTH + attributeMessage.length);
-		buffer.putShort(messageType.type(methodType)); // Message Type
+		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.HEADER_LENGTH_STUN + attributeMessage.length);
+		buffer.putShort(messageType.of(methodType)); // Message Type
 		buffer.putShort((short) attributeMessage.length); // Message Length
 		buffer.putInt(StunConfig.MAGIC_COOKIE); // Magic Cookie
 		buffer.put(ArrayUtils.random(StunConfig.TRANSACTION_ID_LENGTH)); // Transaction ID
@@ -347,7 +347,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private byte[] buildAttributeMessage(StunConfig.AttributeType attributeType, byte[] value) {
 		final short valueLength = (short) (value == null ? 0 : value.length);
 		// 对齐
-		final int length = NumberUtils.ceilMult(StunConfig.ATTRIBUTE_HEADER_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
+		final int length = NumberUtils.ceilMult(StunConfig.HEADER_LENGTH_ATTRIBUTE + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.putShort(attributeType.id());
 		buffer.putShort(valueLength);
