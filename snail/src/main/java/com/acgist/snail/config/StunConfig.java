@@ -54,8 +54,8 @@ public final class StunConfig {
 		 * 
 		 * @see MessageType#REQUEST
 		 * @see MessageType#INDICATION
-		 * @see MessageType#ERROR_RESPONSE
-		 * @see MessageType#ERROR_RESPONSE
+		 * @see MessageType#RESPONSE_SUCCESS
+		 * @see MessageType#RESPONSE_ERROR
 		 */
 		BINDING((short) 0x01);
 		
