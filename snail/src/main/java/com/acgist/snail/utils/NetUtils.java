@@ -58,39 +58,39 @@ public final class NetUtils {
 	 * <p>A类地址范围：0.0.0.0-127.255.255.255</p>
 	 * <p>默认子网掩码：255.0.0.0</p>
 	 */
-	private static final long NATIVE_A_IP_BEGIN = encodeIpToLong("10.0.0.0");
+	private static final long NATIVE_A_IP_BEGIN = ipToLong("10.0.0.0");
 	/**
 	 * @see #NATIVE_A_IP_BEGIN
 	 */
-	private static final long NATIVE_A_IP_END = encodeIpToLong("10.255.255.255");
+	private static final long NATIVE_A_IP_END = ipToLong("10.255.255.255");
 	/**
 	 * <p>B类私用地址</p>
 	 * <p>B类地址范围：128.0.0.0-191.255.255.255</p>
 	 * <p>默认子网掩码：255.255.0.0</p>
 	 */
-	private static final long NATIVE_B_IP_BEGIN = encodeIpToLong("172.16.0.0");
+	private static final long NATIVE_B_IP_BEGIN = ipToLong("172.16.0.0");
 	/**
 	 * @see #NATIVE_B_IP_BEGIN
 	 */
-	private static final long NATIVE_B_IP_END = encodeIpToLong("172.31.255.255");
+	private static final long NATIVE_B_IP_END = ipToLong("172.31.255.255");
 	/**
 	 * <p>C类私用地址</p>
 	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
 	 * <p>默认子网掩码：255.255.255.0</p>
 	 */
-	private static final long NATIVE_C_IP_BEGIN = encodeIpToLong("192.168.0.0");
+	private static final long NATIVE_C_IP_BEGIN = ipToLong("192.168.0.0");
 	/**
 	 * @see #NATIVE_C_IP_BEGIN
 	 */
-	private static final long NATIVE_C_IP_END = encodeIpToLong("192.168.255.255");
+	private static final long NATIVE_C_IP_END = ipToLong("192.168.255.255");
 	/**
 	 * <p>本地回环地址</p>
 	 */
-	private static final long NATIVE_L_IP_BEGIN = encodeIpToLong("127.0.0.0");
+	private static final long NATIVE_L_IP_BEGIN = ipToLong("127.0.0.0");
 	/**
 	 * @see #NATIVE_L_IP_BEGIN
 	 */
-	private static final long NATIVE_L_IP_END = encodeIpToLong("127.255.255.255");
+	private static final long NATIVE_L_IP_END = ipToLong("127.255.255.255");
 	
 	static {
 		final ModifyOptional<String> localHostName = ModifyOptional.newInstance();
@@ -114,7 +114,7 @@ public final class NetUtils {
 						!address.isMulticastAddress() // 广播地址
 					) {
 						index.set(nowIndex);
-						localHostName.set(getLocalHostName());
+						localHostName.set(buildLocalHostName());
 //						localHostName.set(address.getHostName()); // 速度太慢
 						localHostAddress.set(address.getHostAddress());
 						defaultNetworkInterface.set(networkInterface);
@@ -149,7 +149,7 @@ public final class NetUtils {
 	 * 
 	 * @return 端口（short）
 	 */
-	public static final short encodePort(int port) {
+	public static final short portToShort(int port) {
 		return (short) port;
 	}
 
@@ -160,7 +160,7 @@ public final class NetUtils {
 	 * 
 	 * @return 端口（int）
 	 */
-	public static final int decodePort(short port) {
+	public static final int portToInt(short port) {
 		return Short.toUnsignedInt(port);
 	}
 	
@@ -171,8 +171,8 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（int）
 	 */
-	public static final int encodeIpToInt(String ip) {
-		return (int) encodeIpToLong(ip);
+	public static final int ipToInt(String ip) {
+		return (int) ipToLong(ip);
 	}
 	
 	/**
@@ -182,7 +182,7 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（long）
 	 */
-	public static final long encodeIpToLong(String ip) {
+	public static final long ipToLong(String ip) {
 		Objects.requireNonNull(ip, "IP地址不能为空");
 		final String[] array = ip.split("\\.");
 		if(array.length != 4) {
@@ -204,8 +204,8 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（字符串）
 	 */
-	public static final String decodeIntToIp(int value) {
-		return decodeLongToIp(Integer.toUnsignedLong(value));
+	public static final String intToIP(int value) {
+		return longToIP(Integer.toUnsignedLong(value));
 	}
 	
 	/**
@@ -215,7 +215,7 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（字符串）
 	 */
-	public static final String decodeLongToIp(long value) {
+	public static final String longToIP(long value) {
 		return
 			((value >> 24) & 0xFF) + "." +
 			((value >> 16) & 0xFF) + "." +
@@ -230,7 +230,7 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（字节数组）
 	 */
-	public static final byte[] encodeIPv6(String ip) {
+	public static final byte[] bytesToIP(String ip) {
 		try {
 			return InetAddress.getByName(ip).getAddress();
 		} catch (UnknownHostException e) {
@@ -246,7 +246,7 @@ public final class NetUtils {
 	 * 
 	 * @return IP地址（字符串）
 	 */
-	public static final String decodeIPv6(byte[] value) {
+	public static final String ipToBytes(byte[] value) {
 		try {
 			return InetAddress.getByAddress(value).getHostAddress();
 		} catch (UnknownHostException e) {
@@ -279,12 +279,14 @@ public final class NetUtils {
 	/**
 	 * <p>判断是否是同一个网关</p>
 	 * 
+	 * @param host 地址
+	 * 
 	 * @return 是否是同一个网关
 	 */
 	public static final boolean gateway(String host) {
-		if(isIp(host)) {
-			final int value = encodeIpToInt(host);
-			final int localHostValue = encodeIpToInt(LOCAL_HOST_ADDRESS);
+		if(ipAddress(host)) {
+			final int value = ipToInt(host);
+			final int localHostValue = ipToInt(LOCAL_HOST_ADDRESS);
 			return (value & LOCAL_HOST_MASK) == (localHostValue & LOCAL_HOST_MASK);
 		}
 		return false;
@@ -295,7 +297,7 @@ public final class NetUtils {
 	 * 
 	 * @return 本机名称
 	 */
-	private static final String getLocalHostName() {
+	private static final String buildLocalHostName() {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
@@ -313,7 +315,7 @@ public final class NetUtils {
 	 * 
 	 * TODO：IPv6
 	 */
-	public static final boolean isIp(String host) {
+	public static final boolean ipAddress(String host) {
 		return StringUtils.regex(host, IP_REGEX, true);
 	}
 
@@ -326,9 +328,9 @@ public final class NetUtils {
 	 * 
 	 * TODO：IPv6
 	 */
-	public static final boolean isLocalIp(String host) {
+	public static final boolean localIPAddress(String host) {
 //		return InetAddress.getByName(host).isSiteLocalAddress(); // 不能验证本地回环地址
-		final long value = encodeIpToLong(host);
+		final long value = ipToLong(host);
 		return
 			(NATIVE_A_IP_BEGIN <= value && value <= NATIVE_A_IP_END) ||
 			(NATIVE_B_IP_BEGIN <= value && value <= NATIVE_B_IP_END) ||

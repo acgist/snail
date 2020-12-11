@@ -56,8 +56,8 @@ public final class PeerUtils {
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.remaining() >= SystemConfig.IP_PORT_LENGTH) {
-			final String ip = NetUtils.decodeIntToIp(buffer.getInt());
-			final int port = NetUtils.decodePort(buffer.getShort());
+			final String ip = NetUtils.intToIP(buffer.getInt());
+			final int port = NetUtils.portToInt(buffer.getShort());
 			data.put(ip, port);
 		}
 		return data;
@@ -74,7 +74,7 @@ public final class PeerUtils {
 	 * @return 快速允许Piece索引
 	 */
 	public static final int[] allowedFast(int pieceSize, String ipAddress, byte[] infoHash) {
-		final int ipValue = NetUtils.encodeIpToInt(ipAddress);
+		final int ipValue = NetUtils.ipToInt(ipAddress);
 		ByteBuffer buffer = ByteBuffer.allocate(24); // IP(4) + InfoHash(20)
 		buffer.putInt(ALLOWED_FAST_MASK & ipValue);
 		buffer.put(infoHash);

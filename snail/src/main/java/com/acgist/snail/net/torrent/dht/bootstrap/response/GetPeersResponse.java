@@ -121,8 +121,8 @@ public final class GetPeersResponse extends DhtResponse {
 			session = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
-				NetUtils.decodeIntToIp(buffer.getInt()),
-				NetUtils.decodePort(buffer.getShort()),
+				NetUtils.intToIP(buffer.getInt()),
+				NetUtils.portToInt(buffer.getShort()),
 				PeerConfig.Source.DHT
 			);
 			buffer.flip();

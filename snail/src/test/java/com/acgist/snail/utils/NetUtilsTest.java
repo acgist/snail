@@ -12,8 +12,8 @@ public class NetUtilsTest extends Performance {
 
 	@Test
 	public void ip() {
-		this.log(NetUtils.decodeLongToIp(2130706433));
-		this.log(NetUtils.encodeIpToLong("127.1.1.1"));
+		this.log(NetUtils.longToIP(2130706433));
+		this.log(NetUtils.ipToLong("127.1.1.1"));
 	}
 	
 	@Test
@@ -42,9 +42,9 @@ public class NetUtilsTest extends Performance {
 	@Test
 	public void testIPv6() {
 		String ipv6 = "fe80::f84b:bc3a:9556:683d";
-		byte[] bytes = NetUtils.encodeIPv6(ipv6);
+		byte[] bytes = NetUtils.bytesToIP(ipv6);
 		this.log(StringUtils.hex(bytes));
-		String value = NetUtils.decodeIPv6(bytes);
+		String value = NetUtils.ipToBytes(bytes);
 		this.log(value);
 	}
 	

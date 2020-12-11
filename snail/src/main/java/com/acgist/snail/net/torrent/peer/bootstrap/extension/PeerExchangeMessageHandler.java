@@ -165,8 +165,8 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		optimize.stream()
 			.distinct()
 			.forEach(session -> {
-				addedBuffer.putInt(NetUtils.encodeIpToInt(session.host()));
-				addedBuffer.putShort(NetUtils.encodePort(session.port()));
+				addedBuffer.putInt(NetUtils.ipToInt(session.host()));
+				addedBuffer.putShort(NetUtils.portToShort(session.port()));
 				addedfBuffer.put(session.flags());
 			});
 		final Map<String, Object> data = new HashMap<>(9);

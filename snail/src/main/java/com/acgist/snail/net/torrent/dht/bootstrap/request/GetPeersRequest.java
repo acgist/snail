@@ -65,8 +65,8 @@ public final class GetPeersRequest extends DhtRequest {
 					.filter(PeerSession::connected) // 连接
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
-						buffer.putInt(NetUtils.encodeIpToInt(peer.host()));
-						buffer.putShort(NetUtils.encodePort(peer.port()));
+						buffer.putInt(NetUtils.ipToInt(peer.host()));
+						buffer.putShort(NetUtils.portToShort(peer.port()));
 						buffer.flip();
 						return buffer.array();
 					})

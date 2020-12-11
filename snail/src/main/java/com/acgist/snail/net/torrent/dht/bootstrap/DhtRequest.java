@@ -184,7 +184,7 @@ public class DhtRequest extends DhtMessage {
 			return new byte[0];
 		}
 		final var availableNodes = nodes.stream()
-			.filter(node -> NetUtils.isIp(node.getHost())) // 只分享IP地址
+			.filter(node -> NetUtils.ipAddress(node.getHost())) // 只分享IP地址
 			.collect(Collectors.toList());
 		if(CollectionUtils.isEmpty(availableNodes)) {
 			return new byte[0];
@@ -192,8 +192,8 @@ public class DhtRequest extends DhtMessage {
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * availableNodes.size()); // 20 + 4 + 2
 		for (NodeSession node : availableNodes) {
 			buffer.put(node.getId());
-			buffer.putInt(NetUtils.encodeIpToInt(node.getHost()));
-			buffer.putShort(NetUtils.encodePort(node.getPort()));
+			buffer.putInt(NetUtils.ipToInt(node.getHost()));
+			buffer.putShort(NetUtils.portToShort(node.getPort()));
 		}
 		return buffer.array();
 	}
