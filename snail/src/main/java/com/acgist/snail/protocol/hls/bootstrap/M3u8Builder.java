@@ -298,8 +298,8 @@ public final class M3u8Builder {
 	 * @throws NetException 网络异常
 	 */
 	private Cipher buildCipherAes128(String iv, String uri) throws NetException {
-		final String requestUri = UrlUtils.redirect(this.source, uri);
-		final byte[] secret = HTTPClient.get(requestUri, BodyHandlers.ofByteArray()).body();
+		final String requestURI = UrlUtils.redirect(this.source, uri);
+		final byte[] secret = HTTPClient.get(requestURI, BodyHandlers.ofByteArray()).body();
 		try {
 			return this.buildCipher(this.buildIv(iv), secret, "AES", "AES/CBC/NoPadding");
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {

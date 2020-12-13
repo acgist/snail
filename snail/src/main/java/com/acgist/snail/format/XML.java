@@ -166,12 +166,12 @@ public final class XML {
 	 * 
 	 * @param node 上级节点
 	 * @param name 节点名称
-	 * @param namespaceUri 命名空间
+	 * @param namespaceURI 命名空间
 	 * 
 	 * @return 节点
 	 */
-	public Element elementNS(Node node, String name, String namespaceUri) {
-		return this.elementNS(node, name, null, namespaceUri);
+	public Element elementNS(Node node, String name, String namespaceURI) {
+		return this.elementNS(node, name, null, namespaceURI);
 	}
 	
 	/**
@@ -180,17 +180,17 @@ public final class XML {
 	 * @param node 上级节点
 	 * @param name 节点名称
 	 * @param text 节点文本
-	 * @param namespaceUri 命名空间
+	 * @param namespaceURI 命名空间
 	 * 
 	 * @return 节点
 	 */
-	public Element elementNS(Node node, String name, String text, String namespaceUri) {
+	public Element elementNS(Node node, String name, String text, String namespaceURI) {
 		Objects.requireNonNull(node, "上级节点为空");
 		Element element = null;
-		if(StringUtils.isEmpty(namespaceUri)) {
+		if(StringUtils.isEmpty(namespaceURI)) {
 			element = this.document.createElement(name);
 		} else {
-			element = this.document.createElementNS(namespaceUri, name);
+			element = this.document.createElementNS(namespaceURI, name);
 		}
 		if(StringUtils.isNotEmpty(text)) {
 			element.setTextContent(text);

@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
 
-import java.net.URI;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
@@ -62,14 +62,9 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 */
 	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
-		final URI uri = URI.create(announceUrl);
-		this.host = uri.getHost();
-		final int port = uri.getPort();
-		if(port == -1) {
-			this.port = DEFAULT_PORT;
-		} else {
-			this.port = port;
-		}
+		final URIWrapper wrapper = URIWrapper.newInstance(announceUrl, DEFAULT_PORT).decode();
+		this.host = wrapper.host();
+		this.port = wrapper.port();
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 	}
 
