@@ -62,6 +62,7 @@ public final class UrlUtils {
 	
 	/**
 	 * <p>获取跳转链接完整路径</p>
+	 * <p>支持协议：HTTP</p>
 	 * 
 	 * @param source 原始页面链接
 	 * @param target 目标页面链接

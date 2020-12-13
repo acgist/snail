@@ -1,7 +1,5 @@
 package com.acgist.snail.net.upnp.bootstrap;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>UPNP Service</p>
@@ -123,7 +122,7 @@ public final class UpnpService {
 				this.remapping = true;
 				this.location = location;
 				this.serviceType = serviceType;
-				this.buildControlUrl(controlUrls.get(index));
+				this.controlUrl = UrlUtils.redirect(this.location, controlUrls.get(index));
 				LOGGER.info("UPNP描述文件：{}", this.location);
 				LOGGER.info("UPNP服务类型：{}", this.serviceType);
 				LOGGER.info("UPNP控制地址：{}", this.controlUrl);
@@ -290,28 +289,6 @@ public final class UpnpService {
 				LOGGER.error("释放UPNP端口异常", e);
 			}
 		}
-	}
-	
-	/**
-	 * <p>设置控制地址</p>
-	 * 
-	 * @param controlUrl 控制地址（相对路径）
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	private void buildControlUrl(String controlUrl) throws NetException {
-		URL url = null;
-		try {
-			url = new URL(this.location);
-		} catch (MalformedURLException e) {
-			throw new NetException("UPNP端口映射失败（描述文件地址错误）：" + this.location, e);
-		}
-		final StringBuilder builder = new StringBuilder();
-		builder.append(url.getProtocol())
-			.append("://")
-			.append(url.getAuthority())
-			.append(controlUrl);
-		this.controlUrl = builder.toString();
 	}
 	
 	/**

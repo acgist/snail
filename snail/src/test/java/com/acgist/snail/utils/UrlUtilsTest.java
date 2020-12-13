@@ -15,6 +15,7 @@ public class UrlUtilsTest extends Performance {
 		String path = "https://www.acgist.com/index.html";
 		String pathA = "https://www.acgist.com/a/index.html";
 		String pathAB = "https://www.acgist.com/a/b/index.html";
+		String baidu = "https://www.baidu.com";
 		assertEquals(UrlUtils.redirect("https://www.acgist.com", "index.html"), path);
 		assertEquals(UrlUtils.redirect("https://www.acgist.com/", "index.html"), path);
 		assertEquals(UrlUtils.redirect("https://www.acgist.com", "/index.html"), path);
@@ -30,6 +31,7 @@ public class UrlUtilsTest extends Performance {
 		assertEquals(UrlUtils.redirect("https://www.acgist.com/a/b/", " /index.html "), path);
 		assertEquals(UrlUtils.redirect("https://www.acgist.com/a/b/", "\"/index.html\""), path);
 		assertEquals(UrlUtils.redirect("https://www.acgist.com/a/b/", " \"/index.html\" "), path);
+		assertEquals(UrlUtils.redirect(path, baidu), baidu);
 	}
 	
 	@Test
