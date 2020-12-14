@@ -53,44 +53,6 @@ public final class NetUtils {
 	 * <p>IPv4地址正则表达式：{@value}</p>
 	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
-	/**
-	 * <p>A类私用地址</p>
-	 * <p>A类地址范围：0.0.0.0-127.255.255.255</p>
-	 * <p>默认子网掩码：255.0.0.0</p>
-	 */
-	private static final long NATIVE_A_IP_BEGIN = ipToLong("10.0.0.0");
-	/**
-	 * @see #NATIVE_A_IP_BEGIN
-	 */
-	private static final long NATIVE_A_IP_END = ipToLong("10.255.255.255");
-	/**
-	 * <p>B类私用地址</p>
-	 * <p>B类地址范围：128.0.0.0-191.255.255.255</p>
-	 * <p>默认子网掩码：255.255.0.0</p>
-	 */
-	private static final long NATIVE_B_IP_BEGIN = ipToLong("172.16.0.0");
-	/**
-	 * @see #NATIVE_B_IP_BEGIN
-	 */
-	private static final long NATIVE_B_IP_END = ipToLong("172.31.255.255");
-	/**
-	 * <p>C类私用地址</p>
-	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
-	 * <p>默认子网掩码：255.255.255.0</p>
-	 */
-	private static final long NATIVE_C_IP_BEGIN = ipToLong("192.168.0.0");
-	/**
-	 * @see #NATIVE_C_IP_BEGIN
-	 */
-	private static final long NATIVE_C_IP_END = ipToLong("192.168.255.255");
-	/**
-	 * <p>本地回环地址</p>
-	 */
-	private static final long NATIVE_L_IP_BEGIN = ipToLong("127.0.0.0");
-	/**
-	 * @see #NATIVE_L_IP_BEGIN
-	 */
-	private static final long NATIVE_L_IP_END = ipToLong("127.255.255.255");
 	
 	static {
 		final ModifyOptional<String> localHostName = ModifyOptional.newInstance();
@@ -105,9 +67,10 @@ public final class NetUtils {
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
 					final var address = interfaceAddress.getAddress(); // 地址
 //					final var broadcast = interfaceAddress.getBroadcast(); // 广播地址
+					// 本地地址和公网地址
 					if(
 						index.get() > nowIndex && // 索引最小网卡
-						address.isSiteLocalAddress() && // 本机地址
+//						address.isSiteLocalAddress() && // 本地地址
 						!address.isAnyLocalAddress() && // 通配地址
 						!address.isLoopbackAddress() && // 回环地址
 						!address.isLinkLocalAddress() && // 连接地址：虚拟网卡
@@ -321,21 +284,40 @@ public final class NetUtils {
 
 	/**
 	 * <p>是否是本地IP地址</p>
+	 * <p>A类私用地址</p>
+	 * <p>A类地址范围：0.0.0.0-127.255.255.255</p>
+	 * <p>A类默认子网掩码：255.0.0.0</p>
+	 * <p>B类私用地址</p>
+	 * <p>B类地址范围：128.0.0.0-191.255.255.255</p>
+	 * <p>B类默认子网掩码：255.255.0.0</p>
+	 * <p>C类私用地址</p>
+	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
+	 * <p>C类默认子网掩码：255.255.255.0</p>
+	 * <p>本地回环地址</p>
+	 * <p>本地回环地址范围：127.0.0.0-127.255.255.255</p>
+	 * <p>DHCP地址</p>
+	 * <p>DHCP地址范围：169.254.0.0-169.254.255.255</p>
+	 * <p>组播地址</p>
+	 * <p>组播地址范围：224.0.0.0-239.255.255.255</p>
 	 * 
 	 * @param host IP地址
 	 * 
-	 * @return true-是；false-不是；
-	 * 
-	 * TODO：IPv6
+	 * @return true-本地地址；false-公网地址；
 	 */
 	public static final boolean localIPAddress(String host) {
-//		return InetAddress.getByName(host).isSiteLocalAddress(); // 不能验证本地回环地址
-		final long value = ipToLong(host);
+		InetAddress inetAddress = null;
+		try {
+			inetAddress = InetAddress.getByName(host);
+		} catch (UnknownHostException e) {
+			LOGGER.error("IP地址转换异常：{}", host, e);
+			return true;
+		}
 		return
-			(NATIVE_A_IP_BEGIN <= value && value <= NATIVE_A_IP_END) ||
-			(NATIVE_B_IP_BEGIN <= value && value <= NATIVE_B_IP_END) ||
-			(NATIVE_C_IP_BEGIN <= value && value <= NATIVE_C_IP_END) ||
-			(NATIVE_L_IP_BEGIN <= value && value <= NATIVE_L_IP_END);
+			inetAddress.isAnyLocalAddress() || // 通配地址
+			inetAddress.isLoopbackAddress() || // 回环地址
+			inetAddress.isMulticastAddress() || // 组播地址
+			inetAddress.isLinkLocalAddress() || // 连接地址：虚拟网卡
+			inetAddress.isSiteLocalAddress(); // 本地地址：A/B/C类
 	}
 	
 	/**
