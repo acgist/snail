@@ -3,8 +3,11 @@ package com.acgist.snail.utils;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +17,31 @@ public class NetUtilsTest extends Performance {
 	public void ip() {
 		this.log(NetUtils.longToIP(2130706433));
 		this.log(NetUtils.ipToLong("127.1.1.1"));
+	}
+	
+	@Test
+	public void testInetAddress() throws UnknownHostException {
+		List.of(
+			InetAddress.getByName("10.0.0.0"),
+			InetAddress.getByName("172.16.0.0"),
+			InetAddress.getByName("192.168.0.0"),
+			InetAddress.getByName("127.0.0.0"),
+			InetAddress.getByName("169.254.0.0"),
+			InetAddress.getByName("224.0.0.0"),
+			InetAddress.getByName("114.114.114.114"),
+			InetAddress.getByName("0:0:0:0:0:0:0:1"),
+			InetAddress.getByName("fe80::c86:25ef:e78f:5479%19")
+		).forEach(address -> {
+			this.log(
+				"{}-{}-{}-{}-{}-{}",
+				address.isAnyLocalAddress(),
+				address.isLoopbackAddress(),
+				address.isLinkLocalAddress(),
+				address.isMulticastAddress(),
+				address.isSiteLocalAddress(),
+				address.toString()
+			);
+		});
 	}
 	
 	@Test
