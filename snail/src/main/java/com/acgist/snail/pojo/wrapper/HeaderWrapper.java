@@ -41,7 +41,7 @@ public class HeaderWrapper {
 	/**
 	 * <p>头部信息换行符（写出）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_WRITER = SystemConfig.LINE_COMPAT_SEPARATOR;
+	private static final String HEADER_LINE_WRITER = SystemConfig.LINE_SEPARATOR_COMPAT;
 
 	/**
 	 * <p>头部信息分隔符</p>

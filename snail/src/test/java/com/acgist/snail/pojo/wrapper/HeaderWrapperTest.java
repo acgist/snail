@@ -70,7 +70,7 @@ public class HeaderWrapperTest extends Performance {
 	public void testReader() {
 		HeaderWrapper wrapper = HeaderWrapper.newInstance("GET /\n"
 			+ "TEST: TEST \n"
-			+ "TEST2:  TEST2  \n"
+			+ "TEST2: TEST2 \n"
 			+ "TEST3: TEST 1\n"
 			+ "TEST3:TEST 3 \n"
 			+ "TEST6: \n"

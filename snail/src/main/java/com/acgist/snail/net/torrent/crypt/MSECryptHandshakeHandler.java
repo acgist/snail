@@ -63,7 +63,7 @@ public final class MSECryptHandshakeHandler {
 	 * <p>加密握手超时时间：{@value}</p>
 	 * <p>不能超过{@link PeerSubMessageHandler#HANDSHAKE_TIMEOUT}</p>
 	 */
-	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT * 1000;
+	private static final int HANDSHAKE_TIMEOUT = PeerSubMessageHandler.HANDSHAKE_TIMEOUT * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
 	 * <p>加密握手步骤</p>

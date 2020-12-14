@@ -86,8 +86,7 @@ public final class Logger implements org.slf4j.Logger {
 			.append(Thread.currentThread().getName()).append("] ")
 			.append(level.name()).append(" ")
 			.append(this.name).append(" ")
-			.append(message.getMessage()).append(" ")
-			.append("\n");
+			.append(message.getMessage()).append("\n");
 		final Throwable throwable = message.getThrowable();
 		if(throwable != null) {
 			final StringWriter stringWriter = new StringWriter();
