@@ -154,9 +154,9 @@ public final class SettingController extends Controller implements Initializable
 	 */
 	private ChangeListener<? super Number> bufferListener = (obs, oldVal, newVal) -> {
 		int value = newVal.intValue();
-		if(value < SystemConfig.MIN_BUFFER_KB) {
+		if(value < SystemConfig.MIN_DOWNLOAD_BUFFER_KB) {
 			// 最小下载速度
-			value = SystemConfig.MIN_BUFFER_KB;
+			value = SystemConfig.MIN_DOWNLOAD_BUFFER_KB;
 		} else if(value > STEP_WIDTH) {
 			// 超过滑块大小时设置为滑块大小的整数倍
 			value = value / STEP_WIDTH * STEP_WIDTH;

@@ -36,7 +36,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>消息分隔符：{@value}</p>
 	 */
-	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
+	private static final String SEPARATOR = SystemConfig.LINE_SEPARATOR_COMPAT;
 	/**
 	 * <p>多行消息结束符：{@value}</p>
 	 * <p>扩展命令FEAT返回多行信息</p>

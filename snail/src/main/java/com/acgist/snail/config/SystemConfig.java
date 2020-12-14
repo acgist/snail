@@ -1,7 +1,6 @@
 package com.acgist.snail.config;
 
 import java.nio.file.Paths;
-import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,16 @@ public final class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	
+	/**
+	 * <p>单例对象</p>
+	 */
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
 	public static final SystemConfig getInstance() {
 		return INSTANCE;
 	}
@@ -42,9 +49,13 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
+	 * <p>时间大小比例：{@value}</p>
+	 */
+	public static final int TIME_SCALE = 1000;
+	/**
 	 * <p>一秒钟（毫秒）：{@value}</p>
 	 */
-	public static final int ONE_SECOND_MILLIS = 1000;
+	public static final int ONE_SECOND_MILLIS = TIME_SCALE;
 	/**
 	 * <p>一分钟（秒数）：{@value}</p>
 	 */
@@ -52,7 +63,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>一分钟（毫数）：{@value}</p>
 	 */
-	public static final long ONE_MINUTE_MILLIS = 60L * ONE_SECOND_MILLIS;
+	public static final long ONE_MINUTE_MILLIS = ONE_MINUTE * ONE_SECOND_MILLIS;
 	/**
 	 * <p>一小时（秒数）：{@value}</p>
 	 */
@@ -60,7 +71,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>一小时（毫数）：{@value}</p>
 	 */
-	public static final long ONE_HOUR_MILLIS = ONE_MINUTE_MILLIS * 60;
+	public static final long ONE_HOUR_MILLIS = ONE_HOUR * ONE_SECOND_MILLIS;
 	/**
 	 * <p>一天（秒数）：{@value}</p>
 	 */
@@ -68,12 +79,12 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>一天（毫数）：{@value}</p>
 	 */
-	public static final long ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
+	public static final long ONE_DAY_MILLIS = ONE_DAY * ONE_SECOND_MILLIS;
 	/**
 	 * <p>最小下载速度：{@value}</p>
 	 * <p>16KB</p>
 	 */
-	public static final int MIN_BUFFER_KB = 16;
+	public static final int MIN_DOWNLOAD_BUFFER_KB = 16;
 	/**
 	 * <p>IP和端口占用字节大小：{@value}</p>
 	 */
@@ -118,11 +129,11 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
 	 * <p>最大的网络包大小：{@value}</p>
-	 * <p>如果创建ByteBuffer和byte[]对象的长度是由外部数据决定时需要验证长度：防止恶意攻击导致内存泄露</p>
+	 * <p>如果创建byte[]和ByteBuffer对象的长度是由外部数据决定时需要验证长度：防止太长导致内存泄漏</p>
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
-	 * <p>SHA-1的Hash值长度：{@value}</p>
+	 * <p>SHA-1散列值长度：{@value}</p>
 	 */
 	public static final int SHA1_HASH_LENGTH = 20;
 	/**
@@ -159,20 +170,22 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
 	/**
 	 * <p>字符（大写）</p>
+	 * 
+	 * @see #LETTER
 	 */
 	public static final String LETTER_UPPER = LETTER.toUpperCase();
 	/**
-	 * <p>任务列表刷新时间</p>
+	 * <p>任务列表刷新时间：{@value}</p>
 	 */
-	public static final Duration TASK_REFRESH_INTERVAL = Duration.ofSeconds(4);
+	public static final int TASK_REFRESH_INTERVAL = 4;
 	/**
-	 * <p>换行分隔符</p>
+	 * <p>换行分隔符：{@value}</p>
 	 */
 	public static final String LINE_SEPARATOR = "\n";
 	/**
-	 * <p>换行分隔符（兼容）</p>
+	 * <p>换行分隔符（兼容）：{@value}</p>
 	 */
-	public static final String LINE_COMPAT_SEPARATOR = "\r\n";
+	public static final String LINE_SEPARATOR_COMPAT = "\r\n";
 	/**
 	 * <p>用户工作目录</p>
 	 * <p>注意：初始化为常量（不能使用类变量：本类初始化时会使用）</p>
@@ -302,6 +315,13 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int peerOptimizeInterval;
 	/**
+	 * <p>软件信息</p>
+	 * 
+	 * @see #nameEn
+	 * @see #version
+	 */
+	private String nameEnAndVersion;
+	/**
 	 * <p>外网IP地址</p>
 	 */
 	private String externalIpAddress;
@@ -332,19 +352,21 @@ public final class SystemConfig extends PropertiesConfig {
 		this.torrentPort = this.getInteger("acgist.torrent.port", 18888);
 		this.peerSize = this.getInteger("acgist.peer.size", 20);
 		this.trackerSize = this.getInteger("acgist.tracker.size", 50);
-		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 4);
+		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 8);
 		this.hlsThreadSize = this.getInteger("acgist.hls.thread.size", 10);
 		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
 		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
 		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
 		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
 		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
+		this.nameEnAndVersion = this.nameEn + " " + this.version;
 	}
 
 	/**
 	 * <p>记录日志</p>
 	 */
 	private void logger() {
+		LOGGER.debug("用户工作目录：{}", SystemConfig.USER_DIR);
 		LOGGER.debug("软件名称：{}", this.name);
 		LOGGER.debug("软件名称（英文）：{}", this.nameEn);
 		LOGGER.debug("软件版本：{}", this.version);
@@ -356,8 +378,8 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("最新稳定版本：{}", this.latestRelease);
 		LOGGER.debug("STUN服务器：{}", this.stunServer);
 		LOGGER.debug("删除任务是否删除文件：{}", this.taskFileDelete);
-		LOGGER.debug("系统服务端口：{}", this.servicePort);
-		LOGGER.debug("BT服务端口（Peer、DHT、UTP、STUN）：{}", this.torrentPort);
+		LOGGER.debug("系统服务端口（本地服务：启动检测）：{}", this.servicePort);
+		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN）：{}", this.torrentPort);
 		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.debug("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.debug("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
@@ -367,7 +389,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("本地发现执行周期（秒）：{}", this.lsdInterval);
 		LOGGER.debug("Tracker执行周期（秒）：{}", this.trackerInterval);
 		LOGGER.debug("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
-		LOGGER.debug("用户工作目录：{}", SystemConfig.USER_DIR);
+		LOGGER.debug("软件信息：{}", this.nameEnAndVersion);
 	}
 	
 	/**
@@ -470,30 +492,28 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取系统服务端口</p>
+	 * <p>获取系统服务端口（本地服务：启动检测）</p>
 	 * 
-	 * @return 系统服务端口
+	 * @return 系统服务端口（本地服务：启动检测）
 	 */
 	public static final int getServicePort() {
 		return INSTANCE.servicePort;
 	}
 
 	/**
-	 * <p>获取BT服务端口</p>
-	 * <p>本地端口：Peer、DHT、UTP、STUN</p>
+	 * <p>获取BT服务端口（本地端口：Peer、DHT、UTP、STUN）</p>
 	 * 
-	 * @return BT服务端口
+	 * @return BT服务端口（本地端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * <p>获取BT服务端口</p>
-	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * <p>获取BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
 	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本地端口}</p>
 	 * 
-	 * @return BT服务端口
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final int getTorrentPortExt() {
 		if(INSTANCE.torrentPortExt == 0) {
@@ -503,22 +523,20 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置BT服务端口</p>
-	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * <p>设置BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
 	 * <p>本地端口和外网端口可能不一致</p>
 	 * 
-	 * @param torrentPortExt BT服务端口
+	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.debug("BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
+		LOGGER.debug("设置BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
 	/**
-	 * <p>获取BT服务端口（short）</p>
-	 * <p>外网端口：Peer、DHT、UTP、STUN</p>
+	 * <p>获取BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
 	 * 
-	 * @return BT服务端口
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.portToShort(getTorrentPortExt());
@@ -527,7 +545,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取单个任务Peer数量（同时下载）</p>
 	 * 
-	 * @return 单个任务Peer数量
+	 * @return 单个任务Peer数量（同时下载）
 	 */
 	public static final int getPeerSize() {
 		return INSTANCE.peerSize;
@@ -563,7 +581,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取DHT执行周期（秒）</p>
 	 * 
-	 * @return DHT执行周期
+	 * @return DHT执行周期（秒）
 	 */
 	public static final int getDhtInterval() {
 		return INSTANCE.dhtInterval;
@@ -572,7 +590,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取PEX执行周期（秒）</p>
 	 * 
-	 * @return PEX执行周期
+	 * @return PEX执行周期（秒）
 	 */
 	public static final int getPexInterval() {
 		return INSTANCE.pexInterval;
@@ -581,7 +599,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取本地发现执行周期（秒）</p>
 	 * 
-	 * @return 本地发现执行周期
+	 * @return 本地发现执行周期（秒）
 	 */
 	public static final int getLsdInterval() {
 		return INSTANCE.lsdInterval;
@@ -590,7 +608,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取Tracker执行周期（秒）</p>
 	 * 
-	 * @return Tracker执行周期
+	 * @return Tracker执行周期（秒）
 	 */
 	public static final int getTrackerInterval() {
 		return INSTANCE.trackerInterval;
@@ -599,7 +617,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>获取Peer（连接、接入）优化周期（秒）</p>
 	 * 
-	 * @return Peer优化周期
+	 * @return Peer（连接、接入）优化周期（秒）
 	 */
 	public static final int getPeerOptimizeInterval() {
 		return INSTANCE.peerOptimizeInterval;
@@ -619,7 +637,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 * 
 	 * @param path 文件相对路径
 	 * 
-	 * @return 文件路径
+	 * @return 用户工作目录中的文件路径
 	 */
 	public static final String userDir(String path) {
 		return Paths.get(userDir(), path).toString();
@@ -627,12 +645,11 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>获取软件信息</p>
-	 * <p>软件信息：软件名称（英文） + " " + 软件版本</p>
 	 * 
 	 * @return 软件信息
 	 */
 	public static final String getNameEnAndVersion() {
-		return INSTANCE.nameEn + " " + INSTANCE.version;
+		return INSTANCE.nameEnAndVersion;
 	}
 
 	/**

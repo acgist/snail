@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.bean.TorrentPiece;
@@ -40,11 +41,11 @@ public abstract class PeerConnect {
 	/**
 	 * <p>SLICE请求等待时间：{@value}</p>
 	 */
-	private static final int SLICE_TIMEOUT = 10 * 1000;
+	private static final int SLICE_TIMEOUT = 10 * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>PICEC完成等待时间：{@value}</p>
 	 */
-	private static final int COMPLETE_TIMEOUT = 30 * 1000;
+	private static final int COMPLETE_TIMEOUT = 30 * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>释放等待时间：{@value}</p>
 	 */

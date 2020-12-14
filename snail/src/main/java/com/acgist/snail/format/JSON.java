@@ -26,11 +26,11 @@ public final class JSON {
 	 * <pre>
 	 * var array = {};
 	 * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
-	 *  	if(i >= 0xD800 && i <= 0xDFFF) {
-	 *  		continue;
-	 *  	}
-	 * 		value = JSON.stringify(String.fromCharCode(i));
-	 * 		value.indexOf("\\") > -1 && array.push(value);
+	 * 	if(i >= 0xD800 && i <= 0xDFFF) {
+	 * 		continue;
+	 * 	}
+	 * 	value = JSON.stringify(String.fromCharCode(i));
+	 * 	value.indexOf("\\") > -1 && array.push(value);
 	 * }
 	 * console.log(array.join(", "));
 	 * </pre>

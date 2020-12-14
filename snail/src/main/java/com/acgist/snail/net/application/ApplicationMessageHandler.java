@@ -38,7 +38,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>多条消息分隔符：{@value}</p>
 	 */
-	private static final String SEPARATOR = SystemConfig.LINE_COMPAT_SEPARATOR;
+	private static final String SEPARATOR = SystemConfig.LINE_SEPARATOR_COMPAT;
 	
 	/**
 	 * <p>行消息处理器</p>
