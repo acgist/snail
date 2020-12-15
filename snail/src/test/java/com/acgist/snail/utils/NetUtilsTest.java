@@ -14,101 +14,59 @@ import org.junit.jupiter.api.Test;
 public class NetUtilsTest extends Performance {
 
 	@Test
-	public void ip() {
+	public void testIP() {
 		this.log(NetUtils.longToIP(2130706433));
 		this.log(NetUtils.ipToLong("127.1.1.1"));
+		final String ipv6 = "fe80::f84b:bc3a:9556:683d";
+		final byte[] ipv6Bytes = NetUtils.bytesToIP(ipv6);
+		final String ipv6Value = NetUtils.ipToBytes(ipv6Bytes);
+		this.log(StringUtils.hex(ipv6Bytes));
+		this.log(ipv6Value);
+	}
+	
+	@Test
+	public void testInetAddress() throws UnknownHostException {
+		List.of(
+			InetAddress.getByName("10.0.0.0"),
+			InetAddress.getByName("172.16.0.0"),
+			InetAddress.getByName("192.168.0.0"),
+			InetAddress.getByName("127.0.0.0"),
+			InetAddress.getByName("169.254.0.0"),
+			InetAddress.getByName("224.0.0.0"),
+			InetAddress.getByName("114.114.114.114"),
+			InetAddress.getByName("0:0:0:0:0:0:0:1"),
+			InetAddress.getByName("fe80::c86:25ef:e78f:5479%19"),
+			InetAddress.getByName("fe80:0:0:0:894e:9ee1:5167:53ef%eth6"),
+			InetAddress.getByName("fe80:0:0:0:d875:8e02:4383:9e5c%wlan10")
+			).forEach(address -> {
+				this.log(
+					"通配：{}-回环：{}-链接：{}-组播：{}-本地：{}-地址：{}",
+					address.isAnyLocalAddress(),
+					address.isLoopbackAddress(),
+					address.isLinkLocalAddress(),
+					address.isMulticastAddress(),
+					address.isSiteLocalAddress(),
+					address.toString()
+				);
+			});
 	}
 
 	@Test
-	public void testLocalAddress() {
-		this.log(NetUtils.localIPAddress("114.114.114.114"));
-		this.log(NetUtils.localIPAddress("10.0.0.0"));
-		this.log(NetUtils.localIPAddress("172.16.0.0"));
-		this.log(NetUtils.localIPAddress("192.168.0.0"));
-		this.log(NetUtils.localIPAddress("127.0.0.0"));
-		this.log(NetUtils.localIPAddress("169.254.0.0"));
-		this.log(NetUtils.localIPAddress("224.0.0.0"));
-		this.log(NetUtils.localIPAddress("0:0:0:0:0:0:0:1"));
-	}
-	
-	@Test
 	public void testLocalIPAddress() {
-		this.log(NetUtils.localIPAddress("10.0.0.0"));
-		this.log(NetUtils.localIPAddress("172.16.0.0"));
-		this.log(NetUtils.localIPAddress("192.168.0.0"));
-		this.log(NetUtils.localIPAddress("127.0.0.0"));
-		this.log(NetUtils.localIPAddress("169.254.0.0"));
-		this.log(NetUtils.localIPAddress("224.0.0.0"));
-		this.log(NetUtils.localIPAddress("114.114.114.114"));
-		this.log(NetUtils.localIPAddress("0:0:0:0:0:0:0:1"));
-		this.log(NetUtils.localIPAddress("fe80::c86:25ef:e78f:5479%19"));
+		this.log(NetUtils.localHostAddress());
+		assertTrue(NetUtils.localIPAddress("10.0.0.0"));
+		assertTrue(NetUtils.localIPAddress("172.16.0.0"));
+		assertTrue(NetUtils.localIPAddress("192.168.0.0"));
+		assertTrue(NetUtils.localIPAddress("127.0.0.0"));
+		assertTrue(NetUtils.localIPAddress("169.254.0.0"));
+		assertTrue(NetUtils.localIPAddress("224.0.0.0"));
+		assertTrue(NetUtils.localIPAddress("0:0:0:0:0:0:0:1"));
+		assertTrue(NetUtils.localIPAddress("fe80::c86:25ef:e78f:5479%19"));
+		assertFalse(NetUtils.localIPAddress("114.114.114.114"));
 	}
 	
 	@Test
-	public void testInetAddress() throws UnknownHostException {
-		List.of(
-			InetAddress.getByName("10.0.0.0"),
-			InetAddress.getByName("172.16.0.0"),
-			InetAddress.getByName("192.168.0.0"),
-			InetAddress.getByName("127.0.0.0"),
-			InetAddress.getByName("169.254.0.0"),
-			InetAddress.getByName("224.0.0.0"),
-			InetAddress.getByName("114.114.114.114"),
-			InetAddress.getByName("0:0:0:0:0:0:0:1"),
-			InetAddress.getByName("fe80::c86:25ef:e78f:5479%19")
-		).forEach(address -> {
-			this.log(
-				"{}-{}-{}-{}-{}-{}",
-				address.isAnyLocalAddress(),
-				address.isLoopbackAddress(),
-				address.isLinkLocalAddress(),
-				address.isMulticastAddress(),
-				address.isSiteLocalAddress(),
-				address.toString()
-			);
-		});
-	}
-	
-	@Test
-	public void testLocalIPAddress() {
-		this.log(NetUtils.localIPAddress("10.0.0.0"));
-		this.log(NetUtils.localIPAddress("172.16.0.0"));
-		this.log(NetUtils.localIPAddress("192.168.0.0"));
-		this.log(NetUtils.localIPAddress("127.0.0.0"));
-		this.log(NetUtils.localIPAddress("169.254.0.0"));
-		this.log(NetUtils.localIPAddress("224.0.0.0"));
-		this.log(NetUtils.localIPAddress("114.114.114.114"));
-		this.log(NetUtils.localIPAddress("0:0:0:0:0:0:0:1"));
-		this.log(NetUtils.localIPAddress("fe80::c86:25ef:e78f:5479%19"));
-	}
-	
-	@Test
-	public void testInetAddress() throws UnknownHostException {
-		List.of(
-			InetAddress.getByName("10.0.0.0"),
-			InetAddress.getByName("172.16.0.0"),
-			InetAddress.getByName("192.168.0.0"),
-			InetAddress.getByName("127.0.0.0"),
-			InetAddress.getByName("169.254.0.0"),
-			InetAddress.getByName("224.0.0.0"),
-			InetAddress.getByName("114.114.114.114"),
-			InetAddress.getByName("0:0:0:0:0:0:0:1"),
-			InetAddress.getByName("fe80::c86:25ef:e78f:5479%19")
-		).forEach(address -> {
-			this.log(
-				"{}-{}-{}-{}-{}-{}",
-				address.isAnyLocalAddress(),
-				address.isLoopbackAddress(),
-				address.isLinkLocalAddress(),
-				address.isMulticastAddress(),
-				address.isSiteLocalAddress(),
-				address.toString()
-			);
-		});
-	}
-	
-	@Test
-	public void testAddress() throws SocketException {
+	public void testNetwork() throws SocketException {
 		NetworkInterface.networkInterfaces().forEach(networkInterfaces -> {
 			networkInterfaces.getInterfaceAddresses().stream().forEach(networkInterface -> {
 				final var address = networkInterface.getAddress();
@@ -123,20 +81,11 @@ public class NetUtilsTest extends Performance {
 					address.isMulticastAddress()
 				);
 			});
-			this.log(networkInterfaces);
+			this.log("网卡：{}", networkInterfaces);
 		});
 		this.log(NetUtils.localHostName());
 		this.log(NetUtils.localHostAddress());
 		this.log(NetUtils.defaultNetworkInterface());
-	}
-	
-	@Test
-	public void testIPv6() {
-		String ipv6 = "fe80::f84b:bc3a:9556:683d";
-		byte[] bytes = NetUtils.bytesToIP(ipv6);
-		this.log(StringUtils.hex(bytes));
-		String value = NetUtils.ipToBytes(bytes);
-		this.log(value);
 	}
 	
 	@Test
