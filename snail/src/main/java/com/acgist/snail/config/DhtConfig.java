@@ -327,15 +327,15 @@ public final class DhtConfig extends PropertiesConfig {
 			if(StringUtils.isNotEmpty(nodeId) && StringUtils.isNotEmpty(address)) {
 				this.nodes.put(nodeId, address);
 			} else {
-				LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
+				LOGGER.warn("默认DHT节点注册失败：{}-{}", nodeId, address);
 			}
 		});
 	}
 
 	/**
-	 * <p>获取默认DHT节点</p>
+	 * <p>获取所有DHT节点</p>
 	 * 
-	 * @return 默认DHT节点
+	 * @return 所有DHT节点
 	 */
 	public Map<String, String> nodes() {
 		return this.nodes;
