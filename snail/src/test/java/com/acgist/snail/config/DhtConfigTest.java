@@ -18,6 +18,7 @@ public class DhtConfigTest extends Performance {
 	public void testPersistent() {
 		final DhtConfig config = DhtConfig.getInstance();
 		NodeManager.getInstance().register();
+		NodeManager.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 2020);
 		config.persistent();
 		assertNotNull(config);
 	}

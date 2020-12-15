@@ -22,8 +22,16 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 	
+	/**
+	 * <p>单例对象</p>
+	 */
 	private static final TrackerConfig INSTANCE = new TrackerConfig();
 	
+	/**
+	 * <p>获取单例对象</p>
+	 * 
+	 * @return 单例对象
+	 */
 	public static final TrackerConfig getInstance() {
 		return INSTANCE;
 	}
@@ -33,12 +41,12 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 	/**
-	 * <p>最大的Tracker服务器保存数量：{@value}</p>
+	 * <p>Tracker服务器最大保存数量：{@value}</p>
 	 */
 	private static final int MAX_TRACKER_SIZE = 512;
 	/**
 	 * <p>最大请求失败次数：{@value}</p>
-	 * <p>超过最大次数标记无效</p>
+	 * <p>超过最大请求失败次数标记无效</p>
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	
@@ -49,7 +57,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>声明（announce）事件</p>
+	 * <p>声明事件</p>
 	 * 
 	 * @author acgist
 	 * 
@@ -57,13 +65,21 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	public enum Event {
 		
-		/** none */
+		/**
+		 * <p>none</p>
+		 */
 		NONE(0, "none"),
-		/** 完成 */
+		/**
+		 * <p>完成</p>
+		 */
 		COMPLETED(1, "completed"),
-		/** 开始 */
+		/**
+		 * <p>开始</p>
+		 */
 		STARTED(2, "started"),
-		/** 停止 */
+		/**
+		 * <p>停止</p>
+		 */
 		STOPPED(3, "stopped");
 		
 		/**
@@ -111,13 +127,21 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	public enum Action {
 		
-		/** 连接 */
+		/**
+		 * <p>连接</p>
+		 */
 		CONNECT(0, "connect"),
-		/** 声明 */
+		/**
+		 * <p>声明</p>
+		 */
 		ANNOUNCE(1, "announce"),
-		/** 刮檫 */
+		/**
+		 * <p>刮檫</p>
+		 */
 		SCRAPE(2, "scrape"),
-		/** 错误 */
+		/**
+		 * <p>错误</p>
+		 */
 		ERROR(3, "error");
 		
 		/**
@@ -157,11 +181,11 @@ public final class TrackerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>通过动作ID获取动作</p>
+		 * <p>通过动作ID获取Tracker动作</p>
 		 * 
 		 * @param id 动作ID
 		 * 
-		 * @return 动作
+		 * @return Tracker动作
 		 */
 		public static final Action of(int id) {
 			final var values = Action.values();
@@ -197,7 +221,7 @@ public final class TrackerConfig extends PropertiesConfig {
 			if(StringUtils.isNotEmpty(announce)) {
 				this.announces.add(announce);
 			} else {
-				LOGGER.warn("注册默认Tracker服务器失败：{}", announce);
+				LOGGER.warn("默认Tracker服务器注册失败：{}", announce);
 			}
 		});
 	}

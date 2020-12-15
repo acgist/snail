@@ -1,5 +1,9 @@
 package com.acgist.snail.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.DownloadException;
@@ -12,7 +16,9 @@ public class TrackerConfigTest extends Performance {
 	public void testPersistent() throws DownloadException {
 		TrackerConfig config = TrackerConfig.getInstance();
 		TrackerManager.getInstance().register();
+		TrackerManager.getInstance().clients("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
 		config.persistent();
+		assertNotNull(config);
 	}
 	
 }
