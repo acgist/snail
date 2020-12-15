@@ -79,6 +79,7 @@ public final class NatContext {
 			}
 		} else {
 			LOGGER.info("已是公网IP地址：忽略NAT设置");
+			SystemConfig.setExternalIpAddress(NetUtils.localHostAddress());
 		}
 	}
 	

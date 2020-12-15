@@ -73,7 +73,7 @@ public final class NetUtils {
 //						address.isSiteLocalAddress() && // 本地地址
 						!address.isAnyLocalAddress() && // 通配地址
 						!address.isLoopbackAddress() && // 回环地址
-						!address.isLinkLocalAddress() && // 连接地址：虚拟网卡
+						!address.isLinkLocalAddress() && // 链接地址：虚拟网卡
 						!address.isMulticastAddress() // 广播地址
 					) {
 						index.set(nowIndex);
@@ -316,7 +316,7 @@ public final class NetUtils {
 			inetAddress.isAnyLocalAddress() || // 通配地址
 			inetAddress.isLoopbackAddress() || // 回环地址
 			inetAddress.isMulticastAddress() || // 组播地址
-			inetAddress.isLinkLocalAddress() || // 连接地址：虚拟网卡
+			inetAddress.isLinkLocalAddress() || // 链接地址：虚拟网卡
 			inetAddress.isSiteLocalAddress(); // 本地地址：A/B/C类
 	}
 	
