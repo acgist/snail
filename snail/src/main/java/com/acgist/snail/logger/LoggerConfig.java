@@ -6,7 +6,6 @@ import java.util.Properties;
 
 import org.slf4j.event.Level;
 
-import com.acgist.snail.config.PropertiesConfig;
 import com.acgist.snail.config.SystemConfig;
 
 /**
@@ -33,7 +32,7 @@ public final class LoggerConfig {
 	
 	private LoggerConfig() {
 		Properties properties = null;
-		try(final var input = new InputStreamReader(PropertiesConfig.class.getResourceAsStream(LOGGER_CONFIG), SystemConfig.DEFAULT_CHARSET)) {
+		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), SystemConfig.DEFAULT_CHARSET)) {
 			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
