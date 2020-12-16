@@ -209,6 +209,7 @@ public final class ArrayUtils {
 	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
+		end = end > values.length ? values.length : end;
 		for (int index = begin; index < end; index++) {
 			if(values[index] == value) {
 				return index;
