@@ -524,7 +524,6 @@ public final class StringUtils {
 		}
 	}
 	
-	
 	/**
 	 * <p>去掉字符串所有空白字符</p>
 	 * 
