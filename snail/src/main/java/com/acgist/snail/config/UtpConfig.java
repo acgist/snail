@@ -14,15 +14,25 @@ public final class UtpConfig {
 	 */
 	public enum Type {
 		
-		/** 数据 */
+		/**
+		 * <p>数据</p>
+		 */
 		DATA((byte) 0),
-		/** 结束 */
+		/**
+		 * <p>结束</p>
+		 */
 		FIN((byte) 1),
-		/** 响应 */
+		/**
+		 * <p>响应</p>
+		 */
 		STATE((byte) 2),
-		/** 重置 */
+		/**
+		 * <p>重置</p>
+		 */
 		RESET((byte) 3),
-		/** 握手 */
+		/**
+		 * <p>握手</p>
+		 */
 		SYN((byte) 4);
 		
 		/**
@@ -31,6 +41,9 @@ public final class UtpConfig {
 		private final byte type;
 		/**
 		 * <p>消息类型：帧类型 + 版本</p>
+		 * 
+		 * @see #type
+		 * @see UtpConfig#UTP_VERSION
 		 */
 		private final byte typeVersion;
 		
@@ -68,8 +81,9 @@ public final class UtpConfig {
 		 * @return UTP消息类型
 		 */
 		public static final Type of(byte typeVersion) {
-			final byte value = (byte) (typeVersion >> 4); // 获取帧类型
-			// 使用switch效率是否更高
+			// 获取帧类型
+			final byte value = (byte) (typeVersion >> 4);
+			// 使用switch效率更高：DATA类型数据最多基本没有影响
 			final Type[] types = Type.values();
 			for (Type type : types) {
 				if(type.type == value) {
@@ -86,13 +100,16 @@ public final class UtpConfig {
 	 */
 	public static final byte UTP_VERSION = 1;
 	/**
-	 * <p>扩展</p>
+	 * <p>扩展：{@value}</p>
 	 */
 	public static final byte EXTENSION = 0;
 	/**
 	 * <p>UTP最大包长度：{@value}</p>
-	 * <p>UDP最大包长度：1500 - 20(IP头) - 8(UDP头) = 1472</p>
-	 * <p>UTP最大包长度：1472 - 20(UTP扩展消息头) = 1452</p>
+	 * <p>UDP最大包长度：1500 - 20（IP头） - 8（UDP头） = 1472</p>
+	 * <p>UTP最大包长度：1472 - 20（UTP扩展消息头） = 1452</p>
+	 * <p>UTP扩展消息头长度：20（没有扩展的情况下）</p>
+	 * 
+	 * @see #EXTENSION
 	 */
 	public static final int UTP_PACKET_MAX_LENGTH = 1452;
 	/**
