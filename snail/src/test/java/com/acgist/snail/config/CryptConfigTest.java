@@ -10,7 +10,7 @@ import com.acgist.snail.utils.Performance;
 public class CryptConfigTest extends Performance {
 
 	@Test
-	public void test() {
+	public void testCryptConfig() {
 		final CryptConfig.Strategy defaultStrategy = CryptConfig.STRATEGY;
 		assertNotNull(defaultStrategy);
 		assertEquals(false, defaultStrategy.crypt());
