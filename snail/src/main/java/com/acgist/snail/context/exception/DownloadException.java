@@ -2,7 +2,7 @@ package com.acgist.snail.context.exception;
 
 /**
  * <p>下载异常</p>
- * <p>用途：{@linkplain com.acgist.snail.downloader 下载器}、{@linkplain com.acgist.snail.protocol 下载协议}</p>
+ * <p>任务创建和下载过程中出现的异常</p>
  * 
  * @author acgist
  */
@@ -25,7 +25,7 @@ public class DownloadException extends Exception {
 	 * @param cause 原始异常
 	 */
 	public DownloadException(Throwable cause) {
-		super(cause.getMessage(), cause);
+		super(cause);
 	}
 	
 	/**

@@ -10,7 +10,7 @@ import com.acgist.snail.utils.Performance;
 public class SystemConfigTest extends Performance {
 
 	@Test
-	public void test() {
+	public void testSystemConfig() {
 		final int port = 38888;
 		final short portShort = NetUtils.portToShort(port);
 		assertEquals(SystemConfig.getNameEnAndVersion(), SystemConfig.getNameEn() + " " + SystemConfig.getVersion());

@@ -2,7 +2,6 @@ package com.acgist.snail.context.exception;
 
 /**
  * <p>网络异常</p>
- * <p>用途：{@linkplain com.acgist.snail.net 网络协议}</p>
  * 
  * @author acgist
  */
@@ -25,7 +24,7 @@ public class NetException extends Exception {
 	 * @param cause 原始异常
 	 */
 	public NetException(Throwable cause) {
-		super(cause.getMessage(), cause);
+		super(cause);
 	}
 	
 	/**

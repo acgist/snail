@@ -9,7 +9,7 @@ import com.acgist.snail.utils.Performance;
 public class DatabaseConfigTest extends Performance {
 
 	@Test
-	public void test() {
+	public void testDatabaseConfig() {
 		final DatabaseConfig config = DatabaseConfig.getInstance();
 		assertNotNull(config);
 	}

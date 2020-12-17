@@ -193,7 +193,7 @@ public abstract class Repository<T extends Entity> {
 	 */
 	public T findOne(String property, String value) {
 		RepositoryException.requireNotNull(property);
-		RepositoryException.requireMatch(property, COLUMN_REGEX);
+		RepositoryException.requireMatchRegex(property, COLUMN_REGEX);
 		final StringBuilder sql = new StringBuilder();
 		sql
 			.append("SELECT * FROM ")

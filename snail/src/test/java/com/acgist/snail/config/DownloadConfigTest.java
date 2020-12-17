@@ -10,7 +10,7 @@ import com.acgist.snail.utils.Performance;
 public class DownloadConfigTest extends Performance {
 
 	@Test
-	public void test() {
+	public void testDownloadConfig() {
 		final var config = DownloadConfig.getInstance();
 		assertNotNull(config);
 		assertNotEquals(0, DownloadConfig.getUploadBufferByte());
