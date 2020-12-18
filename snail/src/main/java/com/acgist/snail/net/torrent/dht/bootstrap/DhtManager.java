@@ -45,7 +45,7 @@ public final class DhtManager {
 			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
 			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
 			TimeUnit.MINUTES,
-			() -> this.timeout() // 处理超时请求
+			this::timeout
 		);
 	}
 	

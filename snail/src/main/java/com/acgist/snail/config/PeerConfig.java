@@ -154,7 +154,7 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	public static final byte PEX_OUTGO = 1 << 4;
 	/**
-	 * <p>holepunch连接超时时间：{@value}</p>
+	 * <p>holepunch连接超时时间（毫秒）：{@value}</p>
 	 */
 	public static final int HOLEPUNCH_TIMEOUT = 2000;
 	/**

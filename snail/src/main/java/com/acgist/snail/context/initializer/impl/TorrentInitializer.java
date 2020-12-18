@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.net.torrent.TorrentServer;
+import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
 
 /**
@@ -26,7 +27,11 @@ public final class TorrentInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化BT（DHT、UTP、STUN）服务");
+		// UDP端口：DHT/UTP/STUN
 		TorrentServer.getInstance();
+		// TCP端口：Peer
+		PeerServer.getInstance().listen();
+		// UTP服务
 		UtpService.getInstance().register();
 	}
 

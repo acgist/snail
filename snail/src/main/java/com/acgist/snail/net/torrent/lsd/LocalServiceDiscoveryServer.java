@@ -58,7 +58,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 			interval,
 			interval,
 			TimeUnit.SECONDS,
-			() -> this.multicast()
+			this::multicast
 		);
 	}
 	

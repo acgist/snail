@@ -36,18 +36,19 @@ public final class DownloaderInitializer extends Initializer {
 		final TaskRepository repository = new TaskRepository();
 		final List<TaskEntity> list = repository.findAll();
 		if(CollectionUtils.isNotEmpty(list)) {
-			list.stream()
-				.forEach(entity -> {
-					try {
-						final var taskSession = TaskSession.newInstance(entity);
-						DownloaderManager.getInstance().submit(taskSession);
-					} catch (DownloadException e) {
-						LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
-						repository.delete(entity);
-					}
-				});
-			DownloaderManager.getInstance().refresh(); // 刷新下载
-			GuiManager.getInstance().refreshTaskList(); // 刷新状态
+			list.forEach(entity -> {
+				try {
+					final var taskSession = TaskSession.newInstance(entity);
+					DownloaderManager.getInstance().submit(taskSession);
+				} catch (DownloadException e) {
+					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
+					repository.delete(entity);
+				}
+			});
+			// 刷新下载
+			DownloaderManager.getInstance().refresh();
+			// 刷新状态
+			GuiManager.getInstance().refreshTaskList();
 		}
 	}
 

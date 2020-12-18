@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.NetException;
 
 /**
  * <p>初始化</p>
@@ -17,8 +19,7 @@ public abstract class Initializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	
 	/**
-	 * <p>延迟启动</p>
-	 * <p>单位：秒</p>
+	 * <p>初始化延迟时间（单位：秒）</p>
 	 * 
 	 * @see #asyn()
 	 */
@@ -29,7 +30,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * @param delay 延迟时间
+	 * @param delay 延迟时间（单位：秒）
 	 */
 	protected Initializer(int delay) {
 		this.delay = delay;
@@ -38,10 +39,10 @@ public abstract class Initializer {
 	/**
 	 * <p>同步初始化</p>
 	 */
-	public void sync() {
+	public final void sync() {
 		try {
 			this.init();
-		} catch (Exception e) {
+		} catch (NetException | DownloadException e) {
 			LOGGER.error("同步初始化异常", e);
 		}
 	}
@@ -49,12 +50,12 @@ public abstract class Initializer {
 	/**
 	 * <p>异步初始化</p>
 	 */
-	public void asyn() {
+	public final void asyn() {
 		// 异步任务
 		final Runnable runnable = () -> {
 			try {
 				this.init();
-			} catch (Exception e) {
+			} catch (NetException | DownloadException e) {
 				LOGGER.error("异步初始化异常", e);
 			}
 		};
@@ -74,8 +75,9 @@ public abstract class Initializer {
 	/**
 	 * <p>初始化</p>
 	 * 
-	 * @throws Exception 初始化异常
+	 * @throws NetException 网络异常
+	 * @throws DownloadException 下载异常
 	 */
-	protected abstract void init() throws Exception;
+	protected abstract void init() throws NetException, DownloadException;
 	
 }
