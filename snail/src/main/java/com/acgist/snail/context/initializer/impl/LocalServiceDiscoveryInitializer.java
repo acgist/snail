@@ -16,7 +16,7 @@ public final class LocalServiceDiscoveryInitializer extends Initializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryInitializer.class);
 
 	/**
-	 * <p>启动延迟时间：{@value}</p>
+	 * <p>启动延迟时间（秒）：{@value}</p>
 	 */
 	private static final int DELAY = 6;
 	

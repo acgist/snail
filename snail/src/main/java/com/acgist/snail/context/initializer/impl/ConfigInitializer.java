@@ -7,6 +7,7 @@ import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.PropertiesConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.initializer.Initializer;
@@ -23,15 +24,15 @@ public final class ConfigInitializer extends Initializer {
 	private ConfigInitializer() {
 	}
 	
-	/**
-	 * <p>创建初始化配置</p>
-	 * 
-	 * @return ConfigInitializer
-	 */
 	public static final ConfigInitializer newInstance() {
 		return new ConfigInitializer();
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>初始化{@link PropertiesConfig}的子类</p>
+	 */
 	@Override
 	protected void init() {
 		LOGGER.info("初始化配置");

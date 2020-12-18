@@ -17,7 +17,7 @@ public class DatabaseInitializerTest extends Performance {
 	@Test
 	public void testCosted() {
 		final long costed = this.costed(100000, () -> DatabaseInitializer.newInstance().sync());
-		assertTrue(costed < 10000);
+		assertTrue(costed < 30000);
 	}
 	
 }

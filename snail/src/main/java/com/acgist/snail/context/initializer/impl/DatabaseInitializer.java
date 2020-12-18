@@ -27,11 +27,6 @@ public final class DatabaseInitializer extends Initializer {
 	private DatabaseInitializer() {
 	}
 	
-	/**
-	 * <p>创建初始化数据库</p>
-	 * 
-	 * @return DatabaseInitializer
-	 */
 	public static final DatabaseInitializer newInstance() {
 		return new DatabaseInitializer();
 	}

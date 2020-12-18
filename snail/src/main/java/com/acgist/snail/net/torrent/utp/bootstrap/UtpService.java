@@ -56,7 +56,7 @@ public final class UtpService {
 			UTP_INTERVAL,
 			UTP_INTERVAL,
 			TimeUnit.SECONDS,
-			() -> this.timeout()
+			this::timeout
 		);
 	}
 	

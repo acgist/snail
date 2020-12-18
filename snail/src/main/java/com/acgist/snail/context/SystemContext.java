@@ -15,7 +15,6 @@ import com.acgist.snail.context.initializer.impl.DhtInitializer;
 import com.acgist.snail.context.initializer.impl.DownloaderInitializer;
 import com.acgist.snail.context.initializer.impl.LocalServiceDiscoveryInitializer;
 import com.acgist.snail.context.initializer.impl.NatInitializer;
-import com.acgist.snail.context.initializer.impl.PeerInitializer;
 import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.context.initializer.impl.TorrentInitializer;
 import com.acgist.snail.context.initializer.impl.TrackerInitializer;
@@ -140,7 +139,6 @@ public final class SystemContext {
 		ProtocolInitializer.newInstance().asyn();
 		NatInitializer.newInstance().asyn();
 		DhtInitializer.newInstance().asyn();
-		PeerInitializer.newInstance().asyn();
 		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();

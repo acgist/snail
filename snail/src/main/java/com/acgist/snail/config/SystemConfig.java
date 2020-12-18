@@ -175,7 +175,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String LETTER_UPPER = LETTER.toUpperCase();
 	/**
-	 * <p>任务列表刷新时间：{@value}</p>
+	 * <p>任务列表刷新时间（秒）：{@value}</p>
 	 */
 	public static final int TASK_REFRESH_INTERVAL = 4;
 	/**
