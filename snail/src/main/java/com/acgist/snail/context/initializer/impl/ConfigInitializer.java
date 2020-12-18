@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.initializer.Initializer;
@@ -22,6 +23,11 @@ public final class ConfigInitializer extends Initializer {
 	private ConfigInitializer() {
 	}
 	
+	/**
+	 * <p>创建初始化配置</p>
+	 * 
+	 * @return ConfigInitializer
+	 */
 	public static final ConfigInitializer newInstance() {
 		return new ConfigInitializer();
 	}
@@ -30,10 +36,11 @@ public final class ConfigInitializer extends Initializer {
 	protected void init() {
 		LOGGER.info("初始化配置");
 		DhtConfig.getInstance();
+		PeerConfig.getInstance();
 		SystemConfig.getInstance();
+		TrackerConfig.getInstance();
 		DatabaseConfig.getInstance();
 		DownloadConfig.getInstance();
-		TrackerConfig.getInstance();
 	}
 
 }
