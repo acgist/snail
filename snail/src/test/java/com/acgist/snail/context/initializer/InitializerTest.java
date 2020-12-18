@@ -15,7 +15,7 @@ public class InitializerTest extends Performance {
 		final AtomicBoolean init = new AtomicBoolean(false);
 		new Initializer() {
 			@Override
-			protected void init() throws Exception {
+			protected void init() {
 				init.set(true);
 			}
 		}.sync();
