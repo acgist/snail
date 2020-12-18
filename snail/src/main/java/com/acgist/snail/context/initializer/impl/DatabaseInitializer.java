@@ -19,11 +19,19 @@ public final class DatabaseInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInitializer.class);
 	
+	/**
+	 * <p>数据库管理器</p>
+	 */
 	private final DatabaseManager databaseManager = DatabaseManager.getInstance();
 	
 	private DatabaseInitializer() {
 	}
 	
+	/**
+	 * <p>创建初始化数据库</p>
+	 * 
+	 * @return DatabaseInitializer
+	 */
 	public static final DatabaseInitializer newInstance() {
 		return new DatabaseInitializer();
 	}
@@ -46,7 +54,7 @@ public final class DatabaseInitializer extends Initializer {
 	}
 	
 	/**
-	 * <p>查询数据库是否初始化</p>
+	 * <p>判断数据库是否初始化</p>
 	 * 
 	 * @return 是否初始化
 	 */
@@ -64,9 +72,9 @@ public final class DatabaseInitializer extends Initializer {
 	}
 
 	/**
-	 * <p>读取建表SQL</p>
+	 * <p>读取建表语句</p>
 	 * 
-	 * @return 建表SQL
+	 * @return 建表语句
 	 */
 	private String buildTableSQL() {
 		final StringBuilder sql = new StringBuilder();
@@ -78,7 +86,7 @@ public final class DatabaseInitializer extends Initializer {
 				sql.append(new String(chars, 0, count));
 			}
 		} catch (IOException e) {
-			LOGGER.error("读取建表SQL异常：{}", tableSQL, e);
+			LOGGER.error("读取建表语句异常：{}", tableSQL, e);
 		}
 		return sql.toString();
 	}
