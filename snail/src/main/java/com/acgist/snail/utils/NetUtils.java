@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>网络工具</p>
- * <p>获取地址方法：{@link InetAddress#getHostAddress()}、{@link InetSocketAddress#getHostString()}、<del>{@link InetSocketAddress#getHostName()}</del></p>
  * 
  * @author acgist
  */
@@ -22,45 +21,48 @@ public final class NetUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
 	/**
-	 * <p>本机名称</p>
-	 */
-	private static final String LOCAL_HOST_NAME;
-	/**
-	 * <p>本机地址</p>
-	 */
-	private static final String LOCAL_HOST_ADDRESS;
-	/**
 	 * <p>子网掩码</p>
 	 */
-	private static final int LOCAL_HOST_MASK;
+	public static final int LOCAL_HOST_MASK;
+	/**
+	 * <p>本机名称</p>
+	 * <p>例子：192.168.1.100</p>
+	 */
+	public static final String LOCAL_HOST_NAME;
+	/**
+	 * <p>本机地址</p>
+	 * <p>例子：acgist</p>
+	 */
+	public static final String LOCAL_HOST_ADDRESS;
+	/**
+	 * <p>环回主机名称</p>
+	 * <p>例子：localhost</p>
+	 */
+	public static final String LOOPBACK_HOST_NAME;
+	/**
+	 * <p>环回地址</p>
+	 * <p>例子：127.0.0.1</p>
+	 */
+	public static final String LOOPBACK_HOST_ADDRESS;
 	/**
 	 * <p>本机默认物理网卡</p>
 	 */
-	private static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
+	public static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
 	/**
 	 * <p>最大端口号：{@value}</p>
 	 */
 	public static final int MAX_PORT = 2 << 15;
-	/**
-	 * <p>本机IP地址：{@value}</p>
-	 */
-	public static final String LOCAL_IP = "127.0.0.1";
-	/**
-	 * <p>本机HOST地址：{@value}</p>
-	 */
-	public static final String LOCAL_HOST = "localhost";
 	/**
 	 * <p>IPv4地址正则表达式：{@value}</p>
 	 */
 	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
 	
 	static {
-		final ModifyOptional<String> localHostName = ModifyOptional.newInstance();
+		final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
 		final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
 		final ModifyOptional<Integer> localHostMask = ModifyOptional.newInstance();
 		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
-			final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
 			// 处理多个物理网卡和虚拟网卡
 			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
 				final int nowIndex = networkInterface.getIndex();
@@ -72,13 +74,12 @@ public final class NetUtils {
 						index.get() > nowIndex && // 索引最小网卡
 //						address.isSiteLocalAddress() && // 本地地址
 						!address.isAnyLocalAddress() && // 通配地址
-						!address.isLoopbackAddress() && // 回环地址
+						!address.isLoopbackAddress() && // 环回地址
 						!address.isLinkLocalAddress() && // 链接地址：虚拟网卡
 						!address.isMulticastAddress() // 广播地址
 					) {
 						index.set(nowIndex);
-						localHostName.set(buildLocalHostName());
-//						localHostName.set(address.getHostName()); // 速度太慢
+//						address.getHostName() // 速度太慢：buildLocalHostName()
 						localHostAddress.set(address.getHostAddress());
 						defaultNetworkInterface.set(networkInterface);
 						final var length = interfaceAddress.getNetworkPrefixLength();
@@ -89,13 +90,17 @@ public final class NetUtils {
 		} catch (SocketException e) {
 			LOGGER.error("初始化本机网络信息异常", e);
 		}
-		LOCAL_HOST_NAME = localHostName.get();
-		LOCAL_HOST_ADDRESS = localHostAddress.get();
 		LOCAL_HOST_MASK = localHostMask.get();
+		LOCAL_HOST_NAME = buildLocalHostName();
+		LOCAL_HOST_ADDRESS = localHostAddress.get();
+		LOOPBACK_HOST_NAME = buildLoopbackHostName();
+		LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
+		LOGGER.info("子网掩码：{}", LOCAL_HOST_MASK);
 		LOGGER.info("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.info("本机地址：{}", LOCAL_HOST_ADDRESS);
-		LOGGER.info("子网掩码：{}", LOCAL_HOST_MASK);
+		LOGGER.info("环回主机名称：{}", LOOPBACK_HOST_NAME);
+		LOGGER.info("环回地址：{}", LOOPBACK_HOST_ADDRESS);
 		LOGGER.info("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
 	}
 	
@@ -128,7 +133,7 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>IP地址编码</p>
+	 * <p>IPv4地址编码</p>
 	 * 
 	 * @param ip IP地址（字符串）
 	 * 
@@ -139,7 +144,7 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>IP地址编码</p>
+	 * <p>IPv4地址编码</p>
 	 * 
 	 * @param ip IP地址（字符串）
 	 * 
@@ -161,7 +166,7 @@ public final class NetUtils {
 	}
 
 	/**
-	 * <p>IP地址解码</p>
+	 * <p>IPv4地址解码</p>
 	 * 
 	 * @param value IP地址（int）
 	 * 
@@ -172,7 +177,7 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>IP地址解码</p>
+	 * <p>IPv4地址解码</p>
 	 * 
 	 * @param value IP地址（long）
 	 * 
@@ -187,58 +192,39 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>IPv6地址编码</p>
+	 * <p>IP地址编码</p>
+	 * <p>支持IP：IPv4、IPv6</p>
 	 * 
 	 * @param ip IP地址（字符串）
 	 * 
 	 * @return IP地址（字节数组）
 	 */
-	public static final byte[] bytesToIP(String ip) {
+	public static final byte[] ipToBytes(String ip) {
 		try {
 			return InetAddress.getByName(ip).getAddress();
 		} catch (UnknownHostException e) {
-			LOGGER.error("IPv6地址编码异常：{}", ip, e);
+			LOGGER.error("地址编码异常：{}", ip, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>IPv6地址解码</p>
+	 * <p>地址解码</p>
+	 * <p>支持IP：IPv4、IPv6</p>
 	 * 
 	 * @param value IP地址（字节数组）
 	 * 
 	 * @return IP地址（字符串）
 	 */
-	public static final String ipToBytes(byte[] value) {
+	public static final String bytesToIP(byte[] value) {
 		try {
 			return InetAddress.getByAddress(value).getHostAddress();
 		} catch (UnknownHostException e) {
-			LOGGER.error("IPv6地址解码异常", e);
+			LOGGER.error("地址解码异常", e);
 		}
 		return null;
 	}
 	
-	/**
-	 * @return 本机名称
-	 */
-	public static final String localHostName() {
-		return LOCAL_HOST_NAME;
-	}
-
-	/**
-	 * @return 本机地址
-	 */
-	public static final String localHostAddress() {
-		return LOCAL_HOST_ADDRESS;
-	}
-	
-	/**
-	 * @return 本机默认物理网卡
-	 */
-	public static final NetworkInterface defaultNetworkInterface() {
-		return DEFAULT_NETWORK_INTERFACE;
-	}
-
 	/**
 	 * <p>判断是否是同一个网关</p>
 	 * 
@@ -268,6 +254,24 @@ public final class NetUtils {
 		}
 		return null;
 	}
+
+	/**
+	 * <p>获取环回主机名称</p>
+	 * 
+	 * @return 环回主机名称
+	 */
+	private static final String buildLoopbackHostName() {
+		return InetAddress.getLoopbackAddress().getHostName();
+	}
+	
+	/**
+	 * <p>获取环回地址</p>
+	 * 
+	 * @return 环回地址
+	 */
+	private static final String buildLoopbackHostAddress() {
+		return InetAddress.getLoopbackAddress().getHostAddress();
+	}
 	
 	/**
 	 * <p>是否是IP地址</p>
@@ -293,8 +297,8 @@ public final class NetUtils {
 	 * <p>C类私用地址</p>
 	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
 	 * <p>C类默认子网掩码：255.255.255.0</p>
-	 * <p>本地回环地址</p>
-	 * <p>本地回环地址范围：127.0.0.0-127.255.255.255</p>
+	 * <p>本地环回地址</p>
+	 * <p>本地环回地址范围：127.0.0.0-127.255.255.255</p>
 	 * <p>DHCP地址</p>
 	 * <p>DHCP地址范围：169.254.0.0-169.254.255.255</p>
 	 * <p>组播地址</p>
@@ -314,7 +318,7 @@ public final class NetUtils {
 		}
 		return
 			inetAddress.isAnyLocalAddress() || // 通配地址
-			inetAddress.isLoopbackAddress() || // 回环地址
+			inetAddress.isLoopbackAddress() || // 环回地址
 			inetAddress.isMulticastAddress() || // 组播地址
 			inetAddress.isLinkLocalAddress() || // 链接地址：虚拟网卡
 			inetAddress.isSiteLocalAddress(); // 本地地址：A/B/C类

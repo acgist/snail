@@ -66,7 +66,7 @@ public final class NatContext {
 	 */
 	public void init() {
 		LOGGER.info("初始化NAT服务");
-		if(NetUtils.localIPAddress(NetUtils.localHostAddress())) {
+		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp(); // 加锁
 			if(UpnpService.getInstance().useable()) {
@@ -79,7 +79,7 @@ public final class NatContext {
 			}
 		} else {
 			LOGGER.info("已是公网IP地址：忽略NAT设置");
-			SystemConfig.setExternalIpAddress(NetUtils.localHostAddress());
+			SystemConfig.setExternalIpAddress(NetUtils.LOCAL_HOST_ADDRESS);
 		}
 	}
 	
