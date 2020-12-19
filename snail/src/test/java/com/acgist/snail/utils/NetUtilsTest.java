@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,8 +20,8 @@ public class NetUtilsTest extends Performance {
 		this.log(NetUtils.longToIP(2130706433));
 		this.log(NetUtils.ipToLong("127.1.1.1"));
 		final String ipv6 = "fe80::f84b:bc3a:9556:683d";
-		final byte[] ipv6Bytes = NetUtils.bytesToIP(ipv6);
-		final String ipv6Value = NetUtils.ipToBytes(ipv6Bytes);
+		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6);
+		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
 		this.log(StringUtils.hex(ipv6Bytes));
 		this.log(ipv6Value);
 	}
@@ -53,7 +55,7 @@ public class NetUtilsTest extends Performance {
 
 	@Test
 	public void testLocalIPAddress() {
-		this.log(NetUtils.localHostAddress());
+		this.log(NetUtils.LOCAL_HOST_ADDRESS);
 		assertTrue(NetUtils.localIPAddress("10.0.0.0"));
 		assertTrue(NetUtils.localIPAddress("172.16.0.0"));
 		assertTrue(NetUtils.localIPAddress("192.168.0.0"));
@@ -83,9 +85,21 @@ public class NetUtilsTest extends Performance {
 			});
 			this.log("网卡：{}", networkInterfaces);
 		});
-		this.log(NetUtils.localHostName());
-		this.log(NetUtils.localHostAddress());
-		this.log(NetUtils.defaultNetworkInterface());
+	}
+	
+	@Test
+	public void testIPToBytes() {
+		final byte[] ipv4Bytes = NetUtils.ipToBytes("127.0.0.1");
+		final int ipv4 = NumberUtils.bytesToInt(ipv4Bytes);
+		final int ipv4Int = NetUtils.ipToInt("127.0.0.1");
+		this.log(ipv4);
+		this.log(NetUtils.intToIP(ipv4));
+		this.log(NetUtils.bytesToIP(ipv4Bytes));
+		assertEquals(ipv4, ipv4Int);
+		assertArrayEquals(NumberUtils.intToBytes(ipv4Int), ipv4Bytes);
+		final byte[] ipv6Bytes = NetUtils.ipToBytes("::1");
+		final String ipv6 = NetUtils.bytesToIP(ipv6Bytes);
+		this.log(ipv6);
 	}
 	
 	@Test

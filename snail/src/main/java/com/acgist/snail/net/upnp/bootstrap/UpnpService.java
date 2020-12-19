@@ -192,12 +192,11 @@ public final class UpnpService {
 		if(HTTPClient.StatusCode.INTERNAL_SERVER_ERROR.verifyCode(response)) {
 			return Status.MAPABLE;
 		}
-		final var mappingIp = UpnpResponse.parseGetSpecificPortMappingEntry(body);
-		final var localIp = NetUtils.localHostAddress();
-		if(localIp.equals(mappingIp)) {
+		final var mappingIP = UpnpResponse.parseGetSpecificPortMappingEntry(body);
+		if(NetUtils.LOCAL_HOST_ADDRESS.equals(mappingIP)) {
 			return Status.USEABLE;
 		} else {
-			LOGGER.debug("UPNP端口已被映射：{}-{}", mappingIp, portExt);
+			LOGGER.debug("UPNP端口已被映射：{}-{}", mappingIP, portExt);
 			return Status.DISABLE;
 		}
 	}
@@ -218,9 +217,8 @@ public final class UpnpService {
 		if(!this.available) {
 			return false;
 		}
-		final var address = NetUtils.localHostAddress();
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
-		final var xml = upnpRequest.buildAddPortMapping(port, address, portExt, protocol);
+		final var xml = upnpRequest.buildAddPortMapping(port, NetUtils.LOCAL_HOST_ADDRESS, portExt, protocol);
 		final var client = HTTPClient.newInstance(this.controlUrl);
 		final var response = client
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")

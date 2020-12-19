@@ -34,7 +34,6 @@ import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>系统上下文</p>
@@ -167,10 +166,6 @@ public final class SystemContext {
 		LOGGER.info("用户主目录：{}", System.getProperty("user.home"));
 		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
-		final String localHostName = NetUtils.localHostName();
-		final String localHostAddress = NetUtils.localHostAddress();
-		LOGGER.info("本机名称：{}", localHostName);
-		LOGGER.info("本机地址：{}", localHostAddress);
 	}
 
 	/**

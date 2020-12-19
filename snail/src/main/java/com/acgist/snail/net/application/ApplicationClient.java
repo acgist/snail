@@ -27,7 +27,7 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	
 	@Override
 	public boolean connect() {
-		return this.connect(NetUtils.LOCAL_IP, SystemConfig.getServicePort());
+		return this.connect(NetUtils.LOOPBACK_HOST_ADDRESS, SystemConfig.getServicePort());
 	}
 	
 	/**

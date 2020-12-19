@@ -22,7 +22,7 @@ public class UpnpClientTest extends Performance {
 		UpnpRequest request = UpnpRequest.newRequest("urn:schemas-upnp-org:service:WANIPConnection:1");
 //		String xml = request.buildGetExternalIPAddress();
 //		String xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.Type.TCP);
-		String xml = request.buildAddPortMapping(8080, NetUtils.localHostAddress(), 8080, Protocol.Type.TCP);
+		String xml = request.buildAddPortMapping(8080, NetUtils.LOCAL_HOST_ADDRESS, 8080, Protocol.Type.TCP);
 		this.log(xml);
 	}
 	

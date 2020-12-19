@@ -270,7 +270,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	private void buildSelectSystemStatistics() {
 		final VBox systemInfo = new VBox(
-			this.buildSystemText("本机IP", NetUtils.localHostAddress()),
+			this.buildSystemText("本机IP", NetUtils.LOCAL_HOST_ADDRESS),
 			this.buildSystemText("外网IP", SystemConfig.getExternalIpAddress()),
 			this.buildSystemText("外网端口", SystemConfig.getTorrentPortExt()),
 			this.buildSystemText("内网穿透", NatContext.getInstance().type()),
