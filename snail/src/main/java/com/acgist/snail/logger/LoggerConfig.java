@@ -30,6 +30,9 @@ public final class LoggerConfig {
 		INSTANCE.init();
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private LoggerConfig() {
 		Properties properties = null;
 		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), SystemConfig.DEFAULT_CHARSET)) {
@@ -62,11 +65,11 @@ public final class LoggerConfig {
 	 */
 	private String fileName;
 	/**
-	 * <p>文件日志缓存</p>
+	 * <p>文件日志缓存（byte）</p>
 	 */
 	private int fileBuffer;
 	/**
-	 * <p>文件日志最大备份时间</p>
+	 * <p>文件日志最大备份时间（天）</p>
 	 */
 	private int fileMaxDays;
 	
@@ -92,29 +95,27 @@ public final class LoggerConfig {
 	}
 	
 	/**
+	 * <p>获取日志级别</p>
+	 * 
+	 * @return 日志级别
+	 */
+	public static final int getLevelInt() {
+		final Level[] levels = Level.values();
+		for (Level level : levels) {
+			if(level.name().equalsIgnoreCase(getLevel())) {
+				return level.toInt();
+			}
+		}
+		return Level.DEBUG.toInt(); // 默认级别
+	}
+	
+	/**
 	 * <p>获取日志系统名称</p>
 	 * 
 	 * @return 日志系统名称
 	 */
 	public static final String getSystem() {
 		return INSTANCE.system;
-	}
-
-	/**
-	 * <p>获取日志级别（数字）</p>
-	 * 
-	 * @return 日志级别（数字）
-	 */
-	public static final int getLevelInt() {
-		int value = Level.DEBUG.toInt(); // 默认级别
-		final Level[] levels = Level.values();
-		for (Level level : levels) {
-			if(level.name().equalsIgnoreCase(getLevel())) {
-				value = level.toInt();
-				break;
-			}
-		}
-		return value;
 	}
 	
 	/**
@@ -136,18 +137,18 @@ public final class LoggerConfig {
 	}
 
 	/**
-	 * <p>获取文件日志缓存</p>
+	 * <p>获取文件日志缓存（byte）</p>
 	 * 
-	 * @return 文件日志缓存
+	 * @return 文件日志缓存（byte）
 	 */
 	public static final int getFileBuffer() {
 		return INSTANCE.fileBuffer;
 	}
 
 	/**
-	 * <p>获取文件日志最大备份时间</p>
+	 * <p>获取文件日志最大备份时间（天）</p>
 	 * 
-	 * @return 文件日志最大备份时间
+	 * @return 文件日志最大备份时间（天）
 	 */
 	public static final int getFileMaxDays() {
 		return INSTANCE.fileMaxDays;
