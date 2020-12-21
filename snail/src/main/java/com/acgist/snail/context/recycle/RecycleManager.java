@@ -25,24 +25,18 @@ public final class RecycleManager {
 	
 	static {
 		final SystemType systemType = SystemType.local();
-		if(systemType == null) {
-			LOGGER.warn("系统不支持回收站");
-			BUILDER = null;
+		LOGGER.info("初始化回收站：{}", systemType);
+		if(systemType == SystemType.WINDOWS) {
+			BUILDER = WindowsRecycle::new;
 		} else {
-			LOGGER.info("初始化回收站：{}", systemType);
-			switch (systemType) {
-			case WINDOWS:
-				BUILDER = path -> new WindowsRecycle(path);
-				break;
-				// TODO：Mac、Linux
-			default:
-				LOGGER.warn("不支持回收站：{}", systemType);
-				BUILDER = null;
-				break;
-			}
+			LOGGER.warn("不支持回收站系统：{}", systemType);
+			BUILDER = null;
 		}
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private RecycleManager() {
 	}
 	
@@ -65,15 +59,16 @@ public final class RecycleManager {
 	 * 
 	 * @param filePath 文件路径
 	 * 
-	 * @return true-成功；false-失败；
+	 * @return 是否删除成功
 	 */
 	public static final boolean recycle(final String filePath) {
 		if(StringUtils.isEmpty(filePath)) {
-			LOGGER.warn("回收文件为空：{}", filePath);
+			LOGGER.warn("删除文件路径错误：{}", filePath);
 			return false;
 		}
 		final var recycle = RecycleManager.newInstance(filePath);
-		if(recycle == null) { // 不支持回收站
+		if(recycle == null) {
+			// 不支持回收站
 			return false;
 		}
 		return recycle.delete();
