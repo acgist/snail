@@ -112,4 +112,10 @@ public class FileUtilsTest extends Performance {
 		FileUtils.delete(folder.getAbsolutePath());
 	}
 	
+	@Test
+	public void testSystemSeparator() {
+		final String path = FileUtils.systemSeparator("c://temp\\temp//temp\\\\temp");
+		this.log(path);
+	}
+	
 }

@@ -109,6 +109,22 @@ public final class FileUtils {
 	}
 
 	/**
+	 * <p>统一路径分隔符为系统分隔符</p>
+	 * 
+	 * @param path 原始路径
+	 * 
+	 * @return 系统分隔符路径
+	 */
+	public static final String systemSeparator(String path) {
+		if(path == null) {
+			return path;
+		}
+		return path
+			.replace('/', File.separatorChar)
+			.replace('\\', File.separatorChar);
+	}
+	
+	/**
 	 * <p>递归删除文件</p>
 	 * 
 	 * @param file 文件

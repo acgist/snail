@@ -22,7 +22,7 @@ public abstract class Recycle {
 	protected final File file;
 	
 	/**
-	 * @param path 删除文件路径
+	 * @param path 文件路径
 	 */
 	protected Recycle(String path) {
 		if(StringUtils.isEmpty(path)) {
@@ -35,7 +35,7 @@ public abstract class Recycle {
 	/**
 	 * <p>删除文件</p>
 	 * 
-	 * @return true-成功；false-失败；
+	 * @return 是否删除成功
 	 */
 	public abstract boolean delete();
 
