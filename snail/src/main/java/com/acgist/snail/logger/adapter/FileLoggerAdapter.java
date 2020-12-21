@@ -25,7 +25,7 @@ import com.acgist.snail.logger.LoggerConfig;
 public final class FileLoggerAdapter extends LoggerAdapter {
 
 	/**
-	 * <p>适配器名称</p>
+	 * <p>文件适配器名称</p>
 	 */
 	public static final String ADAPTER = "file";
 	
