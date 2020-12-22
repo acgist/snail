@@ -57,7 +57,7 @@ public final class NumberUtils {
 			}
 			NumberUtils.index = index;
 		}
-		builder.append(DateUtils.dateToString(new Date(), "HHmm"));
+		builder.append(DateUtils.dateFormat(new Date(), "HHmm"));
 		return Integer.valueOf(builder.toString());
 	}
 	/**

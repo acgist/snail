@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
@@ -13,6 +12,7 @@ import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
 import com.acgist.snail.context.LoggerContext;
+import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>日志工具</p>
@@ -21,13 +21,6 @@ import com.acgist.snail.context.LoggerContext;
  */
 public final class Logger implements org.slf4j.Logger {
 
-	/**
-	 * <p>时间格式工厂</p>
-	 */
-	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(
-		() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-	);
-	
 	/**
 	 * <p>日志级别</p>
 	 */
@@ -82,7 +75,7 @@ public final class Logger implements org.slf4j.Logger {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("[").append(this.system).append("] ")
-			.append(FORMATER.get().format(new Date())).append(" [")
+			.append(DateUtils.localDateTimeFormat(LocalDateTime.now())).append(" [")
 			.append(Thread.currentThread().getName()).append("] ")
 			.append(level.name()).append(" ")
 			.append(this.name).append(" ")
