@@ -93,7 +93,7 @@ public final class Logger implements org.slf4j.Logger {
 	}
 
 	/**
-	 * <p>日志输出</p>
+	 * <p>输出日志</p>
 	 * 
 	 * @param level 级别
 	 * @param message 日志

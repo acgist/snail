@@ -30,6 +30,11 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public final class TaskSession implements ITaskSession {
+	
+	/**
+	 * <p>时间格式</p>
+	 */
+	private static final String PATTERN = "yyyy-MM-dd HH:mm";
 
 	/**
 	 * <p>下载器</p>
@@ -188,7 +193,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.entity.getCreateDate() == null) {
 			return "-";
 		} else {
-			return DateUtils.dateFormat(this.entity.getCreateDate());
+			return DateUtils.dateFormat(this.entity.getCreateDate(), PATTERN);
 		}
 	}
 	
@@ -211,7 +216,7 @@ public final class TaskSession implements ITaskSession {
 				return "-";
 			}
 		} else {
-			return DateUtils.dateFormat(this.entity.getEndDate());
+			return DateUtils.dateFormat(this.entity.getEndDate(), PATTERN);
 		}
 	}
 	

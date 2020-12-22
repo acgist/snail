@@ -1,4 +1,4 @@
-package com.acgist.snail.context.logger;
+package com.acgist.snail.logger;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
