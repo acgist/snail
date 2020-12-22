@@ -76,7 +76,8 @@ public final class UpnpService {
 	 */
 	private volatile boolean useable = false;
 	/**
-	 * <p>是否已经设置控制连接</p>
+	 * <p>是否可用</p>
+	 * <p>控制连接是否已经设置</p>
 	 */
 	private volatile boolean available = false;
 	/**
@@ -252,7 +253,6 @@ public final class UpnpService {
 	
 	/**
 	 * <p>映射端口</p>
-	 * <p>如果处于多重路由环境不映射</p>
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -264,7 +264,8 @@ public final class UpnpService {
 			this.remapping = false;
 			final String externalIpAddress = this.getExternalIPAddress();
 			if(NetUtils.localIPAddress(externalIpAddress)) {
-				LOGGER.warn("UPNP端口映射失败：外网IP地址为内网地址");
+				// 获取的公网IP地址为内网地址：多重路由环境
+				LOGGER.warn("UPNP端口映射失败：多重路由环境");
 			} else {
 				SystemConfig.setExternalIpAddress(externalIpAddress);
 				this.addMapping();
@@ -277,8 +278,6 @@ public final class UpnpService {
 	 */
 	public void release() {
 		if(this.useable && this.available) {
-			this.useable = false;
-			this.available = false;
 			try {
 				final boolean udpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
 				final boolean tcpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
@@ -286,6 +285,9 @@ public final class UpnpService {
 			} catch (NetException e) {
 				LOGGER.error("释放UPNP端口异常", e);
 			}
+			// 必须释放端口后才能修改状态
+			this.useable = false;
+			this.available = false;
 		}
 	}
 	
