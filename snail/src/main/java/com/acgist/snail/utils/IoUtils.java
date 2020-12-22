@@ -1,7 +1,5 @@
 package com.acgist.snail.utils;
 
-import java.io.Closeable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,7 @@ public final class IoUtils {
 	 * 
 	 * @param closeable Closeable
 	 */
-	public static final void close(Closeable closeable) {
+	public static final void close(AutoCloseable closeable) {
 		try {
 			if(closeable != null) {
 				closeable.close();
