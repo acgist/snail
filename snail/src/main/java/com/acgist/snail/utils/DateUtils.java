@@ -1,8 +1,9 @@
 package com.acgist.snail.utils;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import com.acgist.snail.config.SystemConfig;
@@ -24,6 +25,10 @@ public final class DateUtils {
 	 * <p>默认时间格式：{@value}</p>
 	 */
 	public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	/**
+	 * <p>时间格式工具</p>
+	 */
+	private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_PATTERN);
 	/**
 	 * <p>Unix和Java时间戳倍数：{@value}</p>
 	 */
@@ -87,29 +92,60 @@ public final class DateUtils {
 	 * 
 	 * @return 格式化字符串
 	 * 
-	 * @see #dateToString(Date, String)
+	 * @see #dateFormat(Date, String)
 	 */
-	public static final String dateToString(Date date) {
-		return dateToString(date, DEFAULT_PATTERN);
+	public static final String dateFormat(Date date) {
+		return dateFormat(date, DEFAULT_PATTERN);
 	}
 	
 	/**
 	 * <p>时间格式化</p>
 	 * 
 	 * @param date 时间
-	 * @param pattern 格式，为空默认：{@value #DEFAULT_PATTERN}
+	 * @param pattern 格式（为空默认：{@value #DEFAULT_PATTERN}）
 	 * 
 	 * @return 格式化字符串
 	 */
-	public static final String dateToString(Date date, String pattern) {
+	public static final String dateFormat(Date date, String pattern) {
 		if(date == null) {
 			return null;
 		}
-		if(pattern == null) {
-			pattern = DEFAULT_PATTERN;
+		return localDateTimeFormat(LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()), pattern);
+	}
+	
+	/**
+	 * <p>时间格式化</p>
+	 * <p>默认格式：{@value #DEFAULT_PATTERN}</p>
+	 * 
+	 * @param localDateTime 时间
+	 * 
+	 * @return 格式化字符串
+	 * 
+	 * @see #localDateTimeFormat(LocalDateTime, String)
+	 */
+	public static final String localDateTimeFormat(LocalDateTime localDateTime) {
+		return localDateTimeFormat(localDateTime, DEFAULT_PATTERN);
+	}
+	
+	/**
+	 * <p>时间格式化</p>
+	 * 
+	 * @param localDateTime 时间
+	 * @param pattern 格式（为空默认：{@value #DEFAULT_PATTERN}）
+	 * 
+	 * @return 格式化字符串
+	 */
+	public static final String localDateTimeFormat(LocalDateTime localDateTime, String pattern) {
+		if(localDateTime == null) {
+			return null;
 		}
-		final SimpleDateFormat formater = new SimpleDateFormat(pattern);
-		return formater.format(date);
+		DateTimeFormatter formatter;
+		if(DEFAULT_PATTERN.equals(pattern) || pattern == null) {
+			formatter = DEFAULT_FORMATTER;
+		} else {
+			formatter = DateTimeFormatter.ofPattern(pattern);
+		}
+		return formatter.format(localDateTime);
 	}
 	
 	/**

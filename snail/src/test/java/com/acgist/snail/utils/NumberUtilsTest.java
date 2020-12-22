@@ -1,5 +1,7 @@
 package com.acgist.snail.utils;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,12 @@ import com.acgist.snail.config.SystemConfig;
 
 public class NumberUtilsTest extends Performance {
 
+	@Test
+	public void testBuild() {
+		this.log(NumberUtils.build());
+		assertNotNull(NumberUtils.build());
+	}
+	
 	@Test
 	public void testUnsigned() {
 		var random = NumberUtils.random();

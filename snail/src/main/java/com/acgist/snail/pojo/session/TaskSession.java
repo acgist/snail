@@ -1,7 +1,6 @@
 package com.acgist.snail.pojo.session;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +30,6 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public final class TaskSession implements ITaskSession {
-
-	/**
-	 * <p>时间格式工厂</p>
-	 */
-	private static final ThreadLocal<SimpleDateFormat> FORMATER = ThreadLocal.withInitial(
-		() -> new SimpleDateFormat("yyyy-MM-dd HH:mm")
-	);
 
 	/**
 	 * <p>下载器</p>
@@ -196,7 +188,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.entity.getCreateDate() == null) {
 			return "-";
 		} else {
-			return FORMATER.get().format(this.entity.getCreateDate());
+			return DateUtils.dateFormat(this.entity.getCreateDate());
 		}
 	}
 	
@@ -219,7 +211,7 @@ public final class TaskSession implements ITaskSession {
 				return "-";
 			}
 		} else {
-			return FORMATER.get().format(this.entity.getEndDate());
+			return DateUtils.dateFormat(this.entity.getEndDate());
 		}
 	}
 	
