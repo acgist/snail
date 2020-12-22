@@ -68,17 +68,11 @@ public final class LoggerContext implements ILoggerFactory {
 	
 	@Override
 	public org.slf4j.Logger getLogger(String name) {
-		Logger logger = this.loggers.get(name);
-		if(logger != null) {
-			return logger;
-		}
-		logger = new Logger(name);
-		this.loggers.put(name, logger);
-		return logger;
+		return this.loggers.computeIfAbsent(name, Logger::new);
 	}
 
 	/**
-	 * <p>日志输出</p>
+	 * <p>输出日志</p>
 	 * 
 	 * @param level 级别
 	 * @param message 日志
