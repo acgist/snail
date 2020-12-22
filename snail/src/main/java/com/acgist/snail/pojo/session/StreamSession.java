@@ -11,7 +11,6 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>数据流信息</p>
- * <p>如果长时间没有数据流交互关闭数据流中断任务</p>
  * 
  * @author acgist
  */
@@ -30,7 +29,7 @@ public final class StreamSession {
 	private static final long LIVE_TIME_FAST = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
-	 * <p>输入流</p>
+	 * <p>数据流</p>
 	 */
 	private final InputStream input;
 	/**
@@ -39,7 +38,7 @@ public final class StreamSession {
 	private volatile long heartbeatTime;
 
 	/**
-	 * @param input 输入流
+	 * @param input 数据流
 	 */
 	public StreamSession(InputStream input) {
 		this.input = input;
@@ -54,17 +53,17 @@ public final class StreamSession {
 	}
 
 	/**
-	 * <p>检查存活</p>
+	 * <p>检查是否存活</p>
 	 * 
-	 * @return true-存活；false-死亡；
+	 * @return 是否存活
 	 */
 	public boolean checkLive() {
 		return System.currentTimeMillis() - this.heartbeatTime <= LIVE_TIME;
 	}
 
 	/**
-	 * <p>快速检测存活</p>
-	 * <p>如果已经没有数据交互直接关闭数据流</p>
+	 * <p>快速检查是否存活</p>
+	 * <p>没有数据传输直接关闭数据流</p>
 	 */
 	public void fastCheckLive() {
 		if(System.currentTimeMillis() - this.heartbeatTime > LIVE_TIME_FAST) {
@@ -73,14 +72,14 @@ public final class StreamSession {
 	}
 	
 	/**
-	 * <p>关闭输入流</p>
+	 * <p>关闭数据流</p>
 	 */
 	public void close() {
 		try {
-			LOGGER.info("输入流没有数据传输：关闭输入流");
+			LOGGER.info("数据流没有数据传输：关闭数据流");
 			IoUtils.close(this.input);
 		} catch (Exception e) {
-			LOGGER.error("关闭输入流异常", e);
+			LOGGER.error("关闭数据流异常", e);
 		} finally {
 			StreamContext.getInstance().removeStreamSession(this);
 		}
