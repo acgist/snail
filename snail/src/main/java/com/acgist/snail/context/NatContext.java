@@ -34,11 +34,17 @@ public final class NatContext {
 	 */
 	public enum Type {
 		
-		/** UPNP */
+		/**
+		 * <p>UPNP</p>
+		 */
 		UPNP,
-		/** STUN */
+		/**
+		 * <p>STUN</p>
+		 */
 		STUN,
-		/** 没有使用内网穿透 */
+		/**
+		 * <p>没有使用内网穿透</p>
+		 */
 		NONE;
 		
 	}
@@ -49,15 +55,17 @@ public final class NatContext {
 	private static final int UPNP_TIMEOUT = SystemConfig.CONNECT_TIMEOUT_MILLIS;
 	
 	/**
+	 * <p>内网穿透类型</p>
+	 */
+	private Type type = Type.NONE;
+	/**
 	 * <p>UPNP等待锁</p>
 	 */
 	private final Object upnpLock = new Object();
 	
 	/**
-	 * <p>内网穿透类型</p>
+	 * <p>禁止创建实例</p>
 	 */
-	private Type type = Type.NONE;
-	
 	private NatContext() {
 	}
 	
@@ -68,7 +76,7 @@ public final class NatContext {
 		LOGGER.info("初始化NAT服务");
 		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
-			this.lockUpnp(); // 加锁
+			this.lockUpnp();
 			if(UpnpService.getInstance().useable()) {
 				LOGGER.info("UPNP映射成功");
 				this.type = Type.UPNP;
