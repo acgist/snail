@@ -115,6 +115,7 @@ public final class EntityContext {
 			});
 			LOGGER.debug("加载实体数量：{}-{}", this.taskEntities.size(), this.configEntities.size());
 		} catch (IOException | ClassNotFoundException e) {
+			// TODO：修复数据
 			LOGGER.error("加载实体异常", e);
 		} finally {
 			IoUtils.close(input);
@@ -131,11 +132,13 @@ public final class EntityContext {
 		try {
 			final File file = new File(ENTITY_FILE_PATH);
 			FileUtils.buildFolder(file, true);
-			if(output == null)
-			output = new ObjectOutputStream(new FileOutputStream(file));
+			if(output == null) {
+				output = new ObjectOutputStream(new FileOutputStream(file));
+			}
 			output.writeObject(list);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
 		}
 	}
 	
