@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import com.acgist.snail.pojo.ISpeedGetter;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.IStatisticsSessionGetter;
 import com.acgist.snail.pojo.session.StatisticsSession;
@@ -7,11 +8,11 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 /**
  * <p>系统统计</p>
  * <p>系统统计：累计下载、累计上传、速度采样</p>
- * <p>当前系统限制单个任务的速度，如果想要限制整个软件的速度，可以打开{@linkplain #statistics 系统全局统计}限速。</p>
+ * <p>系统只限制单个任务的速度，如果需要限制整个系统的速度，可以打开{@link #statistics}限速。</p>
  * 
  * @author acgist
  */
-public final class SystemStatistics implements IStatisticsSessionGetter {
+public final class SystemStatistics implements ISpeedGetter, IStatisticsSessionGetter {
 	
 	private static final SystemStatistics INSTANCE = new SystemStatistics();
 	
@@ -24,6 +25,9 @@ public final class SystemStatistics implements IStatisticsSessionGetter {
 	 */
 	private IStatisticsSession statistics;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private SystemStatistics() {
 		this.statistics = new StatisticsSession();
 	}
@@ -33,20 +37,12 @@ public final class SystemStatistics implements IStatisticsSessionGetter {
 		return this.statistics;
 	}
 	
-	/**
-	 * <p>获取上传速度</p>
-	 * 
-	 * @return 上传速度
-	 */
+	@Override
 	public long uploadSpeed() {
 		return this.statistics.uploadSpeed();
 	}
 	
-	/**
-	 * <p>获取下载速度</p>
-	 * 
-	 * @return 下载速度
-	 */
+	@Override
 	public long downloadSpeed() {
 		return this.statistics.downloadSpeed();
 	}

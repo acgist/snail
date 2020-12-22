@@ -1,0 +1,26 @@
+package com.acgist.snail.context;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.concurrent.CountDownLatch;
+
+import org.junit.jupiter.api.Test;
+
+import com.acgist.snail.utils.Performance;
+
+public class SystemThreadContextTest extends Performance {
+
+	@Test
+	public void testSystemThreadContext() throws InterruptedException {
+		final CountDownLatch latch = new CountDownLatch(1);
+		SystemThreadContext.submit(() -> {
+			latch.countDown();
+		});
+		latch.await();
+		assertEquals(0, latch.getCount());
+		final var executor = SystemThreadContext.newExecutor(2, 10, 100, 10, "ACGIST");
+		assertNotNull(executor);
+	}
+	
+}

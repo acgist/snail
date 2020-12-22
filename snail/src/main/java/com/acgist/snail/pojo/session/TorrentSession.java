@@ -434,7 +434,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>定时任务（不重复执行）</p>
+	 * <p>定时任务（单次执行）</p>
 	 * 
 	 * @param delay 延迟时间
 	 * @param unit 时间单位

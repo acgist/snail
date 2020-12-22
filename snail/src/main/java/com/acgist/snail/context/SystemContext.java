@@ -57,13 +57,21 @@ public final class SystemContext {
 	 */
 	public enum SystemType {
 		
-		/** Mac */
+		/**
+		 * <p>Mac</p>
+		 */
 		MAC("Mac OS", "Mac OS X"),
-		/** Linux */
+		/**
+		 * <p>Linux</p>
+		 */
 		LINUX("Linux"),
-		/** Windows */
+		/**
+		 * <p>Windows</p>
+		 */
 		WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10"),
-		/** Android */
+		/**
+		 * <p>Android</p>
+		 */
 		ANDROID("Android");
 		
 		/**
@@ -79,9 +87,9 @@ public final class SystemContext {
 		}
 
 		/**
-		 * <p>获取当前系统</p>
+		 * <p>获取当前系统类型</p>
 		 * 
-		 * @return 当前系统
+		 * @return 当前系统类型
 		 */
 		public static final SystemType local() {
 			final String osName = SystemContext.osName();
@@ -107,13 +115,16 @@ public final class SystemContext {
 	 */
 	private volatile boolean available = true;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private SystemContext() {
 		this.osName = System.getProperty("os.name");
 	}
 	
 	/**
 	 * <p>开启系统监听</p>
-	 * <p>启动检测：开启监听失败表示已经启动了一个系统实例，发送消息唤醒之前的实例窗口。</p>
+	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
 	 * 
 	 * @return 是否监听成功
 	 */
@@ -131,9 +142,9 @@ public final class SystemContext {
 	 */
 	public static final void init() {
 		LOGGER.info("系统初始化");
-		// 同步
+		// 同步初始化
 		DatabaseInitializer.newInstance().sync(); // 数据库必须优先同步初始化
-		// 异步
+		// 异步初始化
 		ConfigInitializer.newInstance().asyn();
 		ProtocolInitializer.newInstance().asyn();
 		NatInitializer.newInstance().asyn();
@@ -155,7 +166,7 @@ public final class SystemContext {
 		LOGGER.info("操作系统可用处理器数量：{}", runtime.availableProcessors());
 		LOGGER.info("Java版本：{}", System.getProperty("java.version"));
 		LOGGER.info("Java主目录：{}", System.getProperty("java.home"));
-		LOGGER.info("Java包目录：{}", System.getProperty("java.library.path"));
+		LOGGER.info("Java库目录：{}", System.getProperty("java.library.path"));
 		LOGGER.info("虚拟机名称：{}", System.getProperty("java.vm.name"));
 		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
 		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());
@@ -163,14 +174,16 @@ public final class SystemContext {
 		LOGGER.info("虚拟机空闲内存：{}", freeMemory);
 		LOGGER.info("虚拟机已用内存：{}", totalMemory);
 		LOGGER.info("虚拟机最大内存：{}", maxMemory);
-		LOGGER.info("用户主目录：{}", System.getProperty("user.home"));
-		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
+		LOGGER.info("用户目录：{}", System.getProperty("user.home"));
+		LOGGER.info("工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
 	}
 
 	/**
 	 * <p>系统关闭</p>
-	 * <p>创建的所有线程均是守护线程，所以可以不用手动关闭。</p>
+	 * <p>所有线程都是守护线程，所以可以不用手动关闭。</p>
+	 * 
+	 * @see SystemThreadContext
 	 */
 	public static final void shutdown() {
 		if(SystemContext.available()) {

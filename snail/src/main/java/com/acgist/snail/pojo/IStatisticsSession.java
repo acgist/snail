@@ -5,7 +5,7 @@ package com.acgist.snail.pojo;
  * 
  * @author acgist
  */
-public interface IStatisticsSession {
+public interface IStatisticsSession extends ISpeedGetter {
 
 	/**
 	 * <p>统计上传数据</p>
@@ -35,20 +35,6 @@ public interface IStatisticsSession {
 	 * @param buffer 下载数据大小
 	 */
 	void downloadLimit(int buffer);
-	
-	/**
-	 * <p>获取上传速度</p>
-	 * 
-	 * @return 上传速度
-	 */
-	long uploadSpeed();
-	
-	/**
-	 * <p>获取下载速度</p>
-	 * 
-	 * @return 下载速度
-	 */
-	long downloadSpeed();
 	
 	/**
 	 * <p>获取累计上传大小</p>

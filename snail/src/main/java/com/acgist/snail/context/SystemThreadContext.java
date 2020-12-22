@@ -18,6 +18,7 @@ import com.acgist.snail.context.exception.TimerException;
 
 /**
  * <p>系统线程上下文</p>
+ * <p>所有线程都是守护线程</p>
  * 
  * @author acgist
  */
@@ -25,29 +26,53 @@ public final class SystemThreadContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
-	/** 系统线程 */
+	/**
+	 * <p>系统线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD = "Snail-Thread";
-	/** BT线程 */
+	/**
+	 * <p>BT线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
-	/** HLS线程 */
+	/**
+	 * <p>HLS线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_HLS = SNAIL_THREAD + "-HLS";
-	/** 定时线程 */
+	/**
+	 * <p>定时线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
-	/** BT定时线程 */
+	/**
+	 * <p>BT定时线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD_BT + "-Timer";
-	/** JavaFX平台线程 */
+	/**
+	 * <p>JavaFX平台线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
-	/** UTP队列线程 */
+	/**
+	 * <p>UTP队列线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_UTP_QUEUE = SNAIL_THREAD + "-UTP-Queue";
-	/** 下载器线程 */
+	/**
+	 * <p>下载器线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
-	/** TCP客户端线程 */
+	/**
+	 * <p>TCP客户端线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
-	/** TCP服务端线程 */
+	/**
+	 * <p>TCP服务端线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
-	/** UDP服务端线程 */
+	/**
+	 * <p>UDP服务端线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
-	/** HTTP客户端线程 */
+	/**
+	 * <p>HTTP客户端线程：{@value}</p>
+	 */
 	public static final String SNAIL_THREAD_HTTP_CLIENT = SNAIL_THREAD + "-HTTP-Client";
 	
 	/**
@@ -60,11 +85,14 @@ public final class SystemThreadContext {
 	private static final ScheduledExecutorService EXECUTOR_TIMER;
 	
 	static {
-		LOGGER.info("启动系统线程池");
+		LOGGER.info("初始化系统线程池");
 		EXECUTOR = newExecutor(4, 20, 100, 60L, SNAIL_THREAD);
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private SystemThreadContext() {
 	}
 	
@@ -78,7 +106,7 @@ public final class SystemThreadContext {
 	}
 
 	/**
-	 * <p>定时任务（不重复执行）</p>
+	 * <p>定时任务（单次执行）</p>
 	 * 
 	 * @param delay 延迟时间
 	 * @param unit 时间单位
@@ -171,7 +199,7 @@ public final class SystemThreadContext {
 	 * @param corePoolSize 初始线程数量
 	 * @param name 线程池名称
 	 * 
-	 * @return 线程池
+	 * @return 定时线程池
 	 */
 	public static final ScheduledExecutorService newTimerExecutor(int corePoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
@@ -249,7 +277,7 @@ public final class SystemThreadContext {
 	/**
 	 * <p>关闭定时任务</p>
 	 * 
-	 * @param scheduledFuture 定时线程池
+	 * @param scheduledFuture 定时任务
 	 */
 	public static final void shutdown(ScheduledFuture<?> scheduledFuture) {
 		shutdown(false, scheduledFuture);
@@ -258,7 +286,7 @@ public final class SystemThreadContext {
 	/**
 	 * <p>关闭定时任务（立即关闭）</p>
 	 * 
-	 * @param scheduledFuture 定时线程池
+	 * @param scheduledFuture 定时任务
 	 */
 	public static final void shutdownNow(ScheduledFuture<?> scheduledFuture) {
 		shutdown(true, scheduledFuture);
@@ -270,7 +298,7 @@ public final class SystemThreadContext {
 	 * <p>正常关闭：正在运行的任务不会取消执行</p>
 	 * 
 	 * @param closeNow 是否立即关闭
-	 * @param scheduledFuture 定时线程池
+	 * @param scheduledFuture 定时任务
 	 */
 	private static final void shutdown(boolean closeNow, ScheduledFuture<?> scheduledFuture) {
 		if(scheduledFuture == null || scheduledFuture.isCancelled()) {
