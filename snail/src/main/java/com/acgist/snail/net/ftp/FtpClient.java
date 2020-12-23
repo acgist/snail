@@ -191,7 +191,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 		<th>内容</th><th>释义</th>
 	 * 	</tr>
 	 * 	<tr>
-	 * 		<td colspan="2">04-08-14  03:09PM                  403 readme.txt</td>
+	 * 		<td colspan="2">04-08-14 03:09PM 403 SnailLauncher.exe</td>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>04-08-14</td><td>创建日期</td>
@@ -222,6 +222,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			if(data == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
+			// 去掉多余空格
 			final String[] datas = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
