@@ -123,7 +123,9 @@ public class EntityContextTest extends Performance {
 		entity.setValue("测试");
 		EntityContext.getInstance().save(entity);
 		assertNotNull(EntityContext.getInstance().findConfig("acgist"));
-		EntityContext.getInstance().deleteConfig("acgist");
+		while(EntityContext.getInstance().findConfig("acgist") != null) {
+			EntityContext.getInstance().deleteConfig("acgist");
+		}
 		assertNull(EntityContext.getInstance().findConfig("acgist"));
 	}
 	
