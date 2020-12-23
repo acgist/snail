@@ -92,9 +92,9 @@ public final class MagnetProtocol extends Protocol {
 	 * <p>注意：一定要先检查磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
-	protected void release(boolean ok) {
-		super.release(ok);
-		if(!ok) {
+	protected void release(boolean success) {
+		super.release(success);
+		if(!success) {
 			// 清除种子信息
 			if(this.magnet != null) {
 				TorrentManager.getInstance().remove(this.magnet.getHash());

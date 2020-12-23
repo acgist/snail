@@ -128,12 +128,12 @@ public final class SystemContext {
 	 * @return 是否监听成功
 	 */
 	public static final boolean listen() {
-		final boolean ok = ApplicationServer.getInstance().listen();
-		if(!ok) {
+		final boolean success = ApplicationServer.getInstance().listen();
+		if(!success) {
 			LOGGER.info("已有系统实例：唤醒实例窗口");
 			ApplicationClient.notifyWindow();
 		}
-		return ok;
+		return success;
 	}
 	
 	/**

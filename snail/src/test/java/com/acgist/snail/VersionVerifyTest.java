@@ -18,15 +18,12 @@ import com.acgist.snail.utils.Performance;
 
 public class VersionVerifyTest extends Performance {
 
-	/**
-	 * <p>版本校验</p>
-	 */
 	@Test
 	public void testVerify() throws IOException {
 		final String basePath = "E:/gitee/snail/";
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
-		final String snailJavafxPomPath = basePath + "snail-javafx/pom.xml";
+		final String snailJavaFXPomPath = basePath + "snail-javafx/pom.xml";
 		final String builderConfigPath = basePath + "builder/config.bat";
 		final String launcherConfigPath = basePath + "SnailLauncher/src/snail.ini";
 		final String systemConfigPath = basePath + "snail/src/main/resources/config/system.properties";
@@ -36,8 +33,8 @@ public class VersionVerifyTest extends Performance {
 		assertEquals(parentPomVersion, acgistVersion);
 		final String snailPomVersion = xml(snailPomPath, "version");
 		assertEquals(parentPomVersion, snailPomVersion);
-		final String snailJavafxPomVersion = xml(snailJavafxPomPath, "version");
-		assertEquals(parentPomVersion, snailJavafxPomVersion);
+		final String snailJavaFXPomVersion = xml(snailJavaFXPomPath, "version");
+		assertEquals(parentPomVersion, snailJavaFXPomVersion);
 		final String builderConfigVersion = contain(builderConfigPath, acgistVersion);
 		assertEquals(parentPomVersion, builderConfigVersion);
 		final String launcherConfigVersion = contain(launcherConfigPath, acgistVersion);

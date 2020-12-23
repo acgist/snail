@@ -23,6 +23,9 @@ public final class DownloaderInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DownloaderInitializer() {
 	}
 	

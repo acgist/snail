@@ -14,7 +14,7 @@ public class WindowsRecycleTest extends Performance {
 
 	@Test
 	public void testDelete() throws IOException {
-		final String path = "E://" + System.currentTimeMillis() + ".txt";
+		final String path = "E://snail/" + System.currentTimeMillis() + ".txt";
 		final File file = new File(path);
 		file.createNewFile();
 		assertTrue(file.exists());

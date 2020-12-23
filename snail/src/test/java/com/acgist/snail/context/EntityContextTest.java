@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,9 +29,10 @@ public class EntityContextTest extends Performance {
 	}
 	
 	@Test
-	public void testLoadCosted() {
+	public void testCosted() {
 		this.costed(10000, () -> EntityContext.getInstance().load());
 		this.costed(10000, () -> EntityContext.getInstance().persistent());
+		assertNotNull(EntityContext.getInstance());
 	}
 
 	@Test
@@ -64,9 +66,7 @@ public class EntityContextTest extends Performance {
 	@Order(2)
 	public void testDeleteTask() {
 		final var list = new ArrayList<>(EntityContext.getInstance().allTask());
-		list.forEach(entity -> {
-			assertTrue(EntityContext.getInstance().delete(entity));
-		});
+		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
 	}
 	
 	@Test
@@ -98,35 +98,33 @@ public class EntityContextTest extends Performance {
 	@Order(5)
 	public void testDeleteConfig() {
 		final var list = new ArrayList<>(EntityContext.getInstance().allConfig());
-		list.forEach(entity -> {
-			assertTrue(EntityContext.getInstance().delete(entity));
-		});
+		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
 	}
 
 	@Test
 	@Order(6)
-	public void testFindConfig() {
+	public void testFindConfigByName() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
 		EntityContext.getInstance().save(entity);
-		final var config = EntityContext.getInstance().findConfig("acgist");
+		final var config = EntityContext.getInstance().findConfigByName("acgist");
 		assertNotNull(config);
 		this.log(config.getName() + "=" + config.getValue());
 	}
 	
 	@Test
 	@Order(7)
-	public void testDeleteConfigName() {
+	public void testDeleteConfigByName() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
 		EntityContext.getInstance().save(entity);
-		assertNotNull(EntityContext.getInstance().findConfig("acgist"));
-		while(EntityContext.getInstance().findConfig("acgist") != null) {
-			EntityContext.getInstance().deleteConfig("acgist");
+		assertNotNull(EntityContext.getInstance().findConfigByName("acgist"));
+		while(EntityContext.getInstance().findConfigByName("acgist") != null) {
+			EntityContext.getInstance().deleteConfigByName("acgist");
 		}
-		assertNull(EntityContext.getInstance().findConfig("acgist"));
+		assertNull(EntityContext.getInstance().findConfigByName("acgist"));
 	}
 	
 	@Test
@@ -135,17 +133,10 @@ public class EntityContextTest extends Performance {
 		EntityContext.getInstance().allConfig().forEach(this::log);
 		EntityContext.getInstance().mergeConfig("acgist", "1234");
 		EntityContext.getInstance().allConfig().forEach(this::log);
+		assertEquals("1234", EntityContext.getInstance().findConfigByName("acgist").getValue());
 		EntityContext.getInstance().mergeConfig("acgist", "4321");
 		EntityContext.getInstance().allConfig().forEach(this::log);
-	}
-	
-	@Test
-	@Order(9)
-	public void testPersistent() {
-		final TaskEntity taskEntity = new TaskEntity();
-		EntityContext.getInstance().save(taskEntity);
-		EntityContext.getInstance().persistent();
-		this.costed(10000, () -> EntityContext.getInstance().persistent());
+		assertEquals("4321", EntityContext.getInstance().findConfigByName("acgist").getValue());
 	}
 	
 }

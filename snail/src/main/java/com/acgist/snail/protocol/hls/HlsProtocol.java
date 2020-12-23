@@ -117,12 +117,12 @@ public final class HlsProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void release(boolean ok) {
-		if(ok) {
+	protected void release(boolean success) {
+		if(success) {
 			// 成功添加管理
 			HlsManager.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
 		}
-		super.release(ok);
+		super.release(success);
 		this.m3u8 = null;
 	}
 

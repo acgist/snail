@@ -21,6 +21,9 @@ public final class ProtocolInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private ProtocolInitializer() {
 	}
 	

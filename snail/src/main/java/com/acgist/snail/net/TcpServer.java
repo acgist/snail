@@ -86,21 +86,21 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	protected boolean listen(String host, int port) {
 		LOGGER.info("启动TCP服务端：{}", this.name);
-		boolean ok = true;
+		boolean success = true;
 		try {
 			this.server = AsynchronousServerSocketChannel.open(GROUP);
 			this.server.bind(NetUtils.buildSocketAddress(host, port));
 			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (Exception e) {
 			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
-			ok = false;
+			success = false;
 		}
-		if(ok) {
+		if(success) {
 //			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS); // 阻止线程关闭
 		} else {
 			close();
 		}
-		return ok;
+		return success;
 	}
 	
 	/**

@@ -48,14 +48,14 @@ public final class PeerDownloader extends PeerConnect {
 	 * @return 是否握手成功
 	 */
 	public boolean handshake() {
-		final boolean ok = this.connect();
-		if(ok) {
+		final boolean success = this.connect();
+		if(success) {
 			this.peerSubMessageHandler.handshake(this); // 发送握手消息
 		} else {
 			this.peerSession.fail(); // 记录失败次数
 		}
-		this.available = ok;
-		return ok;
+		this.available = success;
+		return success;
 	}
 	
 	/**

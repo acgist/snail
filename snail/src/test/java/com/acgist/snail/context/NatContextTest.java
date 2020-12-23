@@ -15,7 +15,7 @@ public class NatContextTest extends Performance {
 	public void testInit() {
 		NatContext.getInstance().init();
 		if(NatContext.getInstance().type() != Type.UPNP) {
-			ThreadUtils.sleep(5000);
+			ThreadUtils.sleep(2000);
 		}
 		assertNotNull(SystemConfig.getExternalIpAddress());
 		NatContext.getInstance().shutdown();

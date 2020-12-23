@@ -109,7 +109,7 @@ public interface IUdpChannel {
 	 * @throws NetException 网络异常
 	 */
 	default DatagramChannel buildUdpChannel(int port, String host, boolean reuse) throws NetException {
-		boolean ok = true;
+		boolean success = true;
 		DatagramChannel channel = null;
 		try {
 //			channel = DatagramChannel.open();
@@ -124,10 +124,10 @@ public interface IUdpChannel {
 //				channel.connect(NetUtils.buildSocketAddress(host, port)); // 连接：使用read、write方法
 			}
 		} catch (IOException e) {
-			ok = false;
+			success = false;
 			throw new NetException("创建UDP通道失败", e);
 		} finally {
-			if(ok) {
+			if(success) {
 				// 成功
 			} else {
 				IoUtils.close(channel);

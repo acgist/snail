@@ -68,16 +68,16 @@ public final class BuildController extends Controller implements Initializable {
 		if(StringUtils.isEmpty(url)) {
 			return;
 		}
-		boolean ok = true;
+		boolean success = true;
 		try {
 			// TODO：优化卡死现象
 			DownloaderManager.getInstance().newTask(url);
 		} catch (Exception e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
-			ok = false;
+			success = false;
 			Alerts.warn("下载失败", e.getMessage());
 		}
-		if(ok) {
+		if(success) {
 			this.cleanUrl();
 			BuildWindow.getInstance().hide();
 		}

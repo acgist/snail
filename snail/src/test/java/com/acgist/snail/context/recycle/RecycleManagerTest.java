@@ -15,12 +15,12 @@ public class RecycleManagerTest extends Performance {
 
 	@Test
 	public void testRecycleManager() {
-		assertNotNull(RecycleManager.newInstance("E:\\tmp.txt"));
+		assertNotNull(RecycleManager.newInstance("E://snail/tmp.txt"));
 	}
 	
 	@Test
 	public void testRecycle() throws IOException {
-		final String path = "E://" + System.currentTimeMillis() + ".txt";
+		final String path = "E://snail/" + System.currentTimeMillis() + ".txt";
 		final File file = new File(path);
 		file.createNewFile();
 		assertTrue(file.exists());

@@ -294,13 +294,13 @@ public abstract class PeerConnect {
 	 */
 	private void requests() {
 		LOGGER.debug("开始请求下载：{}", this.peerSession);
-		boolean ok = true;
-		while(ok) {
+		boolean success = true;
+		while(success) {
 			try {
-				ok = this.request();
+				success = this.request();
 			} catch (Exception e) {
 				LOGGER.error("Peer请求异常", e);
-				ok = false;
+				success = false;
 			}
 		}
 		this.completeLock.set(true); // 设置完成
@@ -375,8 +375,8 @@ public abstract class PeerConnect {
 			// 下载完成
 			if(this.downloadPiece.verify()) {
 				// 验证数据：保存数据
-				final boolean ok = this.torrentSession.write(this.downloadPiece);
-				if(ok) {
+				final boolean success = this.torrentSession.write(this.downloadPiece);
+				if(success) {
 					// 统计下载有效数据
 					this.statisticsSession.download(this.downloadPiece.getLength());
 				} else {

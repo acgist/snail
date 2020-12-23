@@ -153,13 +153,13 @@ public final class PeerDownloaderGroup {
 				break;
 			}
 			this.torrentSession.submit(() -> {
-				boolean ok = true; // 是否继续创建
+				boolean success = true; // 是否继续创建
 				try {
-					ok = this.buildPeerDownloader();
+					success = this.buildPeerDownloader();
 				} catch (Exception e) {
 					LOGGER.error("创建PeerDownloader异常", e);
 				} finally {
-					this.release(ok); // 释放信号量
+					this.release(success); // 释放信号量
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
@@ -191,8 +191,8 @@ public final class PeerDownloaderGroup {
 		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerDownloader peerDownloader = PeerDownloader.newInstance(peerSession, this.torrentSession);
-			final boolean ok = peerDownloader.handshake();
-			if(ok) {
+			final boolean success = peerDownloader.handshake();
+			if(success) {
 				peerSession.status(PeerConfig.STATUS_DOWNLOAD);
 				this.offer(peerDownloader);
 			} else {
@@ -268,8 +268,8 @@ public final class PeerDownloaderGroup {
 	 * @param peerDownloader PeerDownloader
 	 */
 	private void offer(PeerDownloader peerDownloader) {
-		final var ok = this.peerDownloaders.offer(peerDownloader);
-		if(!ok) {
+		final var success = this.peerDownloaders.offer(peerDownloader);
+		if(!success) {
 			LOGGER.warn("PeerDownloader丢失：{}", peerDownloader);
 		}
 	}

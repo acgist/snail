@@ -134,7 +134,11 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 					LOGGER.error("打开文件下载Socket异常：{}-{}", host, port, e);
 				}
 			}
-		} else if(StringUtils.startsWith(message, "150 ")) { // 打开下载文件连接
+		} else if(
+			StringUtils.startsWith(message, "125 ") ||
+			StringUtils.startsWith(message, "150 ")
+		) {
+			// 打开下载文件连接
 			if(this.inputSocket == null) {
 				throw new NetException("请切换到被动模式");
 			}

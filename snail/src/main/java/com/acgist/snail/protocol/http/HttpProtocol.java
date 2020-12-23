@@ -83,8 +83,8 @@ public final class HttpProtocol extends Protocol {
 	}
 	
 	@Override
-	protected void release(boolean ok) {
-		super.release(ok);
+	protected void release(boolean success) {
+		super.release(success);
 		this.httpHeaderWrapper = null;
 	}
 

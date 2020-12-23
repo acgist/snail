@@ -514,8 +514,8 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private void receiveProvidePadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收加密协议协商Padding）步骤：{}", this.step);
-		final boolean ok = this.msePaddingSync.sync(this.buffer);
-		if(ok) {
+		final boolean success = this.msePaddingSync.sync(this.buffer);
+		if(success) {
 			if(LOGGER.isDebugEnabled()) {
 				this.msePaddingSync.allPadding().forEach(bytes -> {
 					LOGGER.debug("加密握手（接收加密协议协商Padding）：{}", StringUtils.hex(bytes));
@@ -594,8 +594,8 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private void receiveConfirmPadding() throws PacketSizeException {
 		LOGGER.debug("加密握手（接收确认加密协议Padding）步骤：{}", this.step);
-		final boolean ok = this.msePaddingSync.sync(this.buffer);
-		if(ok) {
+		final boolean success = this.msePaddingSync.sync(this.buffer);
+		if(success) {
 			if(LOGGER.isDebugEnabled()) {
 				this.msePaddingSync.allPadding().forEach(bytes -> {
 					LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", StringUtils.hex(bytes));

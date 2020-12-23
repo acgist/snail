@@ -28,8 +28,8 @@ public class MSEPaddingSyncTest extends Performance {
 		buffer.put("UU34".getBytes());
 		buffer.flip();
 		
-		boolean ok = sync.sync(buffer);
-		this.log(ok);
+		boolean success = sync.sync(buffer);
+		this.log(success);
 		this.log(sync);
 		
 		ByteBuffer append = ByteBuffer.allocate(98);
@@ -37,24 +37,24 @@ public class MSEPaddingSyncTest extends Performance {
 		append.putShort((short) 0);
 		append.flip();
 		
-		ok = sync.sync(append);
-		this.log(ok);
+		success = sync.sync(append);
+		this.log(success);
 		this.log(sync);
 		
 //		ByteBuffer append = ByteBuffer.allocate(96);
 //		append.put("0".repeat(96).getBytes());
 //		append.flip();
 //		
-//		ok = sync.sync(append);
-//		this.log(ok);
+//		success = sync.sync(append);
+//		this.log(success);
 //		this.log(sync);
 //		
 //		ByteBuffer zero = ByteBuffer.allocate(2);
 //		zero.putShort((short) 0);
 //		zero.flip();
 //		
-//		ok = sync.sync(zero);
-//		this.log(ok);
+//		success = sync.sync(zero);
+//		this.log(success);
 //		this.log(sync);
 		
 		sync.allPadding().forEach(bytes -> {

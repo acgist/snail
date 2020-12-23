@@ -228,8 +228,8 @@ public final class TorrentStreamGroup {
 		// 异步等待加载完成
 		SystemThreadContext.submit(() -> {
 			try {
-				final var ok = sizeCount.await(DOWNLOAD_SIZE_TIMEOUT, TimeUnit.SECONDS);
-				if(ok) {
+				final var success = sizeCount.await(DOWNLOAD_SIZE_TIMEOUT, TimeUnit.SECONDS);
+				if(success) {
 					final var finishTime = System.currentTimeMillis(); // 结束时间
 					LOGGER.debug("{}-任务准备完成，消耗时间：{}", this.torrent.name(), (finishTime - startTime));
 					this.torrentSession.downloadSize(this.size());
@@ -339,11 +339,11 @@ public final class TorrentStreamGroup {
 	 * @see TorrentStream#write(TorrentPiece)
 	 */
 	public boolean write(TorrentPiece piece) {
-		boolean ok = false;
+		boolean success = false;
 		for (TorrentStream torrentStream : this.streams) {
 			// 不能跳出：可能存在一个Piece多个文件的情况
 			if(torrentStream.write(piece)) {
-				ok = true;
+				success = true;
 			}
 		}
 		// 判断是否刷出缓存
@@ -355,7 +355,7 @@ public final class TorrentStreamGroup {
 			}
 		}
 		// 保存成功发送have消息
-		if(ok) {
+		if(success) {
 			this.have(piece.getIndex());
 		}
 		if(LOGGER.isDebugEnabled()) {
@@ -364,7 +364,7 @@ public final class TorrentStreamGroup {
 				this.remainingPieceSize()
 			);
 		}
-		return ok;
+		return success;
 	}
 	
 	/**

@@ -15,6 +15,9 @@ public class DownloadConfigTest extends Performance {
 		assertNotNull(config);
 		assertNotEquals(0, DownloadConfig.getUploadBufferByte());
 		assertNotEquals(0, DownloadConfig.getDownloadBufferByte());
+		DownloadConfig.setBuffer(1024);
+		assertNotEquals(1024 / 4, DownloadConfig.getUploadBufferByte());
+		assertNotEquals(1024, DownloadConfig.getDownloadBufferByte());
 	}
 	
 }
