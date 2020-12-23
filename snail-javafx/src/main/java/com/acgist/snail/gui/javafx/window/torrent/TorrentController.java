@@ -127,7 +127,7 @@ public final class TorrentController extends Controller implements Initializable
 		this.taskSession.setSize(this.selectorManager.size());
 		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(list);
 		this.taskSession.setDescription(wrapper.serialize());
-		if(this.taskSession.getId() != null) { // 已经保存数据库
+		if(this.taskSession.getId() != null) { // 已经保存实体
 			boolean magnetToTorrent = false;
 			// 磁力链接转为BT任务
 			if(this.taskSession.getType() == Type.MAGNET) {

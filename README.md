@@ -89,7 +89,6 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 |软件|许可|
 |:--|:--|
-|[h2](http://www.h2database.com)|[MPL 2.0/EPL 1.0](http://www.h2database.com/html/license.html)|
 |[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX/Main)|[GPL 2.0](http://openjdk.java.net/legal/gplv2+ce.html)|
 

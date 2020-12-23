@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemStatistics;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.DownloaderManager;
@@ -18,7 +19,6 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
-import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -220,18 +220,16 @@ public final class TaskSession implements ITaskSession {
 		}
 	}
 	
-	//================数据库================//
+	//================实体操作================//
 	
 	@Override
 	public void update() {
-		final TaskRepository repository = new TaskRepository();
-		repository.update(this.entity);
+		EntityContext.getInstance().update(this.entity);
 	}
 	
 	@Override
 	public void delete() {
-		final TaskRepository repository = new TaskRepository();
-		repository.delete(this.entity);
+		EntityContext.getInstance().delete(this.entity);
 	}
 
 	@Override
@@ -243,8 +241,7 @@ public final class TaskSession implements ITaskSession {
 			this.entity.setEndDate(new Date()); // 设置完成时间
 		}
 		this.entity.setStatus(status);
-		final TaskRepository repository = new TaskRepository();
-		repository.update(this.entity);
+		EntityContext.getInstance().update(this.entity);
 		DownloaderManager.getInstance().refresh(); // 刷新下载
 		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 	}

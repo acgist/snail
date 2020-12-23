@@ -5,15 +5,15 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.repository.impl.ConfigRepository;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>下载配置</p>
- * <p>默认加载配置文件配置，如果数据库存在相同配置，则使用数据库配置覆盖。</p>
+ * <p>默认加载配置文件配置，如果实体存在相同配置，则使用实体配置覆盖。</p>
  * 
  * @author acgist
  */
@@ -84,7 +84,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	static {
 		LOGGER.debug("初始化下载配置：{}", DOWNLOAD_CONFIG);
 		INSTANCE.initFromProperties();
-		INSTANCE.initFromDatabase();
+		INSTANCE.initFromEntity();
 		INSTANCE.refreshUploadDownloadBuffer();
 		INSTANCE.refreshMemoryBuffer();
 		INSTANCE.logger();
@@ -151,22 +151,22 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>初始化配置：数据库</p>
+	 * <p>初始化配置：实体</p>
 	 */
-	private void initFromDatabase() {
-		final ConfigRepository configRepository = new ConfigRepository();
+	private void initFromEntity() {
+		final EntityContext entityContext = EntityContext.getInstance();
 		ConfigEntity entity = null;
-		entity = configRepository.findName(DOWNLOAD_PATH);
+		entity = entityContext.findConfig(DOWNLOAD_PATH);
 		this.path = this.getString(entity, this.path);
-		entity = configRepository.findName(DOWNLOAD_SIZE);
+		entity = entityContext.findConfig(DOWNLOAD_SIZE);
 		this.size = this.getInteger(entity, this.size);
-		entity = configRepository.findName(DOWNLOAD_NOTICE);
+		entity = entityContext.findConfig(DOWNLOAD_NOTICE);
 		this.notice = this.getBoolean(entity, this.notice);
-		entity = configRepository.findName(DOWNLOAD_BUFFER);
+		entity = entityContext.findConfig(DOWNLOAD_BUFFER);
 		this.buffer = this.getInteger(entity, this.buffer);
-		entity = configRepository.findName(DOWNLOAD_LAST_PATH);
+		entity = entityContext.findConfig(DOWNLOAD_LAST_PATH);
 		this.lastPath = this.getString(entity, this.lastPath);
-		entity = configRepository.findName(DOWNLOAD_MEMORY_BUFFER);
+		entity = entityContext.findConfig(DOWNLOAD_MEMORY_BUFFER);
 		this.memoryBuffer = this.getInteger(entity, this.memoryBuffer);
 	}
 	
@@ -193,8 +193,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.path = path;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_PATH, path);
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_PATH, path);
 	}
 	
 	/**
@@ -240,8 +239,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.size = size;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_SIZE, String.valueOf(size));
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_SIZE, String.valueOf(size));
 		// 刷新下载任务
 		DownloaderManager.getInstance().refresh();
 	}
@@ -266,8 +264,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.notice = notice;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_NOTICE, String.valueOf(notice));
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
 	}
 
 	/**
@@ -290,8 +287,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.buffer = buffer;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_BUFFER, String.valueOf(buffer));
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
 		// 刷新下载速度和上传速度
 		INSTANCE.refreshUploadDownloadBuffer();
 	}
@@ -342,8 +338,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.lastPath = lastPath;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_LAST_PATH, lastPath);
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_LAST_PATH, lastPath);
 	}
 	
 	/**
@@ -380,8 +375,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.memoryBuffer = memoryBuffer;
-		final ConfigRepository configRepository = new ConfigRepository();
-		configRepository.merge(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
 		// 刷新磁盘缓存
 		INSTANCE.refreshMemoryBuffer();
 	}

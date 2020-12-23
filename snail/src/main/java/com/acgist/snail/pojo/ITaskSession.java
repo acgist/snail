@@ -12,7 +12,7 @@ import com.acgist.snail.downloader.IDownloader;
  * 
  * @author acgist
  */
-public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionRepository, IStatisticsSessionGetter {
+public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITaskSessionHandler, IStatisticsSessionGetter {
 
 	/**
 	 * <p>任务状态</p>

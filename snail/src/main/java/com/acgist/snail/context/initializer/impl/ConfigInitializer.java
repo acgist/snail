@@ -3,7 +3,6 @@ package com.acgist.snail.context.initializer.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.PeerConfig;
@@ -40,7 +39,6 @@ public final class ConfigInitializer extends Initializer {
 		PeerConfig.getInstance();
 		SystemConfig.getInstance();
 		TrackerConfig.getInstance();
-		DatabaseConfig.getInstance();
 		DownloadConfig.getInstance();
 	}
 

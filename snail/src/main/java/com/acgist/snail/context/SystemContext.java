@@ -10,9 +10,9 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.initializer.impl.ConfigInitializer;
-import com.acgist.snail.context.initializer.impl.DatabaseInitializer;
 import com.acgist.snail.context.initializer.impl.DhtInitializer;
 import com.acgist.snail.context.initializer.impl.DownloaderInitializer;
+import com.acgist.snail.context.initializer.impl.EntityInitializer;
 import com.acgist.snail.context.initializer.impl.LocalServiceDiscoveryInitializer;
 import com.acgist.snail.context.initializer.impl.NatInitializer;
 import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
@@ -32,7 +32,6 @@ import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
-import com.acgist.snail.repository.DatabaseManager;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -143,7 +142,7 @@ public final class SystemContext {
 	public static final void init() {
 		LOGGER.info("系统初始化");
 		// 同步初始化
-		DatabaseInitializer.newInstance().sync(); // 数据库必须优先同步初始化
+		EntityInitializer.newInstance().sync();
 		// 异步初始化
 		ConfigInitializer.newInstance().asyn();
 		ProtocolInitializer.newInstance().asyn();
@@ -201,10 +200,10 @@ public final class SystemContext {
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				UtpRequestQueue.getInstance().shutdown();
-				DatabaseManager.getInstance().shutdown();
+				UtpRequestQueue.shutdown();
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
+				EntityContext.getInstance().persistent();
 				GuiManager.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");

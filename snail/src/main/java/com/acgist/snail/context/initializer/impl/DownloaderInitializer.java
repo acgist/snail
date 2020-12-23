@@ -5,13 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.repository.impl.TaskRepository;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -33,8 +33,8 @@ public final class DownloaderInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化下载器");
-		final TaskRepository repository = new TaskRepository();
-		final List<TaskEntity> list = repository.findAll();
+		final EntityContext entityContext = EntityContext.getInstance();
+		final List<TaskEntity> list = entityContext.allTask();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.forEach(entity -> {
 				try {
@@ -42,7 +42,7 @@ public final class DownloaderInitializer extends Initializer {
 					DownloaderManager.getInstance().submit(taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
-					repository.delete(entity);
+					entityContext.delete(entity);
 				}
 			});
 			// 刷新下载

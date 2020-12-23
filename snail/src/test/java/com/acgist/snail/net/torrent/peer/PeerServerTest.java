@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.config.DatabaseConfig;
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.initializer.impl.DatabaseInitializer;
+import com.acgist.snail.context.initializer.impl.EntityInitializer;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
@@ -24,13 +24,12 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>软件本身充当下载的客户端和服务端测试</p>
- * <p>客户端启动时需要修改端口和数据库</p>
  */
 public class PeerServerTest extends Performance {
 	
 	@Test
 	public void testServer() throws DownloadException {
-		DatabaseConfig.getInstance();
+		EntityContext.getInstance().load();
 		final var path = "e:/snail/12345.torrent";
 		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
@@ -53,12 +52,9 @@ public class PeerServerTest extends Performance {
 		this.pause();
 	}
 
-	/**
-	 * <p>测试时请修改端口和数据库配置</p>
-	 */
 	@Test
 	public void testClient() throws DownloadException {
-		DatabaseInitializer.newInstance().sync(); // 初始化数据库
+		EntityInitializer.newInstance().sync(); // 初始化实体
 		final var path = "e:/snail/12345.torrent"; // 种子文件
 		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
