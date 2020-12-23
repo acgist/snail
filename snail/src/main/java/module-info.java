@@ -39,20 +39,15 @@ open module com.acgist.snail {
 	exports com.acgist.snail.utils;
 	
 	//================Java================//
-	requires java.base; // 不能使用transitive修饰
+	requires java.base;
+	// XML依赖
 	requires transitive java.xml;
-	requires transitive java.naming;
-	requires transitive java.logging;
+	// HTTP依赖
 	requires transitive java.net.http;
-	requires transitive java.compiler;
-	requires transitive java.scripting;
-	requires transitive java.instrument;
-	requires transitive java.management;
-	requires transitive java.transaction.xa;
 	
 	//================JDK================//
+	// HTTP安全依赖：HTTPS
 	requires transitive jdk.crypto.ec;
-	requires transitive jdk.unsupported;
 	
 	//================依赖================//
 	requires transitive org.slf4j;

@@ -13,7 +13,14 @@ open module com.acgist.snail.javafx {
 	
 	//================Java================//
 	requires java.base;
+	// GUI依赖：AWT、Swing
 	requires transitive java.desktop;
+	// JavaFX依赖
+	requires transitive java.scripting;
+	
+	//================JDK================//
+	// JavaFX依赖
+	requires transitive jdk.unsupported;
 	
 	//================JavaFX================//
 	requires transitive javafx.fxml;

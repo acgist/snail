@@ -40,4 +40,4 @@ rem 启动器配置路径
 set launcherIni=%launcher%src\%ini%
 
 rem Java依赖模块
-set modules="java.xml,java.base,java.desktop,java.naming,java.compiler,java.logging,java.scripting,java.instrument,java.management,java.net.http,java.transaction.xa,jdk.crypto.ec,jdk.unsupported"
+set modules="java.base,java.xml,java.desktop,java.net.http,jdk.crypto.ec,java.scripting,jdk.unsupported"
