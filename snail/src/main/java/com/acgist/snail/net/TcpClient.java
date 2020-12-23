@@ -78,7 +78,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 * @return 连接状态
 	 */
 	protected boolean connect(final String host, final int port) {
-		boolean ok = true;
+		boolean success = true;
 		AsynchronousSocketChannel socket = null;
 		try {
 			socket = AsynchronousSocketChannel.open(GROUP);
@@ -92,19 +92,19 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		} catch (InterruptedException e) {
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
 			Thread.currentThread().interrupt();
-			ok = false;
+			success = false;
 		} catch (IOException | ExecutionException | TimeoutException e) {
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
-			ok = false;
+			success = false;
 		} finally {
-			if(ok) {
+			if(success) {
 				// 连接成功
 			} else {
 				IoUtils.close(socket);
 				this.handler.close();
 			}
 		}
-		return ok;
+		return success;
 	}
 	
 	@Override

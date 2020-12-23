@@ -354,18 +354,18 @@ public abstract class Protocol {
 	 */
 	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
 		this.url = url.trim();
-		boolean ok = true;
+		boolean success = true;
 		try {
 			this.buildTaskEntity();
 			return TaskSession.newInstance(this.taskEntity);
 		} catch (DownloadException e) {
-			ok = false;
+			success = false;
 			throw e;
 		} catch (Exception e) {
-			ok = false;
+			success = false;
 			throw new DownloadException("下载失败", e);
 		} finally {
-			this.release(ok);
+			this.release(success);
 		}
 	}
 
@@ -508,9 +508,9 @@ public abstract class Protocol {
 	/**
 	 * <p>释放资源</p>
 	 * 
-	 * @param ok 创建状态：true-成功；false-失败；
+	 * @param success 创建状态：true-成功；false-失败；
 	 */
-	protected void release(boolean ok) {
+	protected void release(boolean success) {
 		this.url = null;
 		this.taskEntity = null;
 	}

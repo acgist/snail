@@ -20,6 +20,9 @@ public final class ConfigInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private ConfigInitializer() {
 	}
 	

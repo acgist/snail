@@ -142,8 +142,8 @@ public final class EntityContext {
 		// 删除文件
 		if(SystemConfig.getTaskFileDelete()) {
 			final var file = entity.getFile();
-			final boolean ok = RecycleManager.recycle(file);
-			if(!ok) {
+			final boolean success = RecycleManager.recycle(file);
+			if(!success) {
 				LOGGER.debug("不支持回收站直接删除文件：{}", file);
 				FileUtils.delete(file);
 			}
@@ -193,7 +193,7 @@ public final class EntityContext {
 	 * 
 	 * @return 配置
 	 */
-	public ConfigEntity findConfig(String name) {
+	public ConfigEntity findConfigByName(String name) {
 		synchronized (this) {
 			return this.configEntities.stream()
 				.filter(entity -> entity.getName().equals(name))
@@ -210,8 +210,8 @@ public final class EntityContext {
 	 * 
 	 * @return 是否删除成功
 	 */
-	public boolean deleteConfig(String name) {
-		final ConfigEntity entity = this.findConfig(name);
+	public boolean deleteConfigByName(String name) {
+		final ConfigEntity entity = this.findConfigByName(name);
 		if(entity != null) {
 			return this.delete(entity.getId());
 		}
@@ -226,7 +226,7 @@ public final class EntityContext {
 	 * @param value 配置值
 	 */
 	public void mergeConfig(String name, String value) {
-		ConfigEntity entity = this.findConfig(name);
+		ConfigEntity entity = this.findConfigByName(name);
 		if(entity == null) {
 			entity = new ConfigEntity();
 			entity.setName(name);

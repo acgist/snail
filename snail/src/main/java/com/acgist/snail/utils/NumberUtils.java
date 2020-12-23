@@ -37,8 +37,9 @@ public final class NumberUtils {
 	
 	/**
 	 * <p>唯一编号索引</p>
+	 * <p>随机生成：防止一分钟内多次启动生成重复索引</p>
 	 */
-	private static int index = MIN_INDEX;
+	private static int index = (int) (System.currentTimeMillis() % (MAX_INDEX - MIN_INDEX) + MIN_INDEX);
 	
 	/**
 	 * <p>生成唯一编号</p>

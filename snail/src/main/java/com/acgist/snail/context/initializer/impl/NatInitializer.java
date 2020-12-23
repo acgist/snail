@@ -15,6 +15,9 @@ public final class NatInitializer extends Initializer {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NatInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private NatInitializer() {
 	}
 	

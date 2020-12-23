@@ -156,8 +156,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
 	 */
 	private void onGui() {
-		final boolean ok = GuiManager.getInstance().extendGuiMessageHandler(this);
-		if(ok) {
+		final boolean success = GuiManager.getInstance().extendGuiMessageHandler(this);
+		if(success) {
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} else {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));

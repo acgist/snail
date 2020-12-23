@@ -15,6 +15,9 @@ public final class EntityInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private EntityInitializer() {
 	}
 	

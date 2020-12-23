@@ -16,6 +16,9 @@ public final class DhtInitializer extends Initializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtInitializer.class);
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DhtInitializer() {
 	}
 	

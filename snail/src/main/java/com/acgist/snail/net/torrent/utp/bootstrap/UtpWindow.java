@@ -448,8 +448,8 @@ public final class UtpWindow {
 		try {
 			LOGGER.debug("信号量获取：{}", this.semaphore.availablePermits());
 //			this.semaphore.acquire();
-			final boolean ok = this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS);
-			if(!ok) {
+			final boolean success = this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS);
+			if(!success) {
 				LOGGER.debug("信号量获取失败");
 			}
 		} catch (InterruptedException e) {

@@ -197,8 +197,8 @@ public final class PeerUploaderGroup {
 	 * @param peerUploader PeerUploader
 	 */
 	private void offer(PeerUploader peerUploader) {
-		final var ok = this.peerUploaders.offer(peerUploader);
-		if(!ok) {
+		final var success = this.peerUploaders.offer(peerUploader);
+		if(!success) {
 			LOGGER.warn("PeerUploader丢失：{}", peerUploader);
 		}
 	}

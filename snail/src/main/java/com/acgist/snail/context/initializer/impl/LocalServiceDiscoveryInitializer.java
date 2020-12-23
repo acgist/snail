@@ -20,6 +20,9 @@ public final class LocalServiceDiscoveryInitializer extends Initializer {
 	 */
 	private static final int DELAY = 6;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private LocalServiceDiscoveryInitializer() {
 		super(DELAY); // 延迟启动
 	}

@@ -46,8 +46,8 @@ public final class ApplicationClient extends TcpClient<ApplicationMessageHandler
 	public static final void notifyWindow() {
 		final ApplicationClient client = ApplicationClient.newInstance();
 		try {
-			final boolean ok = client.connect();
-			if(ok) {
+			final boolean success = client.connect();
+			if(success) {
 				client.send(ApplicationMessage.message(ApplicationMessage.Type.NOTIFY));
 				client.send(ApplicationMessage.message(ApplicationMessage.Type.CLOSE));
 			}

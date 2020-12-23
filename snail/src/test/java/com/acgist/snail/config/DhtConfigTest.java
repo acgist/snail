@@ -1,10 +1,12 @@
 package com.acgist.snail.config;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
 public class DhtConfigTest extends Performance {
@@ -20,7 +22,7 @@ public class DhtConfigTest extends Performance {
 		NodeManager.getInstance().register();
 		NodeManager.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 2020);
 		config.persistent();
-		assertNotNull(config);
+		assertTrue(FileUtils.userDirFile("/config/bt.dht.properties").exists());
 	}
 	
 }

@@ -17,7 +17,7 @@ public class EntityInitializerTest extends Performance {
 	@Test
 	public void testCosted() {
 		final long costed = this.costed(100000, () -> EntityInitializer.newInstance().sync());
-		assertTrue(costed < 40000);
+		assertTrue(costed < 30000);
 	}
 	
 }

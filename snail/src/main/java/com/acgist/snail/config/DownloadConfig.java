@@ -156,17 +156,17 @@ public final class DownloadConfig extends PropertiesConfig {
 	private void initFromEntity() {
 		final EntityContext entityContext = EntityContext.getInstance();
 		ConfigEntity entity = null;
-		entity = entityContext.findConfig(DOWNLOAD_PATH);
+		entity = entityContext.findConfigByName(DOWNLOAD_PATH);
 		this.path = this.getString(entity, this.path);
-		entity = entityContext.findConfig(DOWNLOAD_SIZE);
+		entity = entityContext.findConfigByName(DOWNLOAD_SIZE);
 		this.size = this.getInteger(entity, this.size);
-		entity = entityContext.findConfig(DOWNLOAD_NOTICE);
+		entity = entityContext.findConfigByName(DOWNLOAD_NOTICE);
 		this.notice = this.getBoolean(entity, this.notice);
-		entity = entityContext.findConfig(DOWNLOAD_BUFFER);
+		entity = entityContext.findConfigByName(DOWNLOAD_BUFFER);
 		this.buffer = this.getInteger(entity, this.buffer);
-		entity = entityContext.findConfig(DOWNLOAD_LAST_PATH);
+		entity = entityContext.findConfigByName(DOWNLOAD_LAST_PATH);
 		this.lastPath = this.getString(entity, this.lastPath);
-		entity = entityContext.findConfig(DOWNLOAD_MEMORY_BUFFER);
+		entity = entityContext.findConfigByName(DOWNLOAD_MEMORY_BUFFER);
 		this.memoryBuffer = this.getInteger(entity, this.memoryBuffer);
 	}
 	

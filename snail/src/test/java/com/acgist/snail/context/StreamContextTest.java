@@ -29,7 +29,6 @@ public class StreamContextTest extends Performance {
 		assertTrue(session.checkLive());
 		this.costed(1, () -> {
 			ThreadUtils.sleep(40 * 1000);
-			this.log(session.checkLive());
 			assertFalse(session.checkLive());
 		});
 	}

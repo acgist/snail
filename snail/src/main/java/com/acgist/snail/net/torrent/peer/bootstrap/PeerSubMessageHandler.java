@@ -403,8 +403,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
 		buffer.get(peerId);
 		if(this.server) {
-			final boolean ok = this.initServer(infoHashHex, peerId);
-			if(ok) {
+			final boolean success = this.initServer(infoHashHex, peerId);
+			if(success) {
 				if(!this.handshakeSend) {
 					this.handshake((PeerDownloader) null);
 				}

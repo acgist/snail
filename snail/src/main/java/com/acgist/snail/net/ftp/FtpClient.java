@@ -1,7 +1,6 @@
 package com.acgist.snail.net.ftp;
 
 import java.io.InputStream;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -152,11 +151,13 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	
 	/**
 	 * <p>获取文件大小</p>
-	 * <p>返回格式：-rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe</p>
 	 * <table border="1">
-	 * 	<caption>FTP文件大小格式</caption>
+	 * 	<caption>FTP文件信息格式（UNIX）</caption>
 	 * 	<tr>
 	 * 		<th>内容</th><th>释义</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td colspan="2">-rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe</td>
 	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>-rwx------</td>
@@ -184,6 +185,27 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 		<td>SnailLauncher.exe</td><td>文件名称</td>
 	 * 	</tr>
 	 * </table>
+	 * <table border="1">
+	 * 	<caption>FTP文件信息格式（MS-DOS）</caption>
+	 * 	<tr>
+	 * 		<th>内容</th><th>释义</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td colspan="2">04-08-14  03:09PM                  403 readme.txt</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>04-08-14</td><td>创建日期</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>03:09PM</td><td>创建时间</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>403</td><td>文件大小</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>readme.txt</td><td>文件名称</td>
+	 * 	</tr>
+	 * </table>
 	 * 
 	 * @return 文件大小
 	 * 
@@ -200,15 +222,19 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 			if(data == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
-			final Optional<String> optional = Stream.of(data.split(" "))
+			final String[] datas = Stream.of(data.split(" "))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
-				.skip(4)
-				.findFirst();
-			if(optional.isPresent()) {
-				return Long.valueOf(optional.get());
+				.toArray(String[]::new);
+			if(datas.length == 4) {
+				// MS-DOS
+				return Long.valueOf(datas[2]);
+			} else if(datas.length == 9) {
+				// UNIX
+				return Long.valueOf(datas[4]);
+			} else {
+				throw new NetException("读取FTP文件大小失败");
 			}
-			throw new NetException("读取FTP文件大小失败");
 		}
 	}
 	

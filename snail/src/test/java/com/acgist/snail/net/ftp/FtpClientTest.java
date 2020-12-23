@@ -18,8 +18,8 @@ public class FtpClientTest extends Performance {
 //		String path = "ftp://localhost/elk/elasticsearch-6.4.1.zip";
 		String path = "ftp://localhost/VS2012中文旗舰版/vs_ultimate.exe";
 		var client = FtpClient.newInstance(path);
-		var ok = client.connect();
-		if(!ok) {
+		var success = client.connect();
+		if(!success) {
 			this.log("FTP服务器连接失败");
 			return;
 		}
