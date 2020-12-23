@@ -6,7 +6,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.impl.EntityInitializer;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -29,7 +28,6 @@ public class PeerServerTest extends Performance {
 	
 	@Test
 	public void testServer() throws DownloadException {
-		EntityContext.getInstance().load();
 		final var path = "e:/snail/12345.torrent";
 		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
