@@ -3,11 +3,11 @@ package com.acgist.snail.pojo;
 import com.acgist.snail.pojo.ITaskSession.Status;
 
 /**
- * <p>任务 - 数据库接口</p>
+ * <p>任务 - 实体操作接口</p>
  * 
  * @author acgist
  */
-public interface ITaskSessionRepository {
+public interface ITaskSessionHandler {
 
 	/**
 	 * <p>更新</p>

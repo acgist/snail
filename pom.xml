@@ -37,7 +37,6 @@
 		<!-- JavaFX版本 -->
 		<javafx.version>11.0.2</javafx.version>
 		<!-- 依赖版本 -->
-		<h2.version>1.4.200</h2.version>
 		<slf4j.version>1.7.30</slf4j.version>
 		<!-- JUnit版本 -->
 		<junit.version>5.6.2</junit.version>
@@ -420,12 +419,6 @@
 	<!-- 依赖管理 -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- 数据库：H2 -->
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.version}</version>
-			</dependency>
 			<!-- 日志：slf4j -->
 			<dependency>
 				<groupId>org.slf4j</groupId>

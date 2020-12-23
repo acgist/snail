@@ -166,7 +166,7 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>读取{@link String}配置</p>
 	 * 
-	 * @param entity 数据库配置
+	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
 	 * @return 配置值
@@ -210,7 +210,7 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>读取{@link Boolean}配置</p>
 	 * 
-	 * @param entity 数据库配置
+	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
 	 * @return 配置值
@@ -251,7 +251,7 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>读取{@link Integer}配置</p>
 	 * 
-	 * @param entity 数据库配置
+	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
 	 * @return 配置值

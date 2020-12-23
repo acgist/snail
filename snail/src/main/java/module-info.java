@@ -36,12 +36,10 @@ open module com.acgist.snail {
 	exports com.acgist.snail.pojo.session;
 	exports com.acgist.snail.pojo.wrapper;
 	exports com.acgist.snail.protocol;
-	exports com.acgist.snail.repository;
 	exports com.acgist.snail.utils;
 	
 	//================Java================//
 	requires java.base; // 不能使用transitive修饰
-	requires transitive java.sql;
 	requires transitive java.xml;
 	requires transitive java.naming;
 	requires transitive java.logging;
@@ -58,6 +56,5 @@ open module com.acgist.snail {
 	
 	//================依赖================//
 	requires transitive org.slf4j;
-	requires transitive com.h2database;
 
 }

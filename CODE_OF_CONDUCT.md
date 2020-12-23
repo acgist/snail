@@ -99,7 +99,6 @@ list.stream()
 |net|网络|
 |pojo|POJO|
 |protocol|协议|
-|repository|数据库|
 |utils|工具|
 
 #### 类命名

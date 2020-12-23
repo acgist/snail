@@ -7,17 +7,17 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DatabaseInitializerTest extends Performance {
+public class EntityInitializerTest extends Performance {
 
 	@Test
-	public void testConfigInitializer() {
-		assertDoesNotThrow(() -> DatabaseInitializer.newInstance().sync());
+	public void testEntityInitializer() {
+		assertDoesNotThrow(() -> EntityInitializer.newInstance().sync());
 	}
 	
 	@Test
 	public void testCosted() {
-		final long costed = this.costed(100000, () -> DatabaseInitializer.newInstance().sync());
-		assertTrue(costed < 30000);
+		final long costed = this.costed(100000, () -> EntityInitializer.newInstance().sync());
+		assertTrue(costed < 40000);
 	}
 	
 }

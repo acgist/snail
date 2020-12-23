@@ -1,9 +1,6 @@
 package com.acgist.snail.utils;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,11 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.h2.jdbc.JdbcClob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acgist.snail.pojo.wrapper.ResultSetWrapper;
 
 /**
  * <p>Bean工具</p>
@@ -118,8 +112,7 @@ public final class BeanUtils {
 		}
 		final Field[] fields = clazz.getDeclaredFields();
 		return Stream.concat(
-			Stream
-				.of(fields)
+			Stream.of(fields)
 				.filter(field -> !PropertyDescriptor.ignoreProperty(field))
 				.map(field -> field.getName()),
 			Stream.of(properties)
@@ -137,8 +130,7 @@ public final class BeanUtils {
 	public static final Object[] propertiesValue(final Object instance, final String[] properties) {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(properties);
-		return Stream
-			.of(properties)
+		return Stream.of(properties)
 			.map(property -> propertyValue(instance, property))
 			.toArray();
 	}
@@ -168,108 +160,21 @@ public final class BeanUtils {
 	 * <p>设置实例属性</p>
 	 * 
 	 * @param instance 实例
-	 * @param wrapper 结果集包装器
+	 * @param wrapper 属性
 	 */
-	public static final void setProperties(Object instance, ResultSetWrapper wrapper) {
+	public static final void setProperties(Object instance, Map<String, Object> data) {
 		Objects.requireNonNull(instance);
-		Objects.requireNonNull(wrapper);
+		Objects.requireNonNull(data);
 		final Class<?> clazz = instance.getClass();
 		final String[] properties = properties(clazz);
 		for (String property : properties) {
 			try {
 				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				final Object value = unpack(descriptor.getPropertyType(), wrapper.getIgnoreCase(property));
-				descriptor.getWriteMethod().invoke(instance, value);
+				descriptor.getWriteMethod().invoke(instance, data.get(property));
 			} catch (Exception e) {
 				LOGGER.info("设置实例属性异常：{}-{}", clazz, property, e);
 			}
 		}
-	}
-	
-	/**
-	 * <p>类型打包</p>
-	 * <p>处理类型：枚举</p>
-	 * 
-	 * @param object 原始数据
-	 * 
-	 * @return 打包数据
-	 */
-	public static final Object pack(Object object) {
-		if(object == null) {
-			return null;
-		}
-		if(object instanceof Enum<?>) {
-			// 枚举类型
-			final Enum<?> value = (Enum<?>) object;
-			return value.name();
-		}
-		return object;
-	}
-	
-	/**
-	 * <p>类型拆包</p>
-	 * <p>处理类型：枚举、长字符串</p>
-	 * 
-	 * @param clazz 数据类型
-	 * @param value 打包数据
-	 * 
-	 * @return 原始数据
-	 */
-	public static final Object unpack(Class<?> clazz, Object value) {
-		if(clazz == null || value == null) {
-			return null;
-		}
-		if(clazz.isEnum()) {
-			// 枚举类型
-			return unpackEnum(clazz, value);
-		} else if(value instanceof JdbcClob) {
-			// 长字符串
-			return unpackJdbcClob(clazz, value);
-		}
-		return value;
-	}
-	
-	/**
-	 * <p>枚举拆包</p>
-	 * 
-	 * @param clazz 类型
-	 * @param value 打包数据
-	 * 
-	 * @return 原始数据
-	 */
-	private static final Object unpackEnum(Class<?> clazz, Object value) {
-		final var enums = clazz.getEnumConstants();
-		for (Object object : enums) {
-			if(object.toString().equals(value.toString())) {
-				return object;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * <p>JdbcClob拆包</p>
-	 * 
-	 * @param clazz 类型
-	 * @param value 打包数据
-	 * 
-	 * @return 原始数据
-	 */
-	private static final Object unpackJdbcClob(Class<?> clazz, Object value) {
-		int index;
-		final JdbcClob clob = (JdbcClob) value;
-		final StringBuilder builder = new StringBuilder();
-		try(final Reader reader = clob.getCharacterStream()) {
-			final char[] chars = new char[1024];
-			while((index = reader.read(chars)) != -1) {
-				builder.append(new String(chars, 0, index));
-			}
-		} catch (SQLException | IOException e) {
-			LOGGER.error("JdbcClob拆包异常：{}-{}", clazz, value, e);
-		} finally {
-			clob.free();
-		}
-		return builder.toString();
 	}
 	
 }
