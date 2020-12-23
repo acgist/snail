@@ -145,11 +145,11 @@ public final class SystemContext {
 		EntityInitializer.newInstance().sync();
 		// 异步初始化
 		ConfigInitializer.newInstance().asyn();
-		ProtocolInitializer.newInstance().asyn();
 		NatInitializer.newInstance().asyn();
 		DhtInitializer.newInstance().asyn();
 		TrackerInitializer.newInstance().asyn();
 		TorrentInitializer.newInstance().asyn();
+		ProtocolInitializer.newInstance().asyn();
 		DownloaderInitializer.newInstance().asyn();
 		LocalServiceDiscoveryInitializer.newInstance().asyn();
 	}
