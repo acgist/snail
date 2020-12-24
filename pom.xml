@@ -202,16 +202,13 @@
 										<directory>src/main/resources/profiles/${package.environment}</directory>
 										<filtering>false</filtering>
 									</resource>
-									<!-- 开源协议、README -->
+									<!-- 开源协议 -->
 									<resource>
-										<directory>../</directory>
+										<directory>./</directory>
 										<filtering>false</filtering>
 										<targetPath>META-INF/</targetPath>
 										<includes>
 											<include>LICENSE</include>
-											<!--
-											<include>README.md</include>
-											-->
 										</includes>
 									</resource>
 								</resources>

@@ -62,8 +62,8 @@
 	<!-- 开源许可 -->
 	<licenses>
 		<license>
-			<url>https://opensource.org/licenses/Apache-2.0</url>
-			<name>Apache-2.0</name>
+			<url>https://opensource.org/licenses/GPL-3.0</url>
+			<name>GPL-3.0</name>
 		</license>
 	</licenses>
 
