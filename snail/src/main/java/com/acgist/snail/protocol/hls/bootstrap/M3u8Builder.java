@@ -73,6 +73,10 @@ public final class M3u8Builder {
 	 */
 	private static final String LABEL_EXTINF = "EXTINF";
 	/**
+	 * <p>视频分片（码率）</p>
+	 */
+	private static final String LABEL_EXT_X_BITRATE = "EXT-X-BITRATE";
+	/**
 	 * <p>数据加密</p>
 	 * <p>#EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000</p>
 	 */
@@ -244,11 +248,19 @@ public final class M3u8Builder {
 		final M3u8.Type type = multiM3u8 ? Type.M3U8 : stream ? Type.STREAM : Type.FILE;
 		final Cipher cipher = this.buildCipher();
 		// 读取文件列表
-		final List<String> links;
+		List<String> links;
 		if(multiM3u8) {
 			links = this.buildLinksM3u8();
 		} else {
-			links = this.buildLinksFile();
+			// 获取LABEL_EXTINF标签数据
+			links = this.buildLinksFile(LABEL_EXTINF);
+			// LABEL_EXTINF标签没有数据：获取LABEL_EXT_X_BITRATE标签数据
+			if(CollectionUtils.isEmpty(links)) {
+				links = this.buildLinksFile(LABEL_EXT_X_BITRATE);
+			}
+			if(CollectionUtils.isEmpty(links)) {
+				throw new NetException("没有下载文件");
+			}
 		}
 		return new M3u8(type, cipher, links);
 	}
@@ -397,9 +409,10 @@ public final class M3u8Builder {
 	 * 
 	 * @return 文件链接
 	 */
-	private List<String> buildLinksFile() {
+	private List<String> buildLinksFile(String labelName) {
 		return this.labels.stream()
-			.filter(label -> LABEL_EXTINF.equalsIgnoreCase(label.getName()))
+			.filter(label -> labelName.equalsIgnoreCase(label.getName()))
+			.filter(label -> StringUtils.isNotEmpty(label.getUrl()))
 			.map(label -> UrlUtils.redirect(this.source, label.getUrl()))
 			.collect(Collectors.toList());
 	}

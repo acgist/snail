@@ -80,7 +80,7 @@ public final class PropertyDescriptor {
 				return method;
 			}
 		}
-		throw new IllegalArgumentException(this.notFoundProperty());
+		return null;
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public final class PropertyDescriptor {
 				return method;
 			}
 		}
-		throw new IllegalArgumentException(this.notFoundProperty());
+		return null;
 	}
 
 	/**
@@ -118,14 +118,7 @@ public final class PropertyDescriptor {
 			// 获取父类属性
 			clazz = clazz.getSuperclass();
 		}
-		throw new IllegalArgumentException(this.notFoundProperty());
-	}
-	
-	/**
-	 * <p>获取异常信息</p>
-	 */
-	private String notFoundProperty() {
-		return "不存在的属性：" + this.property;
+		return null;
 	}
 	
 }

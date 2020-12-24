@@ -1,6 +1,7 @@
 package com.acgist.snail.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -114,7 +115,7 @@ public final class BeanUtils {
 		return Stream.concat(
 			Stream.of(fields)
 				.filter(field -> !PropertyDescriptor.ignoreProperty(field))
-				.map(field -> field.getName()),
+				.map(Field::getName),
 			Stream.of(properties)
 		).toArray(String[]::new);
 	}
@@ -149,7 +150,10 @@ public final class BeanUtils {
 		final Class<?> clazz = instance.getClass();
 		try {
 			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-			return descriptor.getReadMethod().invoke(instance);
+			final Method method = descriptor.getReadMethod();
+			if(method != null) {
+				return method.invoke(instance);
+			}
 		} catch (Exception e) {
 			LOGGER.error("获取实例对象指定属性名称的属性值异常：{}-{}", clazz, property, e);
 		}
@@ -170,7 +174,10 @@ public final class BeanUtils {
 		for (String property : properties) {
 			try {
 				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				descriptor.getWriteMethod().invoke(instance, data.get(property));
+				final Method method = descriptor.getWriteMethod();
+				if(method != null) {
+					method.invoke(instance, data.get(property));
+				}
 			} catch (Exception e) {
 				LOGGER.info("设置实例属性异常：{}-{}", clazz, property, e);
 			}
