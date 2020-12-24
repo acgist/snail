@@ -223,7 +223,7 @@
 					mvn test jacoco:prepare-agent
 				质检报告：
 					mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token"
-				排除性能测试：-D cost=skip|false
+				排除性能测试：-D skip=skip|true
 				忽略没有测试：-D failIfNoTests=false
 				设置测试路径：-D "test=com.acgist.snail.*"
 				跳过测试代码（编译测试代码）：-D skipTests=true

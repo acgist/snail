@@ -9,3 +9,7 @@
 #### FTP
 
 测试打开`FTPserver.exe`并设置目录为测试文件根目录
+
+#### HLS
+
+[测试数据](https://developer.apple.com/streaming/examples/advanced-stream-ts.html)
