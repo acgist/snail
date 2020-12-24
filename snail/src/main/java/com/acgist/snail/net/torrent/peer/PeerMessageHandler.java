@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.codec.impl.PeerCryptMessageCodec;
-import com.acgist.snail.net.codec.impl.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.bootstrap.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.bootstrap.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
 
 /**

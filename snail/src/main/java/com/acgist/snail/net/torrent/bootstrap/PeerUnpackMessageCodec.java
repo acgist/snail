@@ -1,4 +1,4 @@
-package com.acgist.snail.net.codec.impl;
+package com.acgist.snail.net.torrent.bootstrap;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
