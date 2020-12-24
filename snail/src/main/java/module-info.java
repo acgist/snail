@@ -19,6 +19,7 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.net.application;
 	exports com.acgist.snail.net.codec;
+	exports com.acgist.snail.net.codec.impl;
 	exports com.acgist.snail.net.ftp;
 	exports com.acgist.snail.net.hls;
 	exports com.acgist.snail.net.http;
