@@ -1,6 +1,8 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
-import com.acgist.snail.gui.event.GuiEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
 
 /**
@@ -10,6 +12,8 @@ import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
  */
 public final class ShowEvent extends ShowEventAdapter {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RefreshTaskListEvent.class);
+	
 	private static final ShowEvent INSTANCE = new ShowEvent();
 	
 	public static final GuiEvent getInstance() {
@@ -17,6 +21,12 @@ public final class ShowEvent extends ShowEventAdapter {
 	}
 	
 	private ShowEvent() {
+	}
+	
+	@Override
+	protected void executeExtend(Object... args) {
+		super.executeExtend(args);
+		LOGGER.debug("收到显示窗口事件");
 	}
 	
 }

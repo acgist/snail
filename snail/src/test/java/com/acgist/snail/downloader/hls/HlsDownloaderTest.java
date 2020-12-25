@@ -29,6 +29,7 @@ public class HlsDownloaderTest extends Performance {
 		final var file = new File(taskSession.getFile());
 		assertTrue(file.exists());
 		FileUtils.delete(taskSession.getFile());
+		taskSession.delete();
 	}
 	
 	@Test
@@ -48,6 +49,7 @@ public class HlsDownloaderTest extends Performance {
 		assertTrue(file.exists());
 		assertTrue(ArrayUtils.isNotEmpty(file.list()));
 		FileUtils.delete(taskSession.getFile());
+		taskSession.delete();
 	}
 	
 }

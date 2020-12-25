@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.utils.FileUtils;
 
 /**
  * <p>多文件任务下载器</p>
@@ -31,6 +32,8 @@ public abstract class MultifileDownloader extends Downloader {
 	
 	@Override
 	public void open() throws NetException, DownloadException {
+		// 创建文件目录：防止删除目录导致任务下载失败
+		FileUtils.buildFolder(this.taskSession.getFile(), false);
 		this.loadDownload();
 	}
 

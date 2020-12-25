@@ -24,6 +24,7 @@ public class FtpDownloaderTest extends Performance {
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
 		assertNotNull(downloader);
+		taskSession.delete();
 	}
 
 	@Test
@@ -41,6 +42,7 @@ public class FtpDownloaderTest extends Performance {
 		final var file = new File(taskSession.getFile());
 		assertTrue(file.exists());
 		FileUtils.delete(taskSession.getFile());
+		taskSession.delete();
 	}
 	
 }

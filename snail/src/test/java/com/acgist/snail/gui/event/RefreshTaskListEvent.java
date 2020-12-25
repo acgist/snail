@@ -1,9 +1,8 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
 
 /**
@@ -26,7 +25,8 @@ public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 
 	@Override
 	protected void executeExtend(Object... args) {
-		LOGGER.debug("刷新任务列表");
+		super.executeExtend(args);
+		LOGGER.debug("收到刷新任务列表事件");
 	}
 	
 }

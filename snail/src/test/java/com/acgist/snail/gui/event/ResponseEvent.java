@@ -1,9 +1,8 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
 
 /**
@@ -26,7 +25,8 @@ public final class ResponseEvent extends ResponseEventAdapter {
 	
 	@Override
 	protected void executeExtendExtend(String message) {
-		LOGGER.debug("收到响应消息：{}", message);
+		super.executeExtendExtend(message);
+		LOGGER.debug("收到响应消息事件：{}", message);
 	}
 	
 }

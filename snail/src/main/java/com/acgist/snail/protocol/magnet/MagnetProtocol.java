@@ -83,7 +83,7 @@ public final class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void done() {
-		this.buildTorrentFolder();
+		this.buildFolder();
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public final class MagnetProtocol extends Protocol {
 	/**
 	 * <p>创建下载目录</p>
 	 */
-	private void buildTorrentFolder() {
+	private void buildFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile(), false);
 	}
 	
