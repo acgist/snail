@@ -27,13 +27,6 @@ public interface IDownloader extends Runnable {
 	String name();
 	
 	/**
-	 * <p>判断任务是否正在下载</p>
-	 * 
-	 * @return 是否正在下载
-	 */
-	boolean downloading();
-	
-	/**
 	 * <p>获取任务信息</p>
 	 * 
 	 * @return 任务信息
