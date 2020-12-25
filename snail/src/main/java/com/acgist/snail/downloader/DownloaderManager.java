@@ -1,8 +1,7 @@
 package com.acgist.snail.downloader;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -41,14 +40,16 @@ public final class DownloaderManager {
 	private final ExecutorService executor;
 	/**
 	 * <p>下载队列</p>
-	 * <p>任务ID=下载器</p>
 	 */
-	private final Map<String, IDownloader> downloaderMap;
+	private final List<IDownloader> downloaders;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DownloaderManager() {
 		this.manager = ProtocolManager.getInstance();
 		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
-		this.downloaderMap = new ConcurrentHashMap<>(DownloadConfig.getSize());
+		this.downloaders = new ArrayList<>(DownloadConfig.getSize());
 	}
 	
 	/**
@@ -56,14 +57,14 @@ public final class DownloaderManager {
 	 * 
 	 * @param url 下载链接
 	 * 
+	 * @return 下载器
+	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public void newTask(String url) throws DownloadException {
+	public IDownloader newTask(String url) throws DownloadException {
 		try {
 			final var session = this.manager.buildTaskSession(url);
-			if(session != null) {
-				this.start(session);
-			}
+			return this.start(session);
 		} finally {
 			GuiManager.getInstance().refreshTaskList();
 		}
@@ -75,10 +76,32 @@ public final class DownloaderManager {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
+	 * @return 下载器
+	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public void start(ITaskSession taskSession) throws DownloadException {
-		this.submit(taskSession).start();
+	public IDownloader start(ITaskSession taskSession) throws DownloadException {
+		final IDownloader downloader = this.submit(taskSession);
+		downloader.start(); // 开始下载
+		return downloader;
+	}
+	
+	/**
+	 * <p>重新添加下载</p>
+	 * <p>先删除任务旧下载器，然后从{@linkplain #downloaders 下载队列}中删除任务，最后重新下载。</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return 下载器
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
+	public IDownloader restart(ITaskSession taskSession) throws DownloadException {
+		final IDownloader downloader = taskSession.removeDownloader(); // 删除旧下载器
+		synchronized (this.downloaders) {
+			this.downloaders.remove(downloader); // 下载队列删除
+		}
+		return this.start(taskSession); // 重新下载
 	}
 	
 	/**
@@ -93,18 +116,19 @@ public final class DownloaderManager {
 	 */
 	public IDownloader submit(ITaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
-			synchronized (this.downloaderMap) {
+			synchronized (this.downloaders) {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
 				}
-				var downloader = this.downloader(taskSession);
+				final var downloader = taskSession.buildDownloader();
 				if(downloader == null) {
-					downloader = taskSession.buildDownloader();
+					throw new DownloadException("创建下载器失败" + taskSession);
 				}
-				if(downloader == null) {
-					throw new DownloadException("创建下载器失败（下载协议：" + taskSession.getType() + "）");
+				if(this.downloaders.contains(downloader)) {
+					LOGGER.debug("任务已经存在：{}", taskSession.getName());
+				} else {
+					this.downloaders.add(downloader);
 				}
-				this.downloaderMap.put(downloader.id(), downloader);
 				return downloader;
 			}
 		} else {
@@ -118,7 +142,7 @@ public final class DownloaderManager {
 	 * @param taskSession 任务信息
 	 */
 	public void pause(ITaskSession taskSession) {
-		this.downloader(taskSession).pause();
+		taskSession.downloader().pause();
 	}
 	
 	/**
@@ -127,49 +151,26 @@ public final class DownloaderManager {
 	 * @param taskSession 任务信息
 	 */
 	public void refresh(ITaskSession taskSession) {
-		this.downloader(taskSession).refresh();
+		taskSession.downloader().refresh();
 	}
 
 	/**
 	 * <p>删除任务</p>
-	 * <p>从{@linkplain #downloaderMap 下载队列}中立即删除，实际删除操作在后台进行。</p>
+	 * <p>从{@linkplain #downloaders 下载队列}中立即删除，实际删除操作在后台进行。</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
 	public void delete(ITaskSession taskSession) {
-		// 定义下载器：防止队列删除后后台删除空指针
-		final var downloader = this.downloader(taskSession);
+		// 获取下载器：防止队列删除后后台删除空指针
+		final var downloader = taskSession.downloader();
 		// 后台删除任务
-		SystemThreadContext.submit(() -> downloader.delete());
-		// 下载队列删除
-		this.downloaderMap.remove(taskSession.getId());
+		SystemThreadContext.submit(downloader::delete);
+		synchronized (this.downloaders) {
+			// 下载队列删除
+			this.downloaders.remove(downloader);
+		}
 		// 刷新任务列表
 		GuiManager.getInstance().refreshTaskList();
-	}
-	
-	/**
-	 * <p>切换下载器</p>
-	 * <p>先删除任务旧下载器，然后从{@linkplain #downloaderMap 下载队列}中删除任务，最后重新下载。</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public void changeDownloaderRestart(ITaskSession taskSession) throws DownloadException {
-		taskSession.removeDownloader(); // 删除旧下载器
-		this.downloaderMap.remove(taskSession.getId()); // 下载队列删除
-		this.start(taskSession); // 重新下载
-	}
-
-	/**
-	 * <p>获取下载任务的下载器</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @return 下载器
-	 */
-	private IDownloader downloader(ITaskSession taskSession) {
-		return this.downloaderMap.get(taskSession.getId());
 	}
 	
 	/**
@@ -178,9 +179,11 @@ public final class DownloaderManager {
 	 * @return 所有下载任务列表
 	 */
 	public List<ITaskSession> allTask() {
-		return this.downloaderMap.values().stream()
-			.map(IDownloader::taskSession)
-			.collect(Collectors.toList());
+		synchronized (this.downloaders) {
+			return this.downloaders.stream()
+				.map(IDownloader::taskSession)
+				.collect(Collectors.toList());
+		}
 	}
 		
 	/**
@@ -191,24 +194,28 @@ public final class DownloaderManager {
 	 * </dl>
 	 */
 	public void refresh() {
-		synchronized (this.downloaderMap) {
-			final var downloaders = this.downloaderMap.values();
+		synchronized (this.downloaders) {
 			// 当前任务正在下载数量
-			final long count = downloaders.stream()
+			final long downloadingCount = this.downloaders.stream()
 				.filter(IDownloader::downloading)
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
-			if(count == downloadSize) { // 等于：不操作
-			} else if(count > downloadSize) { // 大于：暂停部分下载任务
-				downloaders.stream()
+			if(downloadingCount == downloadSize) {
+				// 等于：不操作
+			} else if(downloadingCount > downloadSize) {
+				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadingCount);
+				// 大于：暂停部分下载任务
+				this.downloaders.stream()
 					.filter(IDownloader::downloading)
 					.skip(downloadSize)
 					.forEach(IDownloader::pause);
-			} else { // 小于：开始部分下载任务
-				downloaders.stream()
+			} else {
+				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadingCount);
+				// 小于：开始部分下载任务
+				this.downloaders.stream()
 					.filter(downloader -> downloader.taskSession().await())
-					.limit(downloadSize - count)
-					.forEach(downloader -> this.executor.submit(downloader));
+					.limit(downloadSize - downloadingCount)
+					.forEach(this.executor::submit);
 			}
 		}
 	}
@@ -220,13 +227,15 @@ public final class DownloaderManager {
 	public void shutdown() {
 		LOGGER.info("关闭下载器管理器");
 		try {
-			this.downloaderMap.values().stream()
-				.filter(downloader -> downloader.taskSession().inThreadPool())
-				.forEach(downloader -> downloader.pause());
+			synchronized (this.downloaders) {
+				this.downloaders.stream()
+					.filter(downloader -> downloader.taskSession().inThreadPool())
+					.forEach(IDownloader::pause);
+			}
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理器异常", e);
 		}
 //		SystemThreadContext.shutdown(this.executor); // 不直接关闭线程池：等待任务自动结束
 	}
-
+	
 }

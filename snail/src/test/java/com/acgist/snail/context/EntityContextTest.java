@@ -39,6 +39,7 @@ public class EntityContextTest extends Performance {
 	public void testAll() {
 		EntityContext.getInstance().allTask().forEach(this::log);
 		EntityContext.getInstance().allConfig().forEach(this::log);
+		assertNotNull(EntityContext.getInstance());
 	}
 	
 	@Test

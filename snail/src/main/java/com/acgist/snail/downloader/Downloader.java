@@ -33,7 +33,7 @@ public abstract class Downloader implements IDownloader {
 	protected volatile boolean fail = false;
 	/**
 	 * <p>任务完成状态</p>
-	 * <p>true-下载完成；false-没有完成；</p>
+	 * <p>true-已完成；false-未完成；</p>
 	 */
 	protected volatile boolean complete = false;
 	/**
@@ -46,9 +46,8 @@ public abstract class Downloader implements IDownloader {
 	protected final IStatisticsSession statistics;
 	/**
 	 * <p>删除锁</p>
-	 * <p>true-任务没有下载（可以删除）；</p>
-	 * <p>false-任务正在下载（不能删除）；</p>
-	 * <p>任务删除时检查该锁，判断是否可以删除任务，如果任务不能删除需要等待任务结束。</p>
+	 * <p>true-任务没有下载（可以删除）</p>
+	 * <p>false-任务正在下载（不能删除）：等待任务结束</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 
@@ -59,11 +58,10 @@ public abstract class Downloader implements IDownloader {
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
 		// 已下载大小
-		this.taskSession.downloadSize(this.downloadSize());
-		// 任务没有下载标记删除锁：true
-		if(!this.taskSession.download()) {
-			this.deleteLock.set(true);
-		}
+		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
+		this.taskSession.downloadSize(downloadSize);
+		// 初始化删除锁：任务没有下载可以直接删除
+		this.deleteLock.set(!this.taskSession.download());
 	}
 	
 	@Override
@@ -149,16 +147,6 @@ public abstract class Downloader implements IDownloader {
 			this.updateStatus(Status.COMPLETE);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>默认直接获取本地文件大小，这种方式可能会出现误差，必要时请重写并通过{@link ITaskSession#downloadSize(long)}方法设置已下载大小。</p>
-	 */
-	@Override
-	public long downloadSize() {
-		return FileUtils.fileSize(this.taskSession.getFile());
 	}
 	
 	@Override

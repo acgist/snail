@@ -123,8 +123,10 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 
 	/**
 	 * <p>删除下载器</p>
+	 * 
+	 * @return 下载器
 	 */
-	void removeDownloader();
+	IDownloader removeDownloader();
 	
 	/**
 	 * <p>创建下载器</p>

@@ -81,8 +81,10 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
-	public void removeDownloader() {
+	public IDownloader removeDownloader() {
+		final IDownloader downloader = this.downloader;
 		this.downloader = null;
+		return downloader;
 	}
 	
 	@Override
@@ -90,8 +92,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.downloader != null) {
 			return this.downloader;
 		}
-		final var downloader = ProtocolManager.getInstance().buildDownloader(this);
-		this.downloader = downloader;
+		this.downloader = ProtocolManager.getInstance().buildDownloader(this);
 		return this.downloader;
 	}
 	
