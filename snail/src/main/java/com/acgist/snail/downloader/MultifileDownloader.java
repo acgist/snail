@@ -71,7 +71,7 @@ public abstract class MultifileDownloader extends Downloader {
 	/**
 	 * <p>判断是否下载完成</p>
 	 * 
-	 * @return true-完成；false-没有完成；
+	 * @return 是否下载完成
 	 */
 	protected abstract boolean checkCompleted();
 	

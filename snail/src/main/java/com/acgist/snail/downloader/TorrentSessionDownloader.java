@@ -15,8 +15,6 @@ import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
  */
 public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSessionDownloader.class);
-
 	/**
 	 * <p>BT任务信息</p>
 	 */

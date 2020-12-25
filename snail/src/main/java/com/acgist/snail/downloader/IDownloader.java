@@ -29,7 +29,7 @@ public interface IDownloader extends Runnable {
 	/**
 	 * <p>判断任务是否正在下载</p>
 	 * 
-	 * @return true-{@linkplain Status#DOWNLOAD 下载中}；false-未下载；
+	 * @return 是否正在下载
 	 */
 	boolean downloading();
 	
@@ -99,13 +99,6 @@ public interface IDownloader extends Runnable {
 	 * <p>任务已经完成：标记为完成状态</p>
 	 */
 	void checkComplete();
-	
-	/**
-	 * <p>获取已下载文件大小</p>
-	 * 
-	 * @return 已下载文件大小
-	 */
-	long downloadSize();
 	
 	/**
 	 * <p>释放资源</p>

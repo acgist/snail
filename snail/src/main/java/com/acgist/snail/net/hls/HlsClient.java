@@ -112,7 +112,7 @@ public final class HlsClient implements Runnable {
 				}
 				while(this.hlsSession.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
-					if(this.isComplete(length, size)) {
+					if(this.checkCompleted(length, size)) {
 						this.completed = true;
 						break;
 					}
@@ -169,16 +169,18 @@ public final class HlsClient implements Runnable {
 	}
 
 	/**
-	 * <p>验证是否下载完成</p>
+	 * <p>判断是否下载完成</p>
 	 * 
-	 * @param length 当前下载大小
-	 * @param size 已下载大小
+	 * @param length 下载数据大小
+	 * @param size 已下载数据大小
 	 * 
-	 * @return 是否完成
+	 * @return 是否下载完成
 	 */
-	private boolean isComplete(int length, long size) {
+	private boolean checkCompleted(int length, long size) {
 		return
+			// 没有更多数据
 			length <= -1 ||
+			// 已下载数据大小大于等于文件大小
 			(this.size > 0L && this.size <= size);
 	}
 	
