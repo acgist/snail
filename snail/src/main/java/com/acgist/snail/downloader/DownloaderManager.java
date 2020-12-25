@@ -196,25 +196,25 @@ public final class DownloaderManager {
 	public void refresh() {
 		synchronized (this.downloaders) {
 			// 当前任务正在下载数量
-			final long downloadingCount = this.downloaders.stream()
-				.filter(IDownloader::downloading)
+			final long downloadCount = this.downloaders.stream()
+				.filter(downloader -> downloader.taskSession().download())
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
-			if(downloadingCount == downloadSize) {
+			if(downloadCount == downloadSize) {
 				// 等于：不操作
-			} else if(downloadingCount > downloadSize) {
-				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadingCount);
+			} else if(downloadCount > downloadSize) {
+				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 大于：暂停部分下载任务
 				this.downloaders.stream()
-					.filter(IDownloader::downloading)
+					.filter(downloader -> downloader.taskSession().download())
 					.skip(downloadSize)
 					.forEach(IDownloader::pause);
 			} else {
-				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadingCount);
+				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 小于：开始部分下载任务
 				this.downloaders.stream()
 					.filter(downloader -> downloader.taskSession().await())
-					.limit(downloadSize - downloadingCount)
+					.limit(downloadSize - downloadCount)
 					.forEach(this.executor::submit);
 			}
 		}

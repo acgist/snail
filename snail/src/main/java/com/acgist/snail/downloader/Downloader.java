@@ -75,11 +75,6 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public boolean downloading() {
-		return this.taskSession.download();
-	}
-	
-	@Override
 	public ITaskSession taskSession() {
 		return this.taskSession;
 	}
