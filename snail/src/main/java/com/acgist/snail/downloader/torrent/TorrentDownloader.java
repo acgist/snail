@@ -14,8 +14,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
  */
 public final class TorrentDownloader extends TorrentSessionDownloader {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
-	
 	/**
 	 * @param taskSession 任务信息
 	 */
