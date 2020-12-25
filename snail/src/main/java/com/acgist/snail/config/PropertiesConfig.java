@@ -18,7 +18,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>配置文件超类</p>
+ * <p>配置文件</p>
  * <p>读取配置文件并提供读取方法</p>
  * 
  * @author acgist
