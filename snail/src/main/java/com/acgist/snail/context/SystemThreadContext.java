@@ -3,6 +3,7 @@ package com.acgist.snail.context;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -83,6 +84,10 @@ public final class SystemThreadContext {
 	 * <p>系统定时线程池：定时任务</p>
 	 */
 	private static final ScheduledExecutorService EXECUTOR_TIMER;
+	/**
+	 * <p>任务拒绝执行处理</p>
+	 */
+    public static final RejectedExecutionHandler REJECTED_HANDLER = (runnable, executor) -> LOGGER.error("任务被拒绝：{}-{}", runnable, executor);
 	
 	static {
 		LOGGER.info("初始化系统线程池");

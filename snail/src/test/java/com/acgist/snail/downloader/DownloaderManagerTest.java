@@ -8,9 +8,14 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.downloader.magnet.MagnetDownloader;
+import com.acgist.snail.downloader.torrent.TorrentDownloader;
+import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
+import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
@@ -42,6 +47,31 @@ public class DownloaderManagerTest extends Performance {
 		DownloadConfig.setSize(0);
 		manager.refresh();
 		DownloadConfig.setSize(4);
+		FileUtils.delete(downloader.taskSession().getFile());
+		downloader.delete();
+	}
+	
+	@Test
+	public void testRestart() throws DownloadException {
+		ProtocolManager.getInstance()
+			.register(MagnetProtocol.getInstance())
+			.register(TorrentProtocol.getInstance())
+			.available(true);
+		final var manager = DownloaderManager.getInstance();
+		IDownloader downloader = manager.newTask("1234567890123456789012345678901234567890");
+		assertNotNull(downloader);
+		assertTrue(manager.allTask().size() == 1);
+		this.log(downloader.getClass());
+		final var taskSession = downloader.taskSession();
+		taskSession.setType(Type.TORRENT);
+		taskSession.setStatus(Status.AWAIT);
+		assertTrue(downloader instanceof MagnetDownloader);
+		taskSession.setTorrent("E://snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent");
+		downloader = manager.restart(taskSession);
+		assertNotNull(downloader);
+		assertTrue(manager.allTask().size() == 1);
+		assertTrue(downloader instanceof TorrentDownloader);
+		this.log(downloader.getClass());
 		FileUtils.delete(downloader.taskSession().getFile());
 		downloader.delete();
 	}
