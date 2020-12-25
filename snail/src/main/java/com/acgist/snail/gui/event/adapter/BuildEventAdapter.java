@@ -21,7 +21,7 @@ public class BuildEventAdapter extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiManager.getInstance().lock(); // 扩展GUI阻塞锁
+		GuiManager.getInstance().lock();
 	}
 	
 }

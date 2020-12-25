@@ -24,7 +24,7 @@ import com.acgist.snail.utils.Performance;
 public class EntityContextTest extends Performance {
 	
 	@BeforeAll
-	public static void load() {
+	public static final void load() {
 		EntityContext.getInstance().load();
 	}
 	
@@ -35,6 +35,12 @@ public class EntityContextTest extends Performance {
 		assertNotNull(EntityContext.getInstance());
 	}
 
+	@Test
+	public void testAll() {
+		EntityContext.getInstance().allTask().forEach(this::log);
+		EntityContext.getInstance().allConfig().forEach(this::log);
+	}
+	
 	@Test
 	@Order(0)
 	public void testSaveTask() {

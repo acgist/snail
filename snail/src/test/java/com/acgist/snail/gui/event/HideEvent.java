@@ -1,6 +1,8 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
-import com.acgist.snail.gui.event.GuiEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.gui.event.adapter.HideEventAdapter;
 
 /**
@@ -10,6 +12,8 @@ import com.acgist.snail.gui.event.adapter.HideEventAdapter;
  */
 public final class HideEvent extends HideEventAdapter {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HideEvent.class);
+	
 	private static final HideEvent INSTANCE = new HideEvent();
 	
 	public static final GuiEvent getInstance() {
@@ -17,6 +21,12 @@ public final class HideEvent extends HideEventAdapter {
 	}
 	
 	private HideEvent() {
+	}
+	
+	@Override
+	protected void executeExtend(Object... args) {
+		super.executeExtend(args);
+		LOGGER.debug("收到隐藏窗口事件");
 	}
 
 }

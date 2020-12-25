@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.impl.TorrentInitializer;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.extend.event.TorrentEvent;
+import com.acgist.snail.gui.event.TorrentEvent;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.bean.TorrentFile;
@@ -41,6 +41,7 @@ public class TorrentDownloaderTest extends Performance {
 		final var file = new File(taskSession.getFile());
 		assertTrue(file.exists());
 		FileUtils.delete(taskSession.getFile());
+		taskSession.delete();
 	}
 
 	@Test
@@ -66,6 +67,7 @@ public class TorrentDownloaderTest extends Performance {
 		assertTrue(file.exists());
 		assertTrue(ArrayUtils.isNotEmpty(file.list()));
 		FileUtils.delete(taskSession.getFile());
+		taskSession.delete();
 	}
 	
 }

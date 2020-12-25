@@ -21,7 +21,7 @@ public class HideEventAdapter extends GuiEvent {
 	}
 	
 	@Override
-	protected final void executeExtend(Object ... args) {
+	protected void executeExtend(Object ... args) {
 		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.HIDE);
 		GuiManager.getInstance().sendExtendGuiMessage(message);
 	}

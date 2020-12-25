@@ -1,6 +1,8 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
-import com.acgist.snail.gui.event.GuiEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
 
 /**
@@ -10,6 +12,8 @@ import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
  */
 public final class RefreshTaskStatusEvent extends RefreshTaskStatusEventAdapter {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RefreshTaskStatusEvent.class);
+	
 	private static final RefreshTaskStatusEvent INSTANCE = new RefreshTaskStatusEvent();
 	
 	public static final GuiEvent getInstance() {
@@ -17,6 +21,12 @@ public final class RefreshTaskStatusEvent extends RefreshTaskStatusEventAdapter 
 	}
 	
 	private RefreshTaskStatusEvent() {
+	}
+
+	@Override
+	protected void executeExtend(Object... args) {
+		super.executeExtend(args);
+		LOGGER.debug("收到刷新任务状态事件");
 	}
 	
 }

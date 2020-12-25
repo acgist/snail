@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.extend.event;
+package com.acgist.snail.gui.event;
 
 import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
 

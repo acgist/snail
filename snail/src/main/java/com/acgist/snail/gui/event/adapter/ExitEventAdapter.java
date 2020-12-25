@@ -21,7 +21,7 @@ public class ExitEventAdapter extends GuiEvent {
 	
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiManager.getInstance().unlock(); // 释放扩展GUI阻塞锁
+		GuiManager.getInstance().unlock();
 	}
 	
 }
