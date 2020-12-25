@@ -11,7 +11,7 @@ import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHan
 import com.acgist.snail.pojo.session.PeerSession;
 
 /**
- * <p>扩展协议类型抽象</p>
+ * <p>扩展协议类型</p>
  * 
  * @author acgist
  */

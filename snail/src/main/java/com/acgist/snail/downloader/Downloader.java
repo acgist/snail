@@ -13,7 +13,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载器抽象类</p>
+ * <p>下载器</p>
  * 
  * @author acgist
  */

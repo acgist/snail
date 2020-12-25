@@ -138,14 +138,15 @@ public final class TorrentController extends Controller implements Initializable
 			}
 			// 更新任务
 			this.taskSession.update();
-			// 切换下载器并且重新下载
 			if(magnetToTorrent) {
+				// 切换下载器并且重新下载
 				try {
 					DownloaderManager.getInstance().changeDownloaderRestart(this.taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("切换下载器异常", e);
 				}
-			} else { // 刷新任务
+			} else {
+				// 刷新任务
 				DownloaderManager.getInstance().refresh(this.taskSession);
 			}
 		}

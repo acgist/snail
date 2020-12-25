@@ -43,7 +43,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void refresh() {
-		// 任务没有被加载：不用重新加载，开始下载自动加载。
+		// 任务没有被加载：不用重新加载（开始下载自动加载）
 		if(this.torrentSession == null) {
 			// 任务已经完成不会再次加载：任务下载完成软件重启
 			if(this.taskSession.complete()) {
@@ -51,7 +51,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			}
 			return;
 		}
-		final int fileCount = this.torrentSession.reload(); // 重新加载任务
+		// 重新加载任务
+		final int fileCount = this.torrentSession.reload();
+		// 加载文件数量
 		if(fileCount > 0) {
 			// 已经下载完成：修改暂停状态（任务下载完成软件没有重启）
 			if(this.taskSession.complete()) {
