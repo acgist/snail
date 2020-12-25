@@ -2,10 +2,14 @@ package com.acgist.snail.pojo.wrapper;
 
 import java.net.http.HttpHeaders;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.CollectionUtils;
@@ -18,6 +22,8 @@ import com.acgist.snail.utils.UrlUtils;
  * @author acgist
  */
 public final class HttpHeaderWrapper extends HeaderWrapper {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpHeaderWrapper.class);
 
 	/**
 	 * <p>MIME类型：{@value}</p>
@@ -103,6 +109,8 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			headers = httpHeaders.map().entrySet().stream()
 				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		} else {
+			headers = new HashMap<>();
 		}
 		return new HttpHeaderWrapper(headers);
 	}
@@ -269,6 +277,26 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			}
 		}
 		return range;
+	}
+	
+	/**
+	 * <p>验证开始下载位置是否正确</p>
+	 * 
+	 * @param size 已下载大小
+	 * 
+	 * @return 是否正确
+	 */
+	public boolean verifyBeginRange(long size) {
+		final long begin = this.beginRange();
+		if(begin == size) {
+			return true;
+		}
+		// TODO：多行文本
+		LOGGER.warn(
+			"HTTP下载错误（已下载大小和开始下载位置不符），开始位置：{}，响应位置：{}，HTTP响应头部：{}",
+			size, begin, this.headers
+		);
+		return false;
 	}
 	
 }

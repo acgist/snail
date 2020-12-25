@@ -5,9 +5,6 @@ import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.SingleFileDownloader;
@@ -24,8 +21,6 @@ import com.acgist.snail.utils.IoUtils;
  */
 public final class HttpDownloader extends SingleFileDownloader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloader.class);
-	
 	/**
 	 * @param taskSession 任务信息
 	 */
@@ -70,16 +65,9 @@ public final class HttpDownloader extends SingleFileDownloader {
 			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
 		) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
-			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
-				final long begin = headers.beginRange();
-				if(size != begin) {
-					// TODO：多行文本
-					LOGGER.warn(
-						"HTTP下载错误（已下载大小和开始下载位置不符），开始位置：{}，响应位置：{}，HTTP响应头部：{}",
-						size, begin, headers.allHeaders()
-					);
-				}
+				headers.verifyBeginRange(size);
+				this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 				this.taskSession.downloadSize(size);
 			} else {
 				this.taskSession.downloadSize(0L);

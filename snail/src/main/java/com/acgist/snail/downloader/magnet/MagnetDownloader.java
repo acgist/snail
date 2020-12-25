@@ -13,8 +13,6 @@ import com.acgist.snail.pojo.ITaskSession;
  */
 public final class MagnetDownloader extends TorrentSessionDownloader {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetDownloader.class);
-
 	/**
 	 * @param taskSession 任务信息
 	 */
