@@ -1,5 +1,6 @@
 package com.acgist.snail.downloader.http;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -13,6 +14,16 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
 public class HttpDownloaderTest extends Performance {
+	
+	@Test
+	public void testHttpDownloaderBuild() throws DownloadException {
+		final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
+		ProtocolManager.getInstance().register(HttpProtocol.getInstance()).available(true);
+		final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
+		final var downloader = taskSession.buildDownloader();
+//		downloader.run(); // 不下载
+		assertNotNull(downloader);
+	}
 
 	@Test
 	public void testHttpDownloader() throws DownloadException {

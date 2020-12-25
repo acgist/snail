@@ -1,5 +1,6 @@
 package com.acgist.snail.downloader.ftp;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -13,9 +14,24 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
 public class FtpDownloaderTest extends Performance {
+	
+	@Test
+	public void testFtpDownloaderBuild() throws DownloadException {
+//		final String url = "ftp://localhost/ftp/FTPserver.exe";
+		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
+		ProtocolManager.getInstance().register(FtpProtocol.getInstance()).available(true);
+		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);
+		final var downloader = taskSession.buildDownloader();
+//		downloader.run(); // 不下载
+		assertNotNull(downloader);
+	}
 
 	@Test
 	public void testFtpDownloader() throws DownloadException {
+		if(SKIP) {
+			this.log("跳过FTP下载测试");
+			return;
+		}
 		final String url = "ftp://localhost/ftp/FTPserver.exe";
 //		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
 		ProtocolManager.getInstance().register(FtpProtocol.getInstance()).available(true);
