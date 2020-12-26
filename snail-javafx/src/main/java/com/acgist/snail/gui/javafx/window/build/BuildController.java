@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
-import com.acgist.snail.gui.javafx.Controller;
+import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 

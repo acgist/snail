@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx;
+package com.acgist.snail.gui.javafx.window;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.javafx.Themes;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

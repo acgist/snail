@@ -3,7 +3,7 @@ package com.acgist.snail.gui.javafx.window.statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.javafx.Window;
+import com.acgist.snail.gui.javafx.window.Window;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;

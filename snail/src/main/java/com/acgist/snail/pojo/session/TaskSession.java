@@ -74,6 +74,14 @@ public final class TaskSession implements ITaskSession {
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}
+
+	@Override
+	public void reset() {
+		// 非常重要：如果任务被错误的保存为下载状态需要重置为等待状态（否者不能正常下载）
+		if(this.download()) {
+			this.setStatus(Status.AWAIT);
+		}
+	}
 	
 	@Override
 	public IDownloader downloader() {

@@ -164,7 +164,7 @@ public abstract class Downloader implements IDownloader {
 				LOGGER.info("开始下载任务：{}", name);
 				this.fail = false; // 重置下载失败状态
 				this.deleteLock.set(false); // 设置删除锁状态
-				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态
+				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
 				try {
 					this.open();
 					this.download();

@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx;
+package com.acgist.snail.gui.javafx.window;
 
 import com.acgist.snail.utils.CollectionUtils;
 

@@ -115,6 +115,12 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	}
 	
 	/**
+	 * <p>重置状态</p>
+	 * <p>如果软件没有正常关闭，重置任务状态。</p>
+	 */
+	void reset();
+	
+	/**
 	 * <p>获取下载器</p>
 	 * 
 	 * @return 下载器

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
