@@ -1,9 +1,8 @@
-package com.acgist.snail.context.initializer.impl;
+package com.acgist.snail.context.initializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.net.torrent.dht.DhtManager;
 import com.acgist.snail.net.torrent.dht.NodeManager;
 
