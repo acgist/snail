@@ -116,6 +116,8 @@ public final class PeerManager {
 	 * @param source Peer来源
 	 * 
 	 * @return PeerSession
+	 * 
+	 * TODO：去掉无效Peer（端口判断）
 	 */
 	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, PeerConfig.Source source) {
 		synchronized (this) {
