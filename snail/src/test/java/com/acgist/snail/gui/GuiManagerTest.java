@@ -68,7 +68,7 @@ public class GuiManagerTest extends Performance {
 		SystemContext.info();
 		final boolean enable = SystemContext.listen(); // 启动系统监听
 		if(enable) {
-			SystemContext.init(); // 初始化系统上下文
+			SystemContext.build(); // 初始化系统上下文
 			final String[] args = new String[] { "mode=extend" }; // 后台模式启动
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {

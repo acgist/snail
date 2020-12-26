@@ -1,6 +1,10 @@
 package com.acgist.snail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.context.initializer.impl.ConfigInitializer;
 import com.acgist.snail.context.initializer.impl.DhtInitializer;
 import com.acgist.snail.context.initializer.impl.DownloaderInitializer;
@@ -25,6 +29,8 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
  * <p>快速创建下载任务</p>
  * 
  * @author acgist
+ * 
+ * TODO：优化更多接口调用
  */
 public final class Snail {
 
@@ -48,51 +54,115 @@ public final class Snail {
 	}
 
 	/**
-	 * <p>加载下载任务</p>
-	 * 
-	 * @return Snail
-	 * 
-	 * @throws DownloadException 下载异常 
-	 */
-	public Snail loadTask() throws DownloadException {
-		DownloaderInitializer.newInstance().sync();
-		return this;
-	}
-	
-	/**
 	 * <p>SnailBuilder</p>
 	 * 
 	 * @author acgist
 	 */
 	public static final class SnailBuilder {
 		
+		private static final SnailBuilder BUILDER = new SnailBuilder();
+		
+		/**
+		 * <p>是否初始化任务</p>
+		 */
+		private boolean initTask = false;
+		/**
+		 * <p>是否初始化Torrent</p>
+		 */
+		private boolean initTorrent = false;
+		/**
+		 * <p>全局维护一个Snail对象</p>
+		 */
+		private Snail snail;
+		
 		/**
 		 * <p>获取SnailBuilder</p>
 		 * 
 		 * @return SnailBuilder
 		 */
-		public static final SnailBuilder newBuilder() {
-			EntityInitializer.newInstance().sync();
-			ConfigInitializer.newInstance().sync();
-			return new SnailBuilder();
+		public static final SnailBuilder builder() {
+			return BUILDER;
 		}
 		
 		/**
 		 * <p>禁止创建实例</p>
 		 */
 		private SnailBuilder() {
+			EntityInitializer.newInstance().sync();
+			ConfigInitializer.newInstance().sync();
 		}
 
 		/**
+		 * <p>同步创建Snail</p>
+		 * 
+		 * @return Snail
+		 */
+		public Snail buildSync() {
+			return this.build(true);
+		}
+		
+		/**
+		 * <p>异步创建Snail</p>
+		 * 
+		 * @return Snail
+		 */
+		public Snail buildAsyn() {
+			return this.build(false);
+		}
+		
+		/**
 		 * <p>创建Snail</p>
+		 * 
+		 * @param sync 是否同步初始化
 		 * 
 		 * @return Snail
 		 * 
 		 * @throws DownloadException 下载异常 
 		 */
-		public Snail build() throws DownloadException {
+		public Snail build(boolean sync) {
+			if(this.snail != null) {
+				return snail;
+			}
 			ProtocolManager.getInstance().available(true);
-			return new Snail();
+			this.loadInitializers().forEach(initializer -> {
+				if(sync) {
+					initializer.sync();
+				} else {
+					initializer.asyn();
+				}
+			});
+			this.snail = new Snail();
+			return this.snail;
+		}
+
+		/**
+		 * <p>加载初始化列表</p>
+		 * 
+		 * @return 初始化列表
+		 */
+		private List<Initializer> loadInitializers() {
+			final List<Initializer> list = new ArrayList<>();
+			if(this.initTorrent) {
+				list.add(NatInitializer.newInstance());
+				list.add(DhtInitializer.newInstance());
+				list.add(TrackerInitializer.newInstance());
+				list.add(TorrentInitializer.newInstance());
+				list.add(LocalServiceDiscoveryInitializer.newInstance());
+			}
+			if(this.initTask) {
+				list.add(DownloaderInitializer.newInstance());
+			}
+			return list;
+		}
+		
+		/**
+		 * <p>加载任务</p>
+		 * 
+		 * @return SnailBuilder
+		 */
+		public SnailBuilder loadTask() {
+			this.initTask = true;
+			return this;
 		}
 		
 		/**
@@ -112,7 +182,7 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder ftp() {
+		public SnailBuilder enableFtp() {
 			return this.register(FtpProtocol.getInstance());
 		}
 		
@@ -121,7 +191,7 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder hls() {
+		public SnailBuilder enableHls() {
 			return this.register(HlsProtocol.getInstance());
 		}
 		
@@ -130,7 +200,7 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder http() {
+		public SnailBuilder enableHttp() {
 			return this.register(HttpProtocol.getInstance());
 		}
 		
@@ -138,11 +208,9 @@ public final class Snail {
 		 * <p>注册Magnet下载协议</p>
 		 * 
 		 * @return SnailBuilder
-		 * 
-		 * @see #torrent()
 		 */
-		public SnailBuilder magnet() {
-			this.torrent(); // 注册Torrent下载协议
+		public SnailBuilder enableMagnet() {
+			this.initTorrent = true;
 			return this.register(MagnetProtocol.getInstance());
 		}
 		
@@ -151,7 +219,7 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder thunder() {
+		public SnailBuilder enableThunder() {
 			return this.register(ThunderProtocol.getInstance());
 		}
 		
@@ -160,12 +228,8 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder torrent() {
-			NatInitializer.newInstance().sync();
-			DhtInitializer.newInstance().sync();
-			TrackerInitializer.newInstance().sync();
-			TorrentInitializer.newInstance().sync();
-			LocalServiceDiscoveryInitializer.newInstance().sync();
+		public SnailBuilder enableTorrent() {
+			this.initTorrent = true;
 			return this.register(TorrentProtocol.getInstance());
 		}
 		
@@ -174,14 +238,14 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder allProtocol() {
+		public SnailBuilder enableAllProtocol() {
 			return this
-				.ftp()
-				.hls()
-				.http()
-				.magnet()
-				.thunder()
-				.torrent();
+				.enableFtp()
+				.enableHls()
+				.enableHttp()
+				.enableMagnet()
+				.enableThunder()
+				.enableTorrent();
 		}
 		
 	}

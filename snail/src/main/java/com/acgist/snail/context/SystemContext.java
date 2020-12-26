@@ -5,19 +5,11 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.context.initializer.impl.ConfigInitializer;
-import com.acgist.snail.context.initializer.impl.DhtInitializer;
-import com.acgist.snail.context.initializer.impl.DownloaderInitializer;
-import com.acgist.snail.context.initializer.impl.EntityInitializer;
-import com.acgist.snail.context.initializer.impl.LocalServiceDiscoveryInitializer;
-import com.acgist.snail.context.initializer.impl.NatInitializer;
-import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
-import com.acgist.snail.context.initializer.impl.TorrentInitializer;
-import com.acgist.snail.context.initializer.impl.TrackerInitializer;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.format.JSON;
 import com.acgist.snail.gui.GuiManager;
@@ -139,19 +131,12 @@ public final class SystemContext {
 	/**
 	 * <p>系统初始化</p>
 	 */
-	public static final void init() {
+	public static final void build() {
 		LOGGER.info("系统初始化");
-		// 同步初始化
-		EntityInitializer.newInstance().sync();
-		ConfigInitializer.newInstance().sync();
-		// 异步初始化
-		NatInitializer.newInstance().asyn();
-		DhtInitializer.newInstance().asyn();
-		TrackerInitializer.newInstance().asyn();
-		TorrentInitializer.newInstance().asyn();
-		ProtocolInitializer.newInstance().asyn();
-		DownloaderInitializer.newInstance().asyn();
-		LocalServiceDiscoveryInitializer.newInstance().asyn();
+		SnailBuilder.builder()
+			.enableAllProtocol()
+			.loadTask()
+			.buildAsyn();
 	}
 	
 	/**
