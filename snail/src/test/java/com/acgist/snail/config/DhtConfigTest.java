@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
+import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NetUtils;

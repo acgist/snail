@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.Source;
-import com.acgist.snail.net.torrent.PeerConnect;
+import com.acgist.snail.net.torrent.peer.PeerConnect;
+import com.acgist.snail.net.torrent.peer.PeerDownloader;
+import com.acgist.snail.net.torrent.peer.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.IStatisticsSessionGetter;
 import com.acgist.snail.utils.NetUtils;
@@ -114,11 +116,11 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	/**
 	 * <p>Peer上传</p>
 	 */
-	private PeerConnect peerUploader;
+	private PeerUploader peerUploader;
 	/**
 	 * <p>Peer下载</p>
 	 */
-	private PeerConnect peerDownloader;
+	private PeerDownloader peerDownloader;
 	/**
 	 * <p>统计信息</p>
 	 */
@@ -742,7 +744,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * 
 	 * @return Peer上传
 	 */
-	public PeerConnect peerUploader() {
+	public PeerUploader peerUploader() {
 		return this.peerUploader;
 	}
 	
@@ -751,7 +753,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * 
 	 * @param peerUploader Peer上传
 	 */
-	public void peerUploader(PeerConnect peerUploader) {
+	public void peerUploader(PeerUploader peerUploader) {
 		this.peerUploader = peerUploader;
 	}
 	
@@ -760,7 +762,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * 
 	 * @return Peer下载
 	 */
-	public PeerConnect peerDownloader() {
+	public PeerDownloader peerDownloader() {
 		return this.peerDownloader;
 	}
 	
@@ -769,7 +771,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * 
 	 * @param peerDownloader Peer下载
 	 */
-	public void peerDownloader(PeerConnect peerDownloader) {
+	public void peerDownloader(PeerDownloader peerDownloader) {
 		this.peerDownloader = peerDownloader;
 	}
 	

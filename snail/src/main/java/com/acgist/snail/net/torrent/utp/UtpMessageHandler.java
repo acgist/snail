@@ -15,12 +15,9 @@ import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.IMessageEncryptSender;
-import com.acgist.snail.net.torrent.bootstrap.PeerCryptMessageCodec;
-import com.acgist.snail.net.torrent.bootstrap.PeerUnpackMessageCodec;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindow;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpWindowData;
+import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 

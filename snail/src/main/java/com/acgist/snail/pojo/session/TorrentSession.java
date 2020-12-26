@@ -1,6 +1,5 @@
 package com.acgist.snail.pojo.session;
 
-import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,16 +16,15 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.TimerException;
-import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
-import com.acgist.snail.net.torrent.bootstrap.PeerDownloaderGroup;
-import com.acgist.snail.net.torrent.bootstrap.PeerUploaderGroup;
-import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
-import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.TorrentStreamGroup;
+import com.acgist.snail.net.torrent.dht.DhtLauncher;
+import com.acgist.snail.net.torrent.peer.PeerDownloaderGroup;
+import com.acgist.snail.net.torrent.peer.PeerManager;
+import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.PeerUploader;
+import com.acgist.snail.net.torrent.peer.PeerUploaderGroup;
+import com.acgist.snail.net.torrent.tracker.TrackerLauncherGroup;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -35,8 +33,8 @@ import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
-import com.acgist.snail.protocol.magnet.bootstrap.TorrentBuilder;
+import com.acgist.snail.protocol.magnet.MagnetBuilder;
+import com.acgist.snail.protocol.magnet.TorrentBuilder;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.MapUtils;
 
@@ -903,12 +901,8 @@ public final class TorrentSession {
 	 * 
 	 * @see PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)
 	 */
-	public PeerConnect newPeerUploader(PeerSession peerSession, IMessageCodec<ByteBuffer> peerSubMessageHandler) {
-		if(peerSubMessageHandler instanceof PeerSubMessageHandler) {
-			return this.peerUploaderGroup.newPeerUploader(peerSession, (PeerSubMessageHandler) peerSubMessageHandler);
-		} else {
-			return null;
-		}
+	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
+		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
 	}
 	
 }

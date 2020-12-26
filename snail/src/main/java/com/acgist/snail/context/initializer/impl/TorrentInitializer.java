@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
+import com.acgist.snail.net.torrent.utp.UtpService;
 
 /**
  * <p>初始化BT（DHT、UTP、STUN）服务</p>

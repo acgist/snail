@@ -2,8 +2,6 @@ package com.acgist.snail.net.upnp;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.net.upnp.bootstrap.UpnpRequest;
-import com.acgist.snail.net.upnp.bootstrap.UpnpResponse;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.Performance;

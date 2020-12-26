@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.initializer.Initializer;
-import com.acgist.snail.net.torrent.dht.bootstrap.DhtManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
+import com.acgist.snail.net.torrent.dht.DhtManager;
+import com.acgist.snail.net.torrent.dht.NodeManager;
 
 /**
  * <p>初始化DHT</p>

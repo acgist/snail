@@ -7,10 +7,6 @@
  * 		<th align="left">功能</th>
  * 	</tr>
  * 	<tr>
- * 		<td>bootstrap</td>
- * 		<td>下载实现：Peer查询（DHT/Tracker）、Peer连接、Peer接入、文件系统</td>
- * 	</tr>
- * 	<tr>
  * 		<td>crypt</td>
  * 		<td>MSE加密协议</td>
  * 	</tr>

@@ -2,7 +2,7 @@ package com.acgist.snail.pojo.message;
 
 import java.util.Map;
 
-import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
+import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**

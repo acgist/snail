@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.MultifileDownloader;
-import com.acgist.snail.net.hls.bootstrap.HlsManager;
-import com.acgist.snail.net.hls.bootstrap.TsLinker;
+import com.acgist.snail.net.hls.HlsManager;
+import com.acgist.snail.net.hls.TsLinker;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
 
