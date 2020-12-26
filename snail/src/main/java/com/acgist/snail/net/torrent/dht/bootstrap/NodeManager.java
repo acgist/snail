@@ -138,7 +138,7 @@ public final class NodeManager {
 	}
 
 	/**
-	 * <p>注册{@linkplain DhtConfig#nodes() 默认节点}</p>
+	 * <p>注册DHT默认节点</p>
 	 */
 	private void register() {
 		final var nodes = DhtConfig.getInstance().nodes();

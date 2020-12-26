@@ -3,6 +3,7 @@ package com.acgist.snail;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.context.initializer.impl.ConfigInitializer;
@@ -15,6 +16,11 @@ import com.acgist.snail.context.initializer.impl.TorrentInitializer;
 import com.acgist.snail.context.initializer.impl.TrackerInitializer;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.net.torrent.TorrentServer;
+import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
+import com.acgist.snail.net.torrent.peer.PeerServer;
+import com.acgist.snail.net.torrent.tracker.TrackerServer;
+import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.ftp.FtpProtocol;
@@ -60,7 +66,7 @@ public final class Snail {
 	 */
 	public static final class SnailBuilder {
 		
-		private static final SnailBuilder BUILDER = new SnailBuilder();
+		private static final SnailBuilder INSTANCE = new SnailBuilder();
 		
 		/**
 		 * <p>是否初始化任务</p>
@@ -80,8 +86,8 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public static final SnailBuilder builder() {
-			return BUILDER;
+		public static final SnailBuilder getInstance() {
+			return INSTANCE;
 		}
 		
 		/**
@@ -246,6 +252,20 @@ public final class Snail {
 				.enableMagnet()
 				.enableThunder()
 				.enableTorrent();
+		}
+
+		/**
+		 * <p>关闭资源</p>
+		 */
+		public void shutdown() {
+			if(this.initTorrent) {
+				PeerServer.getInstance().close();
+				TrackerServer.getInstance().close();
+				TorrentServer.getInstance().close();
+				LocalServiceDiscoveryServer.getInstance().close();			
+				NatContext.getInstance().shutdown();
+				UtpRequestQueue.getInstance().shutdown();
+			}
 		}
 		
 	}

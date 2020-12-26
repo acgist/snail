@@ -1,5 +1,8 @@
 package com.acgist.snail.net.torrent.peer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.TcpServer;
 
@@ -11,7 +14,7 @@ import com.acgist.snail.net.TcpServer;
  */
 public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerServer.class);
 	
 	private static final PeerServer INSTANCE = new PeerServer();
 	
@@ -30,11 +33,12 @@ public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	}
 
 	/**
-	 * <p>注册服务监听</p>
+	 * <p>注册Peer服务监听</p>
 	 * 
 	 * @see #listen()
 	 */
 	private void register() {
+		LOGGER.debug("注册Peer服务监听");
 		this.listen();
 	}
 

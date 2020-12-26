@@ -91,7 +91,7 @@ public final class SystemThreadContext {
 	
 	static {
 		LOGGER.info("初始化系统线程池");
-		EXECUTOR = newExecutor(4, 20, 100, 60L, SNAIL_THREAD);
+		EXECUTOR = newExecutor(4, 20, 1000, 60L, SNAIL_THREAD);
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	

@@ -13,13 +13,13 @@ public class SnailTest extends Performance {
 
 	@Test
 	public void testSnail() {
-		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.builder().buildSync().download("https://www.acgist.com"));
+		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.getInstance().buildSync().download("https://www.acgist.com"));
 		this.log(exception);
 	}
 	
 	@Test
 	public void testBuilder() throws DownloadException {
-		final Snail snail = SnailBuilder.builder()
+		final Snail snail = SnailBuilder.getInstance()
 			.enableHttp()
 			.buildSync();
 		final var downloader = snail.download("https://www.acgist.com");
