@@ -3,8 +3,8 @@ package com.acgist.snail.net.torrent.peer;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.torrent.IMessageEncryptSender;
 
 /**
  * <p>Peer消息代理</p>

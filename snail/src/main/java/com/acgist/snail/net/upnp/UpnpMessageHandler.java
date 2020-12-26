@@ -9,7 +9,7 @@ import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.net.codec.impl.StringMessageCodec;
+import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.StringUtils;
 

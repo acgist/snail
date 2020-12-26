@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.initializer.impl.EntityInitializer;
+import com.acgist.snail.context.initializer.EntityInitializer;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.pojo.bean.TorrentInfo;

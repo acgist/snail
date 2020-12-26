@@ -8,7 +8,7 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.initializer.impl.TorrentInitializer;
+import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.utils.ArrayUtils;

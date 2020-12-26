@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.net.codec.impl.StringMessageCodec;
+import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.net.torrent.peer.PeerService;
