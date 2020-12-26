@@ -7,9 +7,9 @@ import java.util.ResourceBundle;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Choosers;
-import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Tooltips;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;

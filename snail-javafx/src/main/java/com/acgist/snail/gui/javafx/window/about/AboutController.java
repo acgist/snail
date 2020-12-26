@@ -8,8 +8,8 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
-import com.acgist.snail.gui.javafx.Controller;
 import com.acgist.snail.gui.javafx.Desktops;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

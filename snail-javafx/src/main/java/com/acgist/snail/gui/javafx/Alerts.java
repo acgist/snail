@@ -3,6 +3,7 @@ package com.acgist.snail.gui.javafx;
 import java.util.Optional;
 
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;

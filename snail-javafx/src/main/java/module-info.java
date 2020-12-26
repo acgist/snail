@@ -10,6 +10,7 @@ open module com.acgist.snail.javafx {
 	//================导出================//
 	exports com.acgist.main;
 	exports com.acgist.snail.gui.javafx;
+	exports com.acgist.snail.gui.javafx.window;
 	
 	//================Java================//
 	requires java.base;

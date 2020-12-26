@@ -43,6 +43,7 @@ public final class DownloaderInitializer extends Initializer {
 			list.forEach(entity -> {
 				try {
 					final var taskSession = TaskSession.newInstance(entity);
+					taskSession.reset();
 					DownloaderManager.getInstance().submit(taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
