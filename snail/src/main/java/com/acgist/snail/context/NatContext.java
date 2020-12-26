@@ -67,13 +67,14 @@ public final class NatContext {
 	 * <p>禁止创建实例</p>
 	 */
 	private NatContext() {
+		this.register();
 	}
 	
 	/**
-	 * <p>初始化NAT服务</p>
+	 * <p>注册NAT服务</p>
 	 */
-	public void init() {
-		LOGGER.info("初始化NAT服务");
+	private void register() {
+		LOGGER.info("注册NAT服务");
 		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp();

@@ -33,9 +33,9 @@ public final class TorrentInitializer extends Initializer {
 		// UDP端口：DHT/UTP/STUN
 		TorrentServer.getInstance();
 		// TCP端口：Peer
-		PeerServer.getInstance().listen();
+		PeerServer.getInstance();
 		// UTP服务
-		UtpService.getInstance().register();
+		UtpService.getInstance();
 	}
 
 }

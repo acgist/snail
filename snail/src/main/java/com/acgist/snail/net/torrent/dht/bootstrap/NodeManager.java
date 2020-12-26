@@ -73,6 +73,7 @@ public final class NodeManager {
 		this.token = this.buildToken();
 		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
+		this.register();
 	}
 	
 	/**
@@ -139,7 +140,7 @@ public final class NodeManager {
 	/**
 	 * <p>注册{@linkplain DhtConfig#nodes() 默认节点}</p>
 	 */
-	public void register() {
+	private void register() {
 		final var nodes = DhtConfig.getInstance().nodes();
 		if(MapUtils.isNotEmpty(nodes)) {
 			nodes.forEach((nodeId, address) -> {

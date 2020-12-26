@@ -23,4 +23,11 @@ public class SystemContextTest extends Performance {
 		assertTrue(SystemContext.latestRelease());
 	}
 	
+	@Test
+	public void testCosted() {
+		this.costed(10, () -> {
+			SystemContext.init();
+		});
+	}
+	
 }

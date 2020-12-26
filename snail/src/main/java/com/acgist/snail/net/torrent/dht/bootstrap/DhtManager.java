@@ -34,12 +34,13 @@ public final class DhtManager {
 	
 	private DhtManager() {
 		this.requests = new LinkedList<>();
+		this.register();
 	}
 	
 	/**
 	 * <p>注册DHT服务</p>
 	 */
-	public void register() {
+	private void register() {
 		LOGGER.debug("注册DHT服务：定时任务");
 		SystemThreadContext.timerFixedDelay(
 			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,

@@ -50,8 +50,12 @@ public final class ProtocolManager {
 	 * @return ProtocolManager
 	 */
 	public ProtocolManager register(Protocol protocol) {
-		LOGGER.info("注册下载协议：{}", protocol.name());
-		this.protocols.add(protocol);
+		if(this.protocols.contains(protocol)) {
+			LOGGER.debug("下载协议已经注册：{}", protocol.name());
+		} else {
+			LOGGER.info("注册下载协议：{}", protocol.name());
+			this.protocols.add(protocol);
+		}
 		return this;
 	}
 	

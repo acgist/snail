@@ -18,6 +18,8 @@ import com.acgist.snail.utils.CollectionUtils;
  * <p>初始化下载器</p>
  * 
  * @author acgist
+ * 
+ * TODO：加载所有任务
  */
 public final class DownloaderInitializer extends Initializer {
 

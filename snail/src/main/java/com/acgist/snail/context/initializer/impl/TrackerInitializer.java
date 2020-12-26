@@ -31,7 +31,7 @@ public final class TrackerInitializer extends Initializer {
 	protected void init() throws DownloadException {
 		LOGGER.info("初始化Tracker");
 		TrackerServer.getInstance();
-		TrackerManager.getInstance().register();
+		TrackerManager.getInstance();
 	}
 
 }

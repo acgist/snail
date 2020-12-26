@@ -29,8 +29,8 @@ public final class DhtInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化DHT");
-		DhtManager.getInstance().register();
-		NodeManager.getInstance().register();
+		DhtManager.getInstance();
+		NodeManager.getInstance();
 	}
 
 }
