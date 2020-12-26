@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.EntityException;
+import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -25,6 +26,7 @@ public class EntityContextTest extends Performance {
 	
 	@BeforeAll
 	public static final void load() {
+		LoggerConfig.off();
 		EntityContext.getInstance().load();
 	}
 	
