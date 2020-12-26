@@ -5,6 +5,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.Snail;
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
@@ -114,32 +115,6 @@ public final class SystemContext {
 	}
 	
 	/**
-	 * <p>开启系统监听</p>
-	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
-	 * 
-	 * @return 是否监听成功
-	 */
-	public static final boolean listen() {
-		final boolean success = ApplicationServer.getInstance().listen();
-		if(!success) {
-			LOGGER.info("已有系统实例：唤醒实例窗口");
-			ApplicationClient.notifyWindow();
-		}
-		return success;
-	}
-	
-	/**
-	 * <p>系统初始化</p>
-	 */
-	public static final void build() {
-		LOGGER.info("系统初始化");
-		SnailBuilder.builder()
-			.enableAllProtocol()
-			.loadTask()
-			.buildAsyn();
-	}
-	
-	/**
 	 * <p>系统信息</p>
 	 */
 	public static final void info() {
@@ -162,7 +137,35 @@ public final class SystemContext {
 		LOGGER.info("工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
 	}
-
+	
+	/**
+	 * <p>开启系统监听</p>
+	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
+	 * 
+	 * @return 是否监听成功
+	 */
+	public static final boolean listen() {
+		final boolean success = ApplicationServer.getInstance().listen();
+		if(!success) {
+			LOGGER.info("已有系统实例：唤醒实例窗口");
+			ApplicationClient.notifyWindow();
+		}
+		return success;
+	}
+	
+	/**
+	 * <p>系统初始化</p>
+	 * 
+	 * @return Snail
+	 */
+	public static final Snail build() {
+		LOGGER.info("系统初始化");
+		return SnailBuilder.builder()
+			.enableAllProtocol()
+			.loadTask()
+			.buildAsyn();
+	}
+	
 	/**
 	 * <p>系统关闭</p>
 	 * <p>所有线程都是守护线程，所以可以不用手动关闭。</p>
