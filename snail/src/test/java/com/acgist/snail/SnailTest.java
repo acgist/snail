@@ -26,7 +26,11 @@ public class SnailTest extends Performance {
 			.buildSync();
 		snail.download("https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip");
 		snail.download("https://www.acgist.com");
+		snail.download("https://www.baidu.com");
+		snail.download("https://www.tudou.com");
+		snail.download("https://www.youku.com");
 		snail.lockDownload();
+		// 文件判断删除
 	}
 
 	@Test
@@ -39,6 +43,7 @@ public class SnailTest extends Performance {
 			.buildSync();
 		snail.download("53391b4efdd621006f20cf5496e1c150922d1df5");
 		snail.lockDownload();
+		// 文件判断删除
 	}
 	
 }

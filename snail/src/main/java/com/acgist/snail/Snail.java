@@ -56,6 +56,10 @@ public final class Snail {
 	}
 	
 	/**
+	 * <p>是否加锁</p>
+	 */
+	private boolean lock = false;
+	/**
 	 * <p>是否初始化任务</p>
 	 */
 	private boolean initTask = false;
@@ -89,6 +93,7 @@ public final class Snail {
 	 */
 	public void lockDownload() {
 		synchronized (this) {
+			this.lock = true;
 			while(DownloaderManager.getInstance().allTask().stream().anyMatch(ITaskSession::inThreadPool)) {
 				try {
 					this.wait();
@@ -104,8 +109,10 @@ public final class Snail {
 	 * <p>解除下载锁</p>
 	 */
 	public void unlockDownload() {
-		synchronized (this) {
-			this.notifyAll();
+		if(this.lock) {
+			synchronized (this) {
+				this.notifyAll();
+			}
 		}
 	}
 	
