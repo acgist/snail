@@ -39,6 +39,14 @@
 
 > 稳定版本提供`mac`、`linux`、`windows`三个版本
 
+```java
+final Snail snail = SnailBuilder.getInstance()
+	.enableAllProtocol()
+	.buildSync();
+snail.download("https://www.acgist.com");
+snail.lockDownload();
+```
+
 #### 编译
 
 ```bash
@@ -48,9 +56,7 @@ mvn clean package -P release -D skipTests
 
 > 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译
 
-#### 启动
-
-下载核心无法直接启动，需要结合`snail.javafx`使用。
+#### Gui
 
 ```bash
 # Linux

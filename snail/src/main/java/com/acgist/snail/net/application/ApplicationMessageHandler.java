@@ -230,6 +230,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>任务列表</p>
 	 * <p>返回任务列表（B编码）</p>
+	 * 
+	 * TODO：优化返回内容
 	 */
 	private void onTaskList() {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
