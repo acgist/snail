@@ -1,6 +1,6 @@
 package com.acgist.snail.pojo.message;
 
-import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
+import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.utils.ObjectUtils;
 
 /**

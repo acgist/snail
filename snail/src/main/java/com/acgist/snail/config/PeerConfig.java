@@ -6,10 +6,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.peer.bootstrap.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.extension.DhtExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.bootstrap.extension.PeerExchangeMessageHandler;
+import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.DhtExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.ExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 
 /**
  * <p>Peer配置</p>

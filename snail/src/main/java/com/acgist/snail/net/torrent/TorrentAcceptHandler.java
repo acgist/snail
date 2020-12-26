@@ -8,7 +8,7 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.StunMessageHandler;
 import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpService;
+import com.acgist.snail.net.torrent.utp.UtpService;
 
 /**
  * <p>Torrent（UTP、DHT、STUN）消息接收器</p>

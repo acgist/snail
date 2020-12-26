@@ -12,7 +12,6 @@ import com.acgist.snail.config.StunConfig.MessageType;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.stun.bootstrap.StunService;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;

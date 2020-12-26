@@ -10,7 +10,6 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.impl.EntityInitializer;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
-import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;

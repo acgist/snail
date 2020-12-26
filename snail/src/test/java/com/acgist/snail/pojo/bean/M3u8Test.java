@@ -12,7 +12,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.bean.M3u8.Type;
-import com.acgist.snail.protocol.hls.bootstrap.M3u8Builder;
+import com.acgist.snail.protocol.hls.M3u8Builder;
 import com.acgist.snail.utils.Performance;
 
 public class M3u8Test extends Performance {

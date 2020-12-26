@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
-import com.acgist.snail.net.torrent.dht.bootstrap.request.AnnouncePeerRequest;
-import com.acgist.snail.net.torrent.dht.bootstrap.request.FindNodeRequest;
-import com.acgist.snail.net.torrent.dht.bootstrap.request.GetPeersRequest;
-import com.acgist.snail.net.torrent.dht.bootstrap.request.PingRequest;
+import com.acgist.snail.net.torrent.dht.NodeManager;
+import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
+import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;
+import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
+import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NumberUtils;

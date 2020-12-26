@@ -4,12 +4,11 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.bootstrap.extension.MetadataMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.magnet.bootstrap.MagnetBuilder;
 import com.acgist.snail.utils.FileUtils;
 
 /**

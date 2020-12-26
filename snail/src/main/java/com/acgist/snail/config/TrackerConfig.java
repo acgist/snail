@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
+import com.acgist.snail.net.torrent.tracker.TrackerManager;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
