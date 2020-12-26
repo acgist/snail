@@ -87,7 +87,7 @@ public final class SystemThreadContext {
 	/**
 	 * <p>任务拒绝执行处理</p>
 	 */
-    public static final RejectedExecutionHandler REJECTED_HANDLER = (runnable, executor) -> LOGGER.error("任务拒绝执行：{}-{}", runnable, executor);
+	public static final RejectedExecutionHandler REJECTED_HANDLER = (runnable, executor) -> LOGGER.error("任务拒绝执行：{}-{}", runnable, executor);
 	
 	static {
 		LOGGER.info("初始化系统线程池");

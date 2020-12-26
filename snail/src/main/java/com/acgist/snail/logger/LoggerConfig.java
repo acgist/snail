@@ -51,7 +51,11 @@ public final class LoggerConfig {
 	/**
 	 * <p>日志级别</p>
 	 */
-	private String level;
+	private Level level;
+	/**
+	 * <p>日志级别</p>
+	 */
+	private int levelInt;
 	/**
 	 * <p>日志系统名称</p>
 	 */
@@ -77,7 +81,16 @@ public final class LoggerConfig {
 	 * <p>初始化配置</p>
 	 */
 	private void init() {
-		this.level = this.properties.getProperty("logger.level");
+		final String levelValue = this.properties.getProperty("logger.level");
+		final Level[] levels = Level.values();
+		this.level = Level.DEBUG; // 默认：DEBUG
+		for (Level level : levels) {
+			if(level.name().equalsIgnoreCase(levelValue)) {
+				this.level = level;
+				break;
+			}
+		}
+		this.levelInt = this.level.toInt();
 		this.system = this.properties.getProperty("logger.system");
 		this.adapter = this.properties.getProperty("logger.adapter");
 		this.fileName = this.properties.getProperty("logger.file.name");
@@ -86,11 +99,19 @@ public final class LoggerConfig {
 	}
 
 	/**
+	 * <p>关闭日志</p>
+	 */
+	public static final void off() {
+		INSTANCE.level = Level.ERROR;
+		INSTANCE.levelInt = Level.ERROR.toInt();
+	}
+	
+	/**
 	 * <p>获取日志级别</p>
 	 * 
 	 * @return 日志级别
 	 */
-	public static final String getLevel() {
+	public static final Level getLevel() {
 		return INSTANCE.level;
 	}
 	
@@ -100,13 +121,7 @@ public final class LoggerConfig {
 	 * @return 日志级别
 	 */
 	public static final int getLevelInt() {
-		final Level[] levels = Level.values();
-		for (Level level : levels) {
-			if(level.name().equalsIgnoreCase(getLevel())) {
-				return level.toInt();
-			}
-		}
-		return Level.DEBUG.toInt(); // 默认级别
+		return INSTANCE.levelInt;
 	}
 	
 	/**

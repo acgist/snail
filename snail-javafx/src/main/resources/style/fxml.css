@@ -134,6 +134,16 @@
  */
 .about {
 }
+.about .info-box {
+	-fx-padding:0 10px 0 0;
+}
+.about .info-box TextFlow {
+	-fx-padding:0 0 5px 0;
+}
+.about .button-box {
+	-fx-spacing:10px;
+	-fx-padding:10px 0;
+}
 /**
  * <p>新建窗口：build.fxml</p>
  */
