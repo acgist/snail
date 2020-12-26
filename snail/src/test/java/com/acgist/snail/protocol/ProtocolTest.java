@@ -13,7 +13,7 @@ public class ProtocolTest extends Performance {
 
 	@Test
 	public void testSupport() {
-		SnailBuilder.builder().enableAllProtocol().buildSync();
+		SnailBuilder.getInstance().enableAllProtocol().buildSync();
 		var result = ProtocolManager.getInstance().support("https://www.acgist.com");
 		this.log(result);
 		result = ProtocolManager.getInstance().support("641000d9be79ad8947701c338c06211ba69e1b09");
@@ -28,7 +28,7 @@ public class ProtocolTest extends Performance {
 	
 	@Test
 	public void testBuildTaskSession() throws DownloadException {
-		SnailBuilder.builder().enableAllProtocol().buildSync();
+		SnailBuilder.getInstance().enableAllProtocol().buildSync();
 		ITaskSession result;
 //		result = ProtocolManager.getInstance().buildTaskSession("https://www.acgist.com");
 //		this.log(result);

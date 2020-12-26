@@ -211,7 +211,7 @@ public final class TrackerManager {
 	}
 	
 	/**
-	 * <p>注册{@linkplain TrackerConfig#announces() 默认Tracker}</p>
+	 * <p>注册默认Tracker</p>
 	 * 
 	 * @return TrackerClient列表
 	 */

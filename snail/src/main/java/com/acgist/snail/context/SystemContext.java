@@ -20,11 +20,6 @@ import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.net.torrent.TorrentServer;
-import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
-import com.acgist.snail.net.torrent.peer.PeerServer;
-import com.acgist.snail.net.torrent.tracker.TrackerServer;
-import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -160,7 +155,7 @@ public final class SystemContext {
 	 */
 	public static final Snail build() {
 		LOGGER.info("系统初始化");
-		return SnailBuilder.builder()
+		return SnailBuilder.getInstance()
 			.enableAllProtocol()
 			.loadTask()
 			.buildAsyn();
@@ -178,17 +173,12 @@ public final class SystemContext {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中...");
 				GuiManager.getInstance().hide();
-				DownloaderManager.getInstance().shutdown();
-				NatContext.getInstance().shutdown();
-				PeerServer.getInstance().close();
-				TrackerServer.getInstance().close();
-				TorrentServer.getInstance().close();
 				ApplicationServer.getInstance().close();
-				LocalServiceDiscoveryServer.getInstance().close();
+				DownloaderManager.getInstance().shutdown();
+				SnailBuilder.getInstance().shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				UtpRequestQueue.shutdown();
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
 				EntityContext.getInstance().persistent();
