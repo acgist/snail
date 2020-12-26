@@ -180,10 +180,12 @@ public final class TrackerLauncher {
 	}
 	
 	/**
-	 * <p>获取是否可用</p>
-	 * <p>可用状态：TrackerLauncher可用、TrackerSession可用</p>
+	 * <p>判断是否可用</p>
 	 * 
-	 * @return true-可用；false-不可用；
+	 * @return 是否可用
+	 * 
+	 * @see #available
+	 * @see TrackerSession#available()
 	 */
 	private boolean available() {
 		return this.available && this.session.available();

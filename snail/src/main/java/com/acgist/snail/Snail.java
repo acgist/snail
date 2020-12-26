@@ -178,7 +178,7 @@ public final class Snail {
 	 */
 	public static final class SnailBuilder {
 		
-		private static final SnailBuilder INSTANCE = new SnailBuilder();
+		private static final SnailBuilder BUILDER = new SnailBuilder();
 		
 		/**
 		 * <p>是否已经构建</p>
@@ -191,7 +191,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public static final SnailBuilder getInstance() {
-			return INSTANCE;
+			return BUILDER;
 		}
 		
 		/**
