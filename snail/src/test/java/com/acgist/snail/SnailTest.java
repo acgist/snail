@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.utils.Performance;
-import com.acgist.snail.utils.ThreadUtils;
 
 public class SnailTest extends Performance {
 
@@ -18,14 +17,28 @@ public class SnailTest extends Performance {
 	}
 	
 	@Test
-	public void testBuilder() throws DownloadException {
+	public void testLockDownload() throws DownloadException {
+		if(SKIP) {
+			return;
+		}
 		final Snail snail = SnailBuilder.getInstance()
 			.enableHttp()
 			.buildSync();
-		final var downloader = snail.download("https://www.acgist.com");
-		while(downloader.taskSession().download()) {
-			ThreadUtils.sleep(1000);
+		snail.download("https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip");
+		snail.download("https://www.acgist.com");
+		snail.lockDownload();
+	}
+
+	@Test
+	public void testMagnet() throws DownloadException {
+		if(SKIP) {
+			return;
 		}
+		final Snail snail = SnailBuilder.getInstance()
+			.enableMagnet()
+			.buildSync();
+		snail.download("53391b4efdd621006f20cf5496e1c150922d1df5");
+		snail.lockDownload();
 	}
 	
 }

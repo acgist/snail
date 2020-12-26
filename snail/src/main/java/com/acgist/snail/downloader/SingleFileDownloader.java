@@ -81,6 +81,7 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	@Override
 	public void unlockDownload() {
+		super.unlockDownload();
 		if(this.streamSession != null) {
 			// 快速失败
 			this.streamSession.fastCheckLive();

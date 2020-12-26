@@ -56,6 +56,7 @@ public abstract class MultifileDownloader extends Downloader {
 	
 	@Override
 	public void unlockDownload() {
+		super.unlockDownload();
 		synchronized (this.downloadLock) {
 			this.downloadLock.notifyAll();
 		}

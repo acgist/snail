@@ -175,7 +175,7 @@ public final class SystemContext {
 				GuiManager.getInstance().hide();
 				ApplicationServer.getInstance().close();
 				DownloaderManager.getInstance().shutdown();
-				SnailBuilder.getInstance().shutdown();
+				Snail.getInstance().shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();

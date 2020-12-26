@@ -35,7 +35,8 @@ public final class BuildEvent extends BuildEventAdapter {
 		final Thread javaFXThread = new Thread();
 		javaFXThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		javaFXThread.setDaemon(true);
-		Platform.startup(javaFXThread); // 异步启动
+		// 阻塞线程
+		Platform.startup(javaFXThread);
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();
 			MainWindow.getInstance().show();

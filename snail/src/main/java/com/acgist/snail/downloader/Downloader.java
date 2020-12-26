@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.Snail;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
@@ -50,7 +51,7 @@ public abstract class Downloader implements IDownloader {
 	 * <p>false-任务正在下载（不能删除）：等待任务结束</p>
 	 */
 	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
-
+	
 	/**
 	 * @param taskSession 任务信息
 	 */
@@ -134,6 +135,7 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void unlockDownload() {
+		Snail.getInstance().unlockDownload();
 	}
 	
 	@Override
