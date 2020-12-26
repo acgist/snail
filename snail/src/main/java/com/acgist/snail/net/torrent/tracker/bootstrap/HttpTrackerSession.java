@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
+package com.acgist.snail.net.torrent.tracker.bootstrap;
 
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
@@ -14,17 +14,16 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker HTTP客户端</p>
+ * <p>HTTP Tracker信息</p>
  * <p>协议链接：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
  * <p>The BitTorrent Protocol Specification</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0003.html</p>
@@ -35,9 +34,9 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class HttpTrackerClient extends TrackerClient {
+public final class HttpTrackerSession extends TrackerSession {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpTrackerSession.class);
 	
 	/**
 	 * <p>刮檫URL：{@value}</p>
@@ -60,22 +59,22 @@ public final class HttpTrackerClient extends TrackerClient {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private HttpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
+	private HttpTrackerSession(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.HTTP);
 	}
 
 	/**
-	 * <p>创建Tracker客户端</p>
+	 * <p>创建HttpTrackerSession</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return Tracker客户端
+	 * @return HttpTrackerSession
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public static final HttpTrackerClient newInstance(String announceUrl) throws NetException {
+	public static final HttpTrackerSession newInstance(String announceUrl) throws NetException {
 		final String scrapeUrl = buildScrapeUrl(announceUrl);
-		return new HttpTrackerClient(scrapeUrl, announceUrl);
+		return new HttpTrackerSession(scrapeUrl, announceUrl);
 	}
 
 	@Override

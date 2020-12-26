@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.tracker.bootstrap.impl;
+package com.acgist.snail.net.torrent.tracker.bootstrap;
 
 import java.nio.ByteBuffer;
 
@@ -11,21 +11,22 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerService;
 import com.acgist.snail.net.torrent.tracker.TrackerClient;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * <p>Tracker UDP客户端</p>
+ * <p>UDP Tracker信息</p>
  * <p>UDP Tracker Protocol for BitTorrent</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0015.html</p>
  * 
  * @author acgist
  */
-public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient {
+public final class UdpTrackerSession extends TrackerSession {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UdpTrackerSession.class);
 
 	/**
 	 * <p>协议固定值：{@value}</p>
@@ -60,7 +61,7 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private UdpTrackerClient(String scrapeUrl, String announceUrl) throws NetException {
+	private UdpTrackerSession(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		final URIWrapper wrapper = URIWrapper.newInstance(announceUrl, DEFAULT_PORT).decode();
 		this.host = wrapper.host();
@@ -77,8 +78,8 @@ public final class UdpTrackerClient extends com.acgist.snail.net.torrent.tracker
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public static final UdpTrackerClient newInstance(String announceUrl) throws NetException {
-		return new UdpTrackerClient(announceUrl, announceUrl);
+	public static final UdpTrackerSession newInstance(String announceUrl) throws NetException {
+		return new UdpTrackerSession(announceUrl, announceUrl);
 	}
 	
 	@Override

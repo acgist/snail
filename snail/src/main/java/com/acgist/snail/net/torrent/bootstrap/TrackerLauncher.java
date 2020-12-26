@@ -8,16 +8,16 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>Tracker执行器</p>
- * <p>使用TrackerClient查询Peer信息</p>
+ * <p>使用TrackerSession查询Peer信息</p>
  * 
  * @author acgist
  */
@@ -52,34 +52,34 @@ public final class TrackerLauncher {
 	 */
 	private boolean needRelease = false;
 	/**
-	 * <p>Tracker客户端</p>
+	 * <p>Tracker信息</p>
 	 */
-	private final TrackerClient client;
+	private final TrackerSession session;
 	/**
 	 * <p>BT任务信息</p>
 	 */
 	private final TorrentSession torrentSession;
 	
 	/**
-	 * @param client Tracker客户端
+	 * @param session Tracker信息
 	 * @param torrentSession BT任务信息
 	 */
-	private TrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
+	private TrackerLauncher(TrackerSession session, TorrentSession torrentSession) {
 		this.id = NumberUtils.build();
-		this.client = client;
+		this.session = session;
 		this.torrentSession = torrentSession;
 	}
 	
 	/**
 	 * <p>创建Tracker执行器</p>
 	 * 
-	 * @param client Tracker客户端
+	 * @param session Tracker信息
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @return Tracker执行器
 	 */
-	public static final TrackerLauncher newInstance(TrackerClient client, TorrentSession torrentSession) {
-		return new TrackerLauncher(client, torrentSession);
+	public static final TrackerLauncher newInstance(TrackerSession session, TorrentSession torrentSession) {
+		return new TrackerLauncher(session, torrentSession);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public final class TrackerLauncher {
 	 * @return 声明地址
 	 */
 	public String announceUrl() {
-		return this.client.announceUrl();
+		return this.session.announceUrl();
 	}
 
 	/**
@@ -107,7 +107,7 @@ public final class TrackerLauncher {
 		this.needRelease = true;
 		if(this.available()) {
 			LOGGER.debug("TrackerLauncher查找Peer：{}", this.announceUrl());
-			this.client.findPeers(this.id, this.torrentSession);
+			this.session.findPeers(this.id, this.torrentSession);
 		}
 	}
 
@@ -167,10 +167,10 @@ public final class TrackerLauncher {
 			try {
 				if(this.torrentSession.completed()) { // 任务完成
 					LOGGER.debug("Tracker完成通知：{}", this.announceUrl());
-					this.client.complete(this.id, this.torrentSession);
+					this.session.complete(this.id, this.torrentSession);
 				} else { // 任务暂停
 					LOGGER.debug("Tracker暂停通知：{}", this.announceUrl());
-					this.client.stop(this.id, this.torrentSession);
+					this.session.stop(this.id, this.torrentSession);
 				}
 			} catch (NetException e) {
 				LOGGER.error("TrackerLauncher关闭异常", e);
@@ -181,12 +181,12 @@ public final class TrackerLauncher {
 	
 	/**
 	 * <p>获取是否可用</p>
-	 * <p>可用状态：TrackerLauncher可用、TrackerClient可用</p>
+	 * <p>可用状态：TrackerLauncher可用、TrackerSession可用</p>
 	 * 
 	 * @return true-可用；false-不可用；
 	 */
 	private boolean available() {
-		return this.available && this.client.available();
+		return this.available && this.session.available();
 	}
 	
 }

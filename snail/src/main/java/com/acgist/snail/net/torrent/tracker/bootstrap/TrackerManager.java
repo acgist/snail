@@ -15,11 +15,10 @@ import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
-import com.acgist.snail.net.torrent.tracker.bootstrap.impl.HttpTrackerClient;
-import com.acgist.snail.net.torrent.tracker.bootstrap.impl.UdpTrackerClient;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -27,7 +26,7 @@ import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>Tracker管理器</p>
- * <p>管理TrackerClient和TrackerLauncher</p>
+ * <p>管理TrackerSession和TrackerLauncher</p>
  * 
  * @author acgist
  */
@@ -47,18 +46,18 @@ public final class TrackerManager {
 	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
 	
 	/**
-	 * <p>Tracker客户端Map</p>
-	 * <p>{@link TrackerClient#id()}=Tracker客户端</p>
+	 * <p>TrackerSession Map</p>
+	 * <p>{@link TrackerSession#id()}=Tracker信息</p>
 	 */
-	private final Map<Integer, TrackerClient> trackerClients;
+	private final Map<Integer, TrackerSession> trackerSessions;
 	/**
-	 * <p>Tracker执行器Map</p>
+	 * <p>TrackerLauncher Map</p>
 	 * <p>{@link TrackerLauncher#id()}=Tracker执行器</p>
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
 	private TrackerManager() {
-		this.trackerClients = new ConcurrentHashMap<>();
+		this.trackerSessions = new ConcurrentHashMap<>();
 		this.trackerLaunchers = new ConcurrentHashMap<>();
 		this.register();
 	}
@@ -66,14 +65,14 @@ public final class TrackerManager {
 	/**
 	 * <p>新建TrackerLauncher</p>
 	 * 
-	 * @param client TrackerClient
+	 * @param trackerSession TrackerSession
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @return TrackerLauncher
 	 */
-	public TrackerLauncher buildTrackerLauncher(TrackerClient client, TorrentSession torrentSession) {
-		final TrackerLauncher launcher = TrackerLauncher.newInstance(client, torrentSession);
-		LOGGER.debug("加载TrackerLauncher：{}-{}，announceUrl：{}", launcher.id(), client.id(), client.announceUrl());
+	public TrackerLauncher buildTrackerLauncher(TrackerSession trackerSession, TorrentSession torrentSession) {
+		final TrackerLauncher launcher = TrackerLauncher.newInstance(trackerSession, torrentSession);
+		LOGGER.debug("加载TrackerLauncher：{}-{}，announceUrl：{}", launcher.id(), trackerSession.id(), trackerSession.announceUrl());
 		this.trackerLaunchers.put(launcher.id(), launcher);
 		return launcher;
 	}
@@ -127,84 +126,118 @@ public final class TrackerManager {
 	/**
 	 * <p>处理连接ID消息</p>
 	 * 
-	 * @param trackerId {@link TrackerClient#id()}
+	 * @param trackerId {@link TrackerSession#id()}
 	 * @param connectionId 连接ID
 	 */
 	public void connectionId(int trackerId, long connectionId) {
-		final var client = this.trackerClients.get(trackerId);
+		final var trackerSession = this.trackerSessions.get(trackerId);
 		// 只有UDP Tracker需要获取连接ID
-		if(client != null && client.type() == Protocol.Type.UDP) {
-			final UdpTrackerClient udpTrackerClient = (UdpTrackerClient) client;
-			udpTrackerClient.connectionId(connectionId);
+		if(
+			trackerSession != null &&
+			trackerSession instanceof UdpTrackerSession &&
+			trackerSession.type() == Protocol.Type.UDP
+		) {
+			// TODO：新强转写法
+			final UdpTrackerSession udpTrackerSession = (UdpTrackerSession) trackerSession;
+			udpTrackerSession.connectionId(connectionId);
 		}
 	}
 	
 	/**
-	 * <p>获取Tracker客户端列表</p>
+	 * <p>获取TrackerSession列表</p>
 	 * 
-	 * @return TrackerClient列表拷贝
+	 * @return TrackerSession列表
 	 */
-	public List<TrackerClient> clients() {
-		return new ArrayList<>(this.trackerClients.values());
+	public List<TrackerSession> sessions() {
+		return new ArrayList<>(this.trackerSessions.values());
 	}
 	
 	/**
-	 * <p>获取TrackerClient列表</p>
-	 * <p>默认不是私有种子</p>
+	 * <p>获取TrackerSession列表</p>
+	 * 
+	 * @param announceUrl 声明地址
+	 * 
+	 * @return TrackerSession列表
+	 * 
+	 * @throws DownloadException 下载异常
+	 * 
+	 * @see #sessions(String, List)
+	 */
+	public List<TrackerSession> sessions(String announceUrl) throws DownloadException {
+		return this.sessions(announceUrl, null);
+	}
+	
+	/**
+	 * <p>获取TrackerSession列表</p>
+	 * 
+	 * @param announceUrls 声明地址集合
+	 * 
+	 * @return TrackerSession列表
+	 * 
+	 * @throws DownloadException 下载异常
+	 * 
+	 * @see #sessions(String, List)
+	 */
+	public List<TrackerSession> sessions(List<String> announceUrls) throws DownloadException {
+		return this.sessions(null, announceUrls);
+	}
+	
+	/**
+	 * <p>获取TrackerSession列表</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 * 
 	 * @throws DownloadException 下载异常
 	 * 
-	 * @see #clients(String, List, boolean)
+	 * @see #sessions(String, List, boolean)
 	 */
-	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls) throws DownloadException {
-		return this.clients(announceUrl, announceUrls, false);
+	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls) throws DownloadException {
+		return this.sessions(announceUrl, announceUrls, false);
 	}
 
 	/**
-	 * <p>获取TrackerClient列表</p>
-	 * <p>如果获取的数量不满足单个任务最大数量，并且不是私有种子时，将会使用系统的TrackerClient补充。</p>
+	 * <p>获取TrackerSession列表</p>
+	 * <p>非私有种子如果TrackerSession列表长度不足则使用系统TrackerSession填充</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
 	 * @param privateTorrent 是否是私有种子
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public List<TrackerClient> clients(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
-		final List<TrackerClient> clients = this.buildTrackerClient(announceUrl, announceUrls);
+	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
+		final List<TrackerSession> sessions = this.buildTrackerSession(announceUrl, announceUrls);
 		if(privateTorrent) {
 			LOGGER.debug("私有种子：不补充Tracker");
-			return clients;
+			return sessions;
 		}
-		final int size = clients.size();
+		final int size = sessions.size();
 		if(size < MAX_TRACKER_SIZE) {
-			final var subjoin = this.clients(MAX_TRACKER_SIZE - size, clients);
+			final var subjoin = this.sessions(MAX_TRACKER_SIZE - size, sessions);
 			if(!subjoin.isEmpty()) {
-				clients.addAll(subjoin);
+				sessions.addAll(subjoin);
 			}
 		}
-		return clients;
+		return sessions;
 	}
 	
 	/**
-	 * <p>补充TrackerClient</p>
+	 * <p>补充TrackerSession</p>
 	 * <p>补充权重最大的客户端</p>
 	 * 
 	 * @param size 补充数量
-	 * @param clients 已有客户端
+	 * @param sessions 已有客户端
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 */
-	private List<TrackerClient> clients(int size, List<TrackerClient> clients) {
-		return this.trackerClients.values().stream()
-			.filter(client -> client.available() && (clients != null && !clients.contains(client)))
+	private List<TrackerSession> sessions(int size, List<TrackerSession> sessions) {
+		return this.trackerSessions.values().stream()
+			.filter(client -> client.available() && (sessions != null && !sessions.contains(client)))
 			.sorted() // 排序
 			.limit(size)
 			.collect(Collectors.toList());
@@ -213,27 +246,29 @@ public final class TrackerManager {
 	/**
 	 * <p>注册默认Tracker</p>
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 */
 	private void register() {
 		try {
-			this.buildTrackerClient(TrackerConfig.getInstance().announces());
+			this.buildTrackerSession(TrackerConfig.getInstance().announces());
 		} catch (DownloadException e) {
 			LOGGER.error("注册默认Tracker异常", e);
 		}
 	}
 	
 	/**
-	 * <p>创建TrackerClient列表</p>
+	 * <p>创建TrackerSession列表</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 * 
 	 * @throws DownloadException 下载异常
+	 * 
+	 * @see #buildTrackerSession(List)
 	 */
-	private List<TrackerClient> buildTrackerClient(String announceUrl, List<String> announceUrls) throws DownloadException {
+	private List<TrackerSession> buildTrackerSession(String announceUrl, List<String> announceUrls) throws DownloadException {
 		final List<String> announces = new ArrayList<>();
 		if(StringUtils.isNotEmpty(announceUrl)) {
 			announces.add(announceUrl);
@@ -241,30 +276,30 @@ public final class TrackerManager {
 		if(CollectionUtils.isNotEmpty(announceUrls)) {
 			announces.addAll(announceUrls);
 		}
-		return this.buildTrackerClient(announces);
+		return this.buildTrackerSession(announces);
 	}
 
 	/**
-	 * <p>创建TrackerClient列表</p>
+	 * <p>创建TrackerSession列表</p>
 	 * 
 	 * @param announceUrls 声明地址集合
 	 * 
-	 * @return TrackerClient列表
+	 * @return TrackerSession列表
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private List<TrackerClient> buildTrackerClient(List<String> announceUrls) throws DownloadException {
+	private List<TrackerSession> buildTrackerSession(List<String> announceUrls) throws DownloadException {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
 		return announceUrls.stream()
 			.map(announceUrl -> {
 				try {
-					return this.buildTrackerClient(announceUrl.trim());
+					return this.buildTrackerSession(announceUrl.trim());
 				} catch (DownloadException e) {
-					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
 				} catch (Exception e) {
-					LOGGER.error("TrackerClient注册异常：{}", announceUrl, e);
+					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
 				}
 				return null;
 			})
@@ -273,73 +308,73 @@ public final class TrackerManager {
 	}
 	
 	/**
-	 * <p>创建TrackerClient</p>
-	 * <p>通过传入的声明地址创建TrackerClient，如果没有被创建则创建TrackerClient并返回，反之直接返回已经创建的TrackerClient。</p>
+	 * <p>创建TrackerSession</p>
+	 * <p>通过传入的声明地址创建TrackerSession，如果没有被创建则创建TrackerSession并返回，反之直接返回已经创建的TrackerSession。</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return TrackerClient
+	 * @return TrackerSession
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private TrackerClient buildTrackerClient(String announceUrl) throws DownloadException {
+	private TrackerSession buildTrackerSession(String announceUrl) throws DownloadException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		synchronized (this.trackerClients) {
-			final Optional<TrackerClient> optional = this.trackerClients.values().stream()
+		synchronized (this.trackerSessions) {
+			final Optional<TrackerSession> optional = this.trackerSessions.values().stream()
 				.filter(client -> client.equalsAnnounceUrl(announceUrl))
 				.findFirst();
 			if(optional.isPresent()) {
 				return optional.get();
 			}
-			final TrackerClient client = this.buildClientProxy(announceUrl);
-			this.trackerClients.put(client.id(), client);
-			LOGGER.debug("注册TrackerClient：ID：{}，AnnounceUrl：{}", client.id(), client.announceUrl());
-			return client;
+			final TrackerSession session = this.buildSessionProxy(announceUrl);
+			this.trackerSessions.put(session.id(), session);
+			LOGGER.debug("注册TrackerSession：ID：{}，AnnounceUrl：{}", session.id(), session.announceUrl());
+			return session;
 		}
 	}
 
 	/**
-	 * <p>创建TrackerClient代理</p>
+	 * <p>创建TrackerSession代理</p>
 	 * <p>如果第一次创建失败将链接使用URL解码后再次创建</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return TrackerClient
+	 * @return TrackerSession
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private TrackerClient buildClientProxy(final String announceUrl) throws DownloadException {
-		TrackerClient client = this.buildClient(announceUrl);
-		if(client == null) {
-			client = this.buildClient(UrlUtils.decode(announceUrl)); // URL解码
+	private TrackerSession buildSessionProxy(final String announceUrl) throws DownloadException {
+		TrackerSession session = this.buildSession(announceUrl);
+		if(session == null) {
+			session = this.buildSession(UrlUtils.decode(announceUrl)); // URL解码
 		}
-		if(client == null) {
-			throw new DownloadException("创建TrackerClient失败（Tracker协议不支持）：" + announceUrl);
+		if(session == null) {
+			throw new DownloadException("创建TrackerSession失败（Tracker协议不支持）：" + announceUrl);
 		}
-		return client;
+		return session;
 	}
 
 	/**
-	 * <p>创建TrackerClient</p>
+	 * <p>创建TrackerSession</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return TrackerClient
+	 * @return TrackerSession
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private TrackerClient buildClient(final String announceUrl) throws DownloadException {
+	private TrackerSession buildSession(final String announceUrl) throws DownloadException {
 		if(Protocol.Type.HTTP.verify(announceUrl)) {
 			try {
-				return HttpTrackerClient.newInstance(announceUrl);
+				return HttpTrackerSession.newInstance(announceUrl);
 			} catch (NetException e) {
 				throw new DownloadException(e);
 			}
 		} else if(Protocol.Type.UDP.verify(announceUrl)) {
 			try {
-				return UdpTrackerClient.newInstance(announceUrl);
+				return UdpTrackerSession.newInstance(announceUrl);
 			} catch (NetException e) {
 				throw new DownloadException(e);
 			}

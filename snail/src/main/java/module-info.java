@@ -26,10 +26,6 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net.http;
 	exports com.acgist.snail.net.stun;
 	exports com.acgist.snail.net.torrent;
-	exports com.acgist.snail.net.torrent.bootstrap;
-	exports com.acgist.snail.net.torrent.dht.bootstrap;
-	exports com.acgist.snail.net.torrent.peer.bootstrap;
-	exports com.acgist.snail.net.torrent.tracker.bootstrap;
 	exports com.acgist.snail.net.upnp;
 	exports com.acgist.snail.pojo;
 	exports com.acgist.snail.pojo.bean;

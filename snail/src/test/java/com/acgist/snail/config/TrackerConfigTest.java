@@ -16,7 +16,7 @@ public class TrackerConfigTest extends Performance {
 	@Test
 	public void testPersistent() throws DownloadException {
 		TrackerConfig config = TrackerConfig.getInstance();
-		TrackerManager.getInstance().clients("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
+		TrackerManager.getInstance().sessions("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
 		config.persistent();
 		assertTrue(FileUtils.userDirFile("/config/bt.tracker.properties").exists());
 	}

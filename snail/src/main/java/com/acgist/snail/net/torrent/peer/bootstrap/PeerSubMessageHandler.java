@@ -16,7 +16,6 @@ import com.acgist.snail.net.torrent.IMessageEncryptSender;
 import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloader;
-import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.net.torrent.peer.bootstrap.extension.DhtExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.bootstrap.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerConnectSession;
@@ -200,7 +199,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			null,
 			PeerConfig.Source.CONNECT
 		);
-		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
+		final PeerConnect peerUploader = torrentSession.newPeerUploader(peerSession, this);
 		if(peerUploader != null) {
 			this.peerConnect = peerUploader;
 			this.peerConnectSession = peerUploader.peerConnectSession();

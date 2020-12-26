@@ -12,7 +12,7 @@ public class TrackerInitializerTest extends Performance {
 	@Test
 	public void testTrackerInitializer() {
 		TrackerInitializer.newInstance().sync();
-		assertTrue(TrackerManager.getInstance().clients().size() > 0);
+		assertTrue(TrackerManager.getInstance().sessions().size() > 0);
 	}
 	
 	@Test
