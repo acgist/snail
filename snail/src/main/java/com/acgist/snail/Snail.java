@@ -63,7 +63,6 @@ public final class Snail {
 	 * <p>SnailBuilder</p>
 	 * 
 	 * @author acgist
-	 *
 	 */
 	public static final class SnailBuilder {
 		
@@ -103,7 +102,7 @@ public final class Snail {
 		 * 
 		 * @return SnailBuilder
 		 */
-		public SnailBuilder enable(Protocol protocol) {
+		public SnailBuilder register(Protocol protocol) {
 			ProtocolManager.getInstance().register(protocol);
 			return this;
 		}
@@ -114,7 +113,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder ftp() {
-			return this.enable(FtpProtocol.getInstance());
+			return this.register(FtpProtocol.getInstance());
 		}
 		
 		/**
@@ -123,7 +122,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder hls() {
-			return this.enable(HlsProtocol.getInstance());
+			return this.register(HlsProtocol.getInstance());
 		}
 		
 		/**
@@ -132,7 +131,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder http() {
-			return this.enable(HttpProtocol.getInstance());
+			return this.register(HttpProtocol.getInstance());
 		}
 		
 		/**
@@ -144,7 +143,7 @@ public final class Snail {
 		 */
 		public SnailBuilder magnet() {
 			this.torrent(); // 注册Torrent下载协议
-			return this.enable(MagnetProtocol.getInstance());
+			return this.register(MagnetProtocol.getInstance());
 		}
 		
 		/**
@@ -153,7 +152,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder thunder() {
-			return this.enable(ThunderProtocol.getInstance());
+			return this.register(ThunderProtocol.getInstance());
 		}
 		
 		/**
@@ -167,7 +166,7 @@ public final class Snail {
 			TrackerInitializer.newInstance().sync();
 			TorrentInitializer.newInstance().sync();
 			LocalServiceDiscoveryInitializer.newInstance().sync();
-			return this.enable(TorrentProtocol.getInstance());
+			return this.register(TorrentProtocol.getInstance());
 		}
 		
 		/**
