@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -16,10 +17,11 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.TimerException;
+import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.torrent.PeerConnect;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.bootstrap.DhtLauncher;
 import com.acgist.snail.net.torrent.bootstrap.PeerDownloaderGroup;
-import com.acgist.snail.net.torrent.bootstrap.PeerUploader;
 import com.acgist.snail.net.torrent.bootstrap.PeerUploaderGroup;
 import com.acgist.snail.net.torrent.bootstrap.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.bootstrap.TrackerLauncherGroup;
@@ -901,8 +903,12 @@ public final class TorrentSession {
 	 * 
 	 * @see PeerUploaderGroup#newPeerUploader(PeerSession, PeerSubMessageHandler)
 	 */
-	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
+	public PeerConnect newPeerUploader(PeerSession peerSession, IMessageCodec<ByteBuffer> peerSubMessageHandler) {
+		if(peerSubMessageHandler instanceof PeerSubMessageHandler) {
+			return this.peerUploaderGroup.newPeerUploader(peerSession, (PeerSubMessageHandler) peerSubMessageHandler);
+		} else {
+			return null;
+		}
 	}
 	
 }

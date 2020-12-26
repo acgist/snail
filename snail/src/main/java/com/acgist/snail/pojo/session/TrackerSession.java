@@ -1,26 +1,26 @@
-package com.acgist.snail.net.torrent.tracker.bootstrap;
+package com.acgist.snail.pojo.session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.torrent.bootstrap.TrackerLauncher;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker客户端</p>
+ * <p>Tracker信息</p>
  * <p>基本协议：TCP（HTTP）、UDP</p>
- * <p>sid：Torrent和Tracker服务器对应的id</p>
+ * <p>sid：{@link TrackerLauncher#id()}</p>
  * 
  * @author acgist
  */
-public abstract class TrackerClient implements Comparable<TrackerClient> {
+public abstract class TrackerSession implements Comparable<TrackerSession> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerSession.class);
 	
 	/**
 	 * <p>想要获取的Peer数量：{@value}</p>
@@ -72,7 +72,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	protected TrackerClient(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
+	protected TrackerSession(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			throw new NetException("Tracker声明地址错误（不支持）：" + announceUrl);
 		}
@@ -102,7 +102,7 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 			LOGGER.error("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			this.weight--;
 			if(++this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
-				LOGGER.warn("TrackerClient停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl);
+				LOGGER.warn("TrackerSession停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl);
 				this.available = false;
 				this.failMessage = e.getMessage();
 			}
@@ -252,8 +252,8 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 	}
 	
 	@Override
-	public int compareTo(TrackerClient client) {
-		return Integer.compare(this.weight, client.weight);
+	public int compareTo(TrackerSession session) {
+		return Integer.compare(this.weight, session.weight);
 	}
 	
 	@Override
@@ -273,9 +273,9 @@ public abstract class TrackerClient implements Comparable<TrackerClient> {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof TrackerClient) {
-			final TrackerClient client = (TrackerClient) object;
-			return StringUtils.equals(this.announceUrl, client.announceUrl);
+		if(object instanceof TrackerSession) {
+			final TrackerSession session = (TrackerSession) object;
+			return StringUtils.equals(this.announceUrl, session.announceUrl);
 		}
 		return false;
 	}

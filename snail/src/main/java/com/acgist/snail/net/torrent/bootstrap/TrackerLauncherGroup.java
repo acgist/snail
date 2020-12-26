@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig.Action;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerClient;
 import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 
 /**
  * <p>Tracker执行器组</p>
@@ -73,19 +73,19 @@ public final class TrackerLauncherGroup {
 	 * @throws DownloadException 下载异常
 	 */
 	public void loadTracker() throws DownloadException {
-		List<TrackerClient> clients = null;
+		List<TrackerSession> sessions = null;
 		final var action = this.torrentSession.action(); // 下载动作
 		if(action == Action.TORRENT) { // BT任务
 			final var torrent = this.torrentSession.torrent();
-			clients = TrackerManager.getInstance().clients(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
+			sessions = TrackerManager.getInstance().sessions(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
 		} else if(action == Action.MAGNET) { // 磁力链接任务
 			final var magnet = this.torrentSession.magnet();
-			clients = TrackerManager.getInstance().clients(null, magnet.getTr());
+			sessions = TrackerManager.getInstance().sessions(magnet.getTr());
 		} else {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
 			return;
 		}
-		clients.stream()
+		sessions.stream()
 			.map(client -> TrackerManager.getInstance().buildTrackerLauncher(client, this.torrentSession))
 			.forEach(launcher -> this.trackerLaunchers.add(launcher));
 	}

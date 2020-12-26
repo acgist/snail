@@ -20,11 +20,17 @@ import com.acgist.snail.context.initializer.impl.TrackerInitializer;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.net.torrent.TorrentServer;
+import com.acgist.snail.net.torrent.dht.bootstrap.NodeManager;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
+import com.acgist.snail.net.torrent.peer.bootstrap.PeerManager;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
+import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.net.torrent.utp.bootstrap.UtpRequestQueue;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.ftp.FtpProtocol;
@@ -87,6 +93,41 @@ public final class Snail {
 		return DownloaderManager.getInstance().newTask(url);
 	}
 
+	/**
+	 * <p>获取所有节点的拷贝</p>
+	 * 
+	 * @return 所有节点的拷贝
+	 * 
+	 * @see NodeManager#nodes()
+	 */
+	public List<NodeSession> allNodeSessions() {
+		return NodeManager.getInstance().nodes();
+	}
+	
+	/**
+	 * <p>获取TrackerSession列表</p>
+	 * 
+	 * @return TrackerSession列表
+	 * 
+	 * @see TrackerManager#sessions()
+	 */
+	public List<TrackerSession> allTrackerSessions() {
+		return TrackerManager.getInstance().sessions();
+	}
+	
+	/**
+	 * <p>Peer存档队列拷贝</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return Peer存档队列
+	 * 
+	 * @see PeerManager#listPeerSession(String)
+	 */
+	public List<PeerSession> listPeerSession(String infoHashHex) {
+		return PeerManager.getInstance().listPeerSession(infoHashHex);
+	}
+	
 	/**
 	 * <p>添加下载锁</p>
 	 * <p>任务下载完成解除</p>
