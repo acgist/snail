@@ -39,14 +39,6 @@
 
 > 稳定版本提供`mac`、`linux`、`windows`三个版本
 
-```java
-final Snail snail = SnailBuilder.getInstance()
-	.enableAllProtocol()
-	.buildSync();
-snail.download("https://www.acgist.com");
-snail.lockDownload();
-```
-
 #### 编译
 
 ```bash
@@ -74,6 +66,14 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 	<artifactId>snail</artifactId>
 	<version>{release.version}</version>
 </dependency>
+```
+
+```java
+final Snail snail = SnailBuilder.getInstance()
+	.enableAllProtocol()
+	.buildSync();
+snail.download("https://www.acgist.com");
+snail.lockDownload();
 ```
 
 [更多帮助](./docs/HELP.md)
