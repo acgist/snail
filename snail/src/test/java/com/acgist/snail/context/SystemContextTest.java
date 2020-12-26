@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,9 +25,14 @@ public class SystemContextTest extends Performance {
 	}
 	
 	@Test
+	public void testBuild() {
+		assertDoesNotThrow(() -> SystemContext.build());
+	}
+	
+	@Test
 	public void testCosted() {
 		this.costed(10, () -> {
-			SystemContext.init();
+			SystemContext.build();
 		});
 	}
 	

@@ -2,8 +2,8 @@ package com.acgist.snail.protocol;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.initializer.impl.ProtocolInitializer;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.Performance;
@@ -13,7 +13,7 @@ public class ProtocolTest extends Performance {
 
 	@Test
 	public void testSupport() {
-		ProtocolInitializer.newInstance().sync();
+		SnailBuilder.builder().enableAllProtocol().buildSync();
 		var result = ProtocolManager.getInstance().support("https://www.acgist.com");
 		this.log(result);
 		result = ProtocolManager.getInstance().support("641000d9be79ad8947701c338c06211ba69e1b09");
@@ -28,7 +28,7 @@ public class ProtocolTest extends Performance {
 	
 	@Test
 	public void testBuildTaskSession() throws DownloadException {
-		ProtocolInitializer.newInstance().sync();
+		SnailBuilder.builder().enableAllProtocol().buildSync();
 		ITaskSession result;
 //		result = ProtocolManager.getInstance().buildTaskSession("https://www.acgist.com");
 //		this.log(result);
