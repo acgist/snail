@@ -13,6 +13,7 @@ public class ProtocolInitializerTest extends Performance {
 	@Test
 	public void testProtocolInitializer() throws DownloadException {
 		ProtocolInitializer.newInstance().sync();
+		ProtocolInitializer.newInstance().sync();
 		assertTrue(ProtocolManager.getInstance().available());
 	}
 	

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.impl.TorrentInitializer;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.utils.ArrayUtils;
@@ -40,7 +39,6 @@ public class MagnetDownloaderTest extends Performance {
 			return;
 		}
 		TorrentInitializer.newInstance().sync();
-		TrackerManager.getInstance().register();
 		// 推荐使用活跃磁力链接测试
 //		final String url = "902FFAA29EE632C8DC966ED9AB573409BA9A518E";
 		final String url = "magnet:?xt=urn:btih:902FFAA29EE632C8DC966ED9AB573409BA9A518E";

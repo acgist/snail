@@ -21,11 +21,21 @@ public final class PeerServer extends TcpServer<PeerMessageHandler> {
 	
 	private PeerServer() {
 		super("Peer Server", PeerMessageHandler.class);
+		this.register();
 	}
 	
 	@Override
 	public boolean listen() {
 		return this.listen(SystemConfig.getTorrentPort());
+	}
+
+	/**
+	 * <p>注册服务监听</p>
+	 * 
+	 * @see #listen()
+	 */
+	private void register() {
+		this.listen();
 	}
 
 }

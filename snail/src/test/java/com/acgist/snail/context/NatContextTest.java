@@ -12,8 +12,7 @@ import com.acgist.snail.utils.ThreadUtils;
 public class NatContextTest extends Performance {
 
 	@Test
-	public void testInit() {
-		NatContext.getInstance().init();
+	public void testRegister() {
 		if(NatContext.getInstance().type() != Type.UPNP) {
 			ThreadUtils.sleep(2000);
 		}

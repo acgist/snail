@@ -60,6 +60,7 @@ public final class TrackerManager {
 	private TrackerManager() {
 		this.trackerClients = new ConcurrentHashMap<>();
 		this.trackerLaunchers = new ConcurrentHashMap<>();
+		this.register();
 	}
 
 	/**
@@ -213,11 +214,13 @@ public final class TrackerManager {
 	 * <p>注册{@linkplain TrackerConfig#announces() 默认Tracker}</p>
 	 * 
 	 * @return TrackerClient列表
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	public List<TrackerClient> register() throws DownloadException {
-		return this.buildTrackerClient(TrackerConfig.getInstance().announces());
+	private void register() {
+		try {
+			this.buildTrackerClient(TrackerConfig.getInstance().announces());
+		} catch (DownloadException e) {
+			LOGGER.error("注册默认Tracker异常", e);
+		}
 	}
 	
 	/**

@@ -45,12 +45,13 @@ public final class UtpService {
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
+		this.register();
 	}
 	
 	/**
 	 * <p>注册UTP服务</p>
 	 */
-	public void register() {
+	private void register() {
 		LOGGER.debug("注册UTP服务：定时任务");
 		SystemThreadContext.timerFixedDelay(
 			UTP_INTERVAL,

@@ -143,8 +143,8 @@ public final class SystemContext {
 		LOGGER.info("系统初始化");
 		// 同步初始化
 		EntityInitializer.newInstance().sync();
+		ConfigInitializer.newInstance().sync();
 		// 异步初始化
-		ConfigInitializer.newInstance().asyn();
 		NatInitializer.newInstance().asyn();
 		DhtInitializer.newInstance().asyn();
 		TrackerInitializer.newInstance().asyn();

@@ -13,7 +13,6 @@ import com.acgist.snail.context.initializer.impl.TorrentInitializer;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.event.TorrentEvent;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.tracker.bootstrap.TrackerManager;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.ProtocolManager;
@@ -51,7 +50,6 @@ public class TorrentDownloaderTest extends Performance {
 			return;
 		}
 		TorrentInitializer.newInstance().sync();
-		TrackerManager.getInstance().register();
 		final String url = "E://snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		ProtocolManager.getInstance().register(TorrentProtocol.getInstance()).available(true);
 		final var torrent = TorrentManager.loadTorrent(url);
