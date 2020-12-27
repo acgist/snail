@@ -72,7 +72,7 @@ public class GuiManagerTest extends Performance {
 			final String[] args = new String[] { "mode=extend" }; // 后台模式启动
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {
-			LOGGER.debug("启动监听失败");
+			LOGGER.debug("启动系统失败");
 		}
 		LOGGER.info("系统启动完成");
 	}

@@ -3,12 +3,8 @@ package com.acgist.snail.context.initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.config.PropertiesConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.config.TrackerConfig;
 
 /**
  * <p>初始化配置</p>
@@ -29,18 +25,10 @@ public final class ConfigInitializer extends Initializer {
 		return new ConfigInitializer();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>初始化{@link PropertiesConfig}的子类</p>
-	 */
 	@Override
 	protected void init() {
 		LOGGER.info("初始化配置");
-		DhtConfig.getInstance();
-		PeerConfig.getInstance();
 		SystemConfig.getInstance();
-		TrackerConfig.getInstance();
 		DownloadConfig.getInstance();
 	}
 
