@@ -1,11 +1,18 @@
 package com.acgist.snail;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail.SnailBuilder;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.utils.Performance;
 
 public class SnailTest extends Performance {
@@ -14,6 +21,23 @@ public class SnailTest extends Performance {
 	public void testSnail() {
 		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.getInstance().buildSync().download("https://www.acgist.com"));
 		this.log(exception);
+	}
+	
+	@Test
+	public void testApplication() throws IOException {
+		SnailBuilder.getInstance()
+			.application()
+			.buildSync();
+		final Socket socket = new Socket();
+		socket.connect(new InetSocketAddress(SystemConfig.getServicePort()));
+		assertTrue(socket.isConnected());
+		socket.close();
+		Snail.shutdown();
+	}
+	
+	@Test
+	public void testDownloader() {
+		assertTrue(DownloaderManager.getInstance().allTask().isEmpty());
 	}
 	
 	@Test

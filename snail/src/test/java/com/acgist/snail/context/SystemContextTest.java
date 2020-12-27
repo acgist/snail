@@ -15,7 +15,6 @@ public class SystemContextTest extends Performance {
 	public void testSystemContext() {
 		SystemContext.info();
 		this.log(SystemContext.osName());
-		assertTrue(SystemContext.available());
 		assertNotNull(SystemContext.getInstance());
 	}
 	

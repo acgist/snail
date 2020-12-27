@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.Snail;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.event.AlertEvent;
@@ -66,9 +67,8 @@ public class GuiManagerTest extends Performance {
 		}
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
-		final boolean enable = SystemContext.listen(); // 启动系统监听
-		if(enable) {
-			SystemContext.build(); // 初始化系统上下文
+		SystemContext.build(); // 初始化系统上下文
+		if(Snail.available()) {
 			final String[] args = new String[] { "mode=extend" }; // 后台模式启动
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {

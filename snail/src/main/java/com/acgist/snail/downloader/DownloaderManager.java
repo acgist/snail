@@ -9,11 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.ProtocolManager;
+import com.acgist.snail.utils.CollectionUtils;
 
 /**
  * <p>下载器管理器</p>
@@ -221,6 +225,30 @@ public final class DownloaderManager {
 	}
 
 	/**
+	 * <p>加载实体任务</p>
+	 */
+	public void loadTaskEntity() {
+		final EntityContext entityContext = EntityContext.getInstance();
+		final List<TaskEntity> list = new ArrayList<>(entityContext.allTask());
+		if(CollectionUtils.isNotEmpty(list)) {
+			list.forEach(entity -> {
+				try {
+					final var taskSession = TaskSession.newInstance(entity);
+					taskSession.reset();
+					this.submit(taskSession);
+				} catch (DownloadException e) {
+					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
+					entityContext.delete(entity);
+				}
+			});
+			// 刷新下载
+			this.refresh();
+			// 刷新状态
+			GuiManager.getInstance().refreshTaskList();
+		}
+	}
+	
+	/**
 	 * <p>关闭下载器管理器</p>
 	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
@@ -237,5 +265,5 @@ public final class DownloaderManager {
 		}
 //		SystemThreadContext.shutdown(this.executor); // 不直接关闭线程池：等待任务自动结束
 	}
-	
+
 }
