@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.Snail;
 import com.acgist.snail.gui.javafx.Themes;
 
 import javafx.application.Application;
@@ -136,7 +136,7 @@ public abstract class Window<T extends Controller> extends Application {
 	 * <p>显示窗口（异步）</p>
 	 */
 	public void show() {
-		if(SystemContext.available()) {
+		if(Snail.available()) {
 			this.stage.show();
 		}
 	}
@@ -145,7 +145,7 @@ public abstract class Window<T extends Controller> extends Application {
 	 * <p>显示窗口（同步）</p>
 	 */
 	public void showAndWait() {
-		if(SystemContext.available()) {
+		if(Snail.available()) {
 			this.stage.showAndWait();
 		}
 	}

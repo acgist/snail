@@ -7,18 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.Snail;
 import com.acgist.snail.Snail.SnailBuilder;
-import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.format.JSON;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
-import com.acgist.snail.net.application.ApplicationClient;
-import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.utils.FileUtils;
 
@@ -97,10 +92,6 @@ public final class SystemContext {
 	 * <p>系统名称</p>
 	 */
 	private final String osName;
-	/**
-	 * <p>系统状态</p>
-	 */
-	private volatile boolean available = true;
 	
 	/**
 	 * <p>禁止创建实例</p>
@@ -134,21 +125,6 @@ public final class SystemContext {
 	}
 	
 	/**
-	 * <p>开启系统监听</p>
-	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
-	 * 
-	 * @return 是否监听成功
-	 */
-	public static final boolean listen() {
-		final boolean success = ApplicationServer.getInstance().listen();
-		if(!success) {
-			LOGGER.info("已有系统实例：唤醒实例窗口");
-			ApplicationClient.notifyWindow();
-		}
-		return success;
-	}
-	
-	/**
 	 * <p>系统初始化</p>
 	 * 
 	 * @return Snail
@@ -156,8 +132,9 @@ public final class SystemContext {
 	public static final Snail build() {
 		LOGGER.info("系统初始化");
 		return SnailBuilder.getInstance()
+			.downloader()
+			.application()
 			.enableAllProtocol()
-			.loadTask()
 			.buildAsyn();
 	}
 	
@@ -168,20 +145,14 @@ public final class SystemContext {
 	 * @see SystemThreadContext
 	 */
 	public static final void shutdown() {
-		if(SystemContext.available()) {
-			INSTANCE.available = false;
+		if(Snail.available()) {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中...");
 				GuiManager.getInstance().hide();
-				ApplicationServer.getInstance().close();
-				DownloaderManager.getInstance().shutdown();
-				Snail.getInstance().shutdown();
+				Snail.shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				DhtConfig.getInstance().persistent();
-				TrackerConfig.getInstance().persistent();
-				EntityContext.getInstance().persistent();
 				GuiManager.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
@@ -201,15 +172,6 @@ public final class SystemContext {
 		return INSTANCE.osName;
 	}
 
-	/**
-	 * <p>判断系统是否可用</p>
-	 * 
-	 * @return 是否可用
-	 */
-	public static final boolean available() {
-		return INSTANCE.available;
-	}
-	
 	/**
 	 * <p>判断是不是最新版本</p>
 	 * 

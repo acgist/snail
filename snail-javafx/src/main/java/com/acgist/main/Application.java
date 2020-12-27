@@ -3,6 +3,7 @@ package com.acgist.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.Snail;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.JavaFXGuiManager;
@@ -38,9 +39,8 @@ public final class Application {
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
-		final boolean enable = SystemContext.listen(); // 启动系统监听
-		if(enable) {
-			SystemContext.build(); // 初始化系统上下文
+		SystemContext.build(); // 初始化系统上下文
+		if(Snail.available()) {
 			JavaFXGuiManager.getInstance().registerEvent(); // 注册GUI事件
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {

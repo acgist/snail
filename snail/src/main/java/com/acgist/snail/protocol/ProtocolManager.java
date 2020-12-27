@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.Snail;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.ITaskSession;
@@ -150,7 +150,7 @@ public final class ProtocolManager {
 				}
 			}
 		}
-		if(SystemContext.available()) {
+		if(Snail.available()) {
 			return true;
 		} else {
 			throw new DownloadException("系统正在关闭中");
