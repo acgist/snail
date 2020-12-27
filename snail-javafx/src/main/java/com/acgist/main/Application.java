@@ -44,7 +44,7 @@ public final class Application {
 			JavaFXGuiManager.getInstance().registerEvent(); // 注册GUI事件
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
 		} else {
-			LOGGER.debug("启动监听失败");
+			LOGGER.debug("启动系统失败");
 		}
 		LOGGER.info("系统启动完成");
 	}
