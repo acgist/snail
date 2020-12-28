@@ -87,7 +87,7 @@ public final class StreamSession {
 	 */
 	public void close() {
 		try {
-			LOGGER.info("数据流没有数据传输：关闭数据流");
+			LOGGER.debug("数据流没有数据传输：关闭数据流");
 			IoUtils.close(this.input);
 		} catch (Exception e) {
 			LOGGER.error("关闭数据流异常", e);

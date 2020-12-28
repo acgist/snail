@@ -179,7 +179,7 @@ public final class BeanUtils {
 					method.invoke(instance, data.get(property));
 				}
 			} catch (Exception e) {
-				LOGGER.info("设置实例属性异常：{}-{}", clazz, property, e);
+				LOGGER.error("设置实例属性异常：{}-{}", clazz, property, e);
 			}
 		}
 	}

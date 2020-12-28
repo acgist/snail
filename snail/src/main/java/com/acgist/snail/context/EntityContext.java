@@ -138,7 +138,7 @@ public final class EntityContext {
 	 */
 	public boolean delete(TaskEntity entity) {
 		EntityException.requireNotNull(entity);
-		LOGGER.info("删除任务：{}", entity.getName());
+		LOGGER.debug("删除任务：{}", entity.getName());
 		// 删除文件
 		if(SystemConfig.getTaskFileDelete()) {
 			final var file = entity.getFile();
@@ -245,7 +245,7 @@ public final class EntityContext {
 	 * 
 	 * @return 是否删除成功
 	 */
-	public boolean delete(String id) {
+	private boolean delete(String id) {
 		LOGGER.debug("删除实体：{}", id);
 		boolean success = false;
 		synchronized (this) {
@@ -280,7 +280,7 @@ public final class EntityContext {
 					} else if(object instanceof ConfigEntity) {
 						this.configEntities.add((ConfigEntity) object);
 					} else {
-						LOGGER.warn("未知类型：{}", object);
+						LOGGER.warn("未知实体类型：{}", object);
 					}
 				});
 				LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());

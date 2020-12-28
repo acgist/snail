@@ -29,7 +29,7 @@ public final class TorrentInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化BT（DHT、UTP、STUN）服务");
+		LOGGER.debug("初始化BT（DHT、UTP、STUN）服务");
 		PeerConfig.getInstance();
 		TorrentServer.getInstance();
 		PeerServer.getInstance();

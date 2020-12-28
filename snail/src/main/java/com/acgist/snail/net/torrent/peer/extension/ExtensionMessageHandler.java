@@ -211,7 +211,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			this.dontHave(buffer);
 			break;
 		default:
-			LOGGER.info("处理扩展消息错误（类型未适配）：{}", extensionType);
+			LOGGER.warn("处理扩展消息错误（类型未适配）：{}", extensionType);
 			break;
 		}
 	}

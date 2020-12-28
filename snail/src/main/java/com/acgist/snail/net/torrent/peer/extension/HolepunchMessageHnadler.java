@@ -104,7 +104,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			this.onError(host, port, errorCode);
 			break;
 		default:
-			LOGGER.info("处理holepunch消息错误（类型未适配）：{}", holepunchType);
+			LOGGER.warn("处理holepunch消息错误（类型未适配）：{}", holepunchType);
 			break;
 		}
 	}

@@ -101,7 +101,7 @@ public final class WindowsTheme implements ITheme {
 				theme = Color.rgb(red, green, blud, opacity);
 			}
 		}
-		LOGGER.info("Windows系统主题颜色：{}-{}", colorValue, theme);
+		LOGGER.debug("Windows系统主题颜色：{}-{}", colorValue, theme);
 		return theme;
 	}
 	

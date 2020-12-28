@@ -74,20 +74,20 @@ public final class NatContext {
 	 * <p>必须外部调用不能单例注册：导致不能唤醒</p>
 	 */
 	public void register() {
-		LOGGER.info("注册NAT服务");
+		LOGGER.debug("注册NAT服务");
 		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp();
 			if(UpnpService.getInstance().useable()) {
-				LOGGER.info("UPNP映射成功");
+				LOGGER.debug("UPNP映射成功");
 				this.type = Type.UPNP;
 			} else {
-				LOGGER.info("UPNP映射失败：使用STUN映射");
+				LOGGER.debug("UPNP映射失败：使用STUN映射");
 				this.type = Type.STUN;
 				StunService.getInstance().mapping();
 			}
 		} else {
-			LOGGER.info("已是公网IP地址：忽略NAT设置");
+			LOGGER.debug("已是公网IP地址：忽略NAT设置");
 			SystemConfig.setExternalIpAddress(NetUtils.LOCAL_HOST_ADDRESS);
 		}
 	}
@@ -105,7 +105,7 @@ public final class NatContext {
 	 * <p>关闭NAT服务</p>
 	 */
 	public void shutdown() {
-		LOGGER.info("关闭NAT服务");
+		LOGGER.debug("关闭NAT服务");
 		if(this.type == Type.UPNP) {
 			UpnpService.getInstance().release();
 			UpnpServer.getInstance().close();

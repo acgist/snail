@@ -44,7 +44,7 @@ public final class Themes {
 				break;
 				// TODO：Mac、Linux
 			default:
-				LOGGER.info("系统主题没有适配系统类型：{}", systemType);
+				LOGGER.warn("系统主题没有适配系统类型：{}", systemType);
 				break;
 			}
 		}

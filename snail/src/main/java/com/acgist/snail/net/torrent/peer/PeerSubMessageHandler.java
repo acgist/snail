@@ -323,7 +323,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				this.extension(buffer);
 				break;
 			default:
-				LOGGER.info("处理Peer消息错误（类型未适配）：{}", type);
+				LOGGER.warn("处理Peer消息错误（类型未适配）：{}", type);
 				break;
 			}
 		} else { // 没有握手

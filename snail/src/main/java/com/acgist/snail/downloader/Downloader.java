@@ -161,7 +161,7 @@ public abstract class Downloader implements IDownloader {
 		}
 		synchronized (this.taskSession) {
 			if(this.taskSession.await()) {
-				LOGGER.info("开始下载任务：{}", name);
+				LOGGER.debug("开始下载任务：{}", name);
 				this.fail = false; // 重置下载失败状态
 				this.deleteLock.set(false); // 设置删除锁状态
 				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
@@ -175,7 +175,7 @@ public abstract class Downloader implements IDownloader {
 				this.checkComplete(); // 检查完成状态
 				this.release(); // 释放资源
 				this.unlockDelete(); // 释放删除锁
-				LOGGER.info("任务下载结束：{}", name);
+				LOGGER.debug("任务下载结束：{}", name);
 			} else {
 				LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 			}

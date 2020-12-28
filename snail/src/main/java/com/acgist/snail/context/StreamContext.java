@@ -81,7 +81,7 @@ public final class StreamContext {
 	 * <p>注册定时任务</p>
 	 */
 	private void register() {
-		LOGGER.info("注册定时任务：数据流上下文管理");
+		LOGGER.debug("注册定时任务：数据流上下文管理");
 		SystemThreadContext.timerAtFixedRate(
 			CHECK_LIVE_INTERVAL,
 			CHECK_LIVE_INTERVAL,

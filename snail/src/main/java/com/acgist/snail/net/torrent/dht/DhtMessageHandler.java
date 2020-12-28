@@ -91,7 +91,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 				response = this.announcePeer(request);
 				break;
 			default:
-				LOGGER.info("处理DHT请求失败（类型未适配）：{}", request.getQ());
+				LOGGER.warn("处理DHT请求失败（类型未适配）：{}", request.getQ());
 				response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
 				break;
 			}
@@ -133,7 +133,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			this.announcePeer(request, response);
 			break;
 		default:
-			LOGGER.info("处理DHT响应失败（类型未适配）：{}", request.getQ());
+			LOGGER.warn("处理DHT响应失败（类型未适配）：{}", request.getQ());
 			break;
 		}
 	}

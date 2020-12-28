@@ -165,7 +165,7 @@ public final class TorrentBuilder {
 		final File file = new File(filePath);
 		// 文件已存在时不保存
 		if(file.exists()) {
-			LOGGER.info("种子文件已存在：{}", filePath);
+			LOGGER.debug("种子文件已存在：{}", filePath);
 			return;
 		}
 		LOGGER.debug("保存种子文件：{}", filePath);

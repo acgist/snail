@@ -82,7 +82,7 @@ public final class SystemContext {
 					}
 				}
 			}
-			LOGGER.info("未知系统：{}", osName);
+			LOGGER.warn("未知系统：{}", osName);
 			return null;
 		}
 		

@@ -27,7 +27,7 @@ public final class ConfigInitializer extends Initializer {
 
 	@Override
 	protected void init() {
-		LOGGER.info("初始化配置");
+		LOGGER.debug("初始化配置");
 		SystemConfig.getInstance();
 		DownloadConfig.getInstance();
 	}

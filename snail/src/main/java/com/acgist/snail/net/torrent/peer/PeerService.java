@@ -50,8 +50,8 @@ public final class PeerService {
 	private PeerService() {
 		this.peerId = this.buildPeerId();
 		this.peerIdUrl = this.buildPeerIdUrl();
-		LOGGER.info("PeerId：{}", new String(this.peerId));
-		LOGGER.info("PeerIdUrl：{}", this.peerIdUrl);
+		LOGGER.debug("PeerId：{}", new String(this.peerId));
+		LOGGER.debug("PeerIdUrl：{}", this.peerIdUrl);
 	}
 	
 	/**

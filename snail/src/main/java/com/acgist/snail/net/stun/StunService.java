@@ -49,7 +49,7 @@ public final class StunService {
 	 * @param port 外网端口
 	 */
 	public void mapping(String externalIpAddress, int port) {
-		LOGGER.info("STUN端口映射：{}-{}", externalIpAddress, port);
+		LOGGER.debug("STUN端口映射：{}-{}", externalIpAddress, port);
 		SystemConfig.setExternalIpAddress(externalIpAddress);
 		SystemConfig.setTorrentPortExt(port);
 		PeerConfig.nat(); // 设置使用NAT穿透

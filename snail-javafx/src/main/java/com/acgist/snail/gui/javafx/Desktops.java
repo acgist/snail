@@ -56,7 +56,7 @@ public final class Desktops {
 				}
 			});
 		} else {
-			LOGGER.info("系统打开文件失败：{}", file.getAbsolutePath());
+			LOGGER.warn("系统打开文件失败：{}", file.getAbsolutePath());
 		}
 	}
 	
@@ -79,7 +79,7 @@ public final class Desktops {
 				}
 			});
 		} else {
-			LOGGER.info("系统打开网页链接失败：{}", url);
+			LOGGER.warn("系统打开网页链接失败：{}", url);
 		}
 	}
 	

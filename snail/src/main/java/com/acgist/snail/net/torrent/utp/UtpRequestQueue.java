@@ -105,7 +105,7 @@ public final class UtpRequestQueue {
 	 * <p>关闭UTP请求队列处理线程池</p>
 	 */
 	public void shutdown() {
-		LOGGER.info("关闭UTP请求队列处理线程池");
+		LOGGER.debug("关闭UTP请求队列处理线程池");
 		SystemThreadContext.shutdown(this.executor);
 	}
 	

@@ -26,7 +26,7 @@ public final class EntityInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化实体上下文");
+		LOGGER.debug("初始化实体上下文");
 		EntityContext.getInstance().load();
 	}
 	
