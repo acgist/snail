@@ -254,7 +254,7 @@ public final class DownloaderManager {
 	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {
-		LOGGER.info("关闭下载器管理器");
+		LOGGER.debug("关闭下载器管理器");
 		try {
 			synchronized (this.downloaders) {
 				this.downloaders.stream()

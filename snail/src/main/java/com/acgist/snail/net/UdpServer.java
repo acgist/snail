@@ -171,7 +171,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 			this.channel.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true);
 			this.channel.join(InetAddress.getByName(group), NetUtils.DEFAULT_NETWORK_INTERFACE);
 		} catch (Exception e) {
-			LOGGER.info("UDP多播异常：{}-{}", this.name, group, e);
+			LOGGER.debug("UDP多播异常：{}-{}", this.name, group, e);
 		}
 	}
 	
@@ -251,7 +251,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * <p>关闭UDP Server</p>
 	 */
 	public void close() {
-		LOGGER.info("关闭UDP Server：{}", this.name);
+		LOGGER.debug("关闭UDP Server：{}", this.name);
 		IoUtils.close(this.channel);
 		IoUtils.close(this.selector);
 	}
@@ -260,7 +260,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	 * <p>关闭UDP Server线程池</p>
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭UDP Server线程池");
+		LOGGER.debug("关闭UDP Server线程池");
 		SystemThreadContext.shutdown(EXECUTOR);
 	}
 

@@ -96,6 +96,7 @@ public final class LoggerConfig {
 		this.fileName = this.properties.getProperty("logger.file.name");
 		this.fileBuffer = Integer.parseInt(this.properties.getProperty("logger.file.buffer", "8192"));
 		this.fileMaxDays = Integer.parseInt(this.properties.getProperty("logger.file.max.days", "30"));
+		this.properties.clear();
 	}
 
 	/**

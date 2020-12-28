@@ -294,7 +294,7 @@ public final class M3u8Builder {
 			final String uri = wrapper.getIgnoreCase("URI");
 			return this.buildCipherAes128(iv, uri);
 		} else {
-			LOGGER.info("HLS加密算法未实现：{}", protocol);
+			LOGGER.warn("HLS加密算法未实现：{}", protocol);
 		}
 		return null;
 	}

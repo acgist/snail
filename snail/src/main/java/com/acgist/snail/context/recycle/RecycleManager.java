@@ -25,7 +25,7 @@ public final class RecycleManager {
 	
 	static {
 		final SystemType systemType = SystemType.local();
-		LOGGER.info("初始化回收站：{}", systemType);
+		LOGGER.debug("初始化回收站：{}", systemType);
 		if(systemType == SystemType.WINDOWS) {
 			BUILDER = WindowsRecycle::new;
 		} else {

@@ -85,7 +85,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * @return 开启状态
 	 */
 	protected boolean listen(String host, int port) {
-		LOGGER.info("启动TCP服务端：{}", this.name);
+		LOGGER.debug("启动TCP服务端：{}", this.name);
 		boolean success = true;
 		try {
 			this.server = AsynchronousServerSocketChannel.open(GROUP);
@@ -107,7 +107,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * <p>关闭TCP Server</p>
 	 */
 	public void close() {
-		LOGGER.info("关闭TCP Server：{}", this.name);
+		LOGGER.debug("关闭TCP Server：{}", this.name);
 		IoUtils.close(this.server);
 	}
 	
@@ -115,7 +115,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * <p>关闭TCP Server线程池</p>
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭TCP Server线程池");
+		LOGGER.debug("关闭TCP Server线程池");
 		SystemThreadContext.shutdown(GROUP);
 	}
 	

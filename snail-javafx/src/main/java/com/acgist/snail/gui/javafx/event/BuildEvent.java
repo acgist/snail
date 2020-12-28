@@ -31,7 +31,7 @@ public final class BuildEvent extends BuildEventAdapter {
 	
 	@Override
 	protected void executeNative(Object ... args) {
-		LOGGER.info("创建GUI窗口");
+		LOGGER.debug("创建GUI窗口");
 		final Thread javaFXThread = new Thread();
 		javaFXThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
 		javaFXThread.setDaemon(true);

@@ -124,9 +124,9 @@ public final class UpnpService {
 				this.location = location;
 				this.serviceType = serviceType;
 				this.controlUrl = UrlUtils.redirect(this.location, controlUrls.get(index));
-				LOGGER.info("UPNP描述文件：{}", this.location);
-				LOGGER.info("UPNP服务类型：{}", this.serviceType);
-				LOGGER.info("UPNP控制地址：{}", this.controlUrl);
+				LOGGER.debug("UPNP描述文件：{}", this.location);
+				LOGGER.debug("UPNP服务类型：{}", this.serviceType);
+				LOGGER.debug("UPNP控制地址：{}", this.controlUrl);
 				break;
 			}
 		}
@@ -281,7 +281,7 @@ public final class UpnpService {
 			try {
 				final boolean udpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
 				final boolean tcpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
-				LOGGER.info("释放UPNP端口：UDP：{}、TCP：{}", udpOk, tcpOk);
+				LOGGER.debug("释放UPNP端口：UDP：{}、TCP：{}", udpOk, tcpOk);
 			} catch (NetException e) {
 				LOGGER.error("释放UPNP端口异常", e);
 			}
@@ -323,11 +323,11 @@ public final class UpnpService {
 			SystemConfig.setTorrentPortExt(portExt);
 			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.UDP);
 			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.TCP);
-			LOGGER.info("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
+			LOGGER.debug("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
 		} else if(udpStatus == Status.USEABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
-			LOGGER.info("UPNP端口映射（可用）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
+			LOGGER.debug("UPNP端口映射（可用）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
 		} else {
 			this.useable = false;
 			LOGGER.warn("UPNP端口映射失败");

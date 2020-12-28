@@ -112,7 +112,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 			this.reject(decoder);
 			break;
 		default:
-			LOGGER.info("处理metadata消息错误（类型未适配）：{}", metadataType);
+			LOGGER.warn("处理metadata消息错误（类型未适配）：{}", metadataType);
 			break;
 		}
 	}

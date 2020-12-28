@@ -90,7 +90,7 @@ public final class SystemThreadContext {
 	public static final RejectedExecutionHandler REJECTED_HANDLER = (runnable, executor) -> LOGGER.error("任务拒绝执行：{}-{}", runnable, executor);
 	
 	static {
-		LOGGER.info("初始化系统线程池");
+		LOGGER.debug("初始化系统线程池");
 		EXECUTOR = newExecutor(4, 20, 1000, 60L, SNAIL_THREAD);
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
@@ -233,7 +233,7 @@ public final class SystemThreadContext {
 	 * <p>关闭系统线程池</p>
 	 */
 	public static final void shutdown() {
-		LOGGER.info("关闭系统线程池");
+		LOGGER.debug("关闭系统线程池");
 		shutdown(EXECUTOR);
 		shutdown(EXECUTOR_TIMER);
 	}

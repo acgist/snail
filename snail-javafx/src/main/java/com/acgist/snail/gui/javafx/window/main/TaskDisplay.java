@@ -41,7 +41,7 @@ public final class TaskDisplay {
 	 * @param controller 主窗口控制器
 	 */
 	public void newTimer(MainController controller) {
-		LOGGER.info("启动任务列表刷新定时器");
+		LOGGER.debug("启动任务列表刷新定时器");
 		synchronized (this) {
 			if(this.controller == null) {
 				this.controller = controller;

@@ -88,7 +88,7 @@ public final class HlsManager {
 	 * @param taskSession HLS任务信息
 	 */
 	public void remove(ITaskSession taskSession) {
-		LOGGER.info("移除HLS任务：{}", taskSession.getName());
+		LOGGER.debug("移除HLS任务：{}", taskSession.getName());
 		this.m3u8s.remove(taskSession.getId());
 		this.sessions.remove(taskSession.getId());
 	}

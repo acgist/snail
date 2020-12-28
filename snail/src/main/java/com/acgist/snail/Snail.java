@@ -81,6 +81,7 @@ public final class Snail {
 	 * <p>禁止创建实例</p>
 	 */
 	private Snail() {
+		// 实体优先同步加载
 		EntityInitializer.newInstance().sync();
 		ConfigInitializer.newInstance().sync();
 	}
@@ -229,7 +230,7 @@ public final class Snail {
 					}
 				});
 			} else {
-				LOGGER.info("已有系统实例：唤醒实例窗口");
+				LOGGER.debug("已有系统实例：唤醒实例窗口");
 				ApplicationClient.notifyWindow();
 			}
 			return INSTANCE;

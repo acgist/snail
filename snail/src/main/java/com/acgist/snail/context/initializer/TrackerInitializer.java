@@ -29,7 +29,7 @@ public final class TrackerInitializer extends Initializer {
 	
 	@Override
 	protected void init() throws DownloadException {
-		LOGGER.info("初始化Tracker");
+		LOGGER.debug("初始化Tracker");
 		TrackerConfig.getInstance();
 		TrackerServer.getInstance();
 		TrackerManager.getInstance();

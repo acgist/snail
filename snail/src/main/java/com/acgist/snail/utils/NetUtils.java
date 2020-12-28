@@ -96,12 +96,12 @@ public final class NetUtils {
 		LOOPBACK_HOST_NAME = buildLoopbackHostName();
 		LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
-		LOGGER.info("子网掩码：{}", LOCAL_HOST_MASK);
-		LOGGER.info("本机名称：{}", LOCAL_HOST_NAME);
-		LOGGER.info("本机地址：{}", LOCAL_HOST_ADDRESS);
-		LOGGER.info("环回主机名称：{}", LOOPBACK_HOST_NAME);
-		LOGGER.info("环回地址：{}", LOOPBACK_HOST_ADDRESS);
-		LOGGER.info("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
+		LOGGER.debug("子网掩码：{}", LOCAL_HOST_MASK);
+		LOGGER.debug("本机名称：{}", LOCAL_HOST_NAME);
+		LOGGER.debug("本机地址：{}", LOCAL_HOST_ADDRESS);
+		LOGGER.debug("环回主机名称：{}", LOOPBACK_HOST_NAME);
+		LOGGER.debug("环回地址：{}", LOOPBACK_HOST_ADDRESS);
+		LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
 	}
 	
 	/**

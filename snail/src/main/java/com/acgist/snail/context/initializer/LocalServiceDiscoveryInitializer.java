@@ -32,7 +32,7 @@ public final class LocalServiceDiscoveryInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.info("初始化本地发现");
+		LOGGER.debug("初始化本地发现");
 		LocalServiceDiscoveryServer.getInstance();
 	}
 

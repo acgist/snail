@@ -237,6 +237,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>保存Tracker服务器配置</p>
+	 * <p>注意：如果没有启动BT任务没有必要保存</p>
 	 */
 	public void persistent() {
 		LOGGER.debug("保存Tracker服务器配置");
