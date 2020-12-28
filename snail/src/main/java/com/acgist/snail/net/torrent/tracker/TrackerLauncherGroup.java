@@ -84,6 +84,7 @@ public final class TrackerLauncherGroup {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
 			return;
 		}
+		// TODO：添加和后面循环异常ConcurrentModificationException
 		sessions.stream()
 			.map(client -> TrackerManager.getInstance().buildTrackerLauncher(client, this.torrentSession))
 			.forEach(launcher -> this.trackerLaunchers.add(launcher));

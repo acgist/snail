@@ -169,7 +169,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final byte typeVersion = buffer.get(); // 消息类型
 		final UtpConfig.Type type = UtpConfig.Type.of(typeVersion); // UTP消息类型
 		if(type == null) {
-			throw new NetException("不支持的UTP消息类型：" + typeVersion);
+			throw new NetException("未知UTP消息类型：" + typeVersion);
 		}
 		final byte extension = buffer.get(); // 扩展
 		final short connectionId = buffer.getShort(); // 连接ID
@@ -206,7 +206,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		default:
 			// TODO：多行日志
 			LOGGER.warn(
-				"处理UTP消息错误（类型不支持），类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间差：{}，窗口大小：{}，请求编号：{}，应答编号：{}",
+				"处理UTP消息错误（未知类型），类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间差：{}，窗口大小：{}，请求编号：{}，应答编号：{}",
 				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr
 			);
 			break;

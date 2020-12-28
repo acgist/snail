@@ -29,7 +29,7 @@ public final class RecycleManager {
 		if(systemType == SystemType.WINDOWS) {
 			BUILDER = WindowsRecycle::new;
 		} else {
-			LOGGER.warn("不支持回收站系统：{}", systemType);
+			LOGGER.warn("不支持回收站：{}", systemType);
 			BUILDER = null;
 		}
 	}

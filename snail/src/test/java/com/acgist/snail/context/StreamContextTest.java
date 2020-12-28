@@ -18,7 +18,7 @@ public class StreamContextTest extends Performance {
 		final StreamContext context = StreamContext.getInstance();
 		final InputStream input = new ByteArrayInputStream(new byte[1024]);
 		final var session = context.newStreamSession(input);
-		assertTrue(context.removeStreamSession(session));
+		assertTrue(session.remove());
 	}
 	
 	@Test

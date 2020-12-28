@@ -74,7 +74,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 */
 	protected TrackerSession(String scrapeUrl, String announceUrl, Protocol.Type type) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
-			throw new NetException("Tracker声明地址错误（不支持）：" + announceUrl);
+			throw new NetException("Tracker声明地址错误：" + announceUrl);
 		}
 		this.id = NumberUtils.build();
 		this.type = type;

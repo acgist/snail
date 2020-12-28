@@ -28,11 +28,4 @@ public class SystemContextTest extends Performance {
 		assertDoesNotThrow(() -> SystemContext.build());
 	}
 	
-	@Test
-	public void testCosted() {
-		this.costed(10, () -> {
-			SystemContext.build();
-		});
-	}
-	
 }

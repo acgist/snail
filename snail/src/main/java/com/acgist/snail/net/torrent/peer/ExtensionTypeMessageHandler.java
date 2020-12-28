@@ -46,7 +46,7 @@ public abstract class ExtensionTypeMessageHandler implements IExtensionMessageHa
 	@Override
 	public void onMessage(ByteBuffer buffer) throws NetException {
 		if(!this.supportExtensionType()) {
-			LOGGER.debug("处理扩展协议消息错误（类型不支持）：{}", this.extensionType);
+			LOGGER.debug("处理扩展协议消息错误（未知类型）：{}", this.extensionType);
 			return;
 		}
 		this.doMessage(buffer);

@@ -238,7 +238,7 @@ public final class MSECryptHandshakeHandler {
 					this.receiveConfirmPadding();
 					break;
 				default:
-					LOGGER.warn("加密握手失败（步骤不支持）：{}", this.step);
+					LOGGER.warn("加密握手失败（未知步骤）：{}", this.step);
 					break;
 				}
 			}
@@ -640,7 +640,7 @@ public final class MSECryptHandshakeHandler {
 			}
 		}
 		if (selected == null) {
-			throw new NetException("加密握手失败（加密协商不支持）：" + provide);
+			throw new NetException("加密握手失败（未知加密协商）：" + provide);
 		}
 		return selected;
 	}

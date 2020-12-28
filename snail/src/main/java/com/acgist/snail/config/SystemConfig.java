@@ -161,7 +161,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
 	/**
-	 * <p>数字：{@value}</p>
+	 * <p>数值：{@value}</p>
 	 */
 	public static final String DIGIT = "0123456789";
 	/**

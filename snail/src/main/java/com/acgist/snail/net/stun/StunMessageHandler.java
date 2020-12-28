@@ -79,7 +79,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final short type = (short) (buffer.getShort() & MessageType.TYPE_MASK);
 		final var messageType = StunConfig.MessageType.of(type);
 		if(messageType == null) {
-			LOGGER.warn("处理STUN消息错误（类型不支持）：{}", type);
+			LOGGER.warn("处理STUN消息错误（未知类型）：{}", type);
 			return;
 		}
 		final short length = buffer.getShort();
@@ -143,7 +143,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		if(attributeType == null) {
 			final ByteBuffer message = this.readResponseAttribute(buffer, length);
 			final String body = new String(message.array());
-			LOGGER.warn("处理STUN消息-属性错误（类型不支持）：{}-{}", typeId, body);
+			LOGGER.warn("处理STUN消息-属性错误（未知类型）：{}-{}", typeId, body);
 			return;
 		}
 		LOGGER.debug("处理STUN消息-属性：{}-{}", attributeType, length);

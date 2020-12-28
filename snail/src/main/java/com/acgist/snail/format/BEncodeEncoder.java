@@ -148,7 +148,7 @@ public final class BEncodeEncoder {
 		} else if(this.type == Type.LIST) {
 			this.writeList(this.list);
 		} else {
-			LOGGER.warn("B编码错误（类型未适配）：{}", this.type);
+			LOGGER.warn("B编码错误（未知类型）：{}", this.type);
 		}
 		return this;
 	}
@@ -192,7 +192,7 @@ public final class BEncodeEncoder {
 			return this;
 		}
 		this.write(BEncodeDecoder.TYPE_L);
-		list.forEach(value -> this.writeObject(value));
+		list.forEach(this::writeObject);
 		this.write(BEncodeDecoder.TYPE_E);
 		return this;
 	}
@@ -234,8 +234,8 @@ public final class BEncodeEncoder {
 		} else if(value instanceof Map) {
 			this.writeMap((Map<?, ?>) value);
 		} else {
-			LOGGER.debug("B编码错误（类型未适配）：{}", value);
-			// 类型不支持时添加空字符数组
+			LOGGER.debug("B编码错误（未知类型）：{}", value);
+			// 未知类型时添加空字符数组
 			this.writeBytes(new byte[] {});
 		}
 	}
@@ -286,7 +286,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @param list List
 	 * 
-	 * @return B编码字节
+	 * @return B编码字节数组
 	 */
 	public static final byte[] encodeList(List<?> list) {
 		return newInstance().writeList(list).bytes();
@@ -308,7 +308,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @param map Map
 	 * 
-	 * @return B编码字节
+	 * @return B编码字节数组
 	 */
 	public static final byte[] encodeMap(Map<?, ?> map) {
 		return newInstance().writeMap(map).bytes();

@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>数字工具</p>
+ * <p>数值工具</p>
  * 
  * @author acgist
  */

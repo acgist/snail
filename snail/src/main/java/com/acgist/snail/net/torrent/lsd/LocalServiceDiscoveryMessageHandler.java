@@ -67,7 +67,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 				infoHashHexs.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));
 			}
 		} else {
-			LOGGER.debug("本地发现消息处理失败（不支持）：{}", message);
+			LOGGER.debug("本地发现消息处理失败：{}", message);
 		}
 	}
 

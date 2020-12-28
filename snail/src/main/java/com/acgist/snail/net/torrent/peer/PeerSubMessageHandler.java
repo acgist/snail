@@ -261,7 +261,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.of(typeId);
 			if(type == null) {
-				LOGGER.warn("处理Peer消息错误（类型不支持）：{}", typeId);
+				LOGGER.warn("处理Peer消息错误（未知类型）：{}", typeId);
 				return;
 			}
 			if(this.peerSession == null) {

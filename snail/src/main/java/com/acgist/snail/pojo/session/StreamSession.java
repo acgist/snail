@@ -72,6 +72,17 @@ public final class StreamSession {
 	}
 	
 	/**
+	 * <p>移除管理</p>
+	 * 
+	 * @return 是否删除成功
+	 * 
+	 * @see StreamContext#removeStreamSession(StreamSession)
+	 */
+	public boolean remove() {
+		return StreamContext.getInstance().removeStreamSession(this);
+	}
+	
+	/**
 	 * <p>关闭数据流</p>
 	 */
 	public void close() {
@@ -81,7 +92,7 @@ public final class StreamSession {
 		} catch (Exception e) {
 			LOGGER.error("关闭数据流异常", e);
 		} finally {
-			StreamContext.getInstance().removeStreamSession(this);
+			this.remove();
 		}
 	}
 

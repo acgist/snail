@@ -75,7 +75,7 @@ public abstract class SingleFileDownloader extends Downloader {
 		} catch (Exception e) {
 			throw new DownloadException("数据流操作失败", e);
 		} finally {
-			StreamContext.getInstance().removeStreamSession(this.streamSession);
+			this.streamSession.remove();
 		}
 	}
 
