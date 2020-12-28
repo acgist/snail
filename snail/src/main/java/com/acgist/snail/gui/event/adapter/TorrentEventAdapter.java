@@ -10,7 +10,7 @@ import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.GuiManager.Mode;
-import com.acgist.snail.gui.event.GuiEventExtend;
+import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
@@ -22,7 +22,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public class TorrentEventAdapter extends GuiEventExtend {
+public class TorrentEventAdapter extends GuiEventArgs {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEventAdapter.class);
 	
@@ -32,23 +32,14 @@ public class TorrentEventAdapter extends GuiEventExtend {
 
 	@Override
 	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
-		if(args == null) {
-			LOGGER.warn("种子文件选择（参数错误）：{}", args);
-		} else if(args.length == 1) {
-			final Object object = args[0];
-			// TODO：使用新的类型转换
-			if(object instanceof ITaskSession) {
-				final ITaskSession taskSession = (ITaskSession) object;
-				if(mode == Mode.NATIVE) {
-					this.executeNativeExtend(taskSession);
-				} else {
-					this.executeExtendExtend(taskSession);
-				}
-			} else {
-				LOGGER.warn("种子文件选择（参数类型错误）：{}", object);
-			}
+		if(!this.check(args, 1)) {
+			return;
+		}
+		final ITaskSession taskSession = (ITaskSession) this.getArg(args, 0);
+		if(mode == Mode.NATIVE) {
+			this.executeNativeExtend(taskSession);
 		} else {
-			LOGGER.warn("种子文件选择（参数长度错误）：{}", args);
+			this.executeExtendExtend(taskSession);
 		}
 	}
 	
