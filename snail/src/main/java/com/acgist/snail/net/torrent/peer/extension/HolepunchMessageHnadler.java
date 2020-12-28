@@ -77,7 +77,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final byte typeId = buffer.get();
 		final HolepunchType holepunchType = PeerConfig.HolepunchType.of(typeId);
 		if(holepunchType == null) {
-			LOGGER.warn("处理holepunch消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理holepunch消息错误（未知类型）：{}", typeId);
 			return;
 		}
 		final byte addrType = buffer.get(); // 地址类型

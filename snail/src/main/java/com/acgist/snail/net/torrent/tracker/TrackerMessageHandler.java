@@ -44,7 +44,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 		final int id = buffer.getInt();
 		final var action = Action.of(id);
 		if(action == null) {
-			LOGGER.warn("处理Tracker消息错误（类型不支持）：{}", id);
+			LOGGER.warn("处理Tracker消息错误（未知类型）：{}", id);
 			return;
 		}
 		switch (action) {

@@ -97,7 +97,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
 		final MetadataType metadataType = PeerConfig.MetadataType.of(typeId);
 		if(metadataType == null) {
-			LOGGER.warn("处理metadata消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理metadata消息错误（未知类型）：{}", typeId);
 			return;
 		}
 		LOGGER.debug("处理metadata消息类型：{}", metadataType);

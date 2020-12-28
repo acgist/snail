@@ -350,7 +350,7 @@ public final class TrackerManager {
 			session = this.buildSession(UrlUtils.decode(announceUrl)); // URL解码
 		}
 		if(session == null) {
-			throw new DownloadException("创建TrackerSession失败（Tracker协议不支持）：" + announceUrl);
+			throw new DownloadException("创建TrackerSession失败（未知Tracker协议）：" + announceUrl);
 		}
 		return session;
 	}

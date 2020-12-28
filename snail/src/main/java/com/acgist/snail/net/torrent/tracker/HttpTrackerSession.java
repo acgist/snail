@@ -112,7 +112,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String scrapeMessage = this.buildScrapeMessage(sid, torrentSession);
 		if(scrapeMessage == null) {
-			LOGGER.debug("HTTP Tracker刮檫消息错误（不支持）：{}", this.announceUrl);
+			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", this.announceUrl);
 			return;
 		}
 		final var response = HTTPClient.get(scrapeMessage, BodyHandlers.ofByteArray());

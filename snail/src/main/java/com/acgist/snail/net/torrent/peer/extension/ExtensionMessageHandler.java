@@ -187,7 +187,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final byte typeId = buffer.get();
 		final ExtensionType extensionType = ExtensionType.of(typeId);
 		if(extensionType == null) {
-			LOGGER.warn("处理扩展消息错误（类型不支持）：{}", typeId);
+			LOGGER.warn("处理扩展消息错误（未知类型）：{}", typeId);
 			return;
 		}
 		LOGGER.debug("处理扩展消息类型：{}", extensionType);
@@ -311,7 +311,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 					LOGGER.debug("处理扩展协议-握手（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.addExtensionType(extensionType, typeId.byteValue());
 				} else {
-					LOGGER.debug("处理扩展协议-握手（不支持）：{}-{}", typeValue, typeId);
+					LOGGER.debug("处理扩展协议-握手（未知协议）：{}-{}", typeValue, typeId);
 				}
 			});
 		}

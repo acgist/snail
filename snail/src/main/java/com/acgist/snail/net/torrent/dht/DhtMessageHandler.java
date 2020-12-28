@@ -60,7 +60,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			response.setSocketAddress(socketAddress);
 			this.onResponse(response);
 		} else {
-			LOGGER.warn("处理DHT消息错误（类型不支持）：{}", y);
+			LOGGER.warn("处理DHT消息错误（未知类型）：{}", y);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	private void onRequest(final DhtRequest request, final InetSocketAddress socketAddress) {
 		DhtResponse response = null;
 		if(request.getQ() == null) {
-			LOGGER.warn("处理DHT请求失败（类型不支持）：{}", request.getQ());
+			LOGGER.warn("处理DHT请求失败（未知类型）：{}", request.getQ());
 			response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 		} else {
 			LOGGER.debug("处理DHT请求：{}", request.getQ());
@@ -111,7 +111,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			return;
 		}
 		if(request.getQ() == null) {
-			LOGGER.warn("处理DHT响应失败（类型不支持）：{}", request.getQ());
+			LOGGER.warn("处理DHT响应失败（未知类型）：{}", request.getQ());
 			return;
 		}
 		LOGGER.debug("处理DHT响应：{}", request.getQ());

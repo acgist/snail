@@ -92,7 +92,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private void execute(ApplicationMessage message) {
 		if(message.getType() == null) {
-			LOGGER.warn("系统消息错误（类型不支持）：{}", message.getType());
+			LOGGER.warn("系统消息错误（未知类型）：{}", message.getType());
 			return;
 		}
 		LOGGER.debug("处理系统消息：{}", message);

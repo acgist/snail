@@ -124,7 +124,7 @@ public final class HlsClient implements Runnable {
 			} catch (Exception e) {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
 			} finally {
-				StreamContext.getInstance().removeStreamSession(streamSession);
+				streamSession.remove();
 			}
 		}
 		this.release();

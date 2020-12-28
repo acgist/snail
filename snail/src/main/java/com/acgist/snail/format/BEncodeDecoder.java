@@ -27,7 +27,7 @@ import com.acgist.snail.utils.StringUtils;
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code i}</td>
- * 		<td>数字：{@link Long}</td>
+ * 		<td>数值：{@link Long}</td>
  * 	</tr>
  * 	<tr>
  * 		<td align="center">{@code l}</td>
@@ -58,11 +58,17 @@ public final class BEncodeDecoder {
 	 */
 	public enum Type {
 		
-		/** Map */
+		/**
+		 * <p>Map</p>
+		 */
 		MAP,
-		/** List */
+		/**
+		 * <p>List</p>
+		 */
 		LIST,
-		/** 未知 */
+		/**
+		 * <p>未知</p>
+		 */
 		NONE;
 		
 	}
@@ -72,7 +78,7 @@ public final class BEncodeDecoder {
 	 */
 	public static final char TYPE_E = 'e';
 	/**
-	 * <p>数字：{@value}</p>
+	 * <p>数值：{@value}</p>
 	 */
 	public static final char TYPE_I = 'i';
 	/**
@@ -109,9 +115,9 @@ public final class BEncodeDecoder {
 	 * @param bytes 数据
 	 */
 	private BEncodeDecoder(byte[] bytes) {
-		Objects.requireNonNull(bytes, "B编码内容错误（数据为空）");
+		Objects.requireNonNull(bytes, "B编码内容错误");
 		if(bytes.length < 2) {
-			throw new IllegalArgumentException("B编码内容错误（数据长度）");
+			throw new IllegalArgumentException("B编码内容错误");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
 	}
@@ -135,7 +141,7 @@ public final class BEncodeDecoder {
 	 * @return B编码解码器
 	 */
 	public static final BEncodeDecoder newInstance(String content) {
-		Objects.requireNonNull(content, "B编码内容错误（数据为空）");
+		Objects.requireNonNull(content, "B编码内容错误");
 		return new BEncodeDecoder(content.getBytes());
 	}
 	
@@ -147,25 +153,16 @@ public final class BEncodeDecoder {
 	 * @return B编码解码器
 	 */
 	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
-		Objects.requireNonNull(buffer, "B编码内容错误（数据为空）");
+		Objects.requireNonNull(buffer, "B编码内容错误");
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		return new BEncodeDecoder(bytes);
 	}
 	
 	/**
-	 * <p>判断是否含有更多数据</p>
-	 * 
-	 * @return 是否含有更多数据
-	 */
-	public boolean more() {
-		return this.inputStream != null && this.inputStream.available() > 0;
-	}
-	
-	/**
 	 * <p>判断是否没有数据</p>
 	 * 
-	 * @return true-没有；false-含有；
+	 * @return 是否没有数据
 	 */
 	public boolean isEmpty() {
 		if(this.type == Type.LIST) {
@@ -180,7 +177,7 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>判断是否含有数据</p>
 	 * 
-	 * @return true-含有；false-没有；
+	 * @return 是否含有数据
 	 */
 	public boolean isNotEmpty() {
 		return !this.isEmpty();
@@ -195,22 +192,29 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Type nextType() throws PacketSizeException {
-		if(!this.more()) {
-			LOGGER.warn("B编码没有更多数据");
-			return this.type = Type.NONE;
+		// 是否含有数据
+		final boolean noneData = this.inputStream == null || this.inputStream.available() <= 0;
+		if(noneData) {
+			LOGGER.warn("B编码没有数据");
+			this.type = Type.NONE;
+			return this.type;
 		}
-		final char type = (char) this.inputStream.read();
-		switch (type) {
+		final char charType = (char) this.inputStream.read();
+		switch (charType) {
 		case TYPE_D:
 			this.map = readMap(this.inputStream);
-			return this.type = Type.MAP;
+			this.type = Type.MAP;
+			break;
 		case TYPE_L:
 			this.list = readList(this.inputStream);
-			return this.type = Type.LIST;
+			this.type = Type.LIST;
+			break;
 		default:
-			LOGGER.warn("B编码错误（类型未适配）：{}", type);
-			return this.type = Type.NONE;
+			LOGGER.warn("B编码错误（未知类型）：{}", charType);
+			this.type = Type.NONE;
+			break;
 		}
+		return this.type;
 	}
 	
 	/**
@@ -222,8 +226,8 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public List<Object> nextList() throws PacketSizeException {
-		final var type = this.nextType();
-		if(type == Type.LIST) {
+		final var nextType = this.nextType();
+		if(nextType == Type.LIST) {
 			return this.list;
 		}
 		return List.of();
@@ -238,8 +242,8 @@ public final class BEncodeDecoder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
-		final var type = this.nextType();
-		if(type == Type.MAP) {
+		final var nextType = this.nextType();
+		if(nextType == Type.MAP) {
 			return this.map;
 		}
 		return Map.of();
@@ -271,11 +275,13 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * <p>读取数值：{@value #TYPE_I}</p>
+	 * <p>读取数值</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
 	 * @return 数值
+	 * 
+	 * @see #TYPE_I
 	 */
 	private static final Long readLong(ByteArrayInputStream inputStream) {
 		int index;
@@ -286,7 +292,7 @@ public final class BEncodeDecoder {
 			if(indexChar == TYPE_E) {
 				final var number = valueBuilder.toString();
 				if(!StringUtils.isNumeric(number)) {
-					throw new IllegalArgumentException("B编码格式错误（数字）：" + number);
+					throw new IllegalArgumentException("B编码错误（数值）：" + number);
 				}
 				return Long.valueOf(number);
 			} else {
@@ -297,13 +303,15 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取List：{@value #TYPE_L}</p>
+	 * <p>读取List</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
 	 * @return List
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see #TYPE_L
 	 */
 	private static final List<Object> readList(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -345,7 +353,7 @@ public final class BEncodeDecoder {
 				}
 				break;
 			default:
-				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
+				LOGGER.debug("B编码错误（未知类型）：{}", indexChar);
 				break;
 			}
 		}
@@ -353,13 +361,15 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取Map：{@value #TYPE_D}</p>
+	 * <p>读取Map</p>
 	 * 
 	 * @param inputStream 数据
 	 * 
 	 * @return Map
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see #TYPE_D
 	 */
 	private static final Map<String, Object> readMap(ByteArrayInputStream inputStream) throws PacketSizeException {
 		int index;
@@ -422,7 +432,7 @@ public final class BEncodeDecoder {
 				}
 				break;
 			default:
-				LOGGER.debug("B编码错误（类型不支持）：{}", indexChar);
+				LOGGER.debug("B编码错误（未知类型）：{}", indexChar);
 				break;
 			}
 		}
@@ -432,7 +442,7 @@ public final class BEncodeDecoder {
 	/**
 	 * <p>读取符合长度的字节数组</p>
 	 * 
-	 * @param lengthBuilder 字节数组长度：获取长度后清空
+	 * @param lengthBuilder 字节数组长度
 	 * @param inputStream 数据
 	 * 
 	 * @return 字节数组
@@ -442,11 +452,11 @@ public final class BEncodeDecoder {
 	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
-			throw new IllegalArgumentException("B编码格式错误（数字）：" + number);
+			throw new IllegalArgumentException("B编码错误（数值）：" + number);
 		}
 		final int length = Integer.parseInt(number);
 		PacketSizeException.verify(length);
-		lengthBuilder.setLength(0); // 清空
+		lengthBuilder.setLength(0); // 清空长度
 		final byte[] bytes = new byte[length];
 		try {
 			final int readLength = inputStream.read(bytes);

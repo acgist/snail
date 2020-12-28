@@ -280,7 +280,7 @@ public final class EntityContext {
 					} else if(object instanceof ConfigEntity) {
 						this.configEntities.add((ConfigEntity) object);
 					} else {
-						LOGGER.warn("不支持的类型：{}", object);
+						LOGGER.warn("未知类型：{}", object);
 					}
 				});
 				LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());

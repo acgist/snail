@@ -462,7 +462,7 @@ public final class JSON {
 			// null
 			return null;
 		} else if(StringUtils.isDecimal(value)) {
-			// 数字
+			// 数值
 			return Integer.valueOf(value);
 		} else if(
 			JSON_BOOLEAN_TRUE.equals(value) ||
