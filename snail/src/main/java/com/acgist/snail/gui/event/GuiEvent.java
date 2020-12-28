@@ -25,7 +25,7 @@ public abstract class GuiEvent {
 		EXIT,
 		/** 创建窗口 */
 		BUILD,
-		/** 提示窗口 */
+		/** 窗口消息 */
 		ALERT,
 		/** 提示消息 */
 		NOTICE,

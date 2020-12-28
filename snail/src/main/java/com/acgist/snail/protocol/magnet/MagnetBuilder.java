@@ -139,7 +139,7 @@ public final class MagnetBuilder {
 		if(this.magnet.supportDownload()) {
 			return this.magnet;
 		}
-		throw new DownloadException("磁力链接下载失败：" + this.url);
+		throw new DownloadException("磁力链接创建失败：" + this.url);
 	}
 	
 	/**
