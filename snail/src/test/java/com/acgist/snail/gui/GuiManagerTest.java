@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.GuiManager.MessageType;
 import com.acgist.snail.gui.event.AlertEvent;
 import com.acgist.snail.gui.event.BuildEvent;
 import com.acgist.snail.gui.event.ExitEvent;
@@ -54,6 +55,10 @@ public class GuiManagerTest extends Performance {
 		manager.notice("acgist", "acgist");
 		manager.show();
 		manager.hide();
+		manager.alert("acgist", "acgist");
+		manager.alert("acgist", "acgist", MessageType.ERROR);
+		manager.notice("acgist", "acgist");
+		manager.notice("acgist", "acgist", MessageType.ERROR);
 		manager.refreshTaskList();
 		manager.refreshTaskStatus();
 		assertNotNull(manager);
