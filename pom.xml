@@ -515,6 +515,14 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 			<name>Nexus Snapshot Repository</name>
 		</snapshotRepository>
+		<!-- Github需要关闭插件：gpg、nexus -->
+		<!--
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/acgist/snail</url>
+			<name>Github Repository</name>
+		</repository>
+		-->
 	</distributionManagement>
 
 </project>
