@@ -138,6 +138,8 @@ public final class NodeManager {
 
 	/**
 	 * <p>注册DHT默认节点</p>
+	 * 
+	 * TODO：优化直接加入nodes，避免频繁加锁
 	 */
 	private void register() {
 		final var nodes = DhtConfig.getInstance().nodes();

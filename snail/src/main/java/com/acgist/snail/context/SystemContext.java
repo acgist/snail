@@ -131,7 +131,7 @@ public final class SystemContext {
 	 */
 	public static final Snail build() {
 		LOGGER.info("系统初始化");
-		return SnailBuilder.getInstance()
+		return SnailBuilder.newBuilder()
 			.downloader()
 			.application()
 			.enableAllProtocol()

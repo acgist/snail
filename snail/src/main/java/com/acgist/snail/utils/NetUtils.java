@@ -90,7 +90,7 @@ public final class NetUtils {
 		} catch (SocketException e) {
 			LOGGER.error("初始化本机网络信息异常", e);
 		}
-		LOCAL_HOST_MASK = localHostMask.get();
+		LOCAL_HOST_MASK = localHostMask.get(0);
 		LOCAL_HOST_NAME = buildLocalHostName();
 		LOCAL_HOST_ADDRESS = localHostAddress.get();
 		LOOPBACK_HOST_NAME = buildLoopbackHostName();

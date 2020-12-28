@@ -19,13 +19,13 @@ public class SnailTest extends Performance {
 
 	@Test
 	public void testSnail() {
-		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.getInstance().buildSync().download("https://www.acgist.com"));
+		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.newBuilder().buildSync().download("https://www.acgist.com"));
 		this.log(exception);
 	}
 	
 	@Test
 	public void testApplication() throws IOException {
-		SnailBuilder.getInstance()
+		SnailBuilder.newBuilder()
 			.application()
 			.buildSync();
 		final Socket socket = new Socket();
@@ -45,7 +45,7 @@ public class SnailTest extends Performance {
 		if(SKIP) {
 			return;
 		}
-		final Snail snail = SnailBuilder.getInstance()
+		final Snail snail = SnailBuilder.newBuilder()
 			.enableHttp()
 			.buildSync();
 		snail.download("https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip");
@@ -62,7 +62,7 @@ public class SnailTest extends Performance {
 		if(SKIP) {
 			return;
 		}
-		final Snail snail = SnailBuilder.getInstance()
+		final Snail snail = SnailBuilder.newBuilder()
 			.enableMagnet()
 			.buildSync();
 		snail.download("53391b4efdd621006f20cf5496e1c150922d1df5");
