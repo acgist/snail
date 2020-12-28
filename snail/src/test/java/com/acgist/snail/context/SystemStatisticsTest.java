@@ -14,6 +14,10 @@ public class SystemStatisticsTest extends Performance {
 
 	@Test
 	public void testSystemStatistics() {
+		if(SKIP) {
+			this.log("跳过系统统计测试");
+			return;
+		}
 		assertNotNull(SystemStatistics.getInstance());
 		assertNotNull(SystemStatistics.getInstance().statistics());
 		assertEquals(0, SystemStatistics.getInstance().uploadSpeed());

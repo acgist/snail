@@ -44,24 +44,19 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
  * <p>快速创建下载任务</p>
  * 
  * @author acgist
- * 
- * TODO：优化更多接口调用
  */
 public final class Snail {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Snail.class);
 	
-	/**
-	 * <p>全局唯一Snail对象</p>
-	 */
-	private static final Snail SNAIL = new Snail();
+	private static final Snail INSTANCE = new Snail();
 	
 	public static final Snail getInstance() {
-		return SNAIL;
+		return INSTANCE;
 	}
 	
 	/**
-	 * <p>是否加锁</p>
+	 * <p>是否加下载锁</p>
 	 */
 	private boolean lock = false;
 	/**
@@ -75,7 +70,6 @@ public final class Snail {
 	/**
 	 * <p>是否启动系统监听</p>
 	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
-	 * 
 	 */
 	private boolean buildApplication = false;
 	/**
@@ -87,6 +81,8 @@ public final class Snail {
 	 * <p>禁止创建实例</p>
 	 */
 	private Snail() {
+		EntityInitializer.newInstance().sync();
+		ConfigInitializer.newInstance().sync();
 	}
 	
 	/**
@@ -137,28 +133,28 @@ public final class Snail {
 	 * @return 是否可用
 	 */
 	public static final boolean available() {
-		return SNAIL.available;
+		return INSTANCE.available;
 	}
 	
 	/**
 	 * <p>关闭资源</p>
 	 */
 	public static final void shutdown() {
-		if(SNAIL.available) {
-			SNAIL.available = false;
-			if(SNAIL.buildApplication) {
+		if(INSTANCE.available) {
+			INSTANCE.available = false;
+			if(INSTANCE.buildApplication) {
 				ApplicationServer.getInstance().close();
 			}
 			// 优先关闭任务
 			DownloaderManager.getInstance().shutdown();
-			if(SNAIL.buildTorrent) {
+			if(INSTANCE.buildTorrent) {
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				TrackerServer.getInstance().close();
 				LocalServiceDiscoveryServer.getInstance().close();			
 				NatContext.getInstance().shutdown();
 				UtpRequestQueue.getInstance().shutdown();
-				// DHT和Tracker需要启用BT任务才会保存
+				// 启用BT任务：保存DHT和Tracker配置
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
 			}
@@ -173,23 +169,19 @@ public final class Snail {
 	 */
 	public static final class SnailBuilder {
 		
-		private static final SnailBuilder BUILDER = new SnailBuilder();
-		
 		/**
 		 * <p>获取SnailBuilder</p>
 		 * 
 		 * @return SnailBuilder
 		 */
-		public static final SnailBuilder getInstance() {
-			return BUILDER;
+		public static final SnailBuilder newBuilder() {
+			return new SnailBuilder();
 		}
 		
 		/**
 		 * <p>禁止创建实例</p>
 		 */
 		private SnailBuilder() {
-			EntityInitializer.newInstance().sync();
-			ConfigInitializer.newInstance().sync();
 		}
 
 		/**
@@ -220,15 +212,15 @@ public final class Snail {
 		 * @throws DownloadException 下载异常 
 		 */
 		public synchronized Snail build(boolean sync) {
-			if(SNAIL.available) {
-				return SNAIL;
+			if(INSTANCE.available) {
+				return INSTANCE;
 			}
-			SNAIL.available = true;
-			if(SNAIL.buildApplication) {
-				SNAIL.available = ApplicationServer.getInstance().listen();
+			INSTANCE.available = true;
+			if(INSTANCE.buildApplication) {
+				INSTANCE.available = ApplicationServer.getInstance().listen();
 			}
-			if(SNAIL.available) {
-				ProtocolManager.getInstance().available(true);
+			if(INSTANCE.available) {
+				ProtocolManager.getInstance().available(INSTANCE.available);
 				this.buildInitializers().forEach(initializer -> {
 					if(sync) {
 						initializer.sync();
@@ -240,7 +232,7 @@ public final class Snail {
 				LOGGER.info("已有系统实例：唤醒实例窗口");
 				ApplicationClient.notifyWindow();
 			}
-			return SNAIL;
+			return INSTANCE;
 		}
 
 		/**
@@ -250,14 +242,14 @@ public final class Snail {
 		 */
 		private List<Initializer> buildInitializers() {
 			final List<Initializer> list = new ArrayList<>();
-			if(SNAIL.buildTorrent) {
+			if(INSTANCE.buildTorrent) {
 				list.add(NatInitializer.newInstance());
 				list.add(DhtInitializer.newInstance());
 				list.add(TorrentInitializer.newInstance());
 				list.add(TrackerInitializer.newInstance());
 				list.add(LocalServiceDiscoveryInitializer.newInstance());
 			}
-			if(SNAIL.buildDownloader) {
+			if(INSTANCE.buildDownloader) {
 				list.add(DownloaderInitializer.newInstance());
 			}
 			return list;
@@ -269,7 +261,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder application() {
-			SNAIL.buildApplication = true;
+			INSTANCE.buildApplication = true;
 			return this;
 		}
 		
@@ -279,7 +271,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder downloader() {
-			SNAIL.buildDownloader = true;
+			INSTANCE.buildDownloader = true;
 			return this;
 		}
 		
@@ -328,7 +320,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder enableMagnet() {
-			SNAIL.buildTorrent = true;
+			INSTANCE.buildTorrent = true;
 			return this.register(MagnetProtocol.getInstance());
 		}
 		
@@ -347,7 +339,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder enableTorrent() {
-			SNAIL.buildTorrent = true;
+			INSTANCE.buildTorrent = true;
 			return this.register(TorrentProtocol.getInstance());
 		}
 		

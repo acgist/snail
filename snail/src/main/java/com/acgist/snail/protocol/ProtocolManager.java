@@ -153,7 +153,7 @@ public final class ProtocolManager {
 		if(Snail.available()) {
 			return true;
 		} else {
-			throw new DownloadException("系统正在关闭中");
+			throw new DownloadException("系统没有启动");
 		}
 	}
 

@@ -263,7 +263,7 @@ public final class DownloaderManager {
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理器异常", e);
 		}
-//		SystemThreadContext.shutdown(this.executor); // 不直接关闭线程池：等待任务自动结束
+		SystemThreadContext.shutdown(this.executor);
 	}
 
 }

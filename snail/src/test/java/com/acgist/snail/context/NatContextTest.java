@@ -13,6 +13,7 @@ public class NatContextTest extends Performance {
 
 	@Test
 	public void testRegister() {
+		NatContext.getInstance().register();
 		if(NatContext.getInstance().type() != Type.UPNP) {
 			ThreadUtils.sleep(2000);
 		}

@@ -47,16 +47,19 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 			return;
 		}
 		final String location = headers.header(HEADER_LOCATION);
+		final UpnpService upnpService = UpnpService.getInstance();
 		try {
 			if(StringUtils.isNotEmpty(location)) {
-				UpnpService.getInstance().load(location).mapping();
+				upnpService.load(location).mapping();
 			} else {
 				LOGGER.debug("UPNP没有描述文件地址：{}", message);
 			}
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {
-			NatContext.getInstance().unlockUpnp();
+			if(upnpService.useable()) {
+				NatContext.getInstance().unlockUpnp();
+			}
 		}
 	}
 	

@@ -13,9 +13,4 @@ public class ConfigInitializerTest extends Performance {
 		assertDoesNotThrow(() -> ConfigInitializer.newInstance().sync());
 	}
 	
-	@Test
-	public void testCosted() {
-		this.costed(1, () -> ConfigInitializer.newInstance().sync());
-	}
-	
 }

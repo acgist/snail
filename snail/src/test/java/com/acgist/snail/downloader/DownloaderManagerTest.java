@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
@@ -14,8 +15,6 @@ import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.http.HttpProtocol;
-import com.acgist.snail.protocol.magnet.MagnetProtocol;
-import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
@@ -23,7 +22,7 @@ public class DownloaderManagerTest extends Performance {
 
 	@Test
 	public void testNewTask() throws DownloadException {
-		ProtocolManager.getInstance().available(true);
+		SnailBuilder.newBuilder().buildSync();
 		final var manager = DownloaderManager.getInstance();
 		var exception = assertThrows(DownloadException.class, () -> manager.newTask("https://www.acgist.com"));
 		this.log(exception.getMessage());
@@ -38,9 +37,7 @@ public class DownloaderManagerTest extends Performance {
 	
 	@Test
 	public void testRefresh() throws DownloadException {
-		ProtocolManager.getInstance()
-			.register(MagnetProtocol.getInstance())
-			.available(true);
+		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var manager = DownloaderManager.getInstance();
 		final IDownloader downloader = manager.newTask("1234567890123456789012345678901234567890");
 		assertNotNull(downloader);
@@ -53,14 +50,11 @@ public class DownloaderManagerTest extends Performance {
 	
 	@Test
 	public void testRestart() throws DownloadException {
-		ProtocolManager.getInstance()
-			.register(MagnetProtocol.getInstance())
-			.register(TorrentProtocol.getInstance())
-			.available(true);
+		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var manager = DownloaderManager.getInstance();
 		IDownloader downloader = manager.newTask("1234567890123456789012345678901234567890");
 		assertNotNull(downloader);
-		assertTrue(manager.allTask().size() == 1);
+		assertTrue(manager.allTask().size() > 0);
 		this.log(downloader.getClass());
 		final var taskSession = downloader.taskSession();
 		taskSession.setType(Type.TORRENT);
@@ -69,7 +63,7 @@ public class DownloaderManagerTest extends Performance {
 		taskSession.setTorrent("E://snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent");
 		downloader = manager.restart(taskSession);
 		assertNotNull(downloader);
-		assertTrue(manager.allTask().size() == 1);
+		assertTrue(manager.allTask().size() > 0);
 		assertTrue(downloader instanceof TorrentDownloader);
 		this.log(downloader.getClass());
 		FileUtils.delete(downloader.taskSession().getFile());

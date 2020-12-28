@@ -67,13 +67,13 @@ public final class NatContext {
 	 * <p>禁止创建实例</p>
 	 */
 	private NatContext() {
-		this.register();
 	}
 	
 	/**
 	 * <p>注册NAT服务</p>
+	 * <p>必须外部调用不能单例注册：导致不能唤醒</p>
 	 */
-	private void register() {
+	public void register() {
 		LOGGER.info("注册NAT服务");
 		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();

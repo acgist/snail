@@ -250,7 +250,8 @@ public final class EntityContext {
 		boolean success = false;
 		synchronized (this) {
 			// 使用或者判断：任务删除成功不再删除配置
-			success = this.taskEntities.removeIf(entity -> entity.getId().equals(id)) ||
+			success =
+				this.taskEntities.removeIf(entity -> entity.getId().equals(id)) ||
 				this.configEntities.removeIf(entity -> entity.getId().equals(id));
 		}
 		if(success) {

@@ -27,7 +27,7 @@ public final class NatInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.info("初始化NAT");
-		NatContext.getInstance();
+		NatContext.getInstance().register();
 	}
 
 }
