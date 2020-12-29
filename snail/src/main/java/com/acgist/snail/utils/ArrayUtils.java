@@ -19,7 +19,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>查找索引时没有匹配索引：{@value}</p>
+	 * <p>查找数组索引没有匹配索引：{@value}</p>
 	 */
 	public static final int NONE_INDEX = -1;
 	
@@ -190,8 +190,9 @@ public final class ArrayUtils {
 	 * @param values 查找数组
 	 * @param value 查找数据
 	 * 
-	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引
 	 * 
+	 * @see #NONE_INDEX
 	 * @see #indexOf(int[], int, int, int)
 	 */
 	public static final int indexOf(int[] values, int value) {
@@ -206,7 +207,9 @@ public final class ArrayUtils {
 	 * @param end 结束位置
 	 * @param value 查找数据
 	 * 
-	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引
+	 * 
+	 * @see #NONE_INDEX
 	 */
 	public static final int indexOf(int[] values, int begin, int end, int value) {
 		end = end > values.length ? values.length : end;
@@ -221,14 +224,16 @@ public final class ArrayUtils {
 	/**
 	 * <p>查找数组索引</p>
 	 * 
-	 * @param chars 查找数组
+	 * @param values 查找数组
 	 * @param value 查找数据
 	 * 
-	 * @return 数据索引：{@value #NONE_INDEX}-没有匹配
+	 * @return 数据索引
+	 * 
+	 * @see #NONE_INDEX
 	 */
-	public static final int indexOf(char[] chars, char value) {
-		for (int index = 0; index < chars.length; index++) {
-			if(value == chars[index]) {
+	public static final int indexOf(char[] values, char value) {
+		for (int index = 0; index < values.length; index++) {
+			if(values[index] == value) {
 				return index;
 			}
 		}

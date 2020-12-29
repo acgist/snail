@@ -223,20 +223,20 @@ public final class BEncodeEncoder {
 	 * @param value 数据
 	 */
 	private void writeObject(Object value) {
-		if(value instanceof Number) {
+		if(value instanceof String) {
+			this.writeBytes(((String) value).getBytes());
+		} else if(value instanceof Number) {
 			this.writeNumber((Number) value);
 		} else if(value instanceof byte[]) {
 			this.writeBytes((byte[]) value);
-		} else if(value instanceof String) {
-			this.writeBytes(((String) value).getBytes());
-		} else if(value instanceof List) {
-			this.writeList((List<?>) value);
 		} else if(value instanceof Map) {
 			this.writeMap((Map<?, ?>) value);
+		} else if(value instanceof List) {
+			this.writeList((List<?>) value);
+		} else if(value == null) {
+			this.writeBytes(new byte[0]);
 		} else {
-			LOGGER.debug("B编码错误（未知类型）：{}", value);
-			// 未知类型时添加空字符数组
-			this.writeBytes(new byte[] {});
+			this.writeBytes(value.toString().getBytes());
 		}
 	}
 	

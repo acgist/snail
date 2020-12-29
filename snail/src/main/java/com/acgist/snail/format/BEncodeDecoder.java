@@ -256,7 +256,7 @@ public final class BEncodeDecoder {
 	 */
 	public byte[] oddBytes() {
 		if(this.inputStream == null) {
-			return null;
+			return new byte[0];
 		}
 		return this.inputStream.readAllBytes();
 	}
@@ -268,9 +268,6 @@ public final class BEncodeDecoder {
 	 */
 	public String oddString() {
 		final var bytes = this.oddBytes();
-		if(bytes == null) {
-			return null;
-		}
 		return new String(bytes);
 	}
 
@@ -346,14 +343,14 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = read(lengthBuilder, inputStream);
+					final byte[] bytes = readBytes(lengthBuilder, inputStream);
 					list.add(bytes);
 				} else {
 					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
 				}
 				break;
 			default:
-				LOGGER.debug("B编码错误（未知类型）：{}", indexChar);
+				LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
 				break;
 			}
 		}
@@ -387,7 +384,7 @@ public final class BEncodeDecoder {
 					map.put(key, readLong(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key为空跳过");
+					LOGGER.warn("B编码key为空跳过（I）");
 				}
 				break;
 			case TYPE_L:
@@ -395,7 +392,7 @@ public final class BEncodeDecoder {
 					map.put(key, readList(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key为空跳过");
+					LOGGER.warn("B编码key为空跳过（L）");
 				}
 				break;
 			case TYPE_D:
@@ -403,7 +400,7 @@ public final class BEncodeDecoder {
 					map.put(key, readMap(inputStream));
 					key = null;
 				} else {
-					LOGGER.warn("B编码key为空跳过");
+					LOGGER.warn("B编码key为空跳过（D）");
 				}
 				break;
 			case '0':
@@ -420,7 +417,7 @@ public final class BEncodeDecoder {
 				break;
 			case SEPARATOR:
 				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = read(lengthBuilder, inputStream);
+					final byte[] bytes = readBytes(lengthBuilder, inputStream);
 					if (key == null) {
 						key = new String(bytes);
 					} else {
@@ -432,7 +429,7 @@ public final class BEncodeDecoder {
 				}
 				break;
 			default:
-				LOGGER.debug("B编码错误（未知类型）：{}", indexChar);
+				LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
 				break;
 			}
 		}
@@ -449,7 +446,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private static final byte[] read(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
+	private static final byte[] readBytes(StringBuilder lengthBuilder, ByteArrayInputStream inputStream) throws PacketSizeException {
 		final var number = lengthBuilder.toString();
 		if(!StringUtils.isNumeric(number)) {
 			throw new IllegalArgumentException("B编码错误（数值）：" + number);

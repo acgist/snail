@@ -223,7 +223,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	private static final List<ScrapeMessage> convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
 		if(files == null) {
-			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", new String(decoder.oddBytes()));
+			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", decoder.oddString());
 			return List.of();
 		}
 		return files.values().stream()
