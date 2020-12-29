@@ -6,7 +6,16 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.javafx.JavaFXGuiManager;
+import com.acgist.snail.gui.javafx.event.AlertEvent;
+import com.acgist.snail.gui.javafx.event.BuildEvent;
+import com.acgist.snail.gui.javafx.event.ExitEvent;
+import com.acgist.snail.gui.javafx.event.HideEvent;
+import com.acgist.snail.gui.javafx.event.NoticeEvent;
+import com.acgist.snail.gui.javafx.event.RefreshTaskListEvent;
+import com.acgist.snail.gui.javafx.event.RefreshTaskStatusEvent;
+import com.acgist.snail.gui.javafx.event.ResponseEvent;
+import com.acgist.snail.gui.javafx.event.ShowEvent;
+import com.acgist.snail.gui.javafx.event.TorrentEvent;
 
 /**
  * <p>Snail启动类</p>
@@ -41,8 +50,20 @@ public final class Application {
 		SystemContext.info();
 		SystemContext.build(); // 初始化系统上下文
 		if(Snail.available()) {
-			JavaFXGuiManager.getInstance().registerEvent(); // 注册GUI事件
-			GuiManager.getInstance().init(args).build(); // 初始化GUI
+			 // 初始化GUI
+			GuiManager.getInstance()
+				.register(ShowEvent.getInstance())
+				.register(HideEvent.getInstance())
+				.register(ExitEvent.getInstance())
+				.register(BuildEvent.getInstance())
+				.register(AlertEvent.getInstance())
+				.register(NoticeEvent.getInstance())
+				.register(TorrentEvent.getInstance())
+				.register(ResponseEvent.getInstance())
+				.register(RefreshTaskListEvent.getInstance())
+				.register(RefreshTaskStatusEvent.getInstance())
+				.init(args)
+				.build();
 		} else {
 			LOGGER.debug("启动系统失败");
 		}
