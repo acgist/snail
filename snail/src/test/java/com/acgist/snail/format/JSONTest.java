@@ -1,6 +1,8 @@
 package com.acgist.snail.format;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,80 +10,130 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.utils.Performance;
 
 public class JSONTest extends Performance {
 	
+	private static final char[] CHARS = new char[] {
+		'\u0000', '\u0001', '\u0002', '\u0003', '\u0004', '\u0005',
+		'\u0006', '\u0007', '\b', '\t', '\n', '\u000b', '\f', '\r',
+		'\u000e', '\u000f', '\u0010', '\u0011', '\u0012', '\u0013',
+		'\u0014', '\u0015', '\u0016', '\u0017', '\u0018', '\u0019',
+		'\u001a', '\u001b', '\u001c', '\u001d', '\u001e', '\u001f',
+		'\"', '\\'
+	};
+
 	@Test
-	public void testSerialize() {
-		Map<Object, Object> map = Map.of(
-			"name", "\b你,:{}\"好",
-			"age", 30,
-			"marry", true,
-			"json-a", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":[\"动漫\",\"洞箫\"]}",
-			"json-b", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":\"[\"动漫\",\"洞箫\"]\"}",
-			"like", List.of("动\"漫", "洞\\箫")
-		);
-		map = new HashMap<>(map);
-		map.put("wife", null);
-		map.put("list", List.of(List.of(1, 2), 2, 3));
-		JSON json = JSON.ofMap(map);
-		this.log(json.toJSON());
-		assertEquals(json.get("name"), map.get("name"));
-		this.log(json.get("name"));
-		assertEquals(json.get("like"), map.get("like"));
-		this.log(json.get("like"));
-		assertEquals(json.get("age"), map.get("age"));
-		this.log(json.get("age"));
-		this.log(json.getJSON("like"));
-		this.log(json.getJSON("like").getList());
-//		JSON.eager(); // 禁用懒加载
-		this.log("json-a");
-		this.log(json.getJSON("json-a"));
-		this.log(json.getJSON("json-a").get("like"));
-		this.log(json.getJSON("json-a").get("like").getClass());
-		this.log(json.getJSON("json-a").getJSON("like"));
-		this.log("json-b");
-		this.log(json.getJSON("json-b"));
-		this.log(json.getJSON("json-b").get("like"));
-		this.log(json.getJSON("json-b").get("like").getClass());
-		this.log(json.getJSON("json-b").getJSON("like"));
+	public void testChars() {
+		boolean match = false;
+		for (char value : CHARS) {
+			this.log(Integer.toHexString(value));
+			if(value > 0x1F && value != 0x22 && value != 0x5C) {
+				match = true;
+				break;
+			}
+		}
+		assertFalse(match);
 	}
 	
 	@Test
-	public void testDeserialize() {
-		JSON json = JSON.ofString("{\"like\":[\"动\\\"漫\",\"洞\\\\箫\"],\"json-a\":\"{\\\"name\\\":\\\"你,:{}好\\\",\\\"age\\\":30,\\\"marry\\\":true,\\\"wife\\\":null,\\\"like\\\":[\\\"动漫\\\",\\\"洞箫\\\"]}\",\"wife\":null,\"json-b\":\"{\\\"name\\\":\\\"你,:{}好\\\",\\\"age\\\":30,\\\"marry\\\":true,\\\"wife\\\":null,\\\"like\\\":\\\"[\\\"动漫\\\",\\\"洞箫\\\"]\\\"}\",\"marry\":true,\"name\":\"\\b你,:{}\\\"好\",\"list\":[[1,2],2,3],\"age\":30}");
-		this.log(json.getString("name"));
-		this.log(json.getInteger("age"));
-		this.log(json.getBoolean("marry"));
-		this.log(json.get("wife"));
-		this.log(json.get("like"));
+	public void testJSON() {
+		final String escape = new String(CHARS);
+		final var like = List.of("动\"漫", "洞\\箫");
+		final var list = List.of(List.of(1, 2), 2, 3);
+		final Map<Object, Object> map = new HashMap<>(Map.of(
+			"age", 30,
+			"like", like,
+			"list", list,
+			"name", "\b你,:{}\"好",
+			"marry", true,
+			"escape", escape,
+			"json-a", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":[\"动漫\",\"洞箫\"]}",
+			"json-b", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":\"[\"动漫\",\"洞箫\"]\"}"
+		));
+		map.put("wife", null);
+		final JSON mapJson = JSON.ofMap(map);
+		this.log(mapJson.toJSON());
+		final JSON json = JSON.ofString(mapJson.toJSON());
+		assertEquals(mapJson.get("age"), map.get("age"));
+		assertEquals(mapJson.get("name"), map.get("name"));
+		assertEquals(mapJson.get("wife"), map.get("wife"));
+		assertEquals(mapJson.get("marry"), map.get("marry"));
+		assertEquals(mapJson.get("escape"), map.get("escape"));
+		assertEquals(json.get("age"), map.get("age"));
+		assertEquals(json.get("name"), map.get("name"));
+		assertEquals(json.get("wife"), map.get("wife"));
+		assertEquals(json.get("marry"), map.get("marry"));
+		assertEquals(json.get("escape"), map.get("escape"));
+		assertEquals(json.getJSON("like").getList().toString().replace(" ", ""), map.get("like").toString().replace(" ", ""));
+		assertEquals(json.getJSON("list").getList().toString().replace(" ", ""), map.get("list").toString().replace(" ", ""));
+//		JSON.eager();
 		this.log(json.getJSON("like"));
-		this.log(json.getJSON("like").getList());
-		this.log(json.get("list"));
 		this.log(json.getJSON("list"));
-		this.log(json.getJSON("list").getList());
-		this.log(json.toJSON());
+		this.log(json.getJSON("json-a"));
+		this.log(json.getJSON("json-a").get("like"));
+		this.log(json.getJSON("json-a").getJSON("like"));
+		assertEquals(String.class, json.getJSON("json-a").get("like").getClass());
+		assertEquals(JSON.class, json.getJSON("json-a").getJSON("like").getClass());
+		this.log(json.getJSON("json-b"));
+		this.log(json.getJSON("json-b").get("like"));
+		this.log(json.getJSON("json-b").getJSON("like"));
+		assertEquals(String.class, json.getJSON("json-b").get("like").getClass());
+		assertEquals(JSON.class, json.getJSON("json-b").getJSON("like").getClass());
+		JSON.eager(); // 禁用懒加载
+		this.log(json.getJSON("json-a"));
+		this.log(json.getJSON("json-a").get("like"));
+		this.log(json.getJSON("json-a").getJSON("like"));
+		assertEquals(JSON.class, json.getJSON("json-a").get("like").getClass());
+		assertEquals(JSON.class, json.getJSON("json-a").getJSON("like").getClass());
+		this.log("json-b");
+		this.log(json.getJSON("json-b"));
+		this.log(json.getJSON("json-b").get("like"));
+		this.log(json.getJSON("json-b").getJSON("like"));
+		assertEquals(String.class, json.getJSON("json-b").get("like").getClass());
+		assertEquals(JSON.class, json.getJSON("json-b").getJSON("like").getClass());
 	}
-
+	
 	@Test
-	public void testCost() {
-		this.cost();
-		for (int i = 0; i < 100000; i++) {
-			// 反序列化
-//			JSON.ofString("{\"name\":\"你,:{}好\",\"age\":30,\"marry\" :true , \"wife\": null , \"like\":[\"动漫\",\"洞箫\"]}");
-			// 序列化
-			Map<Object, Object> map = Map.of(
-				"name", "你,:{}好",
-				"age", 30,
-				"marry", true,
-				"like", List.of("动漫", "洞箫")
-			);
-			map = new HashMap<>(map);
-			map.put("wife", null);
-			JSON.ofMap(map);
-		}
-		this.costed();
+	public void testEscape() {
+//		{"name":"{\"name\":\"\\\"\"}"}
+		final String name = "\"";
+		final Map<Object, Object> a = Map.of("name", name);
+		final Map<Object, Object> b = Map.of("name", JSON.ofMap(a).toJSON());
+		final String content = JSON.ofMap(b).toJSON();
+		this.log(content);
+		final JSON json = JSON.ofString(content);
+		assertEquals(name, json.getJSON("name").getString("name"));
+	}
+	
+	@Test
+	public void testCosted() {
+		LoggerConfig.off();
+		final var like = List.of("动\"漫", "洞\\箫");
+		final var list = List.of(List.of(1, 2), 2, 3);
+		final Map<Object, Object> map = new HashMap<>(Map.of(
+			"age", 30,
+			"like", like,
+			"list", list,
+			"name", "\b你,:{}\"好",
+			"marry", true,
+			"json-a", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":[\"动漫\",\"洞箫\"]}",
+			"json-b", "{\"name\":\"你,:{}好\",\"age\":30,\"marry\":true,\"wife\":null,\"like\":\"[\"动漫\",\"洞箫\"]\"}"
+		));
+		map.put("wife", null);
+//		final Map<Object, Object> map = Map.of("name", "acgist");
+		final String json = JSON.ofMap(map).toJSON();
+		// FastJSON：550毫秒
+		long costed = this.costed(100000, () -> {
+			JSON.ofMap(map).toJSON();
+		});
+		assertTrue(costed < 3000);
+		// FastJSON：550毫秒
+		costed = this.costed(100000, () -> {
+			JSON.ofString(json);
+		});
+		assertTrue(costed < 3000);
 	}
 	
 }

@@ -48,10 +48,11 @@ public class BEncodeTest extends Performance {
 		map.put("a", 1);
 		map.put("b", null);
 		map.put("c", "c");
+		map.put("d", "");
 		map.put(null, "c");
 		final String content = new String(BEncodeEncoder.encodeMap(map));
 		this.log(content);
-		assertEquals("d1:ai1e1:b0:1:c1:c0:1:ce", content);
+		assertEquals("d1:ai1e1:b0:1:c1:c1:d0:0:1:ce", content);
 		final var decoder = BEncodeDecoder.newInstance(content);
 		final var decodeMap = decoder.nextMap();
 		decodeMap.forEach((key, value) -> {

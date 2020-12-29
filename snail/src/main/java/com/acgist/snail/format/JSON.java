@@ -18,8 +18,6 @@ import com.acgist.snail.utils.StringUtils;
  */
 public final class JSON {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(JSON.class);
-	
 	/**
 	 * <p>JSON特殊字符</p>
 	 * <p>Chrome浏览器控制台执行以下代码获取特殊字符：</p>
@@ -47,7 +45,7 @@ public final class JSON {
 	/**
 	 * <p>特殊字符对应编码</p>
 	 */
-	private static final String[] CHARS_ENCODE = new String[] {
+	private static final String[] CHARS_ESCAPE = new String[] {
 		"\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005",
 		"\\u0006", "\\u0007", "\\b", "\\t", "\\n", "\\u000b", "\\f", "\\r",
 		"\\u000e", "\\u000f", "\\u0010", "\\u0011", "\\u0012", "\\u0013",
@@ -55,6 +53,10 @@ public final class JSON {
 		"\\u001a", "\\u001b", "\\u001c", "\\u001d", "\\u001e", "\\u001f",
 		"\\\"", "\\\\"
 	};
+	/**
+	 * <p>转义字符串：{@value}</p>
+	 */
+	private static final char JSON_ESCAPE = '\\';
 	/**
 	 * <p>{@link Map}前缀：{@value}</p>
 	 */
@@ -84,7 +86,7 @@ public final class JSON {
 	 */
 	private static final char JSON_STRING = '"';
 	/**
-	 * <p>{@code null}：{@value}</p>
+	 * <p>空值：{@value}</p>
 	 */
 	private static final String JSON_NULL = "null";
 	/**
@@ -103,9 +105,13 @@ public final class JSON {
 	 */
 	public enum Type {
 
-		/** map */
+		/**
+		 * <p>Map</p>
+		 */
 		MAP,
-		/** list */
+		/**
+		 * <p>List</p>
+		 */
 		LIST;
 		
 	}
@@ -187,7 +193,7 @@ public final class JSON {
 		} else {
 			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
-		content = content.substring(1, content.length() - 1); // 去掉首位字符
+		content = content.substring(1, content.length() - 1); // 去掉首尾字符
 		json.deserialize(content);
 		return json;
 	}
@@ -233,10 +239,10 @@ public final class JSON {
 		Objects.requireNonNull(map, "JSON序列化错误（Map为空）");
 		builder.append(JSON_MAP_PREFIX);
 		if(!map.isEmpty()) {
-			map.entrySet().forEach(entry -> {
-				serializeValue(entry.getKey(), builder);
+			map.forEach((key, value) -> {
+				serializeValue(key, builder);
 				builder.append(JSON_KV_SEPARATOR);
-				serializeValue(entry.getValue(), builder);
+				serializeValue(value, builder);
 				builder.append(JSON_ATTR_SEPARATOR);
 			});
 			builder.setLength(builder.length() - 1);
@@ -270,16 +276,14 @@ public final class JSON {
 	 * @param builder JSON字符串Builder
 	 */
 	private static final void serializeValue(Object object, StringBuilder builder) {
-		if(object == null) {
-			builder.append(JSON_NULL);
-		} else if(object instanceof String) {
+		if(object instanceof String) {
 			builder
 				.append(JSON_STRING)
-				.append(encodeValue((String) object))
+				.append(escapeValue((String) object))
 				.append(JSON_STRING);
-		} else if(object instanceof Boolean) {
-			builder.append(object.toString());
 		} else if(object instanceof Number) {
+			builder.append(object.toString());
+		} else if(object instanceof Boolean) {
 			builder.append(object.toString());
 		} else if(object instanceof JSON) {
 			builder.append(object.toString());
@@ -287,34 +291,14 @@ public final class JSON {
 			serializeMap((Map<?, ?>) object, builder);
 		} else if(object instanceof List) {
 			serializeList((List<?>) object, builder);
+		} else if(object == null) {
+			builder.append(JSON_NULL);
 		} else {
 			builder
 				.append(JSON_STRING)
-				.append(encodeValue(object.toString()))
+				.append(escapeValue(object.toString()))
 				.append(JSON_STRING);
 		}
-	}
-	
-	/**
-	 * <p>转义JSON字符串</p>
-	 * 
-	 * @param content 待转义字符串
-	 * 
-	 * @return 转义后字符串
-	 */
-	private static final String encodeValue(String content) {
-		int index = -1;
-		final char[] chars = content.toCharArray();
-		final StringBuilder builder = new StringBuilder();
-		for (char value : chars) {
-			index = ArrayUtils.indexOf(CHARS, value);
-			if(index == ArrayUtils.NONE_INDEX) {
-				builder.append(value);
-			} else {
-				builder.append(CHARS_ENCODE[index]);
-			}
-		}
-		return builder.toString();
 	}
 	
 	/**
@@ -341,8 +325,10 @@ public final class JSON {
 	 * @param map Map
 	 */
 	private static final void deserializeMap(String content, Map<Object, Object> map) {
+		content = unescapeValue(content);
+		final int length = content.length();
 		final AtomicInteger index = new AtomicInteger(0);
-		while(index.get() < content.length()) {
+		while(index.get() < length) {
 			map.put(
 				deserializeValue(index, content),
 				deserializeValue(index, content)
@@ -357,8 +343,10 @@ public final class JSON {
 	 * @param list List
 	 */
 	private static final void deserializeList(String content, List<Object> list) {
+		content = unescapeValue(content);
+		final int length = content.length();
 		final AtomicInteger index = new AtomicInteger(0);
-		while(index.get() < content.length()) {
+		while(index.get() < length) {
 			list.add(
 				deserializeValue(index, content)
 			);
@@ -378,6 +366,7 @@ public final class JSON {
 		String hexValue;
 		int jsonIndex = 0; // JSON层级
 		int stringIndex = 0; // 字符串层级
+		final int length = content.length();
 		final StringBuilder builder = new StringBuilder();
 		do {
 			value = content.charAt(index.get());
@@ -392,13 +381,13 @@ public final class JSON {
 			} else if(value == JSON_MAP_SUFFIX || value == JSON_LIST_SUFFIX) {
 				jsonIndex--;
 			}
-			// 不属于JSON对象和字符串对象出现分隔符：结束循环
+			// 结束循环
 			if(stringIndex == 0 && jsonIndex == 0 && (value == JSON_KV_SEPARATOR || value == JSON_ATTR_SEPARATOR)) {
 				index.incrementAndGet();
 				break;
 			}
 			// 转义参考：#CHARS
-			if (value == '\\') {
+			if (value == JSON_ESCAPE) {
 				value = content.charAt(index.incrementAndGet());
 				switch (value) {
 				case 'b':
@@ -417,89 +406,105 @@ public final class JSON {
 					builder.append('\r');
 					break;
 				case '"':
+				case JSON_ESCAPE:
 					// 如果存在JSON对象里面保留转义字符
 					if(jsonIndex != 0) {
-						builder.append('\\');
+						builder.append(JSON_ESCAPE);
 					}
 					builder.append(value);
 					break;
-				case '\\':
-					// 如果存在JSON对象里面保留转义字符
-					if(jsonIndex != 0) {
-						builder.append('\\');
-					}
-					builder.append(value);
-					break;
-				case 'u': // Unicode
+				case 'u':
+					// Unicode
 					hexValue = content.substring(index.get() + 1, index.get() + 5);
 					builder.append((char) Integer.parseInt(hexValue, 16));
 					index.addAndGet(4);
 					break;
 				default:
 					// 未知转义类型保留转义字符
-					builder.append('\\');
+					builder.append(JSON_ESCAPE);
 					builder.append(value);
 					break;
 				}
 			} else {
 				builder.append(value);
 			}
-		} while (index.incrementAndGet() < content.length());
-		return decodeValue(builder.toString());
+		} while (index.incrementAndGet() < length);
+		return deserializeValue(builder.toString());
 	}
 	
 	/**
 	 * <p>类型转换</p>
+	 * <p>注意顺序：优先判断等于，然后判断equals，最后判断数值（正则表达式）。</p>
 	 * 
 	 * @param content JSON字符串
 	 * 
 	 * @return Java对象
 	 */
-	private static final Object decodeValue(String content) {
+	private static final Object deserializeValue(String content) {
 		final String value = content.trim();
 		final int length = value.length();
-		if(JSON_NULL.equals(value)) {
-			// null
-			return null;
-		} else if(StringUtils.isDecimal(value)) {
-			// 数值
-			return Integer.valueOf(value);
-		} else if(
-			JSON_BOOLEAN_TRUE.equals(value) ||
-			JSON_BOOLEAN_FALSE.equals(value)
-		) {
-			// Boolean
-			return Boolean.valueOf(value);
-		} else if(
-			length > 1 &&
-			value.charAt(0) == JSON_STRING &&
-			value.charAt(value.length() - 1) == JSON_STRING
-		) {
-			// 字符串
+		char first = '0'; // 首字符
+		char last = '0'; // 尾字符
+		if(length > 1) {
+			first = value.charAt(0);
+			last = value.charAt(length - 1);
+		}
+		if(first == JSON_STRING && last == JSON_STRING) {
 			return value.substring(1, length - 1); // 去掉引号
 		} else if(
-			length > 1 &&
-			value.charAt(0) == JSON_MAP_PREFIX &&
-			value.charAt(length - 1) == JSON_MAP_SUFFIX
+			(first == JSON_MAP_PREFIX && last == JSON_MAP_SUFFIX) ||
+			(first == JSON_LIST_PREFIX && last == JSON_LIST_SUFFIX)
 		) {
 			if(JSON.lazy) {
 				return value;
 			} else {
 				return JSON.ofString(value);
 			}
-		} else if(
-			length > 1 &&
-			value.charAt(0) == JSON_LIST_PREFIX &&
-			value.charAt(length - 1) == JSON_LIST_SUFFIX
-		) {
-			if(JSON.lazy) {
-				return value;
-			} else {
-				return JSON.ofString(value);
-			}
+		} else if(JSON_BOOLEAN_TRUE.equals(value) || JSON_BOOLEAN_FALSE.equals(value)) {
+			return Boolean.valueOf(value);
+		} else if(JSON_NULL.equals(value)) {
+			return null;
+		} else if(StringUtils.isDecimal(value)) {
+			return Integer.valueOf(value);
 		} else {
 			throw new IllegalArgumentException("JSON格式错误：" + value);
 		}
+	}
+	
+	/**
+	 * <p>转义JSON字符串</p>
+	 * 
+	 * @param content 原始字符串
+	 * 
+	 * @return 转义字符串
+	 */
+	private static final StringBuilder escapeValue(String content) {
+		final char[] chars = content.toCharArray();
+		final StringBuilder builder = new StringBuilder();
+		for (char value : chars) {
+			if(value > 0x1F && value != 0x22 && value != 0x5C) {
+				builder.append(value);
+			} else {
+				builder.append(CHARS_ESCAPE[ArrayUtils.indexOf(CHARS, value)]);
+			}
+		}
+		return builder;
+	}
+	
+	/**
+	 * <p>反转义JSON字符串</p>
+	 * 
+	 * @param content 转义字符串
+	 * 
+	 * @return 原始字符串
+	 */
+	private static final String unescapeValue(String content) {
+		if(content.charAt(0) == JSON_ESCAPE) {
+			for (int index = 0; index < CHARS_ESCAPE.length; index++) {
+				content = content.replace(CHARS_ESCAPE[index], String.valueOf(CHARS[index]));
+			}
+		}
+		return content;
 	}
 	
 	/**
@@ -537,20 +542,20 @@ public final class JSON {
 		} else if(value instanceof String) {
 			return JSON.ofString((String) value);
 		} else if(value instanceof Map) {
-			final Map<Object, Object> map = ((Map<?, ?>) value).entrySet().stream()
+			final Map<Object, Object> valueMap = ((Map<?, ?>) value).entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-			return JSON.ofMap(map);
+			return JSON.ofMap(valueMap);
 		} else if(value instanceof List) {
-			final List<Object> list = ((List<?>) value).stream()
+			final List<Object> valueList = ((List<?>) value).stream()
 				.collect(Collectors.toList());
-			return JSON.ofList(list);
+			return JSON.ofList(valueList);
 		} else {
 			throw new IllegalArgumentException("JSON转换错误：" + value);
 		}
 	}
 	
 	/**
-	 * <p>获取Integer属性</p>
+	 * <p>获取Integer属性对象</p>
 	 * 
 	 * @param key 属性名称
 	 * 
@@ -561,7 +566,7 @@ public final class JSON {
 	}
 
 	/**
-	 * <p>获取Boolean属性</p>
+	 * <p>获取Boolean属性对象</p>
 	 * 
 	 * @param key 属性名称
 	 * 
@@ -572,7 +577,7 @@ public final class JSON {
 	}
 	
 	/**
-	 * <p>获取String属性</p>
+	 * <p>获取String属性对象</p>
 	 * 
 	 * @param key 属性名称
 	 * 
@@ -583,7 +588,7 @@ public final class JSON {
 	}
 	
 	/**
-	 * <p>获取属性</p>
+	 * <p>获取属性对象</p>
 	 * 
 	 * @param key 属性名称
 	 * 
