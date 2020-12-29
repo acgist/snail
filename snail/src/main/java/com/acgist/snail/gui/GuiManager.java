@@ -70,11 +70,6 @@ public final class GuiManager {
 	}
 	
 	/**
-	 * <p>事件列表Map</p>
-	 * <p>事件类型=事件</p>
-	 */
-	private static final Map<GuiEvent.Type, GuiEvent> EVENTS = new EnumMap<>(GuiEvent.Type.class);
-	/**
 	 * <p>启动参数：运行模式</p>
 	 */
 	private static final String ARGS_MODE = "mode";
@@ -94,9 +89,14 @@ public final class GuiManager {
 	 */
 	private final Object lock = new Object();
 	/**
+	 * <p>事件列表Map</p>
+	 * <p>事件类型=事件</p>
+	 */
+	private final Map<GuiEvent.Type, GuiEvent> events = new EnumMap<>(GuiEvent.Type.class);
+	/**
 	 * <p>扩展GUI消息代理</p>
 	 */
-	private IMessageSender extendGuiIMessageSender;
+	private IMessageSender extendGuiMessageSender;
 	
 	private GuiManager() {
 	}
@@ -110,7 +110,7 @@ public final class GuiManager {
 	 */
 	public GuiManager register(GuiEvent event) {
 		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
-		EVENTS.put(event.type(), event);
+		this.events.put(event.type(), event);
 		return this;
 	}
 
@@ -278,7 +278,7 @@ public final class GuiManager {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
-		final GuiEvent event = EVENTS.get(type);
+		final GuiEvent event = this.events.get(type);
 		if(event == null) {
 			LOGGER.warn("GUI事件没有注册：{}", type);
 			return this;
@@ -308,17 +308,17 @@ public final class GuiManager {
 	/**
 	 * <p>注册扩展GUI消息代理</p>
 	 * 
-	 * @param extendGuiIMessageSender 扩展GUI消息代理
+	 * @param extendGuiMessageSender 扩展GUI消息代理
 	 * 
 	 * @return 是否注册成功
 	 */
-	public boolean extendGuiMessageHandler(IMessageSender extendGuiIMessageSender) {
+	public boolean extendGuiMessageHandler(IMessageSender extendGuiMessageSender) {
 		if(this.mode == Mode.NATIVE) {
 			LOGGER.debug("已经启用本地GUI：忽略注册扩展GUI消息代理");
 			return false;
 		} else {
 			LOGGER.debug("注册扩展GUI消息代理");
-			this.extendGuiIMessageSender = extendGuiIMessageSender;
+			this.extendGuiMessageSender = extendGuiMessageSender;
 			return true;
 		}
 	}
@@ -329,9 +329,9 @@ public final class GuiManager {
 	 * @param message 扩展GUI消息
 	 */
 	public void sendExtendGuiMessage(ApplicationMessage message) {
-		if(this.extendGuiIMessageSender != null && message != null) {
+		if(this.extendGuiMessageSender != null && message != null) {
 			try {
-				this.extendGuiIMessageSender.send(message.toString());
+				this.extendGuiMessageSender.send(message.toString());
 			} catch (NetException e) {
 				LOGGER.error("发送扩展GUI消息异常", e);
 			}
