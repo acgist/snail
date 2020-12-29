@@ -482,6 +482,7 @@ public final class JSON {
 		final char[] chars = content.toCharArray();
 		final StringBuilder builder = new StringBuilder();
 		for (char value : chars) {
+			// 参考JSON特殊字符
 			if(value > 0x1F && value != 0x22 && value != 0x5C) {
 				builder.append(value);
 			} else {
