@@ -44,6 +44,8 @@ public final class GuiManager {
 		/**
 		 * <p>后台模式：扩展GUI</p>
 		 * <p>扩展GUI：自定义实现，通过系统消息和系统通知来完成系统管理和任务管理。</p>
+		 * 
+		 * @see com.acgist.snail.pojo.message.ApplicationMessage.Type
 		 */
 		EXTEND;
 		
@@ -56,15 +58,25 @@ public final class GuiManager {
 	 */
 	public enum MessageType {
 		
-		/** 普通 */
+		/**
+		 * <p>普通</p>
+		 */
 		NONE,
-		/** 提示 */
+		/**
+		 * <p>提示</p>
+		 */
 		INFO,
-		/** 警告 */
+		/**
+		 * <p>警告</p>
+		 */
 		WARN,
-		/** 确认 */
+		/**
+		 * <p>确认</p>
+		 */
 		CONFIRM,
-		/** 错误 */
+		/**
+		 * <p>错误</p>
+		 */
 		ERROR;
 		
 	}
@@ -89,7 +101,7 @@ public final class GuiManager {
 	 */
 	private final Object lock = new Object();
 	/**
-	 * <p>事件列表Map</p>
+	 * <p>事件Map</p>
 	 * <p>事件类型=事件</p>
 	 */
 	private final Map<GuiEvent.Type, GuiEvent> events = new EnumMap<>(GuiEvent.Type.class);
@@ -98,23 +110,28 @@ public final class GuiManager {
 	 */
 	private IMessageSender extendGuiMessageSender;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private GuiManager() {
 	}
 	
 	/**
-	 * <p>注册事件</p>
+	 * <p>注册GUI事件</p>
 	 * 
-	 * @param event 事件
+	 * @param event GUI事件
 	 */
 	public static final void register(GuiEvent event) {
-		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
+		}
 		INSTANCE.events.put(event.type(), event);
 	}
 
 	/**
 	 * <p>初始化GUI管理器</p>
 	 * 
-	 * @param args 参数
+	 * @param args 启动参数
 	 * 
 	 * @return GUI管理器
 	 */
@@ -122,7 +139,9 @@ public final class GuiManager {
 		if(args == null) {
 			// 没有参数
 		} else {
-			LOGGER.info("启动参数：{}", String.join(",", args));
+			if(LOGGER.isInfoEnabled()) {
+				LOGGER.info("启动参数：{}", String.join(",", args));
+			}
 			String value;
 			for (String arg : args) {
 				// 运行模式
@@ -130,8 +149,8 @@ public final class GuiManager {
 				if(Mode.EXTEND.name().equalsIgnoreCase(value)) {
 					this.mode = Mode.EXTEND;
 				}
-				LOGGER.info("运行模式：{}", this.mode);
 			}
+			LOGGER.info("运行模式：{}", this.mode);
 		}
 		return this;
 	}
@@ -173,7 +192,7 @@ public final class GuiManager {
 	}
 	
 	/**
-	 * <p>提示窗口</p>
+	 * <p>窗口消息</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -185,7 +204,7 @@ public final class GuiManager {
 	}
 
 	/**
-	 * <p>提示窗口</p>
+	 * <p>窗口消息</p>
 	 * 
 	 * @param title 标题
 	 * @param message 内容
@@ -326,14 +345,18 @@ public final class GuiManager {
 	 * @param message 扩展GUI消息
 	 */
 	public void sendExtendGuiMessage(ApplicationMessage message) {
-		if(this.extendGuiMessageSender != null && message != null) {
+		if(message == null) {
+			LOGGER.warn("扩展GUI消息错误：{}", message);
+			return;
+		}
+		if(this.extendGuiMessageSender != null) {
 			try {
 				this.extendGuiMessageSender.send(message.toString());
 			} catch (NetException e) {
 				LOGGER.error("发送扩展GUI消息异常", e);
 			}
 		} else {
-			LOGGER.warn("发送扩展GUI消息失败");
+			LOGGER.warn("扩展GUI消息代理没有注册");
 		}
 	}
 	

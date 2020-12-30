@@ -1,6 +1,7 @@
 package com.acgist.snail.gui;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class GuiManagerTest extends Performance {
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
 		SystemContext.build(); // 初始化系统上下文
+		assertTrue(Snail.available());
 		if(Snail.available()) {
 			final String[] args = new String[] { "mode=extend" }; // 后台模式启动
 			GuiManager.getInstance().init(args).build(); // 初始化GUI
@@ -94,6 +96,7 @@ public class GuiManagerTest extends Performance {
 		client.connect();
 		// 注册GUI
 		client.send(ApplicationMessage.message(Type.GUI, message));
+		assertNotNull(client);
 		while ((message = scanner.nextLine()) != null) {
 			if(message.equalsIgnoreCase(Type.TEXT.name())) {
 				client.send(ApplicationMessage.message(Type.TEXT, message));

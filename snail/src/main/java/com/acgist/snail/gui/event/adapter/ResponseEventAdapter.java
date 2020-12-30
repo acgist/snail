@@ -31,7 +31,7 @@ public class ResponseEventAdapter extends GuiEventArgs {
 	}
 
 	/**
-	 * <p>本地响应消息</p>
+	 * <p>本地消息</p>
 	 * 
 	 * @param message 消息
 	 */
@@ -40,7 +40,7 @@ public class ResponseEventAdapter extends GuiEventArgs {
 	}
 	
 	/**
-	 * <p>扩展响应消息</p>
+	 * <p>扩展消息</p>
 	 * 
 	 * @param message 消息
 	 */
