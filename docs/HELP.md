@@ -123,9 +123,9 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 #### 进阶
 
-问题建议：F1
+问题建议：`F1`
 
-统计面板：F12
+统计面板：`F12`
 
 下载界面、新建下载界面支持拖拽操作：下载链接、种子文件
 
