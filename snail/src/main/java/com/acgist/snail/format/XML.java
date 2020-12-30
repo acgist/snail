@@ -45,7 +45,7 @@ public final class XML {
 	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	/**
-	 * <p>根节点</p>
+	 * <p>文档</p>
 	 */
 	private Document document;
 	
@@ -124,13 +124,13 @@ public final class XML {
 			factory.setXIncludeAware(false);
 			factory.setExpandEntityReferences(false);
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("设置DocumentBuilderFactory异常 ", e);
+			LOGGER.error("创建DocumentBuilderFactory异常 ", e);
 		}
 		return factory;
 	}
 
 	/**
-	 * @return 根节点
+	 * @return 文档
 	 */
 	public Document document() {
 		return this.document;
@@ -143,6 +143,8 @@ public final class XML {
 	 * @param name 节点名称
 	 * 
 	 * @return 节点
+	 * 
+	 * @see #element(Node, String, String)
 	 */
 	public Element element(Node node, String name) {
 		return this.element(node, name, null);
@@ -156,6 +158,8 @@ public final class XML {
 	 * @param text 节点文本
 	 * 
 	 * @return 节点
+	 * 
+	 * @see #elementNS(Node, String, String, String)
 	 */
 	public Element element(Node node, String name, String text) {
 		return this.elementNS(node, name, text, null);
@@ -169,6 +173,8 @@ public final class XML {
 	 * @param namespaceURI 命名空间
 	 * 
 	 * @return 节点
+	 * 
+	 * @see #elementNS(Node, String, String, String)
 	 */
 	public Element elementNS(Node node, String name, String namespaceURI) {
 		return this.elementNS(node, name, null, namespaceURI);
@@ -240,6 +246,8 @@ public final class XML {
 	 * <p>默认不格式化</p>
 	 * 
 	 * @return XML
+	 * 
+	 * @see #xml(boolean)
 	 */
 	public String xml() {
 		return this.xml(false);
