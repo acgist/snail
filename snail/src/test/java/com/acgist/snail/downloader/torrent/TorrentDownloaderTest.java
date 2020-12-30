@@ -31,7 +31,7 @@ public class TorrentDownloaderTest extends Performance {
 		final var list = torrent.getInfo().files().stream()
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
-		GuiManager.getInstance().register(TorrentEvent.getInstance());
+		GuiManager.register(TorrentEvent.getInstance());
 		GuiManager.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
@@ -56,7 +56,7 @@ public class TorrentDownloaderTest extends Performance {
 		final var list = torrent.getInfo().files().stream()
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
-		GuiManager.getInstance().register(TorrentEvent.getInstance());
+		GuiManager.register(TorrentEvent.getInstance());
 		GuiManager.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
