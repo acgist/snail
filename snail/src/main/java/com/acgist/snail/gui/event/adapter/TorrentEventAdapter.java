@@ -44,7 +44,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 	}
 	
 	/**
-	 * <p>本地GUI</p>
+	 * <p>本地消息</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
@@ -53,7 +53,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 	}
 	
 	/**
-	 * <p>扩展GUI</p>
+	 * <p>扩展消息</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
@@ -65,17 +65,15 @@ public class TorrentEventAdapter extends GuiEventArgs {
 		}
 		try {
 			final var decoder = BEncodeDecoder.newInstance(files);
+			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件列表
 			final var selectFiles = decoder.nextList().stream()
-				.map(object -> StringUtils.getString(object))
+				.map(StringUtils::getString)
 				.collect(Collectors.toList());
-			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
-				// 去掉隐藏文件
-				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX))
-				// 设置选中文件
-				.filter(file -> selectFiles.contains(file.path()))
+				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
+				.filter(file -> selectFiles.contains(file.path())) // 设置选中文件
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(files);
