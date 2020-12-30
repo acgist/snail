@@ -36,17 +36,16 @@ public class GuiManagerTest extends Performance {
 	 */
 	@BeforeAll
 	public static final void registerEvent() {
-		GuiManager.getInstance()
-			.register(ShowEvent.getInstance())
-			.register(HideEvent.getInstance())
-			.register(ExitEvent.getInstance())
-			.register(BuildEvent.getInstance())
-			.register(AlertEvent.getInstance())
-			.register(NoticeEvent.getInstance())
-			.register(TorrentEvent.getInstance())
-			.register(ResponseEvent.getInstance())
-			.register(RefreshTaskListEvent.getInstance())
-			.register(RefreshTaskStatusEvent.getInstance());
+		GuiManager.register(ShowEvent.getInstance());
+		GuiManager.register(HideEvent.getInstance());
+		GuiManager.register(ExitEvent.getInstance());
+		GuiManager.register(BuildEvent.getInstance());
+		GuiManager.register(AlertEvent.getInstance());
+		GuiManager.register(NoticeEvent.getInstance());
+		GuiManager.register(TorrentEvent.getInstance());
+		GuiManager.register(ResponseEvent.getInstance());
+		GuiManager.register(RefreshTaskListEvent.getInstance());
+		GuiManager.register(RefreshTaskStatusEvent.getInstance());
 	}
 
 	@Test

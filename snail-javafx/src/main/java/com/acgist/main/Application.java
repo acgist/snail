@@ -50,24 +50,28 @@ public final class Application {
 		SystemContext.info();
 		SystemContext.build(); // 初始化系统上下文
 		if(Snail.available()) {
-			 // 初始化GUI
-			GuiManager.getInstance()
-				.register(ShowEvent.getInstance())
-				.register(HideEvent.getInstance())
-				.register(ExitEvent.getInstance())
-				.register(BuildEvent.getInstance())
-				.register(AlertEvent.getInstance())
-				.register(NoticeEvent.getInstance())
-				.register(TorrentEvent.getInstance())
-				.register(ResponseEvent.getInstance())
-				.register(RefreshTaskListEvent.getInstance())
-				.register(RefreshTaskStatusEvent.getInstance())
-				.init(args)
-				.build();
+			registerGuiEvent();
+			GuiManager.getInstance().init(args).build();
 		} else {
 			LOGGER.debug("启动系统失败");
 		}
 		LOGGER.info("系统启动完成");
+	}
+	
+	/**
+	 * <p>注册GUI事件</p>
+	 */
+	private static final void registerGuiEvent() {
+		GuiManager.register(ShowEvent.getInstance());
+		GuiManager.register(HideEvent.getInstance());
+		GuiManager.register(ExitEvent.getInstance());
+		GuiManager.register(BuildEvent.getInstance());
+		GuiManager.register(AlertEvent.getInstance());
+		GuiManager.register(NoticeEvent.getInstance());
+		GuiManager.register(TorrentEvent.getInstance());
+		GuiManager.register(ResponseEvent.getInstance());
+		GuiManager.register(RefreshTaskListEvent.getInstance());
+		GuiManager.register(RefreshTaskStatusEvent.getInstance());
 	}
 
 }

@@ -105,13 +105,10 @@ public final class GuiManager {
 	 * <p>注册事件</p>
 	 * 
 	 * @param event 事件
-	 * 
-	 * @return GUI管理器
 	 */
-	public GuiManager register(GuiEvent event) {
+	public static final void register(GuiEvent event) {
 		LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
-		this.events.put(event.type(), event);
-		return this;
+		INSTANCE.events.put(event.type(), event);
 	}
 
 	/**
