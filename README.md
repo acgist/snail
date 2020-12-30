@@ -18,7 +18,7 @@
 		<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
 	</a>
 	<br />
-	<img alt="Travis (.org)" src="https://img.shields.io/travis/acgist/snail?style=flat-square" />
+	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/acgist/snail/build?style=flat-square">
 	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?color=crimson&style=flat-square" />
 	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
