@@ -1,5 +1,7 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,8 +9,8 @@ import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -258,7 +260,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.announceUrl);
+		return Objects.hash(this.announceUrl);
 	}
 	
 	/**
@@ -282,7 +284,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.id, this.type, this.failTimes, this.announceUrl);
+		return BeanUtils.toString(this, this.id, this.type, this.failTimes, this.announceUrl);
 	}
 	
 }

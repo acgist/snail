@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.crypt;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,13 @@ import com.acgist.snail.utils.Performance;
 
 public class MSEPaddingSyncTest extends Performance {
 
+	@Test
+	public void testToString() {
+		final MSEPaddingSync sync = MSEPaddingSync.newInstance(10);
+		this.log(sync.toString());
+		assertNotNull(sync.toString());
+	}
+	
 	@Test
 	public void testCost() throws NetException {
 		this.cost();

@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.message;
 
 import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>Tracker刮檫响应消息</p>
@@ -105,7 +105,7 @@ public final class ScrapeMessage {
 
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this);
+		return BeanUtils.toString(this);
 	}
 	
 }

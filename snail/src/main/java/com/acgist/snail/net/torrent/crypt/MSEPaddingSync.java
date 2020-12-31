@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>Padding数据同步工具</p>
@@ -112,7 +112,7 @@ public final class MSEPaddingSync {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.count, this.length, this.list.size());
+		return BeanUtils.toString(this, this.count, this.length, this.list);
 	}
 	
 }

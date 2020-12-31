@@ -14,11 +14,9 @@ import com.acgist.snail.config.DhtConfig.QType;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.ObjectUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>DHT请求</p>
@@ -226,26 +224,8 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	@Override
-	public int hashCode() {
-		return ObjectUtils.hashCode(this.t);
-	}
-	
-	@Override
-	public boolean equals(Object object) {
-		if(this == object) {
-			return true;
-		}
-		// TODO：使用最新instanceof写法
-		if(object instanceof DhtRequest) {
-			final DhtRequest request = (DhtRequest) object;
-			return ArrayUtils.equals(this.t, request.t);
-		}
-		return false;
-	}
-	
-	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, StringUtils.hex(this.t), this.y, this.q, this.a);
+		return BeanUtils.toString(this, this.t, this.y, this.q, this.a);
 	}
 	
 }

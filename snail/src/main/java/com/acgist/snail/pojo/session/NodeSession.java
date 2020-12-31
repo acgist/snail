@@ -1,7 +1,9 @@
 package com.acgist.snail.pojo.session;
 
+import java.util.Objects;
+
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>DHT节点信息</p>
@@ -136,7 +138,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.id);
+		return Objects.hash(this.id);
 	}
 	
 	@Override
@@ -153,7 +155,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.host, this.port);
+		return BeanUtils.toString(this, this.id, this.host, this.port);
 	}
 	
 }
