@@ -19,9 +19,9 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -841,7 +841,7 @@ public final class TorrentStream {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.filePath);
+		return BeanUtils.toString(this, this.filePath);
 	}
 
 }

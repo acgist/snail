@@ -26,7 +26,6 @@ import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.pojo.wrapper.KeyValueWrapper;
 import com.acgist.snail.utils.CollectionUtils;
-import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
@@ -504,11 +503,6 @@ public final class M3u8Builder {
 				this.wrapper.decode();
 			}
 			return this.wrapper;
-		}
-		
-		@Override
-		public String toString() {
-			return ObjectUtils.toString(this);
 		}
 		
 	}

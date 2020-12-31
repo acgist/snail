@@ -2,8 +2,9 @@ package com.acgist.snail.pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -97,7 +98,7 @@ public class Entity implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.id);
+		return Objects.hash(this.id);
 	}
 	
 	@Override
@@ -114,7 +115,7 @@ public class Entity implements Serializable {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this);
+		return BeanUtils.toString(this);
 	}
 	
 }

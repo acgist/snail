@@ -2,8 +2,10 @@ package com.acgist.snail.net.torrent.dht;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Objects;
 
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.utils.ArrayUtils;
 
 /**
  * <p>DHT消息</p>
@@ -176,5 +178,23 @@ public abstract class DhtMessage {
 	 * @param value 参数值
 	 */
 	public abstract void put(String key, Object value);
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.t);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		// TODO：使用最新instanceof写法
+		if(object instanceof DhtMessage) {
+			final DhtMessage message = (DhtMessage) object;
+			return ArrayUtils.equals(this.t, message.t);
+		}
+		return false;
+	}
 	
 }

@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>Peer连接</p>
@@ -525,7 +525,7 @@ public abstract class PeerConnect {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.peerSession);
+		return BeanUtils.toString(this, this.peerSession);
 	}
 	
 }

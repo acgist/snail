@@ -2,7 +2,6 @@ package com.acgist.snail.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,20 +45,12 @@ public final class BeanUtils {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * <p>获取实例属性Map</p>
+	 * <p>属性类型转换</p>
 	 * 
 	 * <table border="1">
 	 * 	<caption>属性类型转换</caption>
-	 * 	<tr>
-	 * 		<td>{@code String}</td>
-	 * 		<td>{@code String}</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Number}</td>
-	 * 		<td>{@code Number}</td>
-	 * 	</tr>
 	 * 	<tr>
 	 * 		<td>{@code Enum}</td>
 	 * 		<td>{@code String}</td>
@@ -68,9 +59,59 @@ public final class BeanUtils {
 	 * 		<td>{@code Date}</td>
 	 * 		<td>{@code String(yyyyMMddHHmmss)}</td>
 	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>{@code byte[]}</td>
+	 * 		<td>{@code String}</td>
+	 * 	</tr>
 	 * </table>
 	 * 
-	 * @param instance 实例
+	 * @param object 原始对象
+	 * 
+	 * @return 转换对象
+	 */
+	public static final Object objectToString(Object object) {
+		if (object == null) {
+			return null;
+		} else if (object instanceof Enum<?>) {
+			return ((Enum<?>) object).name();
+		} else if (object instanceof Date) {
+			return DateUtils.dateFormat((Date) object);
+		} else if (object instanceof byte[]) {
+			return new String((byte[]) object);
+		} else {
+			return object;
+		}
+	}
+	
+	/**
+	 * <p>重写对象toString方法</p>
+	 * 
+	 * @param instance 对象
+	 * @param values 属性
+	 * 
+	 * @return toString
+	 */
+	public static final String toString(Object instance, Object ... values) {
+		Objects.requireNonNull(instance);
+		final StringBuilder builder = new StringBuilder(instance.getClass().toString());
+		builder.append("@");
+		if (ArrayUtils.isEmpty(values)) {
+			builder.append(toMap(instance).toString());
+		} else {
+			builder.append("{");
+			for (Object object : values) {
+				builder.append(objectToString(object)).append(", ");
+			}
+			builder.setLength(builder.length() - 2);
+			builder.append("}");
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * <p>获取对象属性Map</p>
+	 * 
+	 * @param instance 对象
 	 * 
 	 * @return 属性Map
 	 */
@@ -80,16 +121,7 @@ public final class BeanUtils {
 		final String[] properties = properties(instance.getClass());
 		for (String property : properties) {
 			final Object object = propertyValue(instance, property);
-			if(object instanceof Enum<?>) {
-				map.put(property, ((Enum<?>) object).name());
-			} else if(object instanceof Date) {
-				// TODO：强转使用JDK最新写法
-				// TODO：使用DateUtil工具替换
-				final SimpleDateFormat formater = new SimpleDateFormat(DateUtils.DEFAULT_PATTERN);
-				map.put(property, formater.format(object));
-			} else {
-				map.put(property, object);
-			}
+			map.put(property, objectToString(object));
 		}
 		return map;
 	}
@@ -121,10 +153,10 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例对象指定属性名称的属性值</p>
+	 * <p>获取对象指定属性的属性值</p>
 	 * 
-	 * @param instance 实例
-	 * @param properties 属性名称
+	 * @param instance 对象
+	 * @param properties 属性
 	 * 
 	 * @return 属性值
 	 */
@@ -137,10 +169,10 @@ public final class BeanUtils {
 	}
 	
 	/**
-	 * <p>获取实例对象指定属性名称的属性值</p>
+	 * <p>获取对象指定属性的属性值</p>
 	 * 
-	 * @param instance 实例
-	 * @param property 属性名称
+	 * @param instance 对象
+	 * @param property 属性
 	 * 
 	 * @return 属性值
 	 */
@@ -155,18 +187,18 @@ public final class BeanUtils {
 				return method.invoke(instance);
 			}
 		} catch (Exception e) {
-			LOGGER.error("获取实例对象指定属性名称的属性值异常：{}-{}", clazz, property, e);
+			LOGGER.error("获取对象指定属性的属性值异常：{}-{}", clazz, property, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>设置实例属性</p>
+	 * <p>设置对象属性</p>
 	 * 
-	 * @param instance 实例
+	 * @param instance 对象
 	 * @param wrapper 属性
 	 */
-	public static final void setProperties(Object instance, Map<String, Object> data) {
+	public static final void properties(Object instance, Map<String, Object> data) {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(data);
 		final Class<?> clazz = instance.getClass();
@@ -179,7 +211,7 @@ public final class BeanUtils {
 					method.invoke(instance, data.get(property));
 				}
 			} catch (Exception e) {
-				LOGGER.error("设置实例属性异常：{}-{}", clazz, property, e);
+				LOGGER.error("设置对象属性异常：{}-{}", clazz, property, e);
 			}
 		}
 	}

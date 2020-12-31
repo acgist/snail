@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>M3U8信息</p>
@@ -139,7 +139,7 @@ public final class M3u8 {
 
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.type, this.links);
+		return BeanUtils.toString(this, this.type, this.cipher, this.links);
 	}
 	
 }

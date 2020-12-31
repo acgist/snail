@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,9 @@ import com.acgist.snail.net.torrent.peer.PeerDownloader;
 import com.acgist.snail.net.torrent.peer.PeerUploader;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.IStatisticsSessionGetter;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -793,11 +794,6 @@ public final class PeerSession implements IStatisticsSessionGetter {
 		return NetUtils.buildSocketAddress(this.host, this.dhtPort);
 	}
 	
-	@Override
-	public int hashCode() {
-		return ObjectUtils.hashCode(this.host);
-	}
-	
 	/**
 	 * <p>判断是否相等</p>
 	 * 
@@ -808,6 +804,11 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 */
 	public boolean equals(String host, Integer port) {
 		return StringUtils.equals(this.host, host) && NumberUtils.equals(this.port, port);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.host, this.port);
 	}
 	
 	@Override
@@ -824,7 +825,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.host, this.port, this.dhtPort);
+		return BeanUtils.toString(this, this.host, this.port, this.dhtPort);
 	}
 
 }

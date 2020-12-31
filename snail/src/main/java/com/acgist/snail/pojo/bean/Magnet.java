@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.acgist.snail.utils.ObjectUtils;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -252,7 +252,7 @@ public final class Magnet implements Serializable {
 
 	@Override
 	public String toString() {
-		return ObjectUtils.toString(this, this.dn, this.type, this.hash, this.tr);
+		return BeanUtils.toString(this);
 	}
 	
 }

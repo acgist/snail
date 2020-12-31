@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -24,7 +25,6 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.ObjectUtils;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.collections.FXCollections;
@@ -575,7 +575,7 @@ public final class StatisticsController extends Controller implements Initializa
 		
 		@Override
 		public int hashCode() {
-			return ObjectUtils.hashCode(this.hash);
+			return Objects.hash(this.hash);
 		}
 		
 		@Override
