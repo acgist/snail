@@ -2,11 +2,10 @@ package com.acgist.snail.logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.slf4j.event.Level;
-
-import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>日志配置</p>
@@ -34,24 +33,8 @@ public final class LoggerConfig {
 	 * <p>禁止创建实例</p>
 	 */
 	private LoggerConfig() {
-		Properties properties = null;
-		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), SystemConfig.DEFAULT_CHARSET)) {
-			properties = new Properties();
-			properties.load(input);
-		} catch (IOException e) {
-			Logger.error(e);
-		}
-		this.properties = properties;
 	}
 	
-	/**
-	 * <p>配置信息</p>
-	 */
-	private final Properties properties;
-	/**
-	 * <p>日志级别</p>
-	 */
-	private Level level;
 	/**
 	 * <p>日志级别</p>
 	 */
@@ -81,39 +64,44 @@ public final class LoggerConfig {
 	 * <p>初始化配置</p>
 	 */
 	private void init() {
-		final String levelValue = this.properties.getProperty("logger.level");
+		Properties properties = null;
+		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), StandardCharsets.UTF_8)) {
+			properties = new Properties();
+			properties.load(input);
+		} catch (IOException e) {
+			LoggerContext.error(e);
+		}
+		final Level level = this.of(properties.getProperty("logger.level"));
+		this.levelInt = level.toInt();
+		this.system = properties.getProperty("logger.system");
+		this.adapter = properties.getProperty("logger.adapter");
+		this.fileName = properties.getProperty("logger.file.name");
+		this.fileBuffer = Integer.parseInt(properties.getProperty("logger.file.buffer", "8192"));
+		this.fileMaxDays = Integer.parseInt(properties.getProperty("logger.file.max.days", "30"));
+	}
+	
+	/**
+	 * <p>日志级别转换</p>
+	 * 
+	 * @param levelValue 日志级别
+	 * 
+	 * @return 日志级别
+	 */
+	private Level of(String levelValue) {
 		final Level[] levels = Level.values();
-		this.level = Level.DEBUG; // 默认：DEBUG
 		for (Level level : levels) {
 			if(level.name().equalsIgnoreCase(levelValue)) {
-				this.level = level;
-				break;
+				return level;
 			}
 		}
-		this.levelInt = this.level.toInt();
-		this.system = this.properties.getProperty("logger.system");
-		this.adapter = this.properties.getProperty("logger.adapter");
-		this.fileName = this.properties.getProperty("logger.file.name");
-		this.fileBuffer = Integer.parseInt(this.properties.getProperty("logger.file.buffer", "8192"));
-		this.fileMaxDays = Integer.parseInt(this.properties.getProperty("logger.file.max.days", "30"));
-		this.properties.clear();
+		return Level.DEBUG; // 默认：DEBUG
 	}
-
+	
 	/**
 	 * <p>关闭日志</p>
 	 */
 	public static final void off() {
-		INSTANCE.level = Level.ERROR;
-		INSTANCE.levelInt = Level.ERROR.toInt();
-	}
-	
-	/**
-	 * <p>获取日志级别</p>
-	 * 
-	 * @return 日志级别
-	 */
-	public static final Level getLevel() {
-		return INSTANCE.level;
+		INSTANCE.levelInt = Integer.MAX_VALUE;
 	}
 	
 	/**

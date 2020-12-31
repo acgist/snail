@@ -47,7 +47,7 @@ public abstract class LoggerAdapter {
 				this.output.write(message.getBytes());
 			}
 		} catch (IOException e) {
-			Logger.error(e);
+			LoggerContext.error(e);
 		}
 	}
 	
@@ -62,7 +62,7 @@ public abstract class LoggerAdapter {
 				this.errorOutput.write(message.getBytes());
 			}
 		} catch (IOException e) {
-			Logger.error(e);
+			LoggerContext.error(e);
 		}
 	}
 	
@@ -71,20 +71,22 @@ public abstract class LoggerAdapter {
 	 */
 	public void release() {
 		this.available = false;
+		// 是否需要关闭错误输出
+		final boolean closeErrorOutput = this.output != this.errorOutput;
 		if(this.output != null) {
 			try {
 				this.output.flush();
 				this.output.close();
 			} catch (IOException e) {
-				Logger.error(e);
+				LoggerContext.error(e);
 			}
 		}
-		if(this.errorOutput != null) {
+		if(closeErrorOutput && this.errorOutput != null) {
 			try {
 				this.errorOutput.flush();
 				this.errorOutput.close();
 			} catch (IOException e) {
-				Logger.error(e);
+				LoggerContext.error(e);
 			}
 		}
 	}

@@ -3,7 +3,7 @@ package org.slf4j.impl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-import com.acgist.snail.context.LoggerContext;
+import com.acgist.snail.logger.LoggerContext;
 
 /**
  * <p>日志绑定</p>

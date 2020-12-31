@@ -1,5 +1,8 @@
-package com.acgist.snail.context;
+package com.acgist.snail.logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.event.Level;
 
-import com.acgist.snail.logger.Logger;
-import com.acgist.snail.logger.LoggerAdapter;
-import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.logger.adapter.ConsoleLoggerAdapter;
 import com.acgist.snail.logger.adapter.FileLoggerAdapter;
 
@@ -85,6 +85,21 @@ public final class LoggerContext implements ILoggerFactory {
 			} else {
 				adapter.output(message);
 			}
+		}
+	}
+	
+	/**
+	 * <p>系统异常记录</p>
+	 * 
+	 * @param t 异常
+	 */
+	public static final void error(Throwable t) {
+		try(FileOutputStream outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true)) {
+			final PrintWriter printWriter = new PrintWriter(outputStream);
+			t.printStackTrace(printWriter);
+			printWriter.flush();
+		} catch (Exception e) {
+			error(t);
 		}
 	}
 	

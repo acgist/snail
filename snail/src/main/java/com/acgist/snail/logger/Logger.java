@@ -1,18 +1,14 @@
 package com.acgist.snail.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
-
-import com.acgist.snail.context.LoggerContext;
-import com.acgist.snail.utils.DateUtils;
 
 /**
  * <p>日志工具</p>
@@ -21,6 +17,11 @@ import com.acgist.snail.utils.DateUtils;
  */
 public final class Logger implements org.slf4j.Logger {
 
+	/**
+	 * <p>时间格式</p>
+	 */
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	
 	/**
 	 * <p>日志级别</p>
 	 */
@@ -49,38 +50,23 @@ public final class Logger implements org.slf4j.Logger {
 	}
 	
 	/**
-	 * <p>系统异常</p>
-	 * 
-	 * @param t 异常
-	 */
-	public static final void error(Throwable t) {
-		try(FileOutputStream outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true)) {
-			final PrintWriter printWriter = new PrintWriter(outputStream);
-			t.printStackTrace(printWriter);
-			printWriter.flush();
-		} catch (Exception e) {
-			error(t);
-		}
-	}
-	
-	/**
 	 * <p>日志格式化</p>
 	 * 
 	 * @param level 级别
-	 * @param message 日志
+	 * @param tuple 日志
 	 * 
-	 * @return 格式化日志
+	 * @return 日志
 	 */
-	private String format(Level level, FormattingTuple message) {
+	private String format(Level level, FormattingTuple tuple) {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("[").append(this.system).append("] ")
-			.append(DateUtils.localDateTimeFormat(LocalDateTime.now())).append(" [")
+			.append(DATE_TIME_FORMATTER.format(LocalDateTime.now())).append(" [")
 			.append(Thread.currentThread().getName()).append("] ")
 			.append(level.name()).append(" ")
 			.append(this.name).append(" ")
-			.append(message.getMessage()).append("\n");
-		final Throwable throwable = message.getThrowable();
+			.append(tuple.getMessage()).append("\n");
+		final Throwable throwable = tuple.getThrowable();
 		if(throwable != null) {
 			final StringWriter stringWriter = new StringWriter();
 			final PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -96,10 +82,10 @@ public final class Logger implements org.slf4j.Logger {
 	 * <p>输出日志</p>
 	 * 
 	 * @param level 级别
-	 * @param message 日志
+	 * @param tuple 日志
 	 */
-	private void output(Level level, FormattingTuple message) {
-		this.context.output(level, this.format(level, message));
+	private void output(Level level, FormattingTuple tuple) {
+		this.context.output(level, this.format(level, tuple));
 	}
 	
 	/**
@@ -178,78 +164,6 @@ public final class Logger implements org.slf4j.Logger {
 		}
 	}
 	
-	/**
-	 * <p>判断是否支持日志级别</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * 
-	 * @return 是否支持
-	 */
-	private boolean isEnabled(Level level, Marker marker) {
-		return this.isEnabled(level);
-	}
-	
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * @param message 日志
-	 */
-	private void log(Level level, Marker marker, String message) {
-		this.log(level, message);
-	}
-
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * @param format 日志
-	 * @param arg 参数
-	 */
-	private void log(Level level, Marker marker, String format, Object arg) {
-		this.log(level, format, arg);
-	}
-
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * @param format 日志
-	 * @param arga 参数
-	 * @param argb 参数
-	 */
-	private void log(Level level, Marker marker, String format, Object arga, Object argb) {
-		this.log(level, format, arga, argb);
-	}
-
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * @param format 日志
-	 * @param args 参数
-	 */
-	private void log(Level level, Marker marker, String format, Object ... args) {
-		this.log(level, format, args);
-	}
-	
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param marker 标记
-	 * @param message 日志
-	 * @param t 异常
-	 */
-	private void log(Level level, Marker marker, String message, Throwable t) {
-		this.log(level, message, t);
-	}
-	
 	@Override
 	public String getName() {
 		return this.name;
@@ -287,32 +201,32 @@ public final class Logger implements org.slf4j.Logger {
 
 	@Override
 	public boolean isTraceEnabled(Marker marker) {
-		return this.isEnabled(Level.TRACE, marker);
+		return this.isEnabled(Level.TRACE);
 	}
 
 	@Override
 	public void trace(Marker marker, String message) {
-		this.log(Level.TRACE, marker, message);
+		this.log(Level.TRACE, message);
 	}
 
 	@Override
 	public void trace(Marker marker, String format, Object arg) {
-		this.log(Level.TRACE, marker, format, arg);
+		this.log(Level.TRACE, format, arg);
 	}
 
 	@Override
 	public void trace(Marker marker, String format, Object arga, Object argb) {
-		this.log(Level.TRACE, marker, format, arga, argb);
+		this.log(Level.TRACE, format, arga, argb);
 	}
 
 	@Override
 	public void trace(Marker marker, String format, Object ... args) {
-		this.log(Level.TRACE, marker, format, args);
+		this.log(Level.TRACE, format, args);
 	}
 
 	@Override
 	public void trace(Marker marker, String message, Throwable t) {
-		this.log(Level.TRACE, marker, message, t);
+		this.log(Level.TRACE, message, t);
 	}
 
 	@Override
@@ -347,7 +261,7 @@ public final class Logger implements org.slf4j.Logger {
 
 	@Override
 	public boolean isDebugEnabled(Marker marker) {
-		return this.isEnabled(Level.DEBUG, marker);
+		return this.isEnabled(Level.DEBUG);
 	}
 
 	@Override
@@ -407,7 +321,7 @@ public final class Logger implements org.slf4j.Logger {
 
 	@Override
 	public boolean isInfoEnabled(Marker marker) {
-		return this.isEnabled(Level.INFO, marker);
+		return this.isEnabled(Level.INFO);
 	}
 
 	@Override
@@ -467,7 +381,7 @@ public final class Logger implements org.slf4j.Logger {
 
 	@Override
 	public boolean isWarnEnabled(Marker marker) {
-		return this.isEnabled(Level.WARN, marker);
+		return this.isEnabled(Level.WARN);
 	}
 
 	@Override
@@ -527,7 +441,7 @@ public final class Logger implements org.slf4j.Logger {
 
 	@Override
 	public boolean isErrorEnabled(Marker marker) {
-		return this.isEnabled(Level.ERROR, marker);
+		return this.isEnabled(Level.ERROR);
 	}
 
 	@Override
