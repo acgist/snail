@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerAdapter;
 import com.acgist.snail.logger.LoggerConfig;
+import com.acgist.snail.logger.LoggerContext;
 
 /**
  * <p>文件适配器</p>
@@ -28,6 +28,10 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	 * <p>文件适配器名称：{@value}</p>
 	 */
 	public static final String ADAPTER = "file";
+	/**
+	 * <p>文件格式：{@value}</p>
+	 */
+	private static final String FILE_SUFFIX_FORMAT = ".yyyy.MM.dd";
 	
 	public FileLoggerAdapter() {
 		final OutputStream output = this.buildOutput();
@@ -47,7 +51,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 		try {
 			return new BufferedOutputStream(new FileOutputStream(file, true), fileBuffer);
 		} catch (IOException e) {
-			Logger.error(e);
+			LoggerContext.error(e);
 		}
 		return null;
 	}
@@ -65,7 +69,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 				try {
 					Files.delete(file.toPath());
 				} catch (IOException e) {
-					Logger.error(e);
+					LoggerContext.error(e);
 				}
 			}
 		}
@@ -78,7 +82,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	 */
 	private File buildFile() {
 		final String fileName = LoggerConfig.getFileName();
-		final SimpleDateFormat format = new SimpleDateFormat(".yyyy.MM.dd");
+		final SimpleDateFormat format = new SimpleDateFormat(FILE_SUFFIX_FORMAT);
 		final String path = fileName + format.format(new Date());
 		return new File(path);
 	}
@@ -97,12 +101,12 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	
 	/**
 	 * <p>判断文件是否能够删除</p>
-	 * <p>日志文件、超过最大备份数量</p>
+	 * <p>超过最大备份数量、日志文件名称匹配</p>
 	 * 
 	 * @param maxDays 最大备份数量
 	 * @param fileName 日志文件名称
 	 * @param now 当前时间
-	 * @param file 文件
+	 * @param file 日志文件
 	 * 
 	 * @return 是否可以删除
 	 */
@@ -114,15 +118,16 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 			return false;
 		}
 		// 判断文件名称
-		final String name = file.getName();
-		if(name.length() != fileName.length()) {
+		final String oldFileName = file.getName();
+		if(oldFileName.length() != fileName.length()) {
 			return false;
 		}
 		// snail.log.yyyy.MM.dd
-		if(name.length() <= 10) {
+		final int length = oldFileName.length() - FILE_SUFFIX_FORMAT.length();
+		if(length <= 0) {
 			return false;
 		}
-		return name.substring(0, 10).equals(fileName.substring(0, 10));
+		return oldFileName.substring(0, length).equals(fileName.substring(0, length));
 	}
 	
 }

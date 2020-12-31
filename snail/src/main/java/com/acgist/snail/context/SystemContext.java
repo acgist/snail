@@ -11,6 +11,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.JSON;
 import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.logger.LoggerContext;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
