@@ -222,7 +222,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
-			LOGGER.debug("新建下载任务异常：{}", body, e);
+			LOGGER.debug("新建任务异常：{}", body, e);
 			this.send(ApplicationMessage.response(e.getMessage()));
 		}
 	}
@@ -230,8 +230,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>任务列表</p>
 	 * <p>返回任务列表（B编码）</p>
-	 * 
-	 * TODO：优化返回内容
 	 */
 	private void onTaskList() {
 		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
@@ -322,7 +320,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String content = decoder.getString("message");
 			GuiManager.getInstance().alert(title, content, GuiManager.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
-			LOGGER.warn("处理窗口消息异常", e);
+			LOGGER.warn("处理提示窗口异常", e);
 		}
 	}
 	
