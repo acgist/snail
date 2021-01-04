@@ -31,10 +31,8 @@ public interface IMessageCodec<T> {
 	 * @param message 原始消息
 	 * 
 	 * @return 编码消息
-	 * 
-	 * @throws NetException 网络异常
 	 */
-	default T encode(T message) throws NetException {
+	default T encode(T message) {
 		return message;
 	}
 	
