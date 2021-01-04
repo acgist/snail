@@ -745,6 +745,7 @@ public final class MSECryptHandshakeHandler {
 	 * @param crypt 是否加密
 	 */
 	private void complete(boolean complete, boolean crypt) {
+		LOGGER.debug("加密握手完成：{}", crypt);
 		this.complete = complete;
 		this.crypt = crypt;
 		this.buffer = null;
