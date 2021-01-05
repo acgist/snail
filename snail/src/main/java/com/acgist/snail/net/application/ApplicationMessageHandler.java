@@ -40,16 +40,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private static final String SEPARATOR = SystemConfig.LINE_SEPARATOR_COMPAT;
 	
-	/**
-	 * <p>行消息处理器</p>
-	 */
-	private final LineMessageCodec lineMessageCodec;
-	
 	public ApplicationMessageHandler() {
 		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
-		this.lineMessageCodec = lineMessageCodec;
 	}
 	
 	/**
@@ -67,7 +61,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	@Override
 	public void send(String message, String charset) throws NetException {
-		super.send(this.lineMessageCodec.encode(message), charset);
+		super.send(this.messageCodec.encode(message), charset);
 	}
 	
 	@Override

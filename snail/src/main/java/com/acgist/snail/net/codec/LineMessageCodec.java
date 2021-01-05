@@ -17,10 +17,10 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	 */
 	private final String separator;
 	/**
-	 * <p>上次没有处理完成的消息</p>
+	 * <p>消息拼接器</p>
 	 * <p>由于传输协议（TCP/UDP）在传输过程中可能会出现粘包拆包导致消息不完整，所以记录上次没有处理完成的不完整消息，合并到下次接收的消息一起处理。</p>
 	 */
-	private String lastMessage = "";
+	private final StringBuilder messageBuilder;
 	
 	/**
 	 * @param messageCodec 下一个消息处理器
@@ -29,29 +29,27 @@ public final class LineMessageCodec extends MessageCodec<String, String> {
 	public LineMessageCodec(IMessageCodec<String> messageCodec, String separator) {
 		super(messageCodec);
 		this.separator = separator;
-	}
-
-	@Override
-	protected void doDecode(String message, InetSocketAddress address) throws NetException {
-		String messageLine; // 独立消息
-		final int length = this.separator.length();
-		message = this.lastMessage + message; // 合并上次没有处理完成的消息
-		if(message.contains(this.separator)) {
-			int index = message.indexOf(this.separator);
-			while(index >= 0) {
-				messageLine = message.substring(0, index);
-				this.doNext(messageLine, address);
-				message = message.substring(index + length);
-				index = message.indexOf(this.separator);
-			}
-		}
-		this.lastMessage = message;
+		this.messageBuilder = new StringBuilder();
 	}
 	
 	@Override
 	public String encode(String message) {
 		// 拼接消息分隔符
-		return message + this.separator;
+		return super.encode(message) + this.separator;
 	}
-	
+
+	@Override
+	protected void doDecode(String message, InetSocketAddress address) throws NetException {
+		String messageLine; // 独立消息
+		this.messageBuilder.append(message); // 合并上次没有处理完成的消息
+		final int length = this.separator.length();
+		int index = this.messageBuilder.indexOf(this.separator);
+		while(index >= 0) {
+			messageLine = this.messageBuilder.substring(0, index);
+			this.doNext(messageLine, address);
+			this.messageBuilder.delete(0, index + length);
+			index = this.messageBuilder.indexOf(this.separator);
+		}
+	}
+
 }
