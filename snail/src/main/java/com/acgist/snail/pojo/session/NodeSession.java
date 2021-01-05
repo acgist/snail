@@ -1,6 +1,6 @@
 package com.acgist.snail.pojo.session;
 
-import java.util.Objects;
+import java.util.Arrays;
 
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
@@ -138,7 +138,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.id);
+		return Arrays.hashCode(this.id);
 	}
 	
 	@Override

@@ -88,7 +88,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 
 	 * @param url 链接
 	 * 
-	 * @return FtpClient
+	 * @return FTP客户端
 	 */
 	public static final FtpClient newInstance(String url) {
 		final URIWrapper wrapper = URIWrapper.newInstance(url, DEFAULT_PORT, SystemConfig.getFtpUser(), SystemConfig.getFtpPassword()).decode();
@@ -240,22 +240,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>发送退出命令</p>
-	 */
-	@Override
-	public void close() {
-		if(this.connect) {
-			this.command("QUIT", false); // 退出命令
-		}
-		super.close();
-	}
-	
-	/**
 	 * <p>判断是否支持断点续传</p>
 	 * 
-	 * @return true-支持；false-不支持；
+	 * @return 是否支持断点续传
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -265,14 +252,17 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * @param defaultMessage 默认错误信息
+	 * {@inheritDoc}
 	 * 
-	 * @return 错误信息
-	 * 
-	 * @see FtpMessageHandler#failMessage(String)
+	 * <p>发送退出命令</p>
 	 */
-	public String failMessage(String defaultMessage) {
-		return this.handler.failMessage(defaultMessage);
+	@Override
+	public void close() {
+		if(this.connect) {
+			this.command("QUIT", false); // 退出命令
+		}
+		this.connect = false;
+		super.close();
 	}
 	
 	/**
@@ -340,6 +330,17 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		if(!this.connect) {
 			throw new NetException(this.failMessage("FTP服务器连接失败"));
 		}
+	}
+	
+	/**
+	 * @param defaultMessage 默认错误信息
+	 * 
+	 * @return 错误信息
+	 * 
+	 * @see FtpMessageHandler#failMessage(String)
+	 */
+	private String failMessage(String defaultMessage) {
+		return this.handler.failMessage(defaultMessage);
 	}
 
 }

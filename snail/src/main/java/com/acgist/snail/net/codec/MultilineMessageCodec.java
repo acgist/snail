@@ -21,7 +21,7 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	 * <p>多行消息结束符（正则表达式）</p>
 	 * <p>消息匹配多行消息结束符成功时合并为一条消息</p>
 	 */
-	private final String endRegex;
+	private final String multilineRegex;
 	/**
 	 * <p>多行消息</p>
 	 */
@@ -30,18 +30,18 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	/**
 	 * @param messageCodec 下一个消息处理器
 	 * @param separator 消息分隔符
-	 * @param endRegex 多行消息结束符
+	 * @param multilineRegex 多行消息结束符
 	 */
-	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String separator, String endRegex) {
+	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String separator, String multilineRegex) {
 		super(messageCodec);
 		this.separator = separator;
-		this.endRegex = endRegex;
+		this.multilineRegex = multilineRegex;
 		this.multilineMessage = new StringBuilder();
 	}
 
 	@Override
 	protected void doDecode(String message, InetSocketAddress address) throws NetException {
-		if(StringUtils.regex(message, this.endRegex, false)) {
+		if(StringUtils.regex(message, this.multilineRegex, false)) {
 			this.multilineMessage.append(message);
 			this.doNext(this.multilineMessage.toString(), address);
 			this.multilineMessage.setLength(0);

@@ -1,8 +1,8 @@
 package com.acgist.snail.net.torrent.dht;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.utils.ArrayUtils;
@@ -181,7 +181,7 @@ public abstract class DhtMessage {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.t);
+		return Arrays.hashCode(this.t);
 	}
 	
 	@Override
