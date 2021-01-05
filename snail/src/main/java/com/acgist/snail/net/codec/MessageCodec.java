@@ -1,6 +1,7 @@
 package com.acgist.snail.net.codec;
 
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
 
@@ -44,17 +45,27 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	}
 
 	@Override
-	public boolean done() {
+	public final boolean done() {
 		return false;
 	}
 	
 	@Override
-	public void decode(I message) throws NetException {
+	public String encode(String message) {
+		return this.messageCodec.encode(message);
+	}
+	
+	@Override
+	public ByteBuffer encode(ByteBuffer message) {
+		return this.messageCodec.encode(message);
+	}
+	
+	@Override
+	public final void decode(I message) throws NetException {
 		this.doDecode(message, null);
 	}
 
 	@Override
-	public void decode(I message, InetSocketAddress address) throws NetException {
+	public final void decode(I message, InetSocketAddress address) throws NetException {
 		this.doDecode(message, address);
 	}
 	
@@ -96,23 +107,21 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
+	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
 	 */
 	@Override
-	@Deprecated
-	public void onMessage(I message) throws NetException {
-		IMessageCodec.super.onMessage(message);
+	public final void onMessage(I message) throws NetException {
+		throw new NetException("请实现消息处理器接口");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @deprecated 消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}
+	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
 	 */
 	@Override
-	@Deprecated
-	public void onMessage(I message, InetSocketAddress address) throws NetException {
-		IMessageCodec.super.onMessage(message, address);
+	public final void onMessage(I message, InetSocketAddress address) throws NetException {
+		throw new NetException("请实现消息处理器接口");
 	}
 	
 }

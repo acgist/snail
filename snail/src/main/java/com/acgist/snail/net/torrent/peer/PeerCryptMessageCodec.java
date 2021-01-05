@@ -40,22 +40,8 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	}
 	
 	@Override
-	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
-		if(this.peerSubMessageHandler.available()) { // 可用
-			buffer.flip(); // 后续消息处理器不需要调用此方法
-			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
-				this.mseCryptHandshakeHandler.decrypt(buffer);
-				this.doNext(buffer, address);
-			} else { // 握手消息
-				this.mseCryptHandshakeHandler.handshake(buffer);
-			}
-		} else { // 不可用
-			LOGGER.debug("Peer消息代理不可用：忽略消息解密");
-		}
-	}
-
-	@Override
 	public ByteBuffer encode(ByteBuffer buffer) {
+//		buffer = super.encode(buffer); // 不用编码：提高性能
 		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else { // 握手未完成
@@ -70,6 +56,21 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 			}
 		}
 		return buffer;
+	}
+	
+	@Override
+	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
+		if(this.peerSubMessageHandler.available()) { // 可用
+			buffer.flip(); // 后续消息处理器不需要调用此方法
+			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
+				this.mseCryptHandshakeHandler.decrypt(buffer);
+				this.doNext(buffer, address);
+			} else { // 握手消息
+				this.mseCryptHandshakeHandler.handshake(buffer);
+			}
+		} else { // 不可用
+			LOGGER.debug("Peer消息代理不可用：忽略消息解密");
+		}
 	}
 	
 }

@@ -33,7 +33,8 @@ public class FtpDownloaderTest extends Performance {
 			this.log("跳过FTP下载测试");
 			return;
 		}
-		final String url = "ftp://localhost/ftp/FTPserver.exe";
+		final String url = "ftp://localhost/ftp/中文文件.exe";
+//		final String url = "ftp://localhost/ftp/FTPserver.exe";
 //		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
 		ProtocolManager.getInstance().register(FtpProtocol.getInstance()).available(true);
 		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);

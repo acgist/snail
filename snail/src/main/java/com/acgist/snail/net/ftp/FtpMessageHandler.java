@@ -73,22 +73,17 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	 * <p>等待命令执行响应</p>
 	 */
 	private final AtomicBoolean lock = new AtomicBoolean(false);
-	/**
-	 * <p>行消息处理器</p>
-	 */
-	private final LineMessageCodec lineMessageCodec;
 	
 	public FtpMessageHandler() {
 		final var multilineMessageCodec = new MultilineMessageCodec(this, SEPARATOR, END_REGEX);
 		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SEPARATOR);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
 		this.messageCodec = stringMessageCodec;
-		this.lineMessageCodec = lineMessageCodec;
 	}
 	
 	@Override
 	public void send(String message) throws NetException {
-		super.send(this.lineMessageCodec.encode(message), this.charset);
+		super.send(this.messageCodec.encode(message), this.charset);
 	}
 
 	@Override
