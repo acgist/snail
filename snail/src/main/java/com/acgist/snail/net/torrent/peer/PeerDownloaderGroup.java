@@ -112,7 +112,7 @@ public final class PeerDownloaderGroup {
 		this.release(false);
 		synchronized (this.peerDownloaders) {
 			this.peerDownloaders.forEach(downloader -> {
-				SystemThreadContext.submit(() -> downloader.release());
+				SystemThreadContext.submit(downloader::release);
 				// 下载列表中的Peer属于优质Peer
 				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), downloader.peerSession());
 			});

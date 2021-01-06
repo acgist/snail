@@ -127,7 +127,7 @@ public final class PeerUploaderGroup {
 	public void release() {
 		LOGGER.debug("释放PeerUploaderGroup");
 		synchronized (this.peerUploaders) {
-			this.peerUploaders.forEach(uploader -> SystemThreadContext.submit(() -> uploader.release()));
+			this.peerUploaders.forEach(uploader -> SystemThreadContext.submit(uploader::release));
 			this.peerUploaders.clear();
 		}
 	}

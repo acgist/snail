@@ -77,6 +77,8 @@ public final class TorrentStreamGroup {
 	 * <p>文件流集合</p>
 	 * <p>注意顺序（跨越文件数据读取）</p>
 	 * <p>如果文件开始选择下载然后不选择下载时，文件流不删除，标记为不下载即可。</p>
+	 * 
+	 * TODO：线程安全：重新加载文件
 	 */
 	private final List<TorrentStream> streams;
 	/**
