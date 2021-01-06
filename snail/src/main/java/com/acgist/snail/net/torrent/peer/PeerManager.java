@@ -89,7 +89,10 @@ public final class PeerManager {
 	 * @return true-找到；false-没有找到；
 	 */
 	public boolean hasPeerSession(String infoHashHex) {
-		return !this.list(infoHashHex).isEmpty();
+		final var list = this.list(infoHashHex);
+		synchronized (list) {
+			return !list.isEmpty();
+		}
 	}
 	
 	/**
@@ -122,23 +125,23 @@ public final class PeerManager {
 	public PeerSession newPeerSession(String infoHashHex, IStatisticsSession parent, String host, Integer port, PeerConfig.Source source) {
 		synchronized (this) {
 			final var list = this.list(infoHashHex); // 存档队列
-			final var deque = this.deque(infoHashHex); // 下载队列
 			synchronized (list) {
-				synchronized (deque) {
-					PeerSession peerSession = this.findPeerSession(list, host, port);
-					if(peerSession == null) {
-						LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, source);
-						peerSession = PeerSession.newInstance(parent, host, port);
+				PeerSession peerSession = this.findPeerSession(list, host, port);
+				if(peerSession == null) {
+					LOGGER.debug("添加PeerSession：{}-{}，来源：{}", host, port, source);
+					peerSession = PeerSession.newInstance(parent, host, port);
+					final var deque = this.deque(infoHashHex); // 下载队列
+					synchronized (deque) {
 						if(source.preference()) {
 							deque.offerLast(peerSession); // 插入尾部：优先级高
 						} else {
 							deque.offerFirst(peerSession); // 插入头部：优先级低
 						}
-						list.add(peerSession); // 存档
 					}
-					peerSession.source(source); // 设置来源
-					return peerSession;
+					list.add(peerSession); // 存档
 				}
+				peerSession.source(source); // 设置来源
+				return peerSession;
 			}
 		}
 	}

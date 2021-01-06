@@ -31,6 +31,7 @@ public final class ProtocolManager {
 	
 	/**
 	 * <p>下载协议</p>
+	 * <p>不添加同步锁：协议注册完成后调用{@link #available(boolean)}设置可用</p>
 	 */
 	private final List<Protocol> protocols;
 	/**

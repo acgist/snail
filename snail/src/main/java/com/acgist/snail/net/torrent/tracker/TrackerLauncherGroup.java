@@ -99,6 +99,7 @@ public final class TrackerLauncherGroup {
 	 */
 	public void findPeer() {
 		final List<TrackerLauncher> list;
+		// 新建集合进行查找：防止释放资源等待
 		synchronized (this.trackerLaunchers) {
 			list = new ArrayList<>(this.trackerLaunchers);
 		}
