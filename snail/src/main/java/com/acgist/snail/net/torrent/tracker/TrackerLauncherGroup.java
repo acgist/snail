@@ -84,10 +84,12 @@ public final class TrackerLauncherGroup {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
 			return;
 		}
-		// TODO：添加和后面循环异常ConcurrentModificationException
-		sessions.stream()
+		final var list = sessions.stream()
 			.map(client -> TrackerManager.getInstance().buildTrackerLauncher(client, this.torrentSession))
-			.forEach(launcher -> this.trackerLaunchers.add(launcher));
+			.collect(Collectors.toList());
+		synchronized (this.trackerLaunchers) {
+			this.trackerLaunchers.addAll(list);
+		}
 	}
 
 	/**
@@ -96,7 +98,11 @@ public final class TrackerLauncherGroup {
 	 * @see TrackerLauncher#findPeer()
 	 */
 	public void findPeer() {
-		this.trackerLaunchers.forEach(TrackerLauncher::findPeer);
+		final List<TrackerLauncher> list;
+		synchronized (this.trackerLaunchers) {
+			list = new ArrayList<>(this.trackerLaunchers);
+		}
+		list.forEach(TrackerLauncher::findPeer);
 	}
 
 	/**
@@ -104,10 +110,10 @@ public final class TrackerLauncherGroup {
 	 */
 	public void release() {
 		LOGGER.debug("释放TrackerLauncherGroup");
-		this.trackerLaunchers.forEach(launcher -> SystemThreadContext.submit(
-			() -> launcher.release()
-		));
-		this.trackerLaunchers.clear();
+		synchronized (this.trackerLaunchers) {
+			this.trackerLaunchers.forEach(launcher -> SystemThreadContext.submit(launcher::release));
+			this.trackerLaunchers.clear();
+		}
 	}
 	
 }
