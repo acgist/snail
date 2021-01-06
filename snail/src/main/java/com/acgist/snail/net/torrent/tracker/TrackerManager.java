@@ -320,18 +320,16 @@ public final class TrackerManager {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
-		synchronized (this.trackerSessions) {
-			final Optional<TrackerSession> optional = this.trackerSessions.values().stream()
-				.filter(client -> client.equalsAnnounceUrl(announceUrl))
-				.findFirst();
-			if(optional.isPresent()) {
-				return optional.get();
-			}
-			final TrackerSession session = this.buildSessionProxy(announceUrl);
-			this.trackerSessions.put(session.id(), session);
-			LOGGER.debug("注册TrackerSession：ID：{}，AnnounceUrl：{}", session.id(), session.announceUrl());
-			return session;
+		final Optional<TrackerSession> optional = this.trackerSessions.values().stream()
+			.filter(client -> client.equalsAnnounceUrl(announceUrl))
+			.findFirst();
+		if(optional.isPresent()) {
+			return optional.get();
 		}
+		final TrackerSession session = this.buildSessionProxy(announceUrl);
+		this.trackerSessions.put(session.id(), session);
+		LOGGER.debug("注册TrackerSession：ID：{}，AnnounceUrl：{}", session.id(), session.announceUrl());
+		return session;
 	}
 
 	/**

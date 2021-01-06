@@ -148,15 +148,13 @@ public final class TorrentManager {
 		if(infoHash == null) {
 			throw new DownloadException("创建TorrentSession失败（InfoHash为空）");
 		}
-		synchronized (this.torrentSessions) {
-			final String infoHashHex = infoHash.infoHashHex();
-			var torrentSession = this.torrentSessions.get(infoHashHex);
-			if(torrentSession == null) {
-				torrentSession = TorrentSession.newInstance(infoHash, torrent);
-				this.torrentSessions.put(infoHashHex, torrentSession);
-			}
-			return torrentSession;
+		final String infoHashHex = infoHash.infoHashHex();
+		var torrentSession = this.torrentSessions.get(infoHashHex);
+		if(torrentSession == null) {
+			torrentSession = TorrentSession.newInstance(infoHash, torrent);
+			this.torrentSessions.put(infoHashHex, torrentSession);
 		}
+		return torrentSession;
 	}
 	
 	/**
