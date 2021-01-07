@@ -44,7 +44,7 @@ import com.acgist.snail.utils.UrlUtils;
 /**
  * <p>HTTP客户端</p>
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
- * <p>HTTPS下载CPU非常高，推荐直接使用HTTP协议下载。</p>
+ * <p>推荐直接使用HTTP协议下载：HTTPS下载CPU占用较高</p>
  * 
  * @author acgist
  */
