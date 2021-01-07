@@ -24,7 +24,7 @@ public class StreamContextTest extends Performance {
 	@Test
 	public void testCheckLive() {
 		if(SKIP) {
-			this.log("跳过CheckLive检测");
+			this.log("跳过testCheckLive测试");
 			return;
 		}
 		final StreamContext context = StreamContext.getInstance();

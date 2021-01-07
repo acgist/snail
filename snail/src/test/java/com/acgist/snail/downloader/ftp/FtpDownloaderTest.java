@@ -30,7 +30,7 @@ public class FtpDownloaderTest extends Performance {
 	@Test
 	public void testFtpDownloader() throws DownloadException {
 		if(SKIP) {
-			this.log("跳过FTP下载测试");
+			this.log("跳过testFtpDownloader测试");
 			return;
 		}
 		final String url = "ftp://localhost/ftp/中文文件.exe";

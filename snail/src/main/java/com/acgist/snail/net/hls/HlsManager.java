@@ -3,8 +3,6 @@ package com.acgist.snail.net.hls;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.crypto.Cipher;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +36,9 @@ public final class HlsManager {
 	 */
 	private final Map<String, HlsSession> sessions;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private HlsManager() {
 		this.m3u8s = new ConcurrentHashMap<>();
 		this.sessions = new ConcurrentHashMap<>();
@@ -56,21 +57,6 @@ public final class HlsManager {
 	}
 	
 	/**
-	 * <p>获取加密套件</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @return 加密套件
-	 */
-	public Cipher cipher(ITaskSession taskSession) {
-		final M3u8 m3u8 = this.m3u8s.get(taskSession.getId());
-		if(m3u8 == null) {
-			return null;
-		}
-		return m3u8.getCipher();
-	}
-	
-	/**
 	 * <p>获取HLS任务信息</p>
 	 * 
 	 * @param taskSession 任务信息
@@ -79,18 +65,20 @@ public final class HlsManager {
 	 */
 	public HlsSession hlsSession(ITaskSession taskSession) {
 		final String id = taskSession.getId();
-		return this.sessions.computeIfAbsent(id, key -> HlsSession.newInstance(taskSession));
+		final M3u8 m3u8 = this.m3u8s.get(id);
+		return this.sessions.computeIfAbsent(id, key -> HlsSession.newInstance(m3u8, taskSession));
 	}
 	
 	/**
-	 * <p>任务下载完成删除HLS任务信息</p>
+	 * <p>删除HLS任务信息</p>
 	 * 
 	 * @param taskSession HLS任务信息
 	 */
 	public void remove(ITaskSession taskSession) {
 		LOGGER.debug("移除HLS任务：{}", taskSession.getName());
-		this.m3u8s.remove(taskSession.getId());
-		this.sessions.remove(taskSession.getId());
+		final String id = taskSession.getId();
+		this.m3u8s.remove(id);
+		this.sessions.remove(id);
 	}
 	
 }

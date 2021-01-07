@@ -1,6 +1,7 @@
 package com.acgist.snail.net.http;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -447,6 +448,19 @@ public final class HTTPClient {
 			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本：2.0版本没有普及
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
+	}
+	
+	/**
+	 * <p>判断是否可以下载</p>
+	 * 
+	 * @param response 响应
+	 * 
+	 * @return 是否可以下载
+	 */
+	public static final boolean downloadable(HttpResponse<InputStream> response) {
+		return
+			HTTPClient.StatusCode.OK.verifyCode(response) ||
+			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response);
 	}
 	
 	/**

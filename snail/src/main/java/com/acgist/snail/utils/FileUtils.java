@@ -95,20 +95,6 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>删除文件</p>
-	 * <p>支持目录</p>
-	 * 
-	 * @param filePath 文件路径
-	 */
-	public static final void delete(final String filePath) {
-		if(StringUtils.isEmpty(filePath)) {
-			LOGGER.warn("删除文件为空：{}", filePath);
-			return;
-		}
-		delete(new File(filePath));
-	}
-
-	/**
 	 * <p>统一路径分隔符为系统分隔符</p>
 	 * 
 	 * @param path 原始路径
@@ -125,11 +111,25 @@ public final class FileUtils {
 	}
 	
 	/**
+	 * <p>删除文件</p>
+	 * <p>支持目录</p>
+	 * 
+	 * @param filePath 文件路径
+	 */
+	public static final void delete(final String filePath) {
+		if(StringUtils.isEmpty(filePath)) {
+			LOGGER.warn("删除文件为空：{}", filePath);
+			return;
+		}
+		delete(new File(filePath));
+	}
+	
+	/**
 	 * <p>递归删除文件</p>
 	 * 
 	 * @param file 文件
 	 */
-	private static final void delete(final File file) {
+	public static final void delete(final File file) {
 		Objects.requireNonNull(file);
 		if(!file.exists()) {
 			LOGGER.debug("删除文件不存在：{}", file.getAbsolutePath());

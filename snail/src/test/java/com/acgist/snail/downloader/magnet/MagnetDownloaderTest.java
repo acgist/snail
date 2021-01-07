@@ -35,7 +35,7 @@ public class MagnetDownloaderTest extends Performance {
 	@Test
 	public void testMagnetDownloader() throws DownloadException {
 		if(SKIP) {
-			this.log("跳过Magnet下载测试");
+			this.log("跳过testMagnetDownloader测试");
 			return;
 		}
 		TorrentInitializer.newInstance().sync();
