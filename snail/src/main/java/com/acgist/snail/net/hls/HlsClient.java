@@ -109,16 +109,18 @@ public final class HlsClient implements Runnable {
 				if(!this.range) {
 					downloadSize = 0L;
 				}
-				while(this.hlsSession.downloadable()) {
+				while(this.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
+					if(length >= 0) {
+						this.output.write(bytes, 0, length);
+						downloadSize += length;
+						this.hlsSession.download(length); // 设置下载速度
+					}
+					streamSession.heartbeat();
 					if(this.checkCompleted(length, downloadSize)) {
 						this.completed = true;
 						break;
 					}
-					this.output.write(bytes, 0, length);
-					streamSession.heartbeat();
-					downloadSize += length;
-					this.hlsSession.download(length); // 设置下载速度
 				}
 			} catch (Exception e) {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
@@ -137,6 +139,15 @@ public final class HlsClient implements Runnable {
 			// 下载失败重新添加下载
 			this.hlsSession.download(this);
 		}
+	}
+
+	/**
+	 * <p>判断是否可以下载</p>
+	 * 
+	 * @return 是否可以下载
+	 */
+	private boolean downloadable() {
+		return !this.completed && this.hlsSession.downloadable();
 	}
 	
 	/**
