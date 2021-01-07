@@ -60,14 +60,11 @@ public final class HttpDownloader extends SingleFileDownloader {
 		// HTTP响应
 		final HttpResponse<InputStream> response = client.range(size).get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
-		if(
-			HTTPClient.StatusCode.OK.verifyCode(response) ||
-			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
-		) {
+		if(HTTPClient.downloadable(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
+			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
 				headers.verifyBeginRange(size);
-				this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 				this.taskSession.downloadSize(size);
 			} else {
 				this.taskSession.downloadSize(0L);

@@ -104,8 +104,10 @@ public final class TsLinker {
 	 * 
 	 * @param file 文件
 	 * @param output 输出流
+	 * 
+	 * @throws IOException IO异常 
 	 */
-	private void link(File file, OutputStream output) {
+	private void link(File file, OutputStream output) throws IOException {
 		int length = 0;
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 		final boolean crypt = this.cipher != null;
@@ -118,8 +120,6 @@ public final class TsLinker {
 					output.write(bytes, 0, length);
 				}
 			}
-		} catch (IOException e) {
-			LOGGER.error("文件连接异常", e);
 		}
 	}
 	

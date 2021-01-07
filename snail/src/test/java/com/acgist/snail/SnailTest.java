@@ -43,6 +43,7 @@ public class SnailTest extends Performance {
 	@Test
 	public void testLockDownload() throws DownloadException {
 		if(SKIP) {
+			this.log("跳过testLockDownload测试");
 			return;
 		}
 		final Snail snail = SnailBuilder.newBuilder()
@@ -60,6 +61,7 @@ public class SnailTest extends Performance {
 	@Test
 	public void testMagnet() throws DownloadException {
 		if(SKIP) {
+			this.log("跳过testMagnet测试");
 			return;
 		}
 		final Snail snail = SnailBuilder.newBuilder()

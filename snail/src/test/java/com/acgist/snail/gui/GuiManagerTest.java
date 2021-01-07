@@ -68,7 +68,7 @@ public class GuiManagerTest extends Performance {
 	@Test
 	public void testExtend() {
 		if(SKIP) {
-			this.log("跳过扩展GUI测试");
+			this.log("跳过testExtend测试");
 			return;
 		}
 		LOGGER.info("系统开始启动");
@@ -87,7 +87,7 @@ public class GuiManagerTest extends Performance {
 	@Test
 	public void testSocket() {
 		if(SKIP) {
-			this.log("跳过扩展GUI测试");
+			this.log("跳过testSocket测试");
 			return;
 		}
 		String message = null;

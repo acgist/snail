@@ -29,7 +29,7 @@ public class HttpDownloaderTest extends Performance {
 	@Test
 	public void testHttpDownloader() throws DownloadException {
 		if(SKIP) {
-			this.log("跳过HTTP下载测试");
+			this.log("跳过testHttpDownloader测试");
 			return;
 		}
 		final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";

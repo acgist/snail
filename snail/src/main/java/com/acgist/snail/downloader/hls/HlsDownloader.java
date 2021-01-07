@@ -90,7 +90,7 @@ public final class HlsDownloader extends MultifileDownloader {
 		final TsLinker linker = TsLinker.newInstance(
 			this.taskSession.getName(),
 			this.taskSession.getFile(),
-			HlsManager.getInstance().cipher(this.taskSession), // 设置加密套件
+			this.hlsSession.cipher(),
 			this.taskSession.multifileSelected()
 		);
 		final long size = linker.link();

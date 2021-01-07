@@ -35,7 +35,7 @@ public class HlsDownloaderTest extends Performance {
 	@Test
 	public void testHlsDownloader() throws DownloadException {
 		if(SKIP) {
-			this.log("跳过HLS下载测试");
+			this.log("跳过testHlsDownloader测试");
 			return;
 		}
 //		final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"; // 流媒体

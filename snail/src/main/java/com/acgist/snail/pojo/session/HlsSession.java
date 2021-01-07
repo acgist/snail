@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.crypto.Cipher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.bean.M3u8;
 
 /**
  * <p>HSL任务信息</p>
@@ -32,6 +35,10 @@ public final class HlsSession {
 	 * <p>下载状态</p>
 	 */
 	private volatile boolean downloadable = false;
+	/**
+	 * <p>M3U8</p>
+	 */
+	private final M3u8 m3u8;
 	/**
 	 * <p>文件总数量</p>
 	 */
@@ -59,9 +66,11 @@ public final class HlsSession {
 	private final IStatisticsSession statistics;
 	
 	/**
+	 * @param m3u8 M3U8
 	 * @param taskSession 任务信息
 	 */
-	private HlsSession(ITaskSession taskSession) {
+	private HlsSession(M3u8 m3u8, ITaskSession taskSession) {
+		this.m3u8 = m3u8;
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
@@ -78,12 +87,25 @@ public final class HlsSession {
 	/**
 	 * <p>创建HLS任务信息</p>
 	 * 
+	 * @param m3u8 M3U8
 	 * @param taskSession 任务信息
 	 * 
 	 * @return HLS任务信息
 	 */
-	public static final HlsSession newInstance(ITaskSession taskSession) {
-		return new HlsSession(taskSession);
+	public static final HlsSession newInstance(M3u8 m3u8, ITaskSession taskSession) {
+		return new HlsSession(m3u8, taskSession);
+	}
+	
+	/**
+	 * <p>获取加密套件</p>
+	 * 
+	 * @return 加密套件
+	 */
+	public Cipher cipher() {
+		if(this.m3u8 == null) {
+			return null;
+		}
+		return this.m3u8.getCipher();
 	}
 	
 	/**

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.StreamContext;
-import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
@@ -95,30 +94,30 @@ public final class HlsClient implements Runnable {
 		}
 		LOGGER.debug("下载文件：{}", this.link);
 		// 已下载大小
-		long size = FileUtils.fileSize(this.path);
-		if(this.checkCompleted(size)) {
-			this.completed = true;
+		long downloadSize = FileUtils.fileSize(this.path);
+		this.completed = this.checkCompleted(downloadSize);
+		if(this.completed) {
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			int length = 0;
 			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
 			try {
-				this.buildInput(size);
+				this.buildInput(downloadSize);
 				this.buildOutput();
 				// 不支持断点续传：重置已下载大小
 				if(!this.range) {
-					size = 0L;
+					downloadSize = 0L;
 				}
 				while(this.hlsSession.downloadable()) {
 					length = this.input.read(bytes, 0, bytes.length);
-					if(this.checkCompleted(length, size)) {
+					if(this.checkCompleted(length, downloadSize)) {
 						this.completed = true;
 						break;
 					}
-					size += length;
 					this.output.write(bytes, 0, length);
 					streamSession.heartbeat();
+					downloadSize += length;
 					this.hlsSession.download(length); // 设置下载速度
 				}
 			} catch (Exception e) {
@@ -131,7 +130,7 @@ public final class HlsClient implements Runnable {
 		if(this.completed) {
 			LOGGER.debug("HLS文件下载完成：{}", this.link);
 			this.hlsSession.remove(this);
-			this.hlsSession.downloadSize(size); // 设置下载大小
+			this.hlsSession.downloadSize(downloadSize); // 设置下载大小
 			this.hlsSession.checkCompletedAndDone();
 		} else {
 			LOGGER.debug("HLS文件下载失败：{}", this.link);
@@ -141,12 +140,12 @@ public final class HlsClient implements Runnable {
 	}
 	
 	/**
-	 * <p>校验文件</p>
+	 * <p>校验是否完成</p>
 	 * <p>文件是否存在、大小是否正确</p>
 	 * 
 	 * @param size 已下载大小
 	 * 
-	 * @return 校验是否成功
+	 * @return 是否完成
 	 */
 	private boolean checkCompleted(final long size) {
 		// 如果文件已经完成直接返回完成
@@ -163,7 +162,7 @@ public final class HlsClient implements Runnable {
 			this.size = header.fileSize();
 			return this.size == size;
 		} catch (NetException e) {
-			LOGGER.error("HLS客户端初始化异常：{}", this.link, e);
+			LOGGER.error("HLS文件校验异常：{}", this.link, e);
 		}
 		return false;
 	}
@@ -185,34 +184,24 @@ public final class HlsClient implements Runnable {
 	}
 	
 	/**
-	 * <p>创建输入流</p>
+	 * <p>创建{@linkplain #input 输入流}</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param downloadSize 已下载大小
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private void buildInput(final long size) throws NetException {
+	private void buildInput(final long downloadSize) throws NetException {
 		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.link, SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		// HTTP响应
-		final HttpResponse<InputStream> response = client.range(size).get(BodyHandlers.ofInputStream());
+		final HttpResponse<InputStream> response = client.range(downloadSize).get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
-		if(
-			HTTPClient.StatusCode.OK.verifyCode(response) ||
-			HTTPClient.StatusCode.PARTIAL_CONTENT.verifyCode(response)
-		) {
+		if(HTTPClient.downloadable(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
+			this.range = headers.range();
 			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
-			if(headers.range()) { // 支持断点续传
-				final long begin = headers.beginRange();
-				if(size != begin) {
-					// TODO：多行文本
-					LOGGER.warn(
-						"HTTP下载错误（已下载大小和开始下载位置不符），开始位置：{}，响应位置：{}，HTTP响应头部：{}",
-						size, begin, headers.allHeaders()
-					);
-				}
-				this.range = true;
+			if(this.range) { // 支持断点续传
+				headers.verifyBeginRange(downloadSize);
 			}
 		} else {
 			throw new NetException("HLS客户端输入流创建失败");
@@ -222,22 +211,24 @@ public final class HlsClient implements Runnable {
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
 	 * 
-	 * @throws DownloadException 下载异常
+	 * @throws NetException 网络异常
 	 */
-	private void buildOutput() throws DownloadException {
+	private void buildOutput() throws NetException {
 		try {
 			// 如果TS文件小于缓存大小直接使用文件大小
 			int bufferSize = DownloadConfig.getMemoryBufferByte();
 			if(this.size > 0L) {
 				bufferSize = (int) this.size;
 			}
-			if(this.range) { // 支持断点续传
+			if(this.range) {
+				// 支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(this.path, true), bufferSize);
-			} else { // 不支持断点续传
+			} else {
+				// 不支持断点续传
 				this.output = new BufferedOutputStream(new FileOutputStream(this.path), bufferSize);
 			}
 		} catch (FileNotFoundException e) {
-			throw new DownloadException("下载文件打开失败", e);
+			throw new NetException("HLS客户端输出流创建失败", e);
 		}
 	}
 
