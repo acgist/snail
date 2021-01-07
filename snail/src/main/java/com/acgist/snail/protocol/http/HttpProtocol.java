@@ -69,7 +69,8 @@ public final class HttpProtocol extends Protocol {
 	 */
 	@Override
 	protected String buildFileName() throws DownloadException {
-		String fileName = this.httpHeaderWrapper.fileName(null);
+		final String defaultName = super.buildFileName();
+		String fileName = this.httpHeaderWrapper.fileName(defaultName);
 		// 获取失败使用默认名称
 		if(StringUtils.isEmpty(fileName)) {
 			fileName = super.buildFileName();

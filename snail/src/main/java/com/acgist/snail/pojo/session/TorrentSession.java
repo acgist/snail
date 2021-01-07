@@ -290,7 +290,7 @@ public final class TorrentSession {
 	 * <p>加载线程池</p>
 	 */
 	private void loadExecutor() {
-		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_BT);
+		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_BT);
 	}
 
 	/**

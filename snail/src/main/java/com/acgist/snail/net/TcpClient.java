@@ -33,7 +33,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_TCP_CLIENT));
+			final var executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_TCP_CLIENT);
+			group = AsynchronousChannelGroup.withThreadPool(executor);
 		} catch (Exception e) {
 			LOGGER.error("启动TCP Client Group异常", e);
 		}

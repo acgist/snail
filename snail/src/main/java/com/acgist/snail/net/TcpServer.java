@@ -27,7 +27,8 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	static {
 		AsynchronousChannelGroup group = null;
 		try {
-			group = AsynchronousChannelGroup.withThreadPool(SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_TCP_SERVER));
+			final var executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_TCP_SERVER);
+			group = AsynchronousChannelGroup.withThreadPool(executor);
 		} catch (Exception e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}

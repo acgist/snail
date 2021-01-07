@@ -38,7 +38,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 	private static final ExecutorService EXECUTOR;
 	
 	static {
-		EXECUTOR = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_UDP_SERVER);
+		EXECUTOR = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_UDP_SERVER);
 	}
 	
 	/**
