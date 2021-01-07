@@ -136,7 +136,14 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		final String fileNameLower = fileName.toLowerCase();
 		if(fileNameLower.contains(HEADER_CONTENT_DISPOSITION_FILENAME)) { // 包含文件名称
 			fileName = this.extractFileName(fileName);
-			return this.charsetFileName(fileName, defaultName);
+			if(StringUtils.isEmpty(fileName)) {
+				return defaultName;
+			}
+			fileName = this.charsetFileName(fileName);
+			if(StringUtils.isEmpty(fileName)) {
+				return defaultName;
+			}
+			return fileName;
 		} else {
 			return defaultName;
 		}
@@ -190,14 +197,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * <p>文件名称解码</p>
 	 * 
 	 * @param fileName 文件名称
-	 * @param defaultName 默认文件名称
 	 * 
 	 * @return 文件名称
 	 */
-	private String charsetFileName(String fileName, final String defaultName) {
-		if(StringUtils.isEmpty(fileName)) {
-			return defaultName;
-		}
+	private String charsetFileName(String fileName) {
 		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
 		// 只是进行URL编码
 		if(gbkEncoder.canEncode(fileName)) {

@@ -11,7 +11,6 @@ import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>HTTP协议</p>
@@ -70,12 +69,7 @@ public final class HttpProtocol extends Protocol {
 	@Override
 	protected String buildFileName() throws DownloadException {
 		final String defaultName = super.buildFileName();
-		String fileName = this.httpHeaderWrapper.fileName(defaultName);
-		// 获取失败使用默认名称
-		if(StringUtils.isEmpty(fileName)) {
-			fileName = super.buildFileName();
-		}
-		return fileName;
+		return this.httpHeaderWrapper.fileName(defaultName);
 	}
 
 	@Override

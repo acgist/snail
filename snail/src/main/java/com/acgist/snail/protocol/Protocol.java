@@ -380,7 +380,7 @@ public abstract class Protocol {
 		this.buildUrl();
 		this.buildType();
 		this.buildStatus();
-		final String fileName = this.buildFileName();
+		final String fileName = FileUtils.fileNameFormat(this.buildFileName());
 		this.buildName(fileName);
 		this.buildFile(fileName);
 		this.buildFileType(fileName);
@@ -432,8 +432,7 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	protected String buildFileName() throws DownloadException {
-		final String fileName = FileUtils.fileName(this.url);
-		return FileUtils.fileNameFormat(fileName);
+		return FileUtils.fileName(this.url);
 	}
 
 	/**
