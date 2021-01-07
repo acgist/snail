@@ -161,18 +161,18 @@ public final class SystemThreadContext {
 	/**
 	 * <p>创建固定线程池</p>
 	 * 
-	 * @param corePoolSize 初始线程数量
-	 * @param maximumPoolSize 最大线程数量
+	 * @param minPoolSize 初始线程数量
+	 * @param maxPoolSize 最大线程数量
 	 * @param queueSize 等待线程队列长度
 	 * @param keepAliveTime 线程空闲时间（秒）
 	 * @param name 线程池名称
 	 * 
 	 * @return 线程池
 	 */
-	public static final ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int queueSize, long keepAliveTime, String name) {
+	public static final ExecutorService newExecutor(int minPoolSize, int maxPoolSize, int queueSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
-			corePoolSize,
-			maximumPoolSize,
+			minPoolSize,
+			maxPoolSize,
 			keepAliveTime,
 			TimeUnit.SECONDS,
 			new LinkedBlockingQueue<Runnable>(queueSize),
@@ -183,17 +183,19 @@ public final class SystemThreadContext {
 	/**
 	 * <p>创建缓存线程池</p>
 	 * 
+	 * @param minPoolSize 初始线程数量
+	 * @param keepAliveTime 线程空闲时间（秒）
 	 * @param name 线程池名称
 	 * 
 	 * @return 线程池
 	 */
-	public static final ExecutorService newCacheExecutor(String name) {
+	public static final ExecutorService newCacheExecutor(int minPoolSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
-			0, // 初始线程数量：0
-			Integer.MAX_VALUE, // 最大线程数量
-			60L, // 线程存活时间：60S
+			minPoolSize,
+			Short.MAX_VALUE, // 最大线程数量
+			keepAliveTime,
 			TimeUnit.SECONDS,
-			new SynchronousQueue<Runnable>(), // 不限制线程池大小
+			new SynchronousQueue<Runnable>(), // 禁止添加队列
 			SystemThreadContext.newThreadFactory(name)
 		);
 	}
@@ -201,14 +203,14 @@ public final class SystemThreadContext {
 	/**
 	 * <p>创建定时线程池</p>
 	 * 
-	 * @param corePoolSize 初始线程数量
+	 * @param minPoolSize 初始线程数量
 	 * @param name 线程池名称
 	 * 
 	 * @return 定时线程池
 	 */
-	public static final ScheduledExecutorService newTimerExecutor(int corePoolSize, String name) {
+	public static final ScheduledExecutorService newTimerExecutor(int minPoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
-			corePoolSize,
+			minPoolSize,
 			SystemThreadContext.newThreadFactory(name)
 		);
 	}

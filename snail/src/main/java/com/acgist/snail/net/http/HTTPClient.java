@@ -16,6 +16,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Map;
@@ -35,16 +36,15 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>HTTP客户端</p>
- * <p>使用JDK内置HTTP客户端</p>
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
- * 
- * TODO：考虑使用使用HttpURLConnection替换
+ * <p>HTTPS下载CPU非常高，推荐直接使用HTTP协议下载。</p>
  * 
  * @author acgist
  */
@@ -60,23 +60,46 @@ public final class HTTPClient {
 	 */
 	public enum StatusCode {
 		
-		/** 成功 */
+		/**
+		 * <p>成功</p>
+		 */
 		OK(200),
-		/** 断点续传 */
+		/**
+		 * <p>断点续传</p>
+		 */
 		PARTIAL_CONTENT(206),
-		/** 永久重定向 */
+		/**
+		 * <p>永久重定向</p>
+		 */
 		MOVED_PERMANENTLY(301),
-		/** 临时重定向，参考：{@link #SEE_OTHER}、{@link #TEMPORARY_REDIRECT} */
+		/**
+		 * <p>临时重定向</p>
+		 * 
+		 * @see #SEE_OTHER
+		 * @see #TEMPORARY_REDIRECT
+		 */
 		FOUND(302),
-		/** 临时重定向：请求已被处理，POST不能获取参数 */
+		/**
+		 * <p>临时重定向</p>
+		 * <p>请求已被处理：POST不能获取参数</p>
+		 */
 		SEE_OTHER(303),
-		/** 临时重定向：请求没有处理，POST可以获取参数 */
+		/**
+		 * <p>临时重定向</p>
+		 * <p>请求没有处理：POST可以获取参数</p>
+		 */
 		TEMPORARY_REDIRECT(307),
-		/** 请求文件不存在 */
+		/**
+		 * <p>请求文件不存在</p>
+		 */
 		NOT_FOUND(404),
-		/** 无法满足请求范围 */
+		/**
+		 * <p>无法满足请求范围</p>
+		 */
 		REQUESTED_RANGE_NOT_SATISFIABLE(416),
-		/** 服务器错误 */
+		/**
+		 * <p>服务器错误</p>
+		 */
 		INTERNAL_SERVER_ERROR(500);
 		
 		/**
@@ -105,7 +128,7 @@ public final class HTTPClient {
 		 * 
 		 * @param code 状态码
 		 * 
-		 * @return true-相等；false-不相等；
+		 * @return 是否相等
 		 */
 		public final boolean equalsCode(int code) {
 			return this.code == code;
@@ -118,14 +141,19 @@ public final class HTTPClient {
 		 * 
 		 * @param response 响应
 		 * 
-		 * @return true-匹配；false-不匹配；
+		 * @return 是否匹配
 		 */
 		public final <T> boolean verifyCode(HttpResponse<T> response) {
 			return response != null && this.equalsCode(response.statusCode());
 		}
 		
 	}
-	
+
+	/**
+	 * <p>HTTP协议版本</p>
+	 * <p>默认不用HTTP2（没有普及）</p>
+	 */
+	private static final Version VERSION;
 	/**
 	 * <p>HTTP客户端信息（User-Agent）</p>
 	 */
@@ -133,9 +161,18 @@ public final class HTTPClient {
 	/**
 	 * <p>HTTP客户端线程池</p>
 	 */
-	private static final Executor EXECUTOR = SystemThreadContext.newExecutor(2, 10, 1000, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
+	private static final Executor EXECUTOR;
+	/**
+	 * <p>是否支持HTTP2</p>
+	 */
+	private static final boolean ENABLE_H2 = false;
+	/**
+	 * <p>是否指定加密套件</p>
+	 */
+	private static final boolean CONFIRM_CIPHER = false;
 	
 	static {
+		VERSION = Version.HTTP_1_1;
 		final StringBuilder userAgentBuilder = new StringBuilder();
 		userAgentBuilder
 			.append("Mozilla/5.0")
@@ -148,6 +185,8 @@ public final class HTTPClient {
 			.append(SystemConfig.getSupport())
 			.append(")");
 		USER_AGENT = userAgentBuilder.toString();
+		// 使用缓存线程池
+		EXECUTOR = SystemThreadContext.newCacheExecutor(2, 60L, SystemThreadContext.SNAIL_THREAD_HTTP_CLIENT);
 		LOGGER.debug("HTTP客户端信息（User-Agent）：{}", USER_AGENT);
 	}
 	
@@ -170,11 +209,11 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建客户端</p>
+	 * <p>新建HTTPClient</p>
 	 * 
 	 * @param url 请求地址
 	 * 
-	 * @return {@link HTTPClient}
+	 * @return HTTPClient
 	 * 
 	 * @see #newInstance(String, int, int)
 	 */
@@ -183,14 +222,14 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建客户端</p>
+	 * <p>新建HTTPClient</p>
 	 * <p>HTTP请求协议版本：{@link Version#HTTP_1_1}</p>
 	 * 
 	 * @param url 请求地址
-	 * @param connectTimeout 超时时间（连接），单位：秒
-	 * @param receiveTimeout 超时时间（响应），单位：秒
+	 * @param connectTimeout 连接超时时间（单位：秒）
+	 * @param receiveTimeout 响应超时时间（单位：秒）
 	 * 
-	 * @return {@link HTTPClient}
+	 * @return HTTPClient
 	 */
 	public static final HTTPClient newInstance(String url, int connectTimeout, int receiveTimeout) {
 		final HttpClient client = newClient(connectTimeout);
@@ -213,7 +252,7 @@ public final class HTTPClient {
 	 * @param name 名称
 	 * @param value 值
 	 * 
-	 * @return 客户端
+	 * @return HTTPClient
 	 */
 	public HTTPClient header(String name, String value) {
 		this.builder.header(name, value);
@@ -223,12 +262,12 @@ public final class HTTPClient {
 	/**
 	 * <p>设置请求范围</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param pos 开始位置
 	 * 
-	 * @return 客户端
+	 * @return HTTPClient
 	 */
-	public HTTPClient range(long size) {
-		return this.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + size + "-");
+	public HTTPClient range(long pos) {
+		return this.header(HttpHeaderWrapper.HEADER_RANGE, "bytes=" + pos + "-");
 	}
 	
 	/**
@@ -273,11 +312,11 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>执行POST表单请求</p>
+	 * <p>执行表单POST请求</p>
 	 * 
 	 * @param <T> 响应体泛型
 	 * 
-	 * @param data 请求表单数据
+	 * @param data 表单请求数据
 	 * @param handler 响应体处理器
 	 * 
 	 * @return 响应
@@ -288,7 +327,7 @@ public final class HTTPClient {
 		// 设置表单请求
 		this.builder.header(HttpHeaderWrapper.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 		final var request = this.builder
-			.POST(newFormBodyPublisher(data))
+			.POST(buildFormBodyPublisher(data))
 			.build();
 		return this.request(request, handler);
 	}
@@ -306,7 +345,7 @@ public final class HTTPClient {
 			.build();
 		final var response = this.request(request, BodyHandlers.discarding());
 		HttpHeaders httpHeaders = null;
-		if(HTTPClient.StatusCode.OK.verifyCode(response)) {
+		if(response != null) {
 			httpHeaders = response.headers();
 		}
 		return HttpHeaderWrapper.newInstance(httpHeaders);
@@ -356,13 +395,13 @@ public final class HTTPClient {
 	}
 
 	/**
-	 * <p>创建表单提交器</p>
+	 * <p>创建表单数据</p>
 	 * 
 	 * @param data 表单数据
 	 * 
-	 * @return 表单提交器
+	 * @return 表单数据
 	 */
-	private BodyPublisher newFormBodyPublisher(Map<String, String> data) {
+	private BodyPublisher buildFormBodyPublisher(Map<String, String> data) {
 		if(MapUtils.isEmpty(data)) {
 			return BodyPublishers.noBody();
 		}
@@ -377,7 +416,7 @@ public final class HTTPClient {
 	 * 
 	 * @param <T> 响应体泛型
 	 * 
-	 * @param url 请求链接
+	 * @param url 请求地址
 	 * @param handler 响应体处理器
 	 * 
 	 * @return 响应
@@ -397,8 +436,8 @@ public final class HTTPClient {
 	 * 
 	 * @param url 请求地址
 	 * @param handler 响应体处理器
-	 * @param connectTimeout 超时时间（连接），单位：秒
-	 * @param receiveTimeout 超时时间（响应），单位：秒
+	 * @param connectTimeout 连接超时时间（单位：秒）
+	 * @param receiveTimeout 响应超时时间（单位：秒）
 	 * 
 	 * @return 响应
 	 * 
@@ -413,7 +452,7 @@ public final class HTTPClient {
 	 * <p>新建原生HTTP客户端</p>
 	 * <p>设置{@link SSLContext}需要同时设置{@link SSLParameters}</p>
 	 * 
-	 * @param timeout 超时时间（连接），单位：秒
+	 * @param timeout 连接超时时间（单位：秒）
 	 * 
 	 * @return 原生HTTP客户端
 	 */
@@ -421,11 +460,11 @@ public final class HTTPClient {
 		return HttpClient
 			.newBuilder()
 			.executor(EXECUTOR) // 线程池
-			.version(Version.HTTP_1_1) // 协议版本
+			.version(VERSION) // 协议版本
 			.followRedirects(Redirect.NORMAL) // 重定向：正常
 //			.followRedirects(Redirect.ALWAYS) // 重定向：全部
 //			.proxy(ProxySelector.getDefault()) // 代理
-//			.sslContext(newSSLContext()) // SSL上下文
+			.sslContext(newSSLContext()) // SSL上下文
 			.sslParameters(newSSLParameters()) // SSL参数
 //			.authenticator(Authenticator.getDefault()) // 认证
 //			.cookieHandler(CookieHandler.getDefault()) // Cookie
@@ -437,7 +476,7 @@ public final class HTTPClient {
 	 * <p>新建请求Builder</p>
 	 * 
 	 * @param url 请求地址
-	 * @param timeout 超时时间（响应），单位：秒
+	 * @param timeout 响应超时时间（单位：秒）
 	 * 
 	 * @return 请求Builder
 	 */
@@ -445,7 +484,7 @@ public final class HTTPClient {
 		return HttpRequest
 			.newBuilder()
 			.uri(URI.create(url))
-			.version(Version.HTTP_1_1) // HTTP协议使用1.1版本：2.0版本没有普及
+			.version(VERSION)
 			.timeout(Duration.ofSeconds(timeout))
 			.header("User-Agent", USER_AGENT);
 	}
@@ -464,39 +503,16 @@ public final class HTTPClient {
 	}
 	
 	/**
-	 * <p>新建{@link SSLParameters}</p>
+	 * <p>新建SSLContext</p>
 	 * 
-	 * @return {@link SSLParameters}
-	 */
-	public static final SSLParameters newSSLParameters() {
-		final var sslParameters = new SSLParameters();
-		// SSL加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
-//		sslParameters.setCipherSuites(new String[] {
-//			"TLS_AES_128_GCM_SHA256",
-//			"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-//			"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-//			"TLS_RSA_WITH_AES_128_CBC_SHA256",
-//			"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-//			"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
-//		});
-		// 不使用TLSv1.3：CPU占用过高
-		sslParameters.setProtocols(new String[] {"TLSv1.1", "TLSv1.2"});
-		// HTTP协议配置：newBuilder
-//		sslParameters.setApplicationProtocols(new String[] {"h2", "http/1.1"});
-		return sslParameters;
-	}
-	
-	/**
-	 * <p>新建{@link SSLContext}</p>
-	 * 
-	 * @return {@link SSLContext}
+	 * @return SSLContext
 	 */
 	public static final SSLContext newSSLContext() {
 		SSLContext sslContext = null;
 		try {
 			// SSL协议：SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 			sslContext = SSLContext.getInstance("TLSv1.2");
-			sslContext.init(null, ALLOWED_ALL_TRUST_MANAGER, new SecureRandom());
+			sslContext.init(null, ALLOWED_ALL_TRUST_MANAGER, SecureRandom.getInstanceStrong());
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			LOGGER.error("新建SSLContext异常", e);
 			try {
@@ -509,21 +525,54 @@ public final class HTTPClient {
 	}
 	
 	/**
+	 * <p>新建SSLParameters</p>
+	 * 
+	 * @return SSLParameters
+	 */
+	public static final SSLParameters newSSLParameters() {
+		final var sslParameters = new SSLParameters();
+		// 配置HTTP协议优先级
+		if(ENABLE_H2) {
+			sslParameters.setApplicationProtocols(new String[] {"http/1.1", "h2"});
+		}
+		// 指定加密套件：RSA和ECDSA签名根据证书类型选择（ECDH不推荐使用）
+		if(CONFIRM_CIPHER) {
+			sslParameters.setCipherSuites(new String[] {
+				"TLS_AES_128_GCM_SHA256",
+				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+				"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+				"TLS_RSA_WITH_AES_128_CBC_SHA256",
+				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+				"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
+			});
+		}
+		// 指定加密版本
+		sslParameters.setProtocols(new String[] {"TLSv1.1", "TLSv1.2", "TLSv1.3"});
+		return sslParameters;
+	}
+	
+	/**
 	 * <p>信任所有证书</p>
 	 */
 	private static final TrustManager[] ALLOWED_ALL_TRUST_MANAGER = new TrustManager[] {
 		new X509TrustManager() {
 			@Override
-			public void checkClientTrusted(X509Certificate[] chain, String authType) {
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 				// 如果不信任证书抛出异常：CertificateException
+				if(ArrayUtils.isEmpty(chain)) {
+					throw new CertificateException("证书加载失败");
+				}
 			}
 			@Override
-			public void checkServerTrusted(X509Certificate[] chain, String authType) {
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 				// 如果不信任证书抛出异常：CertificateException
+				if(ArrayUtils.isEmpty(chain)) {
+					throw new CertificateException("证书加载失败");
+				}
 			}
 			@Override
 			public X509Certificate[] getAcceptedIssuers() {
-				return null;
+				return new X509Certificate[0];
 			}
 		}
 	};

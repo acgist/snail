@@ -52,7 +52,7 @@ public final class DownloaderManager {
 	 */
 	private DownloaderManager() {
 		this.manager = ProtocolManager.getInstance();
-		this.executor = SystemThreadContext.newCacheExecutor(SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
+		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
 		this.downloaders = new ArrayList<>(DownloadConfig.getSize());
 	}
 	
