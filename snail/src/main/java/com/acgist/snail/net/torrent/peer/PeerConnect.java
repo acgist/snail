@@ -148,10 +148,10 @@ public abstract class PeerConnect {
 	/**
 	 * <p>发送have消息</p>
 	 * 
-	 * @param index Piece索引
+	 * @param indexArray Piece索引
 	 */
-	public final void have(int index) {
-		this.peerSubMessageHandler.have(index);
+	public final void have(Integer ... indexArray) {
+		this.peerSubMessageHandler.have(indexArray);
 	}
 	
 	/**

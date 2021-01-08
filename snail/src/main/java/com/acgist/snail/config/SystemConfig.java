@@ -307,6 +307,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int lsdInterval;
 	/**
+	 * <p>Have消息执行周期（秒）</p>
+	 */
+	private int haveInterval;
+	/**
 	 * <p>Tracker执行周期（秒）</p>
 	 */
 	private int trackerInterval;
@@ -357,6 +361,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
 		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
 		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
+		this.haveInterval = this.getInteger("acgist.have.interval", 30);
 		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
 		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
 		this.nameEnAndVersion = this.nameEn + " " + this.version;
@@ -387,6 +392,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.debug("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.debug("本地发现执行周期（秒）：{}", this.lsdInterval);
+		LOGGER.debug("Have消息执行周期（秒）：{}", this.haveInterval);
 		LOGGER.debug("Tracker执行周期（秒）：{}", this.trackerInterval);
 		LOGGER.debug("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.debug("软件信息：{}", this.nameEnAndVersion);
@@ -603,6 +609,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int getLsdInterval() {
 		return INSTANCE.lsdInterval;
+	}
+	
+	/**
+	 * <p>获取Have消息执行周期（秒）</p>
+	 * 
+	 * @return Have消息执行周期（秒）
+	 */
+	public static final int getHaveInterval() {
+		return INSTANCE.haveInterval;
 	}
 	
 	/**

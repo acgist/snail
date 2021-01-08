@@ -71,25 +71,27 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		return !this.close && this.socket != null && this.socket.isOpen();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>阻塞线程：等待发送完成，防止多线程同时写导致WritePendingException。</p>
+	 * <p>超时时间：超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。</p>
+	 * <p>建议：除了第一条消息（连接）以外的所有消息都不要使用超时时间。</p>
+	 */
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.check(buffer);
 		synchronized (this.socket) {
 			try {
 				final Future<Integer> future = this.socket.write(buffer);
-				/*
-				 * 阻塞线程：等待发送完成，防止多线程同时写导致WritePendingException。
-				 * 超时时间：超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。
-				 * 建议：除了第一条消息（连接）以外的所有消息都不要使用超时时间。
-				 */
-				int size = 0;
+				int size;
 				if(timeout <= TIMEOUT_NONE) {
 					size = future.get();
 				} else {
 					size = future.get(timeout, TimeUnit.SECONDS);
 				}
 				if(size <= 0) {
-					LOGGER.warn("TCP消息发送失败：{}", size);
+					LOGGER.warn("TCP消息发送失败：{}-{}", this.socket, size);
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();

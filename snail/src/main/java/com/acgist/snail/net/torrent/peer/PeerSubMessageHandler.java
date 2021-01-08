@@ -189,12 +189,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
 			return false;
 		}
-		// TODO：是否自动获取端口
 		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
 			infoHashHex,
 			torrentSession.statistics(),
 			socketAddress.getHostString(),
-			null,
+			null, // 禁止自动获取端口：通过PEX消息获取端口
 			PeerConfig.Source.CONNECT
 		);
 		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
@@ -546,9 +545,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>index：Piece索引</p>
 	 * <p>当客户端下载完成一个Piece时，发送have消息告诉与客户端连接的Peer已经拥有该Piece。</p>
 	 * 
-	 * @param index Piece索引
+	 * @param indexArray Piece索引
 	 */
-	public void have(int index) {
+	public void have(Integer ... indexArray) {
+		if(ArrayUtils.isEmpty(indexArray)) {
+			LOGGER.debug("发送have消息：没有可用索引");
+			return;
+		}
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("发送have消息：任务不可上传");
 			return;
@@ -557,12 +560,25 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送have消息：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.hasPiece(index)) {
-			LOGGER.debug("发送have消息：Peer已经含有该Piece");
-			return;
+		int pos = 0;
+		int length = 0;
+		final byte[] bytes = new byte[9 * indexArray.length];
+		for (Integer index : indexArray) {
+			if(this.peerSession.hasPiece(index)) {
+				LOGGER.debug("发送have消息：Peer已经含有该Piece");
+			} else {
+				LOGGER.debug("发送have消息：{}", index);
+				final byte[] message = this.buildMessage(PeerConfig.Type.HAVE, NumberUtils.intToBytes(index)).array();
+				length = message.length;
+				System.arraycopy(message, 0, bytes, pos, length);
+				pos += length;
+			}
 		}
-		LOGGER.debug("发送have消息：{}", index);
-		this.pushMessage(PeerConfig.Type.HAVE, NumberUtils.intToBytes(index));
+		if(pos > 0) {
+			final ByteBuffer buffer = ByteBuffer.allocate(pos);
+			buffer.put(bytes, 0, pos);
+			this.sendEncrypt(buffer);
+		}
 	}
 
 	/**
@@ -1173,7 +1189,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		try {
 			this.messageEncryptSender.send(buffer);
 		} catch (NetException e) {
-			LOGGER.error("Peer消息发送异常", e);
+			LOGGER.error("Peer消息发送异常：{}", this.peerSession, e);
 		}
 	}
 	
@@ -1189,7 +1205,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		try {
 			this.messageEncryptSender.send(buffer, timeout);
 		} catch (NetException e) {
-			LOGGER.error("Peer消息发送异常", e);
+			LOGGER.error("Peer消息发送异常：{}", this.peerSession, e);
 		}
 	}
 	
@@ -1204,7 +1220,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		try {
 			this.messageEncryptSender.sendEncrypt(buffer);
 		} catch (NetException e) {
-			LOGGER.error("Peer消息发送异常", e);
+			LOGGER.error("Peer消息发送异常：{}", this.peerSession, e);
 		}
 	}
 
@@ -1220,7 +1236,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		try {
 			this.messageEncryptSender.sendEncrypt(buffer, timeout);
 		} catch (NetException e) {
-			LOGGER.error("Peer消息发送异常", e);
+			LOGGER.error("Peer消息发送异常：{}", this.peerSession, e);
 		}
 	}
 	
