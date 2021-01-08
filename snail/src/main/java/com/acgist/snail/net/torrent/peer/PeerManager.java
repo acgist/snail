@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -13,9 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
@@ -35,6 +39,10 @@ public final class PeerManager {
 	}
 	
 	/**
+	 * <p>have消息队列</p>
+	 */
+	private final Map<String, List<Integer>> haves;
+	/**
 	 * <p>Peer下载队列</p>
 	 * <p>下载时Peer从队列中剔除，当Peer使用结束后重新放回下载队列。</p>
 	 * <p>InfoHashHex=Peer双端队列（尾部优先使用）</p>
@@ -47,8 +55,24 @@ public final class PeerManager {
 	private final Map<String, List<PeerSession>> storagePeers;
 	
 	private PeerManager() {
+		this.haves = new ConcurrentHashMap<>();
 		this.peers = new ConcurrentHashMap<>();
 		this.storagePeers = new ConcurrentHashMap<>();
+		this.register();
+	}
+	
+	/**
+	 * <p>注册Have消息服务</p>
+	 */
+	private void register() {
+		LOGGER.debug("注册Have消息服务：定时任务");
+		final int interval = SystemConfig.getHaveInterval();
+		SystemThreadContext.timerFixedDelay(
+			interval,
+			interval,
+			TimeUnit.SECONDS,
+			this::flushHave
+		);
 	}
 	
 	/**
@@ -101,9 +125,11 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
-		// 删除下载队列
+		// 删除have消息队列
+		this.haves.remove(infoHashHex);
+		// 删除Peer下载队列
 		this.peers.remove(infoHashHex);
-		// 删除存档队列
+		// 删除Peer存档队列
 		this.storagePeers.remove(infoHashHex);
 	}
 	
@@ -204,23 +230,55 @@ public final class PeerManager {
 	
 	/**
 	 * <p>发送have消息</p>
-	 * <p>只发送给当前连接的Peer</p>
+	 * <p>放入have消息队列</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param index Piece索引
 	 */
 	public void have(String infoHashHex, int index) {
-		final var list = this.listConnectPeerSession(infoHashHex);
-		final AtomicInteger count = new AtomicInteger(0);
-		list.stream()
-			.forEach(session -> {
-				final var peerConnect = session.peerConnect();
-				if(peerConnect != null && peerConnect.available()) {
-					count.incrementAndGet();
-					peerConnect.have(index);
-				}
-			});
-		LOGGER.debug("发送have消息，通知Peer数量：{}", count.get());
+		final var list = this.listHave(infoHashHex);
+		synchronized (list) {
+			list.add(index);
+		}
+	}
+
+	/**
+	 * <p>发送所有have消息</p>
+	 */
+	private void flushHave() {
+		LOGGER.debug("发送所有have消息");
+		final List<String> keys;
+		synchronized (this.haves) {
+			keys = new ArrayList<>(this.haves.keySet());
+		}
+		keys.forEach(this::flushHave);
+	}
+	
+	/**
+	 * <p>发送have消息</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 */
+	public void flushHave(String infoHashHex) {
+		Integer[] indexArray;
+		final var haveList = this.listHave(infoHashHex);
+		synchronized (haveList) {
+			indexArray = haveList.toArray(Integer[]::new);
+			haveList.clear(); // 清空数据
+		}
+		if(ArrayUtils.isNotEmpty(indexArray)) {
+			final var sessions = this.listConnectPeerSession(infoHashHex);
+			final AtomicInteger count = new AtomicInteger(0);
+			sessions.stream()
+				.forEach(session -> {
+					final var peerConnect = session.peerConnect();
+					if(peerConnect != null && peerConnect.available()) {
+						count.incrementAndGet();
+						peerConnect.have(indexArray);
+					}
+				});
+			LOGGER.debug("发送have消息：{}-{}", indexArray.length, count.get());
+		}
 	}
 	
 	/**
@@ -270,6 +328,19 @@ public final class PeerManager {
 				}
 			});
 		LOGGER.debug("发送uploadOnly消息，通知Peer数量：{}", count.get());
+	}
+	
+	/**
+	 * <p>获取have消息队列</p>
+	 * 
+	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return have消息队列
+	 */
+	private List<Integer> listHave(String infoHashHex) {
+		synchronized (this.haves) {
+			return this.haves.computeIfAbsent(infoHashHex, key -> new ArrayList<>());
+		}
 	}
 	
 	/**

@@ -493,7 +493,7 @@ public final class MSECryptHandshakeHandler {
 		this.cipher = MSECipher.newRecver(dhSecretBytes, infoHash);
 //		ENCRYPT(VC, crypto_provide, len(PadC), PadC, len(IA))
 //		ENCRYPT(IA)
-		this.buffer.compact(); // 删除已经读取过不需要解密的数据，留下被加密的数据。
+		this.buffer.compact();
 		this.buffer.flip();
 		this.cipher.decrypt(this.buffer);
 		final byte[] vc = new byte[CryptConfig.VC_LENGTH];

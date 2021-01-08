@@ -54,7 +54,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	private void register() {
 		LOGGER.debug("注册本地发现服务：定时任务");
-		final Integer interval = SystemConfig.getLsdInterval();
+		final int interval = SystemConfig.getLsdInterval();
 		SystemThreadContext.timerFixedDelay(
 			interval,
 			interval,

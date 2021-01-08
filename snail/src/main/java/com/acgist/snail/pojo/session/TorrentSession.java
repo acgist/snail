@@ -605,7 +605,7 @@ public final class TorrentSession {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * TODO：优化have消息，使用异步线程发送，防止部分Peer通知过慢，导致所有线程卡死。
+	 * @see PeerManager#have(String, int)
 	 */
 	public void have(int index) {
 		PeerManager.getInstance().have(this.infoHashHex(), index);
