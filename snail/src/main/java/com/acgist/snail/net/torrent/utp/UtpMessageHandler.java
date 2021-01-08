@@ -157,7 +157,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		buffer.flip();
 		if(buffer.remaining() < UTP_HEADER_MIN_LENGTH) {
 			throw new NetException("处理UTP消息错误（长度）：" + buffer.remaining());
 		}

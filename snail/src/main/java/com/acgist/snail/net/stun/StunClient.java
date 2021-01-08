@@ -9,7 +9,7 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>Stun客户端</p>
- * <p>注：简单的STUN客户端（没有实现所有功能）</p>
+ * <p>注意：简单的STUN客户端（没有实现所有功能）</p>
  * 
  * @author acgist
  */
@@ -30,7 +30,7 @@ public final class StunClient extends UdpClient<StunMessageHandler> {
 	 * @return Stun客户端
 	 */
 	public static final StunClient newInstance(final String host) {
-		return newInstance(NetUtils.buildSocketAddress(host, StunConfig.DEFAULT_PORT));
+		return newInstance(host, StunConfig.DEFAULT_PORT);
 	}
 	
 	/**

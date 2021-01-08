@@ -13,8 +13,7 @@ public class UdpTrackerSessionTest extends Performance {
 
 	@Test
 	public void testAnnounce() throws NetException, DownloadException {
-//		final String path = "E:/snail/hyrz.torrent";
-		final String path = "E:/snail/12345.torrent";
+		final String path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final String announceUrl = "udp://explodie.org:6969/announce";
 //		final String announceUrl = "udp://tracker.moeking.me:6969/announce";
 //		final String announceUrl = "udp://retracker.akado-ural.ru/announce";

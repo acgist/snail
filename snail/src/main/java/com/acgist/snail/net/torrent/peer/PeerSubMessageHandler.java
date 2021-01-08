@@ -256,7 +256,6 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	@Override
 	public void onMessage(final ByteBuffer buffer) throws NetException {
-		buffer.flip();
 		if(this.handshakeRecv) { // 已经握手
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.of(typeId);

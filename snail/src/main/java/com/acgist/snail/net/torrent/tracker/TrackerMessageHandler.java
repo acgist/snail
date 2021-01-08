@@ -40,7 +40,6 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		buffer.flip();
 		final int id = buffer.getInt();
 		final var action = Action.of(id);
 		if(action == null) {

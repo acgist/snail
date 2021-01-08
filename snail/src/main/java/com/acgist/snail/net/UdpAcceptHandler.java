@@ -29,6 +29,7 @@ public abstract class UdpAcceptHandler {
 		try {
 			handler.handle(channel, socketAddress); // 设置代理
 			if(handler.available()) {
+				buffer.flip();
 				handler.onReceive(buffer, socketAddress);
 			}
 		} catch (Exception e) {
