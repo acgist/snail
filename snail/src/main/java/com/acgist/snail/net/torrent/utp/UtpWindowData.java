@@ -1,7 +1,5 @@
 package com.acgist.snail.net.torrent.utp;
 
-import java.nio.ByteBuffer;
-
 import com.acgist.snail.utils.DateUtils;
 
 /**
@@ -104,15 +102,6 @@ public final class UtpWindowData {
 	 */
 	public int getLength() {
 		return this.length;
-	}
-
-	/**
-	 * <p>将数据转为buffer数据</p>
-	 * 
-	 * @return buffer数据
-	 */
-	public ByteBuffer buffer() {
-		return ByteBuffer.wrap(this.data).compact();
 	}
 	
 	/**

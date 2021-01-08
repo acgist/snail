@@ -75,7 +75,6 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		buffer.flip();
 		final short type = (short) (buffer.getShort() & MessageType.TYPE_MASK);
 		final var messageType = StunConfig.MessageType.of(type);
 		if(messageType == null) {

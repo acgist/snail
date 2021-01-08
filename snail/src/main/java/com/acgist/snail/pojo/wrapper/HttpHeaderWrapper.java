@@ -133,12 +133,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
+		// 转为小写获取截取位置
 		final String fileNameLower = fileName.toLowerCase();
-		if(fileNameLower.contains(HEADER_CONTENT_DISPOSITION_FILENAME)) { // 包含文件名称
-			fileName = this.extractFileName(fileName);
-			if(StringUtils.isEmpty(fileName)) {
-				return defaultName;
-			}
+		final int index = fileNameLower.indexOf(HEADER_CONTENT_DISPOSITION_FILENAME);
+		if(index >= 0) {
+			// 包含文件名称
+			fileName = this.extractFileName(index, fileName);
 			fileName = this.charsetFileName(fileName);
 			if(StringUtils.isEmpty(fileName)) {
 				return defaultName;
@@ -152,19 +152,16 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	/**
 	 * <p>头部信息名称提取</p>
 	 * 
+	 * @param index 开始位置
 	 * @param fileName 文件名称
 	 * 
 	 * @return 文件名称
 	 */
-	private String extractFileName(String fileName) {
-		int index;
+	private String extractFileName(int index, String fileName) {
+		// 删除：filename前面内容
+		fileName = fileName.substring(index + HEADER_CONTENT_DISPOSITION_FILENAME.length());
 		// URL解码
 		fileName = UrlUtils.decode(fileName);
-		// 删除：filename前面内容
-		index = fileName.indexOf(HEADER_CONTENT_DISPOSITION_FILENAME);
-		if(index != -1) {
-			fileName = fileName.substring(index + HEADER_CONTENT_DISPOSITION_FILENAME.length());
-		}
 		// 删除：等号前面内容
 		index = fileName.indexOf('=');
 		if(index != -1) {
@@ -201,6 +198,9 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * @return 文件名称
 	 */
 	private String charsetFileName(String fileName) {
+		if(StringUtils.isEmpty(fileName)) {
+			return fileName;
+		}
 		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
 		// 只是进行URL编码
 		if(gbkEncoder.canEncode(fileName)) {

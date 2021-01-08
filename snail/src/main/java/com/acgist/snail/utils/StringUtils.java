@@ -367,12 +367,12 @@ public final class StringUtils {
 		if(buffer == null) {
 			return null;
 		}
-		if(charset == null) {
-			charset = SystemConfig.DEFAULT_CHARSET;
-		}
 		// 重置数据
 		if(buffer.position() != 0) {
 			buffer.flip();
+		}
+		if(charset == null) {
+			charset = SystemConfig.DEFAULT_CHARSET;
 		}
 		String content = null;
 		final CharsetDecoder decoder = Charset.forName(charset).newDecoder();

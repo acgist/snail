@@ -61,7 +61,6 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
 		if(this.peerSubMessageHandler.available()) { // 可用
-			buffer.flip(); // 后续消息处理器不需要调用此方法
 			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 				this.mseCryptHandshakeHandler.decrypt(buffer);
 				this.doNext(buffer, address);

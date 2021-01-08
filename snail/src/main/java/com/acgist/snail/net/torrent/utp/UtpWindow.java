@@ -320,9 +320,9 @@ public final class UtpWindow {
 			}
 			LOGGER.debug("处理数据消息：{}", this.seqnr);
 			// 同步处理
-//			this.messageCodec.decode(windowData.buffer());
+//			this.messageCodec.decode(ByteBuffer.wrap(bytes));
 			// 异步处理
-			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes).compact(), this.messageCodec))) {
+			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes), this.messageCodec))) {
 				LOGGER.warn("UTP请求插入请求队列失败：{}", this.seqnr);
 			}
 		}

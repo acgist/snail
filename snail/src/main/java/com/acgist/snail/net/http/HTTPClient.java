@@ -507,7 +507,7 @@ public final class HTTPClient {
 	 * 
 	 * @return SSLContext
 	 */
-	public static final SSLContext newSSLContext() {
+	private static final SSLContext newSSLContext() {
 		SSLContext sslContext = null;
 		try {
 			// SSL协议：SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
@@ -529,7 +529,7 @@ public final class HTTPClient {
 	 * 
 	 * @return SSLParameters
 	 */
-	public static final SSLParameters newSSLParameters() {
+	private static final SSLParameters newSSLParameters() {
 		final var sslParameters = new SSLParameters();
 		// 配置HTTP协议优先级
 		if(ENABLE_H2) {
@@ -558,14 +558,12 @@ public final class HTTPClient {
 		new X509TrustManager() {
 			@Override
 			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-				// 如果不信任证书抛出异常：CertificateException
 				if(ArrayUtils.isEmpty(chain)) {
 					throw new CertificateException("证书加载失败");
 				}
 			}
 			@Override
 			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-				// 如果不信任证书抛出异常：CertificateException
 				if(ArrayUtils.isEmpty(chain)) {
 					throw new CertificateException("证书加载失败");
 				}

@@ -43,7 +43,6 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		buffer.flip();
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
