@@ -1,3 +1,5 @@
+# 帮助
+
 欢迎使用Snail（蜗牛）
 
 如果遇到其他问题或建议请提交[Issues](https://gitee.com/acgist/snail/issues)
