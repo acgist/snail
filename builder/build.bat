@@ -5,7 +5,6 @@ call config.bat
 
 echo 开始构建项目【%project%】
 
-rem 确认版本信息：pom.xml、builder/config.bat、SnailLauncher/src/snail.ini、src/main/resources/config/system.properties
 set /p input=请确认配置文件版本信息是否一致（Y/N）？
 if /i %input%==Y (
   echo -----------------------------------------------
