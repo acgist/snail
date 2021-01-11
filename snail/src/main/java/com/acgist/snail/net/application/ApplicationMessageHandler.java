@@ -212,7 +212,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String files = decoder.getString("files");
 			synchronized (this) {
 				GuiManager.getInstance().files(files); // 设置选择文件
-				DownloaderManager.getInstance().newTask(url); // 开始下载任务
+				DownloaderManager.getInstance().download(url); // 开始下载任务
 			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {

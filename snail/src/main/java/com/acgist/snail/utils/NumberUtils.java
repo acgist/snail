@@ -161,7 +161,7 @@ public final class NumberUtils {
 	/**
 	 * <p>short转为字节数组（大端）</p>
 	 * 
-	 * @param value short	
+	 * @param value short
 	 * 
 	 * @return 字节数组
 	 */
