@@ -381,7 +381,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * @return 是否支持快速允许下载
 	 */
 	public boolean supportAllowedFast() {
-		return !this.allowedPieces.isEmpty(); 
+		return !this.allowedPieces.isEmpty();
 	}
 	
 	/**

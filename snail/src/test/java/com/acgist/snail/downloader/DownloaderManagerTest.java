@@ -24,12 +24,12 @@ public class DownloaderManagerTest extends Performance {
 	public void testNewTask() throws DownloadException {
 		SnailBuilder.newBuilder().buildSync();
 		final var manager = DownloaderManager.getInstance();
-		var exception = assertThrows(DownloadException.class, () -> manager.newTask("https://www.acgist.com"));
+		var exception = assertThrows(DownloadException.class, () -> manager.download("https://www.acgist.com"));
 		this.log(exception.getMessage());
 		exception = assertThrows(DownloadException.class, () -> manager.start(null));
 		this.log(exception.getMessage());
 		ProtocolManager.getInstance().register(HttpProtocol.getInstance());
-		final IDownloader downloader = manager.newTask("https://www.acgist.com");
+		final IDownloader downloader = manager.download("https://www.acgist.com");
 		assertTrue(manager.allTask().size() > 0);
 		FileUtils.delete(downloader.taskSession().getFile());
 		downloader.delete();
@@ -39,7 +39,7 @@ public class DownloaderManagerTest extends Performance {
 	public void testRefresh() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var manager = DownloaderManager.getInstance();
-		final IDownloader downloader = manager.newTask("1234567890123456789012345678901234567890");
+		final IDownloader downloader = manager.download("1234567890123456789012345678901234567890");
 		assertNotNull(downloader);
 		DownloadConfig.setSize(0);
 		manager.refresh();
@@ -52,7 +52,7 @@ public class DownloaderManagerTest extends Performance {
 	public void testRestart() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var manager = DownloaderManager.getInstance();
-		IDownloader downloader = manager.newTask("1234567890123456789012345678901234567890");
+		IDownloader downloader = manager.download("1234567890123456789012345678901234567890");
 		assertNotNull(downloader);
 		assertTrue(manager.allTask().size() > 0);
 		this.log(downloader.getClass());

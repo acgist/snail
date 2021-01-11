@@ -65,7 +65,7 @@ public final class DownloaderManager {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public IDownloader newTask(String url) throws DownloadException {
+	public IDownloader download(String url) throws DownloadException {
 		try {
 			final var session = this.manager.buildTaskSession(url);
 			return this.start(session);

@@ -124,7 +124,7 @@ public final class XML {
 			factory.setXIncludeAware(false);
 			factory.setExpandEntityReferences(false);
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("创建DocumentBuilderFactory异常 ", e);
+			LOGGER.error("创建DocumentBuilderFactory异常", e);
 		}
 		return factory;
 	}

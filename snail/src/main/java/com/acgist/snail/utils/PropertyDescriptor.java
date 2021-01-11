@@ -55,7 +55,7 @@ public final class PropertyDescriptor {
 	 * @return 是否忽略
 	 */
 	public static final boolean ignoreProperty(Field field) {
-		return 
+		return
 			Modifier.isStatic(field.getModifiers()) || // 静态属性
 			Modifier.isTransient(field.getModifiers()); // 瞬时属性
 	}

@@ -16,10 +16,10 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.utils.Performance;
 
-public class VersionVerifyTest extends Performance {
+public class VerifyTest extends Performance {
 
 	@Test
-	public void testVerify() throws IOException {
+	public void testVersionVerify() throws IOException {
 		final String basePath = "E:/gitee/snail/";
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
@@ -62,6 +62,37 @@ public class VersionVerifyTest extends Performance {
 		final Properties properties = new Properties();
 		properties.load(input);
 		return properties.getProperty(name);
+	}
+	
+	@Test
+	public void testFormat() throws IOException {
+		format(new File("E:\\gitee\\snail"));
+	}
+	
+	public void format(File file) throws IOException {
+		if (file.isFile()) {
+			final String name = file.getName();
+			if (
+				name.endsWith(".properties") ||
+				name.endsWith(".java") ||
+				name.endsWith(".xml") ||
+				name.endsWith(".md")
+			) {
+				Files.readAllLines(file.toPath()).forEach(line -> {
+					if(line.endsWith(" ") && !line.endsWith("* ")) {
+						this.log("文件格式错误：{}-{}", file.getAbsolutePath(), line);
+					}
+					if(line.endsWith("	") && !line.trim().isEmpty()) {
+						this.log("文件格式错误：{}-{}", file.getAbsolutePath(), line);
+					}
+				});
+			}
+		} else {
+			var files = file.listFiles();
+			for (File children : files) {
+				format(children);
+			}
+		}
 	}
 	
 }

@@ -237,7 +237,7 @@ public final class M3u8Builder {
 	 * 
 	 * @return M3U8
 	 * 
-	 * @throws NetException 网络异常 
+	 * @throws NetException 网络异常
 	 */
 	private M3u8 buildM3u8() throws NetException {
 		// 判断是否是流媒体

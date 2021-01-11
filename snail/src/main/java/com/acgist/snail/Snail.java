@@ -93,10 +93,34 @@ public final class Snail {
 	 * 
 	 * @return 下载任务
 	 * 
-	 * @throws DownloadException 下载异常 
+	 * @throws DownloadException 下载异常
+	 * 
+	 * @see DownloaderManager#download(String)
 	 */
 	public IDownloader download(String url) throws DownloadException {
-		return DownloaderManager.getInstance().newTask(url);
+		return DownloaderManager.getInstance().download(url);
+	}
+	
+	/**
+	 * <p>暂停任务</p>
+	 * 
+	 * @param downloader 下载任务
+	 * 
+	 * @see DownloaderManager#pause(ITaskSession)
+	 */
+	public void pause(IDownloader downloader) {
+		DownloaderManager.getInstance().pause(downloader.taskSession());
+	}
+	
+	/**
+	 * <p>删除任务</p>
+	 * 
+	 * @param downloader 下载任务
+	 * 
+	 * @see DownloaderManager#delete(ITaskSession)
+	 */
+	public void delete(IDownloader downloader) {
+		DownloaderManager.getInstance().delete(downloader.taskSession());
 	}
 	
 	/**
@@ -152,7 +176,7 @@ public final class Snail {
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				TrackerServer.getInstance().close();
-				LocalServiceDiscoveryServer.getInstance().close();			
+				LocalServiceDiscoveryServer.getInstance().close();
 				NatContext.getInstance().shutdown();
 				UtpRequestQueue.getInstance().shutdown();
 				// 启用BT任务：保存DHT和Tracker配置
@@ -210,7 +234,7 @@ public final class Snail {
 		 * 
 		 * @return Snail
 		 * 
-		 * @throws DownloadException 下载异常 
+		 * @throws DownloadException 下载异常
 		 */
 		public synchronized Snail build(boolean sync) {
 			if(INSTANCE.available) {

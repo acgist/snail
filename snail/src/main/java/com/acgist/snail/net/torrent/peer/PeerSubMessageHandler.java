@@ -947,7 +947,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * 
 	 * @param index Piece索引
 	 * @param begin Piece内偏移
-	 * @param bytes Piece数据 
+	 * @param bytes Piece数据
 	 */
 	private void piece(int index, int begin, byte[] bytes) {
 		if(!this.torrentSession.uploadable()) {

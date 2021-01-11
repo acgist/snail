@@ -105,7 +105,7 @@ public final class TsLinker {
 	 * @param file 文件
 	 * @param output 输出流
 	 * 
-	 * @throws IOException IO异常 
+	 * @throws IOException IO异常
 	 */
 	private void link(File file, OutputStream output) throws IOException {
 		int length = 0;
