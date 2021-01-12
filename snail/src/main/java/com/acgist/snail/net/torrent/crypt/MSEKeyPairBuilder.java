@@ -30,16 +30,9 @@ public final class MSEKeyPairBuilder {
 	private static final String FORMAT = "MSE";
 
 	/**
-	 * <p>随机数工具</p>
-	 * <p>如果使用安全随机数生成密钥存在性能问题</p>
-	 */
-	private final Random random;
-
-	/**
 	 * <p>禁止创建实例</p>
 	 */
 	private MSEKeyPairBuilder() {
-		this.random = NumberUtils.random();
 	}
 	
 	/**
@@ -57,7 +50,7 @@ public final class MSEKeyPairBuilder {
 	 * @return 密钥对
 	 */
 	public KeyPair buildKeyPair() {
-		final MSEPrivateKey privateKey = new MSEPrivateKey(this.random);
+		final MSEPrivateKey privateKey = new MSEPrivateKey();
 		final MSEPublicKey publicKey = privateKey.getPublicKey();
 		return new KeyPair(publicKey, privateKey);
 	}
@@ -129,10 +122,10 @@ public final class MSEKeyPairBuilder {
 		private final MSEPublicKey publicKey;
 
 		/**
-		 * @param random 随机数工具
+		 * <p>禁止创建实例</p>
 		 */
-		private MSEPrivateKey(Random random) {
-			this.value = this.buildPrivateKey(random);
+		private MSEPrivateKey() {
+			this.value = this.buildPrivateKey();
 			this.publicKey = this.buildPublicKey();
 		}
 
@@ -140,11 +133,11 @@ public final class MSEKeyPairBuilder {
 		 * <p>创建私钥数据</p>
 		 * <pre>Xa Xb</pre>
 		 * 
-		 * @param random 随机数工具
-		 * 
 		 * @return 私钥数据
 		 */
-		private BigInteger buildPrivateKey(Random random) {
+		private BigInteger buildPrivateKey() {
+			// 安全随机数性能问题
+			final Random random = NumberUtils.random();
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
 			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
 				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
