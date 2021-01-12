@@ -1,12 +1,15 @@
 package com.acgist.snail.net.torrent.crypt;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 public class MSEPaddingSyncTest extends Performance {
@@ -19,55 +22,32 @@ public class MSEPaddingSyncTest extends Performance {
 	}
 	
 	@Test
-	public void testCost() throws NetException {
-		this.cost();
-		for (int index = 0; index < 100000; index++) {
-			testSync();
-		}
-		this.costed();
-	}
-	
-	@Test
-	public void testSync() throws NetException {
-		MSEPaddingSync sync = MSEPaddingSync.newInstance(3);
-		ByteBuffer buffer = ByteBuffer.allocate(100);
+	public void testSync() throws PacketSizeException {
+		final MSEPaddingSync sync = MSEPaddingSync.newInstance(3);
+		final ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.putShort((short) 2).put("12".getBytes());
-//		buffer.putShort((short) 0);
 		buffer.putShort((short) 100);
 		buffer.put("UU34".getBytes());
 		buffer.flip();
-		
 		boolean success = sync.sync(buffer);
-		this.log(success);
-		this.log(sync);
-		
-		ByteBuffer append = ByteBuffer.allocate(98);
+		assertFalse(success);
+		final ByteBuffer append = ByteBuffer.allocate(98);
 		append.put("0".repeat(96).getBytes());
 		append.putShort((short) 0);
 		append.flip();
-		
 		success = sync.sync(append);
-		this.log(success);
-		this.log(sync);
-		
-//		ByteBuffer append = ByteBuffer.allocate(96);
-//		append.put("0".repeat(96).getBytes());
-//		append.flip();
-//		
-//		success = sync.sync(append);
-//		this.log(success);
-//		this.log(sync);
-//		
-//		ByteBuffer zero = ByteBuffer.allocate(2);
-//		zero.putShort((short) 0);
-//		zero.flip();
-//		
-//		success = sync.sync(zero);
-//		this.log(success);
-//		this.log(sync);
-		
-		sync.allPadding().forEach(bytes -> {
-			this.log("内容：" + new String(bytes));
+		assertTrue(success);
+//		sync.allPadding().forEach(bytes -> this.log("内容：" + new String(bytes)));
+	}
+	
+	@Test
+	public void testCosted() throws NetException {
+		this.costed(100000, () -> {
+			try {
+				this.testSync();
+			} catch (PacketSizeException e) {
+				LOGGER.error("数据校验异常", e);
+			}
 		});
 	}
 	

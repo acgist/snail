@@ -57,7 +57,7 @@ public final class MSEPaddingSync {
 	 * 
 	 * @param buffer Padding数据
 	 * 
-	 * @return true-完成；false-没有完成；
+	 * @return 是否同步完成
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
@@ -80,20 +80,23 @@ public final class MSEPaddingSync {
 			this.bytes = new byte[this.length];
 		}
 		final int remaining = buffer.remaining();
-		if(this.length == 0) { // 数据完整：没有数据
+		if(this.length == 0) {
+			// 数据完整：没有数据
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
 			return this.sync(buffer);
-		} else if(remaining >= this.length) { // 数据完整：含有数据
+		} else if(remaining >= this.length) {
+			// 数据完整：含有数据
 			buffer.get(this.bytes, this.bytes.length - this.length, this.length);
 			this.count--;
 			this.length = -1;
 			this.list.add(this.bytes);
 			buffer.compact().flip();
 			return this.sync(buffer);
-		} else { // 数据不完整
+		} else {
+			// 数据不完整
 			buffer.get(this.bytes, this.bytes.length - this.length, remaining);
 			this.length -= remaining;
 			buffer.compact();
@@ -102,9 +105,9 @@ public final class MSEPaddingSync {
 	}
 	
 	/**
-	 * <p>获取所有的Padding数据</p>
+	 * <p>获取所有Padding数据</p>
 	 * 
-	 * @return 所有的Padding数据
+	 * @return 所有Padding数据
 	 */
 	public List<byte[]> allPadding() {
 		return this.list;

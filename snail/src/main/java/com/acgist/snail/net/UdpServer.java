@@ -224,7 +224,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> implements IUdpChann
 					final SelectionKey selectionKey = iterator.next();
 					iterator.remove(); // 移除已经取出来的信息
 					if (selectionKey.isValid() && selectionKey.isReadable()) {
-						final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.UDP_BUFFER_LENGTH);
+//						final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.UDP_BUFFER_LENGTH);
+						final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.UDP_BUFFER_LENGTH);
 						// 服务器多例：获取不同通道
 						// final DatagramChannel channel = (DatagramChannel) selectionKey.channel();
 						// 服务端单例：客户端通道=服务端通道

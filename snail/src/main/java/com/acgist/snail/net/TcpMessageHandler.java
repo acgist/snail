@@ -147,7 +147,8 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	private void loopMessage() {
 		if(this.available()) {
-			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
+//			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
+			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.TCP_BUFFER_LENGTH);
 			this.socket.read(buffer, buffer, this);
 		} else {
 			LOGGER.debug("TCP消息代理退出消息轮询");
