@@ -196,7 +196,7 @@ public final class BeanUtils {
 	 * <p>设置对象属性</p>
 	 * 
 	 * @param instance 对象
-	 * @param wrapper 属性
+	 * @param data 属性
 	 */
 	public static final void properties(Object instance, Map<String, Object> data) {
 		Objects.requireNonNull(instance);
