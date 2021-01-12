@@ -2,7 +2,6 @@ package com.acgist.snail.net.torrent.crypt;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -11,22 +10,34 @@ import java.util.Random;
 import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>MSE密钥对Builder（DH交换）</p>
+ * <p>MSE密钥对Builder</p>
  * <p>一的补码（one's complement）：反码（正数=原码、负数=反码）</p>
- * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+{@code 1}）</p>
+ * <p>二的补码（two's complement）：补码（正数=原码、负数=反码+1）</p>
  * 
  * @author acgist
  */
 public final class MSEKeyPairBuilder {
+	
+	/**
+	 * <p>算法：{@value}</p>
+	 */
+	private static final String ALGORITHM = "DH";
+	/**
+	 * <p>算法编码：{@value}</p>
+	 */
+	private static final String FORMAT = "MSE";
 
 	/**
-	 * <p>公钥生成使用随机数</p>
+	 * <p>随机数工具</p>
+	 * <p>如果使用安全随机数生成密钥存在性能问题</p>
 	 */
 	private final Random random;
 
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private MSEKeyPairBuilder() {
 		this.random = NumberUtils.random();
 	}
@@ -52,33 +63,16 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * <p>创建S：DH Secret</p>
-	 * 
-	 * @param publicKey 公钥
-	 * @param privateKey 密钥
-	 * 
-	 * @return DH Secret
-	 * 
-	 * @throws InvalidKeyException 密钥异常
-	 */
-	public static final BigInteger buildDHSecret(BigInteger publicKey, PrivateKey privateKey) throws InvalidKeyException {
-		if(privateKey instanceof MSEPrivateKey) {
-			return ((MSEPrivateKey) privateKey).buildDHSecret(new MSEPublicKey(publicKey));
-		}
-		throw new InvalidKeyException("不支持的私钥：" + privateKey);
-	}
-
-	/**
 	 * <p>MSE公钥</p>
 	 * 
 	 * @author acgist
 	 */
-	private static final class MSEPublicKey implements PublicKey {
+	public static final class MSEPublicKey implements PublicKey {
 
 		private static final long serialVersionUID = 1L;
 		
 		/**
-		 * <p>PublicKey</p>
+		 * <p>公钥数据</p>
 		 */
 		private final BigInteger value;
 		/**
@@ -87,30 +81,21 @@ public final class MSEKeyPairBuilder {
 		private final byte[] encoded;
 
 		/**
-		 * @param value PublicKey
+		 * @param value 公钥数据
 		 */
 		private MSEPublicKey(BigInteger value) {
 			this.value = value;
 			this.encoded = NumberUtils.encodeBigInteger(value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 
-		/**
-		 * <p>获取PublicKey</p>
-		 * 
-		 * @return PublicKey
-		 */
-		public BigInteger getValue() {
-			return this.value;
-		}
-
 		@Override
 		public String getAlgorithm() {
-			return "DH";
+			return ALGORITHM;
 		}
 
 		@Override
 		public String getFormat() {
-			return "MSE";
+			return FORMAT;
 		}
 
 		@Override
@@ -120,7 +105,7 @@ public final class MSEKeyPairBuilder {
 		
 		@Override
 		public String toString() {
-			return StringUtils.hex(this.getEncoded());
+			return this.value.toString();
 		}
 		
 	}
@@ -130,12 +115,12 @@ public final class MSEKeyPairBuilder {
 	 * 
 	 * @author acgist
 	 */
-	private static final class MSEPrivateKey implements PrivateKey {
+	public static final class MSEPrivateKey implements PrivateKey {
 
 		private static final long serialVersionUID = 1L;
 		
 		/**
-		 * <p>PrivateKey</p>
+		 * <p>私钥数据</p>
 		 */
 		private final BigInteger value;
 		/**
@@ -152,11 +137,12 @@ public final class MSEKeyPairBuilder {
 		}
 
 		/**
-		 * <p>Xa Xb</p>
+		 * <p>创建私钥数据</p>
+		 * <pre>Xa Xb</pre>
 		 * 
 		 * @param random 随机数工具
 		 * 
-		 * @return PrivateKey
+		 * @return 私钥数据
 		 */
 		private BigInteger buildPrivateKey(Random random) {
 			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
@@ -167,6 +153,7 @@ public final class MSEKeyPairBuilder {
 		}
 		
 		/**
+		 * <p>创建公钥</p>
 		 * <pre>
 		 * Pubkey of A: Ya = (G^Xa) mod P
 		 * Pubkey of B: Yb = (G^Xb) mod P
@@ -179,14 +166,17 @@ public final class MSEKeyPairBuilder {
 		}
 		
 		/**
-		 * <p>DH Secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</p>
+		 * <p>创建DH Secret</p>
+		 * <pre>DH Secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</pre>
 		 * 
-		 * @param publicKey PublicKey
+		 * @param publicKey 公钥数据
 		 * 
 		 * @return DH Secret
+		 * 
+		 * @see MSEPublicKey#value
 		 */
-		public BigInteger buildDHSecret(MSEPublicKey publicKey) {
-			return publicKey.getValue().modPow(this.value, CryptConfig.P);
+		public BigInteger buildDHSecret(BigInteger publicKey) {
+			return publicKey.modPow(this.value, CryptConfig.P);
 		}
 		
 		/**
@@ -200,12 +190,12 @@ public final class MSEKeyPairBuilder {
 
 		@Override
 		public String getAlgorithm() {
-			return "DH";
+			return ALGORITHM;
 		}
 
 		@Override
 		public String getFormat() {
-			return "MSE";
+			return FORMAT;
 		}
 
 		@Override
@@ -215,7 +205,7 @@ public final class MSEKeyPairBuilder {
 
 		@Override
 		public String toString() {
-			return StringUtils.hex(this.getEncoded());
+			return this.value.toString();
 		}
 		
 	}

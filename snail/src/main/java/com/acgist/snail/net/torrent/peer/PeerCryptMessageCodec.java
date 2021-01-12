@@ -21,10 +21,6 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerCryptMessageCodec.class);
 	
 	/**
-	 * <p>Peer消息代理</p>
-	 */
-	private final PeerSubMessageHandler peerSubMessageHandler;
-	/**
 	 * <p>MSE加密握手代理</p>
 	 */
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
@@ -35,7 +31,6 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	 */
 	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerUnpackMessageCodec);
-		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.mseCryptHandshakeHandler = MSECryptHandshakeHandler.newInstance(peerUnpackMessageCodec, peerSubMessageHandler);
 	}
 	
@@ -60,7 +55,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	
 	@Override
 	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
-		if(this.peerSubMessageHandler.available()) { // 可用
+		if(this.mseCryptHandshakeHandler.available()) { // 可用
 			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
 				this.mseCryptHandshakeHandler.decrypt(buffer);
 				this.doNext(buffer, address);

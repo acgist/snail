@@ -213,23 +213,19 @@ public final class NumberUtils {
 	/**
 	 * <p>大整数转为二进制字节数组</p>
 	 * 
-	 * @param value 大整数
+	 * @param value 大整数（不可能是负数）
 	 * @param length 数组长度
 	 * 
 	 * @return 字节数组
 	 */
 	public static final byte[] encodeBigInteger(final BigInteger value, final int length) {
-		if (length < 1) {
-			throw new IllegalArgumentException("数组长度错误：" + length);
-		}
 		byte[] bytes = value.toByteArray(); // 二进制补码
 		// 符号位是零
 		if (bytes[0] == 0) {
+			// 去掉符号位
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
-		if (bytes.length > length) {
-			throw new IllegalArgumentException("数组长度错误：" + length);
-		}
+		// 填充数据
 		if (bytes.length < length) {
 			final byte[] copy = bytes;
 			bytes = new byte[length];
@@ -247,9 +243,6 @@ public final class NumberUtils {
 	 * @return 大整数
 	 */
 	public static final BigInteger decodeBigInteger(final ByteBuffer buffer, final int length) {
-		if (length < 1 || buffer.remaining() < length) {
-			throw new IllegalArgumentException("数组长度错误：" + length);
-		}
 		int index = 0;
 		byte nonzero;
 		// 去掉前导零
@@ -268,6 +261,7 @@ public final class NumberUtils {
 	
 	/**
 	 * <p>获取随机数对象</p>
+	 * <p>注意：安全随机数性能存在问题</p>
 	 * 
 	 * @return 随机数对象
 	 */

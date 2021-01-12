@@ -35,8 +35,8 @@ public final class MSECipher {
 	 * <p>加密算法：{@value}</p>
 	 * <p>NoPadding：没有填充</p>
 	 * <p>ZeroPadding：填充零</p>
-	 * <p>PKCS5Padding：块大小固定8的PKCS7Padding</p>
-	 * <p>PKCS7Padding：填充块大小对齐</p>
+	 * <p>PKCS5Padding：填充对齐（块大小固定为8的PKCS7Padding）</p>
+	 * <p>PKCS7Padding：填充对齐（块大小不固定）</p>
 	 */
 	private static final String ARC4_ALGO_TRANSFORMATION = ARC4_ALGO + "/ECB/NoPadding";
 
@@ -50,8 +50,6 @@ public final class MSECipher {
 	private final Cipher decryptCipher;
 	
 	/**
-	 * <p>加解密套件</p>
-	 * 
 	 * @param encryptKey 加密Key
 	 * @param decryptKey 解密Key
 	 * 
@@ -67,16 +65,16 @@ public final class MSECipher {
 	/**
 	 * <p>创建请求客户端加解密套件</p>
 	 * 
-	 * @param S DH Secret
+	 * @param secret DH Secret
 	 * @param infoHash InfoHash
 	 * 
 	 * @return 加解密套件
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public static final MSECipher newSender(byte[] S, InfoHash infoHash) throws NetException {
-		final Key sendKey = buildSendKey(S, infoHash.infoHash());
-		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+	public static final MSECipher newSender(byte[] secret, InfoHash infoHash) throws NetException {
+		final Key sendKey = buildSendKey(secret, infoHash.infoHash());
+		final Key recvKey = buildRecvKey(secret, infoHash.infoHash());
 		try {
 			return new MSECipher(sendKey, recvKey);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
@@ -87,16 +85,16 @@ public final class MSECipher {
 	/**
 	 * <p>创建接入客户端加解密套件</p>
 	 * 
-	 * @param S DH Secret
+	 * @param secret DH Secret
 	 * @param infoHash InfoHash
 	 * 
 	 * @return 加解密套件
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public static final MSECipher newRecver(byte[] S, InfoHash infoHash) throws NetException {
-		final Key sendKey = buildSendKey(S, infoHash.infoHash());
-		final Key recvKey = buildRecvKey(S, infoHash.infoHash());
+	public static final MSECipher newRecver(byte[] secret, InfoHash infoHash) throws NetException {
+		final Key sendKey = buildSendKey(secret, infoHash.infoHash());
+		final Key recvKey = buildRecvKey(secret, infoHash.infoHash());
 		try {
 			return new MSECipher(recvKey, sendKey);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
@@ -199,41 +197,41 @@ public final class MSECipher {
 	/**
 	 * <p>创建请求客户端加密Key</p>
 	 * 
-	 * @param S DH Secret
-	 * @param SKEY InfoHash
+	 * @param secret DH Secret
+	 * @param skey InfoHash
 	 * 
 	 * @return Key
 	 */
-	private static final Key buildSendKey(byte[] S, byte[] SKEY) {
-		return buildKey("keyA", S, SKEY);
+	private static final Key buildSendKey(byte[] secret, byte[] skey) {
+		return buildKey("keyA", secret, skey);
 	}
 
 	/**
 	 * <p>创建接入客户端加密Key</p>
 	 * 
-	 * @param S DH Secret
-	 * @param SKEY InfoHash
+	 * @param secret DH Secret
+	 * @param skey InfoHash
 	 * 
 	 * @return Key
 	 */
-	private static final Key buildRecvKey(byte[] S, byte[] SKEY) {
-		return buildKey("keyB", S, SKEY);
+	private static final Key buildRecvKey(byte[] secret, byte[] skey) {
+		return buildKey("keyB", secret, skey);
 	}
 
 	/**
 	 * <p>创建Key</p>
 	 * 
-	 * @param s keyA | keyB
-	 * @param S DH Secret
-	 * @param SKEY InfoHash
+	 * @param key keyA | keyB
+	 * @param secret DH Secret
+	 * @param skey InfoHash
 	 * 
 	 * @return Key
 	 */
-	private static final Key buildKey(String s, byte[] S, byte[] SKEY) {
+	private static final Key buildKey(String key, byte[] secret, byte[] skey) {
 		final MessageDigest digest = DigestUtils.sha1();
-		digest.update(s.getBytes());
-		digest.update(S);
-		digest.update(SKEY);
+		digest.update(key.getBytes());
+		digest.update(secret);
+		digest.update(skey);
 		return new SecretKeySpec(digest.digest(), ARC4_ALGO);
 	}
 
