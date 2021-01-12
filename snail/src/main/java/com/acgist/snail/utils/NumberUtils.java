@@ -219,6 +219,9 @@ public final class NumberUtils {
 	 * @return 字节数组
 	 */
 	public static final byte[] encodeBigInteger(final BigInteger value, final int length) {
+		if (length < 1) {
+			throw new IllegalArgumentException("数组长度错误：" + length);
+		}
 		byte[] bytes = value.toByteArray(); // 二进制补码
 		// 符号位是零
 		if (bytes[0] == 0) {
@@ -243,6 +246,9 @@ public final class NumberUtils {
 	 * @return 大整数
 	 */
 	public static final BigInteger decodeBigInteger(final ByteBuffer buffer, final int length) {
+		if (length < 1 || buffer.remaining() < length) {
+			throw new IllegalArgumentException("数组长度错误：" + length);
+		}
 		int index = 0;
 		byte nonzero;
 		// 去掉前导零
