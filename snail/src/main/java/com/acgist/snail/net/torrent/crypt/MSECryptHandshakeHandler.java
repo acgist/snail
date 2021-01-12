@@ -381,7 +381,7 @@ public final class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PUBLIC_KEY_MAX_LENGTH) {
-			throw new NetException("加密握手失败（长度错误）");
+			throw new NetException("加密握手失败（公钥长度错误）");
 		}
 //		Diffie Hellman Ya, PadA
 //		Diffie Hellman Yb, PadB
@@ -483,7 +483,7 @@ public final class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > PROVIDE_MAX_LENGTH) {
-			throw new NetException("加密握手失败（长度错误）");
+			throw new NetException("加密握手失败（加密协商长度错误）");
 		}
 		this.buffer.flip();
 		final byte[] req1Peer = new byte[20];
@@ -588,7 +588,7 @@ public final class MSECryptHandshakeHandler {
 			return;
 		}
 		if(this.buffer.position() > CONFIRM_MAX_LENGTH) {
-			throw new NetException("加密握手失败（长度错误）");
+			throw new NetException("加密握手失败（确认加密长度错误）");
 		}
 //		ENCRYPT(VC, crypto_select, len(padD), padD)
 		this.buffer.flip();
@@ -698,11 +698,6 @@ public final class MSECryptHandshakeHandler {
 	 * @throws NetException 网络异常
 	 */
 	private boolean checkPlaintextPeerHandshake(ByteBuffer message) throws NetException {
-		// 已经明文消息
-		if(this.complete && !this.crypt) {
-			this.peerUnpackMessageCodec.decode(message);
-			return true;
-		}
 		final byte first = message.get();
 		// 判断首个字符
 		if(
