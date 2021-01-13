@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>DHT消息</p>
@@ -81,15 +82,6 @@ public abstract class DhtMessage {
 	}
 	
 	/**
-	 * <p>获取消息ID</p>
-	 * 
-	 * @return 消息ID
-	 */
-	public byte[] getId() {
-		return this.getT();
-	}
-	
-	/**
 	 * <p>获取NodeId</p>
 	 * 
 	 * @return NodeId
@@ -121,11 +113,11 @@ public abstract class DhtMessage {
 	 * @return 字符串参数
 	 */
 	public String getString(String key) {
-		final byte[] bytes = this.getBytes(key);
-		if(bytes == null) {
+		final byte[] value = this.getBytes(key);
+		if(value == null) {
 			return null;
 		}
-		return new String(bytes);
+		return new String(value);
 	}
 	
 	/**
@@ -179,6 +171,13 @@ public abstract class DhtMessage {
 	 */
 	public abstract void put(String key, Object value);
 	
+	/**
+	 * <p>将消息转为B编码的字节数组</p>
+	 * 
+	 * @return B编码的字节数组
+	 */
+	public abstract byte[] toBytes();
+	
 	@Override
 	public int hashCode() {
 		return Arrays.hashCode(this.t);
@@ -189,12 +188,16 @@ public abstract class DhtMessage {
 		if(this == object) {
 			return true;
 		}
-		// TODO：使用最新instanceof写法
 		if(object instanceof DhtMessage) {
 			final DhtMessage message = (DhtMessage) object;
 			return ArrayUtils.equals(this.t, message.t);
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.t, this.y);
 	}
 	
 }

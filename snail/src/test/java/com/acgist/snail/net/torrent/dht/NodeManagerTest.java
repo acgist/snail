@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.dht;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +15,13 @@ import com.acgist.snail.utils.StringUtils;
 
 public class NodeManagerTest extends Performance {
 
+	@Test
+	public void testFind() {
+		final var list = NodeManager.getInstance().findNode("1".repeat(20));
+		this.log(list);
+		assertNotNull(list);
+	}
+	
 	@Test
 	public void testCompare() {
 		final byte[] hex1 = ArrayUtils.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));

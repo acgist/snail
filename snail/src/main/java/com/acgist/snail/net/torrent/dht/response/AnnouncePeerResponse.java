@@ -23,6 +23,17 @@ public final class AnnouncePeerResponse extends DhtResponse {
 	private AnnouncePeerResponse(DhtResponse response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
 	}
+	
+	/**
+	 * <p>创建响应</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
+	 */
+	public static final AnnouncePeerResponse newInstance(DhtRequest request) {
+		return new AnnouncePeerResponse(request.getT());
+	}
 
 	/**
 	 * <p>创建响应</p>
@@ -33,17 +44,6 @@ public final class AnnouncePeerResponse extends DhtResponse {
 	 */
 	public static final AnnouncePeerResponse newInstance(DhtResponse response) {
 		return new AnnouncePeerResponse(response);
-	}
-
-	/**
-	 * <p>创建响应</p>
-	 * 
-	 * @param request 请求
-	 * 
-	 * @return 响应
-	 */
-	public static final AnnouncePeerResponse newInstance(DhtRequest request) {
-		return new AnnouncePeerResponse(request.getT());
 	}
 	
 }

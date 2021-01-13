@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.dht;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.acgist.snail.config.DhtConfig.QType;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -49,20 +51,22 @@ public class DhtRequest extends DhtMessage {
 	private DhtResponse response;
 	
 	/**
-	 * <p>生成NodeId：创建请求</p>
+	 * <p>创建请求</p>
+	 * <p>生成NodeId</p>
 	 * 
 	 * @param q 请求类型
 	 */
 	protected DhtRequest(DhtConfig.QType q) {
-		this(DhtService.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+		this(DhtManager.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
 		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
 	}
 	
 	/**
-	 * <p>不生成NodeId：解析请求</p>
+	 * <p>解析请求</p>
+	 * <p>不生成NodeId</p>
 	 * 
 	 * @param t 消息ID
-	 * @param y 消息类型：响应
+	 * @param y 消息类型
 	 * @param q 请求类型
 	 * @param a 请求参数
 	 */
@@ -135,16 +139,16 @@ public class DhtRequest extends DhtMessage {
 	}
 
 	/**
-	 * <p>判断是否已经响应</p>
+	 * <p>判断是否已经获取响应</p>
 	 * 
-	 * @return true-已经响应；false-没有响应；
+	 * @return 是否已经获取响应
 	 */
 	public boolean hasResponse() {
 		return this.response != null;
 	}
 
 	@Override
-	public Object get(String key) {
+	public final Object get(String key) {
 		if(this.a == null) {
 			return null;
 		}
@@ -152,15 +156,11 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	@Override
-	public void put(String key, Object value) {
+	public final void put(String key, Object value) {
 		this.a.put(key, value);
 	}
 	
-	/**
-	 * <p>将消息转为B编码的字节数组</p>
-	 * 
-	 * @return B编码的字节数组
-	 */
+	@Override
 	public final byte[] toBytes() {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);
@@ -171,11 +171,11 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	/**
-	 * <p>节点列表序列化</p>
+	 * <p>序列化节点列表</p>
 	 * 
 	 * @param nodes 节点列表
 	 * 
-	 * @return 序列化后数据
+	 * @return 节点数据
 	 */
 	protected static final byte[] serializeNodes(List<NodeSession> nodes) {
 		if(CollectionUtils.isEmpty(nodes)) {
@@ -221,6 +221,23 @@ public class DhtRequest extends DhtMessage {
 		synchronized (this) {
 			this.notifyAll();
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(this.t);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof DhtRequest) {
+			final DhtRequest request = (DhtRequest) object;
+			return ArrayUtils.equals(this.t, request.t);
+		}
+		return false;
 	}
 	
 	@Override

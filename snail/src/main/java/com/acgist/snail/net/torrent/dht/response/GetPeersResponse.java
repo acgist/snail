@@ -29,7 +29,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 */
 	private GetPeersResponse(byte[] t) {
 		super(t);
-		// 设置Token
+		// 设置Token：声明Peer时使用
 		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
 	}
 	
@@ -38,6 +38,17 @@ public final class GetPeersResponse extends DhtResponse {
 	 */
 	private GetPeersResponse(DhtResponse response) {
 		super(response.getT(), response.getY(), response.getR(), response.getE());
+	}
+	
+	/**
+	 * <p>创建响应</p>
+	 * 
+	 * @param request 请求
+	 * 
+	 * @return 响应
+	 */
+	public static final GetPeersResponse newInstance(DhtRequest request) {
+		return new GetPeersResponse(request.getT());
 	}
 
 	/**
@@ -50,17 +61,6 @@ public final class GetPeersResponse extends DhtResponse {
 	public static final GetPeersResponse newInstance(DhtResponse response) {
 		return new GetPeersResponse(response);
 	}
-
-	/**
-	 * <p>创建响应</p>
-	 * 
-	 * @param request 请求
-	 * 
-	 * @return 响应
-	 */
-	public static final GetPeersResponse newInstance(DhtRequest request) {
-		return new GetPeersResponse(request.getT());
-	}
 	
 	/**
 	 * <p>获取Token</p>
@@ -72,7 +72,8 @@ public final class GetPeersResponse extends DhtResponse {
 	}
 	
 	/**
-	 * <p>获取节点同时加入系统</p>
+	 * <p>获取节点列表</p>
+	 * <p>同时加入系统</p>
 	 * 
 	 * @return 节点列表
 	 */
@@ -95,7 +96,8 @@ public final class GetPeersResponse extends DhtResponse {
 	}
 	
 	/**
-	 * <p>获取Peer列表同时加入系统</p>
+	 * <p>获取Peer列表</p>
+	 * <p>同时加入系统</p>
 	 * 
 	 * @param infoHashHex InfoHash Hex
 	 * 
@@ -110,13 +112,11 @@ public final class GetPeersResponse extends DhtResponse {
 		if(values == null) {
 			return List.of();
 		}
-		byte[] bytes;
 		PeerSession session;
 		final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 		final List<PeerSession> list = new ArrayList<>();
 		for (Object object : values) {
-			bytes = (byte[]) object;
-			buffer.put(bytes);
+			buffer.put((byte[]) object);
 			buffer.flip();
 			session = PeerManager.getInstance().newPeerSession(
 				infoHashHex,
@@ -134,7 +134,7 @@ public final class GetPeersResponse extends DhtResponse {
 	/**
 	 * <p>判断是否含有节点</p>
 	 * 
-	 * @return true-含有；false-不含；
+	 * @return 是否含有节点
 	 */
 	public boolean hasNodes() {
 		return this.get(DhtConfig.KEY_NODES) != null;
@@ -143,7 +143,7 @@ public final class GetPeersResponse extends DhtResponse {
 	/**
 	 * <p>判断是否含有Peer</p>
 	 * 
-	 * @return true-含有；false-不含；
+	 * @return 是否含有Peer
 	 * 
 	 * @see #hasValues()
 	 */
@@ -154,7 +154,7 @@ public final class GetPeersResponse extends DhtResponse {
 	/**
 	 * <p>判断是否含有Peer</p>
 	 * 
-	 * @return true-含有；false-不含；
+	 * @return 是否含有Peer
 	 */
 	public boolean hasValues() {
 		return this.get(DhtConfig.KEY_VALUES) != null;

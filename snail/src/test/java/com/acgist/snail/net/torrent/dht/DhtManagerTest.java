@@ -18,4 +18,10 @@ public class DhtManagerTest extends Performance {
 		assertNotNull(response);
 	}
 	
+	@Test
+	public void testCosted() {
+		this.costed(100000, () -> this.testRequest());
+//		this.costed(100000, () -> DhtManager.getInstance().buildRequestId());
+	}
+	
 }
