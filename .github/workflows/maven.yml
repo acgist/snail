@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: [macos-latest, ubuntu-latest, windows-latest]
+    strategy:
+      matrix:
+        runs-on: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK
