@@ -2,13 +2,14 @@ package com.acgist.snail.net.torrent.dht;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
+import com.acgist.snail.config.DhtConfig.QType;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -37,16 +38,16 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>判断响应是否成功</p>
 	 */
-	public static final Function<DhtResponse, Boolean> RESPONSE_SUCCESS = (response) -> {
-		return response != null && response.success();
-	};
+	private static final Predicate<DhtResponse> RESPONSE_SUCCESS = response -> response != null && response.success();
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("处理DHT消息错误（格式）：{}", decoder.oddString());
+			if(LOGGER.isWarnEnabled()) {
+				LOGGER.warn("处理DHT消息错误（格式）：{}", decoder.oddString());
+			}
 			return;
 		}
 		final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
@@ -67,16 +68,17 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * <p>处理请求</p>
 	 * 
 	 * @param request 请求
-	 * @param socketAddress 客户端地址
+	 * @param socketAddress 地址
 	 */
 	private void onRequest(final DhtRequest request, final InetSocketAddress socketAddress) {
-		DhtResponse response = null;
-		if(request.getQ() == null) {
-			LOGGER.warn("处理DHT请求失败（未知类型）：{}", request.getQ());
+		DhtResponse response;
+		final QType type = request.getQ();
+		if(type == null) {
+			LOGGER.warn("处理DHT请求失败（未知类型）：{}", type);
 			response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 		} else {
-			LOGGER.debug("处理DHT请求：{}", request.getQ());
-			switch (request.getQ()) {
+			LOGGER.debug("处理DHT请求：{}", type);
+			switch (type) {
 			case PING:
 				response = this.ping(request);
 				break;
@@ -90,7 +92,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 				response = this.announcePeer(request);
 				break;
 			default:
-				LOGGER.warn("处理DHT请求失败（类型未适配）：{}", request.getQ());
+				LOGGER.warn("处理DHT请求失败（类型未适配）：{}", type);
 				response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
 				break;
 			}
@@ -106,19 +108,20 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	private void onResponse(final DhtResponse response) {
 		final DhtRequest request = DhtManager.getInstance().response(response);
 		if(request == null) {
-			LOGGER.warn("处理DHT响应失败：没有对应的请求");
+			LOGGER.warn("处理DHT响应失败：没有对应请求");
 			return;
 		}
-		if(request.getQ() == null) {
-			LOGGER.warn("处理DHT响应失败（未知类型）：{}", request.getQ());
+		final QType type = request.getQ();
+		if(type == null) {
+			LOGGER.warn("处理DHT响应失败（未知类型）：{}", type);
 			return;
 		}
-		LOGGER.debug("处理DHT响应：{}", request.getQ());
-		if(!RESPONSE_SUCCESS.apply(response)) {
+		if(!RESPONSE_SUCCESS.test(response)) {
 			LOGGER.warn("处理DHT响应失败（失败响应）：{}", response);
 			return;
 		}
-		switch (request.getQ()) {
+		LOGGER.debug("处理DHT响应：{}", type);
+		switch (type) {
 		case PING:
 			this.ping(request, response);
 			break;
@@ -132,7 +135,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			this.announcePeer(request, response);
 			break;
 		default:
-			LOGGER.warn("处理DHT响应失败（类型未适配）：{}", request.getQ());
+			LOGGER.warn("处理DHT响应失败（类型未适配）：{}", type);
 			break;
 		}
 	}
@@ -148,10 +151,10 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	public NodeSession ping(InetSocketAddress socketAddress) {
 		LOGGER.debug("发送DHT请求：ping");
 		final PingRequest request = PingRequest.newRequest();
-		this.pushMessage(request, socketAddress);
+		this.pushRequest(request, socketAddress);
 		request.lockResponse();
 		final DhtResponse response = request.getResponse();
-		if(RESPONSE_SUCCESS.apply(response)) {
+		if(RESPONSE_SUCCESS.test(response)) {
 			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
 			NodeManager.getInstance().sortNodes();
 			return nodeSession;
@@ -191,7 +194,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	public void findNode(InetSocketAddress socketAddress, byte[] target) {
 		LOGGER.debug("发送DHT请求：findNode");
 		final FindNodeRequest request = FindNodeRequest.newRequest(target);
-		this.pushMessage(request, socketAddress);
+		this.pushRequest(request, socketAddress);
 	}
 	
 	/**
@@ -224,7 +227,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	public void getPeers(InetSocketAddress socketAddress, byte[] infoHash) {
 		LOGGER.debug("发送DHT请求：getPeers");
 		final GetPeersRequest request = GetPeersRequest.newRequest(infoHash);
-		this.pushMessage(request, socketAddress);
+		this.pushRequest(request, socketAddress);
 	}
 
 	/**
@@ -277,7 +280,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	public void announcePeer(InetSocketAddress socketAddress, byte[] token, byte[] infoHash) {
 		LOGGER.debug("发送DHT请求：announcePeer");
 		final AnnouncePeerRequest request = AnnouncePeerRequest.newRequest(token, infoHash);
-		this.pushMessage(request, socketAddress);
+		this.pushRequest(request, socketAddress);
 	}
 	
 	/**
@@ -298,41 +301,33 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * @param response 响应
 	 */
 	private void announcePeer(DhtRequest request, DhtResponse response) {
+		LOGGER.debug("收到DHT AnnouncePeer响应");
 	}
 
 	/**
-	 * <p>发送请求</p>
+	 * <p>发送DHT请求</p>
 	 * 
 	 * @param request 请求
 	 * @param socketAddress 地址
 	 */
-	private void pushMessage(DhtRequest request, InetSocketAddress socketAddress) {
+	private void pushRequest(DhtRequest request, InetSocketAddress socketAddress) {
 		request.setSocketAddress(socketAddress);
 		DhtManager.getInstance().request(request);
-		final ByteBuffer buffer = ByteBuffer.wrap(request.toBytes());
-		this.pushMessage(buffer, socketAddress);
+		this.pushMessage(request, socketAddress);
 	}
 	
 	/**
-	 * <p>发送响应</p>
+	 * <p>发送DHT消息</p>
 	 * 
-	 * @param response 响应
+	 * @param message 消息
 	 * @param socketAddress 地址
 	 */
-	private void pushMessage(DhtResponse response, InetSocketAddress socketAddress) {
-		if(response != null) {
-			final ByteBuffer buffer = ByteBuffer.wrap(response.toBytes());
-			this.pushMessage(buffer, socketAddress);
+	private void pushMessage(DhtMessage message, InetSocketAddress socketAddress) {
+		if(message == null) {
+			LOGGER.warn("发送DHT消息失败：{}", message);
+			return;
 		}
-	}
-	
-	/**
-	 * <p>发送数据</p>
-	 * 
-	 * @param buffer 消息
-	 * @param socketAddress 地址
-	 */
-	private void pushMessage(ByteBuffer buffer, InetSocketAddress socketAddress) {
+		final ByteBuffer buffer = ByteBuffer.wrap(message.toBytes());
 		try {
 			this.send(buffer, socketAddress);
 		} catch (NetException e) {

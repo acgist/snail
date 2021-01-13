@@ -28,10 +28,26 @@ public final class DhtManager {
 	}
 	
 	/**
+	 * <p>消息ID最小值：{@value}</p>
+	 */
+	private static final int MIN_ID_VALUE = 0;
+	/**
+	 * <p>消息ID最大值：{@value}</p>
+	 */
+	private static final int MAX_ID_VALUE = 2 << 15;
+
+	/**
+	 * <p>消息ID</p>
+	 */
+	private int requestId = MIN_ID_VALUE;
+	/**
 	 * <p>DHT请求列表</p>
 	 */
 	private final List<DhtRequest> requests;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private DhtManager() {
 		this.requests = new LinkedList<>();
 		this.register();
@@ -51,6 +67,23 @@ public final class DhtManager {
 	}
 	
 	/**
+	 * <p>生成一个两字节的消息ID</p>
+	 * 
+	 * @return 消息ID
+	 */
+	public byte[] buildRequestId() {
+		final byte[] bytes = new byte[2];
+		synchronized (this) {
+			if(++this.requestId >= MAX_ID_VALUE) {
+				this.requestId = MIN_ID_VALUE;
+			}
+			bytes[0] = (byte) ((this.requestId >> 8) & 0xFF);
+			bytes[1] = (byte) (this.requestId & 0xFF);
+		}
+		return bytes;
+	}
+	
+	/**
 	 * <p>放入请求</p>
 	 * <p>如果请求列表中有相同ID的请求删除旧请求</p>
 	 * 
@@ -61,8 +94,8 @@ public final class DhtManager {
 			return;
 		}
 		synchronized (this.requests) {
-			final DhtRequest old = this.remove(request.getId());
-			if(old != null) {
+			final DhtRequest oldRequest = this.remove(request.getT());
+			if(oldRequest != null) {
 				LOGGER.warn("旧DHT请求没有收到响应（删除）");
 			}
 			this.requests.add(request);
@@ -83,9 +116,9 @@ public final class DhtManager {
 		}
 		// 设置节点为可用状态
 		NodeManager.getInstance().available(response.getNodeId());
-		DhtRequest request = null;
+		DhtRequest request;
 		synchronized (this.requests) {
-			request = this.remove(response.getId());
+			request = this.remove(response.getT());
 		}
 		if(request != null) {
 			request.setResponse(response);
@@ -98,10 +131,10 @@ public final class DhtManager {
 	 */
 	private void timeout() {
 		LOGGER.debug("处理DHT超时请求");
+		final long timeout = DhtConfig.DHT_TIMEOUT;
+		final long timestamp = System.currentTimeMillis();
 		synchronized (this.requests) {
 			DhtRequest request;
-			final long timeout = DhtConfig.DHT_TIMEOUT;
-			final long timestamp = System.currentTimeMillis();
 			final var iterator = this.requests.iterator();
 			while(iterator.hasNext()) {
 				request = iterator.next();
@@ -124,7 +157,7 @@ public final class DhtManager {
 		final var iterator = this.requests.iterator();
 		while(iterator.hasNext()) {
 			request = iterator.next();
-			if(ArrayUtils.equals(id, request.getId())) {
+			if(ArrayUtils.equals(id, request.getT())) {
 				iterator.remove();
 				return request;
 			}

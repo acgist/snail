@@ -1,5 +1,9 @@
 package com.acgist.snail.net.torrent.dht;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.DownloadException;
@@ -12,7 +16,12 @@ public class DhtClientTest extends Performance {
 	// 本地FDM测试节点
 //	private static final int PORT = 49160;
 //	private static final String HOST = "127.0.0.1";
+	// 本地DHT测试
+//	private static final int PORT = 18888;
+//	private static final String HOST = "127.0.0.1";
 	// DHT节点
+//	private static final int PORT = 6881;
+//	private static final String HOST = "router.utorrent.com";
 	private static final int PORT = 6881;
 	private static final String HOST = "router.bittorrent.com";
 	// 种子HASH
@@ -23,28 +32,46 @@ public class DhtClientTest extends Performance {
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var node = client.ping();
 		this.log("节点信息：{}", node);
+		assertNotNull(node);
 	}
 	
 	@Test
 	public void testFindNode() {
+		final int size = NodeManager.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
-		client.findNode(HASH);
-		this.pause();
+		while(true) {
+			client.findNode(HASH);
+			ThreadUtils.sleep(1000);
+			if(size != NodeManager.getInstance().nodes().size()) {
+				break;
+			}
+		}
+		assertTrue(size != NodeManager.getInstance().nodes().size());
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
+		final int size = NodeManager.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var infoHash = InfoHash.newInstance(HASH);
-		client.getPeers(infoHash);
 		while(true) {
-			NodeManager.getInstance().findNode(HASH).forEach(node -> {
-				final DhtClient nodeClient = DhtClient.newInstance(node.getHost(), node.getPort());
-				nodeClient.getPeers(infoHash);
-			});
-			this.log("系统节点数量：{}", NodeManager.getInstance().nodes().size());
-			ThreadUtils.sleep(5000);
+			client.getPeers(infoHash);
+			ThreadUtils.sleep(1000);
+			if(size != NodeManager.getInstance().nodes().size()) {
+				break;
+			}
 		}
+		assertFalse(size != NodeManager.getInstance().nodes().size());
+	}
+	
+	@Test
+	public void testAnnouncePeer() throws DownloadException {
+		final var client = DhtClient.newInstance(HOST, PORT);
+		final var infoHash = InfoHash.newInstance(HASH);
+		client.announcePeer("1".repeat(20).getBytes(), infoHash);
+		ThreadUtils.sleep(1000);
+		assertNotNull(client);
+		assertNotNull(infoHash);
 	}
 	
 }

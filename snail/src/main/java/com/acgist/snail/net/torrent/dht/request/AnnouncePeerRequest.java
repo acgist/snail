@@ -2,6 +2,9 @@ package com.acgist.snail.net.torrent.dht.request;
 
 import java.net.InetSocketAddress;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.PeerConfig;
@@ -23,9 +26,9 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public final class AnnouncePeerRequest extends DhtRequest {
-
-//	private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncePeerRequest.class);
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncePeerRequest.class);
+
 	private AnnouncePeerRequest() {
 		super(DhtConfig.QType.ANNOUNCE_PEER);
 	}
@@ -86,6 +89,8 @@ public final class AnnouncePeerRequest extends DhtRequest {
 				// 支持UTP
 				peerSession.flags(PeerConfig.PEX_UTP);
 			}
+		} else {
+			LOGGER.debug("声明Peer种子信息不存在：{}", infoHashHex);
 		}
 		return AnnouncePeerResponse.newInstance(request);
 	}

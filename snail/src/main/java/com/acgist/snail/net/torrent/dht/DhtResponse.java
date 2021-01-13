@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.dht;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -41,7 +43,8 @@ public class DhtResponse extends DhtMessage {
 	private final List<Object> e;
 
 	/**
-	 * <p>生成NodeId：创建响应</p>
+	 * <p>创建响应</p>
+	 * <p>生成NodeId</p>
 	 * 
 	 * @param t 节点ID
 	 */
@@ -51,10 +54,11 @@ public class DhtResponse extends DhtMessage {
 	}
 	
 	/**
-	 * <p>不生成NodeId：解析响应</p>
+	 * <p>解析响应</p>
+	 * <p>不生成NodeId</p>
 	 * 
 	 * @param t 消息ID
-	 * @param y 消息类型：响应
+	 * @param y 消息类型
 	 * @param r 响应参数
 	 * @param e 错误参数
 	 */
@@ -98,7 +102,7 @@ public class DhtResponse extends DhtMessage {
 	}
 	
 	@Override
-	public Object get(String key) {
+	public final Object get(String key) {
 		if(this.r == null) {
 			return null;
 		}
@@ -106,15 +110,11 @@ public class DhtResponse extends DhtMessage {
 	}
 	
 	@Override
-	public void put(String key, Object value) {
+	public final void put(String key, Object value) {
 		this.r.put(key, value);
 	}
 	
-	/**
-	 * <p>将消息转为B编码的字节数组</p>
-	 * 
-	 * @return B编码的字节数组
-	 */
+	@Override
 	public final byte[] toBytes() {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DhtConfig.KEY_T, this.t);
@@ -132,7 +132,7 @@ public class DhtResponse extends DhtMessage {
 	 * <p>反序列化节点列表</p>
 	 * <p>节点自动加入系统</p>
 	 * 
-	 * @param bytes 序列化后数据
+	 * @param bytes 节点数据
 	 * 
 	 * @return 节点列表
 	 * 
@@ -178,7 +178,7 @@ public class DhtResponse extends DhtMessage {
 	/**
 	 * <p>判断是否是成功响应</p>
 	 * 
-	 * @return true-成功响应；false-失败响应；
+	 * @return 是否是成功响应
 	 */
 	public boolean success() {
 		return CollectionUtils.isEmpty(this.e);
@@ -190,13 +190,11 @@ public class DhtResponse extends DhtMessage {
 	 * @return 错误代码
 	 */
 	public int errorCode() {
-		if(this.e != null && this.e.size() > 0) {
-			final var value = this.e.get(0);
-			if(value instanceof Number) {
-				return ((Number) value).intValue();
-			} else {
-				LOGGER.warn("DHT不支持的错误代码类型：{}", value);
-			}
+		final var value = this.getErrorMessage(0);
+		if(value instanceof Number) {
+			return ((Number) value).intValue();
+		} else {
+			LOGGER.warn("DHT不支持的错误代码类型：{}", value);
 		}
 		return ErrorCode.CODE_201.code();
 	}
@@ -207,19 +205,31 @@ public class DhtResponse extends DhtMessage {
 	 * @return 错误描述
 	 */
 	public String errorMessage() {
-		if(this.e != null && this.e.size() > 1) {
-			final var value = this.e.get(1);
-			if(value instanceof byte[]) {
-				return new String((byte[]) value);
-			} else if(value instanceof String) {
-				return (String) value;
-			} else {
-				LOGGER.warn("DHT不支持的错误描述类型：{}", value);
-			}
+		final var value = getErrorMessage(1);
+		if(value instanceof byte[]) {
+			return new String((byte[]) value);
+		} else if(value instanceof String) {
+			return (String) value;
+		} else {
+			LOGGER.warn("DHT不支持的错误描述类型：{}", value);
 		}
 		return "未知错误";
 	}
 
+	/**
+	 * <p>获取错误信息</p>
+	 * 
+	 * @param index 错误信息索引
+	 * 
+	 * @return 错误信息
+	 */
+	private Object getErrorMessage(int index) {
+		if(this.e != null && this.e.size() > index) {
+			return this.e.get(index);
+		}
+		return null;
+	}
+	
 	/**
 	 * <p>生成错误响应</p>
 	 * 
@@ -234,6 +244,23 @@ public class DhtResponse extends DhtMessage {
 		list.add(code);
 		list.add(message);
 		return new DhtResponse(id, DhtConfig.KEY_R, null, list);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(this.t);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof DhtResponse) {
+			final DhtResponse response = (DhtResponse) object;
+			return ArrayUtils.equals(this.t, response.t);
+		}
+		return false;
 	}
 	
 	@Override

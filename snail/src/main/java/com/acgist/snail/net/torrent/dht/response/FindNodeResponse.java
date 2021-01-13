@@ -31,17 +31,6 @@ public final class FindNodeResponse extends DhtResponse {
 	/**
 	 * <p>创建响应</p>
 	 * 
-	 * @param response 响应
-	 * 
-	 * @return 响应
-	 */
-	public static final FindNodeResponse newInstance(DhtResponse response) {
-		return new FindNodeResponse(response);
-	}
-
-	/**
-	 * <p>创建响应</p>
-	 * 
 	 * @param request 请求
 	 * 
 	 * @return 响应
@@ -51,7 +40,19 @@ public final class FindNodeResponse extends DhtResponse {
 	}
 	
 	/**
-	 * <p>获取节点同时加入系统</p>
+	 * <p>创建响应</p>
+	 * 
+	 * @param response 响应
+	 * 
+	 * @return 响应
+	 */
+	public static final FindNodeResponse newInstance(DhtResponse response) {
+		return new FindNodeResponse(response);
+	}
+	
+	/**
+	 * <p>获取节点列表</p>
+	 * <p>同时加入系统</p>
 	 * 
 	 * @return 节点列表
 	 */

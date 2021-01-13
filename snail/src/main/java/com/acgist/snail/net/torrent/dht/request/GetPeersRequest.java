@@ -3,6 +3,9 @@ package com.acgist.snail.net.torrent.dht.request;
 import java.nio.ByteBuffer;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -22,6 +25,8 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public final class GetPeersRequest extends DhtRequest {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GetPeersRequest.class);
 
 	private GetPeersRequest() {
 		super(DhtConfig.QType.GET_PEERS);
@@ -49,16 +54,17 @@ public final class GetPeersRequest extends DhtRequest {
 	 * @return 响应
 	 */
 	public static final GetPeersResponse execute(DhtRequest request) {
+		boolean needNodes = true;
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
-		boolean needNodes = true;
 		// 查找Peer
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
-			if(CollectionUtils.isNotEmpty(list)) { // 返回Peer
+			if(CollectionUtils.isNotEmpty(list)) {
+				// 返回Peer
 				needNodes = false;
 				final var values = list.stream()
 					.filter(PeerSession::available) // 可用
@@ -73,8 +79,10 @@ public final class GetPeersRequest extends DhtRequest {
 					.collect(Collectors.toList());
 				response.put(DhtConfig.KEY_VALUES, values);
 			}
+		} else {
+			LOGGER.debug("查找Peer种子信息不存在：{}", infoHashHex);
 		}
-		// 没有Peer返回节点
+		// 没有Peer返回Node节点
 		if(needNodes) {
 			final var nodes = NodeManager.getInstance().findNode(infoHash);
 			response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
