@@ -8,9 +8,9 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.dht.DhtManager;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -30,7 +30,7 @@ public final class GetPeersResponse extends DhtResponse {
 	private GetPeersResponse(byte[] t) {
 		super(t);
 		// 设置Token：声明Peer时使用
-		this.put(DhtConfig.KEY_TOKEN, NodeManager.getInstance().token());
+		this.put(DhtConfig.KEY_TOKEN, DhtManager.getInstance().token());
 	}
 	
 	/**

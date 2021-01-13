@@ -10,9 +10,9 @@ import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.net.torrent.dht.DhtManager;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.net.torrent.dht.response.AnnouncePeerResponse;
 import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -60,7 +60,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	public static final AnnouncePeerResponse execute(DhtRequest request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		// 验证Token
-		if(!ArrayUtils.equals(token, NodeManager.getInstance().token())) {
+		if(!ArrayUtils.equals(token, DhtManager.getInstance().token())) {
 			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);

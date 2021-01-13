@@ -2,14 +2,17 @@ package com.acgist.snail.net.torrent.dht;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>DHT管理器</p>
@@ -28,6 +31,10 @@ public final class DhtManager {
 	}
 	
 	/**
+	 * <p>Token长度：{@value}</p>
+	 */
+	private static final int TOKEN_LENGTH = 8;
+	/**
 	 * <p>消息ID最小值：{@value}</p>
 	 */
 	private static final int MIN_ID_VALUE = 0;
@@ -36,6 +43,10 @@ public final class DhtManager {
 	 */
 	private static final int MAX_ID_VALUE = 2 << 15;
 
+	/**
+	 * <p>当前客户端的Token</p>
+	 */
+	private final byte[] token;
 	/**
 	 * <p>消息ID</p>
 	 */
@@ -49,6 +60,7 @@ public final class DhtManager {
 	 * <p>禁止创建实例</p>
 	 */
 	private DhtManager() {
+		this.token = this.buildToken();
 		this.requests = new LinkedList<>();
 		this.register();
 	}
@@ -64,6 +76,32 @@ public final class DhtManager {
 			TimeUnit.MINUTES,
 			this::timeout
 		);
+	}
+	
+	/**
+	 * <p>获取系统Token</p>
+	 * 
+	 * @return 系统Token
+	 */
+	public byte[] token() {
+		return this.token;
+	}
+	
+	/**
+	 * <p>生成系统Token</p>
+	 * 
+	 * @return 系统Token
+	 */
+	private byte[] buildToken() {
+		LOGGER.debug("生成系统Token");
+		final byte[] token = new byte[TOKEN_LENGTH];
+		final byte[] tokens = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
+		final int length = tokens.length;
+		final Random random = NumberUtils.random();
+		for (int index = 0; index < TOKEN_LENGTH; index++) {
+			token[index] = tokens[random.nextInt(length)];
+		}
+		return token;
 	}
 	
 	/**

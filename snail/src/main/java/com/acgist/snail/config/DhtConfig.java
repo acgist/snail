@@ -352,7 +352,7 @@ public final class DhtConfig extends PropertiesConfig {
 		final Random random = NumberUtils.random();
 		final var data = persistentNodes.stream()
 			.filter(NodeSession::persistentable)
-			.filter(node -> random.nextInt(size) < MAX_NODE_SIZE) // 随机保存
+			.filter(node -> size < MAX_NODE_SIZE || random.nextInt(size) < MAX_NODE_SIZE) // 随机保存
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
 				node -> node.getHost() + ":" + node.getPort()

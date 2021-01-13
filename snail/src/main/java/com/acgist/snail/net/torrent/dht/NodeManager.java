@@ -39,10 +39,6 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>Token长度：{@value}</p>
-	 */
-	private static final int TOKEN_LENGTH = 8;
-	/**
 	 * <p>Node查找时返回的Node列表长度：{@value}</p>
 	 */
 	private static final int FIND_NODE_SIZE = 8;
@@ -56,10 +52,6 @@ public final class NodeManager {
 	private static final int FIND_NODE_MIN_SLICE_SIZE = FIND_NODE_SIZE * FIND_NODE_SLICE_SIZE;
 	
 	/**
-	 * <p>当前客户端的Token</p>
-	 */
-	private final byte[] token;
-	/**
 	 * <p>当前客户端的NodeId</p>
 	 */
 	private final byte[] nodeId;
@@ -69,19 +61,9 @@ public final class NodeManager {
 	private final List<NodeSession> nodes;
 	
 	private NodeManager() {
-		this.token = this.buildToken();
 		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
 		this.register();
-	}
-	
-	/**
-	 * <p>获取系统Token</p>
-	 * 
-	 * @return 系统Token
-	 */
-	public byte[] token() {
-		return this.token;
 	}
 	
 	/**
@@ -91,23 +73,6 @@ public final class NodeManager {
 	 */
 	public byte[] nodeId() {
 		return this.nodeId;
-	}
-	
-	/**
-	 * <p>生成系统Token</p>
-	 * 
-	 * @return 系统Token
-	 */
-	private byte[] buildToken() {
-		LOGGER.debug("生成系统Token");
-		final byte[] token = new byte[TOKEN_LENGTH];
-		final byte[] tokens = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
-		final int length = tokens.length;
-		final Random random = NumberUtils.random();
-		for (int index = 0; index < TOKEN_LENGTH; index++) {
-			token[index] = tokens[random.nextInt(length)];
-		}
-		return token;
 	}
 	
 	/**
