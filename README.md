@@ -82,7 +82,7 @@ snail.lockDownload();
 
 |功能|进度|
 |:--|:--:|
-|BT|○|
+|BT|√|
 |FTP|√|
 |HLS|√|
 |HTTP|√|
