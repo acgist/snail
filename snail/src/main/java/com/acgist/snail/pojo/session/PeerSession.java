@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,14 +102,11 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 */
 	private volatile boolean holepunchWait = false;
 	/**
-	 * <p>holepunch是否连接</p>
-	 */
-	private volatile boolean holepunchConnect = false;
-	/**
 	 * <p>holepunch等待锁</p>
+	 * <p>holepunch是否连接</p>
 	 * <p>向中继发出rendezvous消息进入等待，收到中继connect消息后设置可以连接并释放等待锁。</p>
 	 */
-	private final Object holepunchLock = new Object();
+	private AtomicBoolean holepunchConnect = new AtomicBoolean(false);
 	/**
 	 * <p>PEX来源</p>
 	 * <p>直接连接不上时使用holepunch协议连接，PEX来源作为中继。</p>
@@ -686,19 +684,19 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * <p>添加holepunch等待锁</p>
 	 */
 	public void lockHolepunch() {
-		if(this.holepunchConnect) { // 已经连接
-			return;
-		}
-		synchronized (this.holepunchLock) {
-			this.holepunchWait = true;
-			try {
-				// TODO：优化：状态锁一个原子变量
-				this.holepunchLock.wait(PeerConfig.HOLEPUNCH_TIMEOUT);
-			} catch (InterruptedException e) {
-				LOGGER.debug("线程等待异常", e);
-				Thread.currentThread().interrupt();
+		if(!this.holepunchConnect.get()) {
+			synchronized (this.holepunchConnect) {
+				if(!this.holepunchConnect.get()) {
+					this.holepunchWait = true;
+					try {
+						this.holepunchConnect.wait(PeerConfig.HOLEPUNCH_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+					this.holepunchWait = false;
+				}
 			}
-			this.holepunchWait = false;
 		}
 	}
 	
@@ -706,9 +704,9 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * <p>释放holepunch等待锁</p>
 	 */
 	public void unlockHolepunch() {
-		synchronized (this.holepunchLock) {
-			this.holepunchConnect = true;
-			this.holepunchLock.notifyAll();
+		synchronized (this.holepunchConnect) {
+			this.holepunchConnect.set(true);
+			this.holepunchConnect.notifyAll();
 		}
 	}
 	
@@ -727,7 +725,7 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * @return 是否连接
 	 */
 	public boolean holeunchConnect() {
-		return this.holepunchConnect;
+		return this.holepunchConnect.get();
 	}
 	
 	/**

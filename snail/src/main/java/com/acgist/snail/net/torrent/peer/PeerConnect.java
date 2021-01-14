@@ -158,6 +158,8 @@ public abstract class PeerConnect {
 	 * <p>发送pex消息</p>
 	 * 
 	 * @param bytes Pex消息
+	 * 
+	 * @see PeerSubMessageHandler#pex(byte[])
 	 */
 	public final void pex(byte[] bytes) {
 		this.peerSubMessageHandler.pex(bytes);
@@ -167,6 +169,8 @@ public abstract class PeerConnect {
 	 * <p>发送holepunch消息-rendezvous</p>
 	 * 
 	 * @param peerSession peerSession
+	 * 
+	 * @see PeerSubMessageHandler#holepunchRendezvous(PeerSession)
 	 */
 	public final void holepunchRendezvous(PeerSession peerSession) {
 		this.peerSubMessageHandler.holepunchRendezvous(peerSession);
@@ -177,6 +181,8 @@ public abstract class PeerConnect {
 	 * 
 	 * @param host 目标地址
 	 * @param port 目标端口
+	 * 
+	 * @see PeerSubMessageHandler#holepunchConnect(String, int)
 	 */
 	public final void holepunchConnect(String host, int port) {
 		this.peerSubMessageHandler.holepunchConnect(host, port);

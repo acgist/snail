@@ -34,12 +34,12 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	}
 
 	/**
-	 * <p>创建uploadOnly消息代理</p>
+	 * <p>创建uploadOnly扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param extensionMessageHandler 扩展消息代理
 	 * 
-	 * @return uploadOnly消息代理
+	 * @return uploadOnly扩展协议代理
 	 */
 	public static final UploadOnlyExtensionMessageHandler newInstance(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new UploadOnlyExtensionMessageHandler(peerSession, extensionMessageHandler);
@@ -55,8 +55,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	 */
 	public void uploadOnly() {
 		LOGGER.debug("发送uploadOnly消息");
-		final byte[] bytes = new byte[1];
-		bytes[0] = UPLOAD_ONLY; // 只上传不下载
+		final byte[] bytes = new byte[] { UPLOAD_ONLY }; // 只上传不下载
 		this.pushMessage(bytes);
 	}
 	
@@ -66,10 +65,6 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	 * @param buffer 消息
 	 */
 	private void uploadOnly(ByteBuffer buffer) {
-		if(!buffer.hasRemaining()) {
-			LOGGER.debug("处理uploadOnly消息错误（长度）：{}", buffer.remaining());
-			return;
-		}
 		final byte value = buffer.get();
 		LOGGER.debug("处理uploadOnly消息：{}", value);
 		if(value == UPLOAD_ONLY) {

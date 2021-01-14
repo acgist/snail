@@ -294,7 +294,7 @@ public final class PeerManager {
 			.filter(session -> session.statistics().downloadSize() > 0)
 			.collect(Collectors.toList());
 		final byte[] message = PeerExchangeMessageHandler.buildMessage(optimize);
-		if(message == null) {
+		if(ArrayUtils.isEmpty(message)) {
 			LOGGER.debug("发送pex消息失败：消息为空");
 			return;
 		}

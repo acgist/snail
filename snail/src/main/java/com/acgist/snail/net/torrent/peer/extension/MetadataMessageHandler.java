@@ -29,8 +29,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0009.html</p>
  * <p>InfoHash交换种子{@linkplain Torrent#getInfo() 文件信息}</p>
  * 
- * TODO：大量请求时拒绝请求
- * 
  * @author acgist
  */
 public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
@@ -46,7 +44,9 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private static final String ARG_PIECE = "piece";
 	/**
-	 * <p>{@linkplain MetadataType 消息类型}：{@value}</p>
+	 * <p>消息类型：{@value}</p>
+	 * 
+	 * @see MetadataType
 	 */
 	private static final String ARG_MSG_TYPE = "msg_type";
 	/**
@@ -75,13 +75,13 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建Metadata消息代理</p>
+	 * <p>创建Metadata扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer
 	 * @param torrentSession BT任务信息
 	 * @param extensionMessageHandler 扩展消息代理
 	 * 
-	 * @return Metadata消息代理
+	 * @return Metadata扩展协议代理
 	 */
 	public static final MetadataMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new MetadataMessageHandler(peerSession, torrentSession, extensionMessageHandler);
@@ -92,7 +92,9 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("处理metadata消息错误（格式）：{}", decoder.oddString());
+			if(LOGGER.isWarnEnabled()) {
+				LOGGER.warn("处理metadata消息错误（格式）：{}", decoder.oddString());
+			}
 			return;
 		}
 		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
@@ -101,7 +103,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 			LOGGER.warn("处理metadata消息错误（未知类型）：{}", typeId);
 			return;
 		}
-		LOGGER.debug("处理metadata消息类型：{}", metadataType);
+		LOGGER.debug("处理metadata消息：{}", metadataType);
 		switch (metadataType) {
 		case REQUEST:
 			this.request(decoder);
@@ -134,7 +136,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>处理消息：request</p>
 	 * 
-	 * @param decoder 消息（B编码解码器）
+	 * @param decoder 消息
 	 */
 	private void request(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-request");
@@ -149,58 +151,56 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data：{}", piece);
-		final byte[] bytes = this.infoHash.info(); // InfoHash数据
+		final byte[] bytes = this.infoHash.info();
 		if(bytes == null) {
 			this.reject();
 			return;
 		}
-		final int begin = piece * SLICE_LENGTH;
-		final int end = begin + SLICE_LENGTH;
-		if(begin > bytes.length) {
+		final int pos = piece * SLICE_LENGTH;
+		if(pos > bytes.length) {
 			this.reject();
 			return;
 		}
 		int length = SLICE_LENGTH;
-		if(end >= bytes.length) {
-			length = bytes.length - begin;
+		if(pos + SLICE_LENGTH > bytes.length) {
+			length = bytes.length - pos;
 		}
 		final byte[] x = new byte[length]; // Slice数据
-		System.arraycopy(bytes, begin, x, 0, length);
+		System.arraycopy(bytes, pos, x, 0, length);
 		final var data = this.buildMessage(PeerConfig.MetadataType.DATA, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
 		this.pushMessage(data, x);
 	}
-
+	
 	/**
 	 * <p>处理消息：data</p>
 	 * 
-	 * @param decoder 消息（B编码解码器）
+	 * @param decoder 消息
 	 */
 	private void data(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-data");
 		byte[] bytes = this.infoHash.info();
-		// 设置种子Info
 		if(bytes == null) {
+			// 设置种子Info
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
 			this.infoHash.info(bytes);
 		}
 		final int piece = decoder.getInteger(ARG_PIECE);
-		final int begin = piece * SLICE_LENGTH;
-		final int end = begin + SLICE_LENGTH;
-		if(begin > bytes.length) {
-			LOGGER.warn("处理metadata消息-data失败（数据长度错误）：{}-{}", begin, bytes.length);
+		final int pos = piece * SLICE_LENGTH;
+		if(pos > bytes.length) {
+			LOGGER.warn("处理metadata消息-data失败（数据长度错误）：{}-{}", pos, bytes.length);
 			return;
 		}
 		int length = SLICE_LENGTH;
-		if(end >= bytes.length) {
-			length = bytes.length - begin;
+		if(pos + SLICE_LENGTH > bytes.length) {
+			length = bytes.length - pos;
 		}
 		final byte[] x = decoder.oddBytes(); // 剩余数据作为Slice数据
-		System.arraycopy(x, 0, bytes, begin, length);
+		System.arraycopy(x, 0, bytes, pos, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = StringUtils.sha1(bytes);
-		// 判断Hash值是否相等：相等表示已经下载完成，完成后保存种子文件。
+		// 判断Hash值是否相等（相等表示已经下载完成：完成后保存种子文件）
 		if(ArrayUtils.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrent();
 		}
@@ -218,10 +218,12 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	/**
 	 * <p>处理消息：reject</p>
 	 * 
-	 * @param decoder 消息（B编码解码器）
+	 * @param decoder 消息
 	 */
 	private void reject(BEncodeDecoder decoder) {
-		LOGGER.debug("处理metadata消息-reject");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("处理metadata消息-reject：{}", decoder.oddString());
+		}
 	}
 	
 	/**

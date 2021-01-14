@@ -23,12 +23,6 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>Holepunch extension</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0055.html</p>
- * <dl>
- * 	<dt>注意事项</dt>
- * 	<dd>目标方如果已经连接发起方，应该忽略连接消息。</dd>
- * 	<dd>目标方如果不希望连接发起方时，直接忽略连接消息，不能响应错误给中继。</dd>
- * 	<dd>发起方如果没有在扩展协议握手时表示支持holepunch扩展协议，中继应该忽略所有消息。（没有实现）</dd>
- * </dl>
  * <p>Pex交换的Peer如果不能直接连接，Pex源Peer作为中继通过holepunch协议实现连接。</p>
  * 
  * @author acgist
@@ -41,10 +35,10 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 * <p>IPv4：{@value}</p>
 	 */
 	private static final byte IPV4 = 0x00;
-//	/**
-//	 * <p>IPv6：{@value}</p>
-//	 */
-//	private static final byte IPV6 = 0x01;
+	/**
+	 * <p>IPv6：{@value}</p>
+	 */
+	private static final byte IPV6 = 0x01;
 	/**
 	 * <p>BT任务信息</p>
 	 */
@@ -61,18 +55,25 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建holepunch代理</p>
+	 * <p>创建holepunch扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
 	 * @param extensionMessageHandler 扩展协议代理
 	 * 
-	 * @return holepunch代理
+	 * @return holepunch扩展协议代理
 	 */
 	public static final HolepunchMessageHnadler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new HolepunchMessageHnadler(peerSession, torrentSession, extensionMessageHandler);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>发起方没有在扩展协议握手时表示支持holepunch扩展协议：中继应该忽略所有消息</p>
+	 * 
+	 * @see HolepunchMessageHnadler#onMessage(ByteBuffer)
+	 */
 	@Override
 	public void doMessage(ByteBuffer buffer) {
 		final byte typeId = buffer.get();
@@ -81,18 +82,20 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			LOGGER.warn("处理holepunch消息错误（未知类型）：{}", typeId);
 			return;
 		}
-		final byte addrType = buffer.get(); // 地址类型
 		int port;
 		String host;
+		final byte addrType = buffer.get(); // 地址类型
 		if(addrType == IPV4) {
 			host = NetUtils.intToIP(buffer.getInt());
 			port = NetUtils.portToInt(buffer.getShort());
+		} else if(addrType == IPV6) {
+			// TODO：IPv6
+			return;
 		} else {
-			host = null;
-			port = 0;
-			return; // TODO：IPv6
+			LOGGER.error("处理holepunch消息错误（不支持的IP协议类型）：{}", addrType);
+			return;
 		}
-		LOGGER.debug("处理holepunch消息类型：{}", holepunchType);
+		LOGGER.debug("处理holepunch消息：{}", holepunchType);
 		switch (holepunchType) {
 		case RENDEZVOUS:
 			this.onRendezvous(host, port);
@@ -125,7 +128,6 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：rendezvous</p>
-	 * <p>如果已经连接到目标方，同时发送连接消息给发起方和目标方，其他情况返回相应错误。</p>
 	 * 
 	 * @param host 目标地址
 	 * @param port 目标端口
@@ -158,9 +160,9 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			this.error(host, port, HolepunchErrorCode.CODE_03);
 			return;
 		}
-		// 发送发送方连接消息
+		// 向发起方发送目标方连接消息
 		this.connect(host, port);
-		// 发送目标方连接消息
+		// 向目标方发送发起方连接消息
 		final var peerConnect = peerSession.peerConnect();
 		if(peerConnect != null) {
 			peerConnect.holepunchConnect(this.peerSession.host(), this.peerSession.port());
@@ -182,6 +184,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	
 	/**
 	 * <p>处理消息：connect</p>
+	 * <p>如果目标方不希望连接发起方时，直接忽略连接消息，不能响应错误给中继。</p>
 	 * 
 	 * @param host Peer地址
 	 * @param port Peer端口
@@ -189,7 +192,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	private void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
 		var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
-		if(peerSession == null) { // 没有时创建
+		if(peerSession == null) {
 			peerSession = PeerManager.getInstance().newPeerSession(
 				this.torrentSession.infoHashHex(),
 				this.torrentSession.statistics(),
@@ -199,14 +202,17 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			);
 		}
 		if(peerSession.holepunchWait()) {
+			// 发起方：等待响应
 			LOGGER.debug("处理holepunch消息-connect：释放holepunch等待锁");
 			peerSession.unlockHolepunch();
 		} else {
+			// 目标方：主动连接
 			if(peerSession.connected()) {
-				// 已经连接忽略消息
+				// 已经连接忽略消息：不用响应信息给中继
 				LOGGER.debug("处理holepunch消息-connect：目标已连接");
 				return;
 			}
+			// 发起连接
 			final var peerSubMessageHandler = PeerSubMessageHandler.newInstance(peerSession, this.torrentSession);
 			final var client = UtpClient.newInstance(peerSession, peerSubMessageHandler);
 			if(client.connect()) {
@@ -263,7 +269,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 * @param type 消息类型
 	 * @param host Peer地址
 	 * @param port Peer端口
-	 * @param errorCode 错误编码：非错误消息等于{@code null}
+	 * @param errorCode 错误编码（null：没有错误消息）
 	 * 
 	 * @return 消息
 	 * 
@@ -275,7 +281,8 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
 		buffer.putInt(NetUtils.ipToInt(host)); // IP地址
 		buffer.putShort(NetUtils.portToShort(port)); // 端口号
-		if(type == HolepunchType.ERROR && errorCode != null) { // 非错误消息不发送错误编码
+		if(type == HolepunchType.ERROR && errorCode != null) {
+			// 非错误消息不发送错误编码
 			buffer.putInt(errorCode.code()); // 错误编码
 		}
 		return buffer;
