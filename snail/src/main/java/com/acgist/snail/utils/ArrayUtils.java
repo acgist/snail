@@ -82,7 +82,7 @@ public final class ArrayUtils {
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return 整数、零、负数代表原始数据大于、等于、小于比较数据
+	 * @return 正数、零、负数代表原始数据大于、等于、小于比较数据
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
 		Objects.requireNonNull(sources, "数组大小比较原始参数错误");

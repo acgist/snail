@@ -72,7 +72,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 
 	/**
 	 * <p>判断节点是否可以使用</p>
-	 * <p>如果节点没有使用标记验证</p>
+	 * <p>如果节点没有使用标记为验证中</p>
 	 * 
 	 * @return 是否可以使用
 	 */

@@ -42,6 +42,9 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(LSD_TTL, LSD_HOST);

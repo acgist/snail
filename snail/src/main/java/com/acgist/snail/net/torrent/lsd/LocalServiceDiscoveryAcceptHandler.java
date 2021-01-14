@@ -19,6 +19,9 @@ public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 		return INSTANCE;
 	}
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private LocalServiceDiscoveryAcceptHandler() {
 	}
 

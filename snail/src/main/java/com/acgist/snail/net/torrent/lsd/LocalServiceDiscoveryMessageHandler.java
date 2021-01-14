@@ -20,7 +20,7 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>本地发现消息</p>
+ * <p>本地发现消息代理</p>
  * <p>Local Service Discovery</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0014.html</p>
  * 
@@ -31,20 +31,20 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
 
 	/**
-	 * <p>地址</p>
+	 * <p>地址：{@value}</p>
 	 */
 	public static final String HEADER_HOST = "Host";
 	/**
-	 * <p>端口</p>
+	 * <p>端口：{@value}</p>
 	 */
 	public static final String HEADER_PORT = "Port";
 	/**
-	 * <p>Cookie</p>
+	 * <p>Cookie：{@value}</p>
 	 * <p>区别软件本身消息</p>
 	 */
 	public static final String HEADER_COOKIE = "cookie";
 	/**
-	 * <p>InfoHash</p>
+	 * <p>InfoHash：{@value}</p>
 	 */
 	public static final String HEADER_INFOHASH = "Infohash";
 
@@ -84,8 +84,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 			LOGGER.debug("本地发现消息处理失败（种子信息不存在）：{}", infoHashHex);
 		} else {
 			LOGGER.debug("本地发现消息：{}-{}-{}", infoHashHex, host, port);
-			final PeerManager peerManager = PeerManager.getInstance();
-			peerManager.newPeerSession(
+			PeerManager.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
 				host,
