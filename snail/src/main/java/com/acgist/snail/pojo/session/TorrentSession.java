@@ -55,9 +55,9 @@ public final class TorrentSession {
 	 */
 	private Action action;
 	/**
-	 * <p>是否准备完成</p>
+	 * <p>是否可用</p>
 	 */
-	private volatile boolean done = false;
+	private volatile boolean useable = false;
 	/**
 	 * <p>上传状态</p>
 	 */
@@ -193,7 +193,7 @@ public final class TorrentSession {
 			this.loadPeerDownloaderGroup();
 			this.loadPeerDownloaderGroupTimer();
 		}
-		this.done = true;
+		this.useable = true;
 		this.uploadable = false;
 		this.downloadable = false;
 		return complete;
@@ -214,7 +214,7 @@ public final class TorrentSession {
 		this.loadTorrentStreamGroup();
 		this.loadPeerUploaderGroup();
 		this.loadPeerUploaderGroupTimer();
-		this.done = true;
+		this.useable = true;
 		this.uploadable = true;
 		return this;
 	}
@@ -515,16 +515,15 @@ public final class TorrentSession {
 	/**
 	 * <p>检测任务是否下载完成</p>
 	 * <p>如果任务已经完成：刷出缓存、解除下载锁、UploadOnly</p>
+	 * <p>注意：需要实现幂等，文件完成会被多次调用，非幂等操作请在{@link #releaseDownload()}方法中执行。</p>
 	 */
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {
 			LOGGER.debug("任务下载完成：{}", this.name());
-			this.torrentStreamGroup.flush();
 			final var downloader = this.taskSession.downloader();
 			if(downloader != null) {
 				downloader.unlockDownload(); // 解除下载锁
 			}
-			PeerManager.getInstance().uploadOnly(this.infoHashHex());
 		}
 	}
 	
@@ -542,6 +541,7 @@ public final class TorrentSession {
 	 */
 	public void releaseDownload() {
 		LOGGER.debug("Torrent释放资源（下载）");
+		PeerManager.getInstance().uploadOnly(this.infoHashHex());
 		SystemThreadContext.shutdownNow(this.pexTimer);
 		SystemThreadContext.shutdownNow(this.peerDownloaderGroupTimer);
 		if(this.peerDownloaderGroup != null) {
@@ -572,7 +572,7 @@ public final class TorrentSession {
 			this.torrentStreamGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executorTimer);
-		this.done = false;
+		this.useable = false;
 		this.uploadable = false;
 	}
 
@@ -696,12 +696,12 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>判断是否准备完成</p>
+	 * <p>判断是否可用</p>
 	 * 
-	 * @return 是否准备完成
+	 * @return 是否可用
 	 */
-	public boolean done() {
-		return this.done;
+	public boolean useable() {
+		return this.useable;
 	}
 
 	/**

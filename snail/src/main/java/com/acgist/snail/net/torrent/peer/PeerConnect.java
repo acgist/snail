@@ -149,6 +149,8 @@ public abstract class PeerConnect {
 	 * <p>发送have消息</p>
 	 * 
 	 * @param indexArray Piece索引
+	 * 
+	 * @see PeerSubMessageHandler#have(Integer...)
 	 */
 	public final void have(Integer ... indexArray) {
 		this.peerSubMessageHandler.have(indexArray);
@@ -190,6 +192,8 @@ public abstract class PeerConnect {
 	
 	/**
 	 * <p>发送uploadOnly消息</p>
+	 * 
+	 * @see PeerSubMessageHandler#uploadOnly()
 	 */
 	public final void uploadOnly() {
 		this.peerSubMessageHandler.uploadOnly();

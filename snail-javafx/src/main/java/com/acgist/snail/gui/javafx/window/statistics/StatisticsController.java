@@ -252,7 +252,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentManager.getInstance().allTorrentSession().stream()
-			.filter(session -> session.done()) // 准备完成
+			.filter(session -> session.useable()) // 准备完成
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
 		if(defaultValue == null) {
