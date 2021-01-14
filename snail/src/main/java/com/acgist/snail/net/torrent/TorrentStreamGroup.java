@@ -40,6 +40,14 @@ public final class TorrentStreamGroup {
 	private static final int DOWNLOAD_SIZE_TIMEOUT = 120;
 	
 	/**
+	 * <p>指定下载Piece索引</p>
+	 * <p>默认按照顺序从零开始下载</p>
+	 * <p>下载选择Piece时优先选择该索引后面的Piece</p>
+	 * 
+	 * @see #pick(BitSet, BitSet)
+	 */
+	private volatile int piecePos = 0;
+	/**
 	 * <p>已下载Piece位图</p>
 	 */
 	private final BitSet pieces;
@@ -275,6 +283,15 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
+	 * <p>指定下载Piece索引</p>
+	 * 
+	 * @param piecePos 指定下载Piece索引
+	 */
+	public void piecePos(int piecePos) {
+		this.piecePos = piecePos;
+	}
+	
+	/**
 	 * <p>挑选下载Piece</p>
 	 * <p>如果文件流没有被选中下载不挑选Piece</p>
 	 * 
@@ -283,17 +300,22 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 下载Piece
 	 * 
-	 * @see TorrentStream#pick(BitSet, BitSet)
+	 * @see TorrentStream#pick(int, BitSet, BitSet)
 	 */
 	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
 		TorrentPiece pickPiece = null;
 		for (TorrentStream torrentStream : this.streams) {
 			if(torrentStream.selected()) { // 下载选中文件
-				pickPiece = torrentStream.pick(peerPieces, suggestPieces);
+				pickPiece = torrentStream.pick(this.piecePos, peerPieces, suggestPieces);
 				if(pickPiece != null) {
 					break;
 				}
 			}
+		}
+		// 清空指定下载Piece索引
+		if(pickPiece == null && this.piecePos != 0) {
+			this.piecePos = 0;
+			pickPiece = this.pick(peerPieces, suggestPieces);
 		}
 		return pickPiece;
 	}

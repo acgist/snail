@@ -99,16 +99,6 @@ snail.lockDownload();
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
 |[OpenJDK](https://openjdk.java.net)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
 
-## 视频播放
-
-蜗牛专注下载，不会实现边下边播功能。
-
-#### 技巧
-
-虽然没有实现边下边播功能，但是理论上下载是按序下载，所以已下载的部分可以直接使用播放器进行播放。
-
-> 可以通过`F12`查看已下载的部分
-
 ## 其他
 
 #### GIT

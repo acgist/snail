@@ -784,6 +784,15 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * @param piecePos 指定下载Piece索引
+	 * 
+	 * @see TorrentStreamGroup#piecePos(int)
+	 */
+	public void piecePos(int piecePos) {
+		this.torrentStreamGroup.piecePos(piecePos);
+	}
+	
+	/**
 	 * @param peerPieces Peer已下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图
 	 * 
