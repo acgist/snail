@@ -109,9 +109,6 @@ public interface IMessageSender {
 		if(buffer.position() != 0) {
 			buffer.flip();
 		}
-		if(buffer.limit() == 0) {
-			throw new NetException("消息发送失败：" + buffer);
-		}
 	}
 	
 	/**
