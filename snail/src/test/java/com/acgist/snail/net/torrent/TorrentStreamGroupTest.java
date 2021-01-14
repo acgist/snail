@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -19,6 +21,37 @@ import com.acgist.snail.utils.ThreadUtils;
 
 public class TorrentStreamGroupTest extends Performance {
 
+	@Test
+	public void testPick() throws DownloadException {
+//		LoggerConfig.off();
+		final var path = "E:/snail/12345.torrent";
+		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var entity = new TaskEntity();
+		entity.setFile("E:/tmp/12345/");
+		entity.setType(Type.TORRENT);
+		entity.setStatus(Status.COMPLETE);
+		session.upload(TaskSession.newInstance(entity));
+		final var files = session.torrent().getInfo().files();
+		// 选择下载文件
+		files.forEach(file -> {
+			file.selected(true);
+		});
+		final var group = TorrentStreamGroup.newInstance("E:/tmp/12345/", files, session);
+		final BitSet peerPieces = new BitSet();
+		peerPieces.set(0, session.torrent().getInfo().pieceSize(), true);
+		final BitSet suggestPieces = new BitSet();
+		TorrentPiece index;
+		group.piecePos(620);
+		this.cost();
+		while((index = group.pick(peerPieces, suggestPieces)) != null) {
+			this.log(index.getIndex());
+			group.done(index.getIndex());
+			this.log(session.torrent().getInfo().pieceSize());
+//			group.write(index);
+		}
+		this.costed();
+	}
+	
 	@Test
 	public void testVerify() throws DownloadException, NetException {
 		final var path = "e:/snail/verify.torrent";

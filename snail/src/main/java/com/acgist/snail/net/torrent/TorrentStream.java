@@ -263,13 +263,17 @@ public final class TorrentStream {
 	 * <p>选择Piece没有下载完成、不处于暂停Piece和下载中的Piece，选择后清除暂停的Piece。</p>
 	 * <p>如果挑选不到符合条件的Piece并且任务处于接近完成状态时，那么可以选择下载中的Piece进行下载。</p>
 	 * 
+	 * @param piecePos 指定下载Piece索引
 	 * @param peerPieces Peer已下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图：优先使用
 	 * 
 	 * @return 下载Piece
 	 */
-	public TorrentPiece pick(final BitSet peerPieces, final BitSet suggestPieces) {
+	public TorrentPiece pick(int piecePos, final BitSet peerPieces, final BitSet suggestPieces) {
 		if(peerPieces.isEmpty()) { // Peer没有已下载Piece数据
+			return null;
+		}
+		if(piecePos > this.fileEndPieceIndex) {
 			return null;
 		}
 		synchronized (this) {
@@ -291,8 +295,12 @@ public final class TorrentStream {
 			this.pausePieces.clear(); // 清空暂停Piece位图
 			// 如果挑选不到Piece
 			if(pickPieces.isEmpty()) {
-				// 任务接近完成
-				if(this.torrentStreamGroup.remainingPieceSize() <= SystemConfig.getPieceRepeatSize()) {
+				final int remainingPieceSize = this.torrentStreamGroup.remainingPieceSize();
+				if(remainingPieceSize == 0) {
+					LOGGER.debug("选择Piece：没有可选Piece");
+					return null;
+				} else if(remainingPieceSize <= SystemConfig.getPieceRepeatSize()) {
+					// 任务接近完成
 					LOGGER.debug("选择Piece：任务接近完成重复选择下载中的Piece");
 					pickPieces.or(peerPieces);
 					pickPieces.andNot(this.pieces);
@@ -312,12 +320,16 @@ public final class TorrentStream {
 					}
 				}
 			}
-			final int index = pickPieces.nextSetBit(this.fileBeginPieceIndex);
-			if(index == -1 || index > this.fileEndPieceIndex) {
-				LOGGER.debug("选择Piece：找不到Piece");
+			final int indexPos = Math.max(piecePos, this.fileBeginPieceIndex);
+			final int index = pickPieces.nextSetBit(indexPos);
+			if(
+				index == -1 || // 没有匹配Piece
+				index > this.fileEndPieceIndex // 超过文件范围
+			) {
+				LOGGER.debug("选择Piece（没有匹配Piece）：{}-{}-{}-{}", index, piecePos, this.fileBeginPieceIndex, this.fileEndPieceIndex);
 				return null;
 			}
-			LOGGER.debug("下载中Piece：{}-{}", index, this.downloadPieces);
+			LOGGER.debug("下载Piece：{}-{}", index, this.downloadPieces);
 			this.downloadPieces.set(index); // 设置下载中
 			int begin = 0; // Piece开始内偏移
 			boolean verify = true; // 是否验证
