@@ -229,7 +229,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.check(buffer);
 		byte[] bytes;
 		int remaining;
-		while((remaining = buffer.remaining()) > 0) { // UDP拆包
+		while((remaining = buffer.remaining()) > 0) {
+			// UDP拆包
 			if(remaining > UtpConfig.UTP_PACKET_MAX_LENGTH) {
 				bytes = new byte[UtpConfig.UTP_PACKET_MAX_LENGTH];
 			} else {
