@@ -1,7 +1,6 @@
 package com.acgist.snail.utils;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -122,7 +121,7 @@ public abstract class Performance {
 			return 0L;
 		}
 		final var latch = new CountDownLatch(count);
-		final var executor = Executors.newFixedThreadPool(thread);
+		final var executor = SystemThreadContext.newExecutor(thread, thread, count, 60L, SystemThreadContext.SNAIL_THREAD_COSTED);
 		this.cost();
 		for (int index = 0; index < count; index++) {
 			executor.submit(() -> {

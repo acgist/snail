@@ -32,6 +32,10 @@ public final class SystemThreadContext {
 	 */
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	/**
+	 * <p>Costed线程：{@value}</p>
+	 */
+	public static final String SNAIL_THREAD_COSTED = SNAIL_THREAD + "-Costed";
+	/**
 	 * <p>BT线程：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
