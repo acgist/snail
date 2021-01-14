@@ -24,7 +24,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryClient.class);
 	
 	/**
-	 * <p>BT-SEARCH协议</p>
+	 * <p>BT-SEARCH协议：{@value}</p>
 	 */
 	private static final String PROTOCOL = "BT-SEARCH * HTTP/1.1";
 	
@@ -60,7 +60,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 			LOGGER.debug("发送本地发现消息（InfoHash）：{}", String.join(",", infoHashs));
 		}
 		try {
-			this.send(this.buildLocalSearch(infoHashs));
+			this.send(this.buildMessage(infoHashs));
 		} catch (NetException e) {
 			LOGGER.error("发送本地发现消息异常", e);
 		}
@@ -73,7 +73,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 * 
 	 * @return 本地发现消息
 	 */
-	private String buildLocalSearch(String ... infoHashs) {
+	private String buildMessage(String ... infoHashs) {
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
