@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.utils.NumberUtils;
@@ -13,7 +14,7 @@ import com.acgist.snail.utils.NumberUtils;
 /**
  * <p>The lt_donthave extension</p>
  * <p>协议链接：http://bittorrent.org/beps/bep_0054.html</p>
- * <p>宣布不再含有某个Piece</p>
+ * <p>不再含有某个Piece</p>
  * 
  * @author acgist
  */
@@ -30,12 +31,12 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 	}
 
 	/**
-	 * <p>创建DontHave扩展代理</p>
+	 * <p>创建DontHave扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param extensionMessageHandler 扩展协议代理
 	 * 
-	 * @return DontHave扩展代理
+	 * @return DontHave扩展协议代理
 	 */
 	public static final DontHaveExtensionMessageHandler newInstance(PeerSession peerSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new DontHaveExtensionMessageHandler(peerSession, extensionMessageHandler);
@@ -47,24 +48,24 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 	}
 	
 	/**
-	 * <p>发送dontHave消息</p>
+	 * <p>发送DontHave消息</p>
 	 * 
 	 * @param index Piece索引
 	 */
 	public void dontHave(int index) {
-		LOGGER.debug("发送dontHave消息：{}", index);
+		LOGGER.debug("发送DontHave消息：{}", index);
 		final byte[] bytes = NumberUtils.intToBytes(index);
 		this.pushMessage(bytes);
 	}
 	
 	/**
-	 * <p>处理dontHave消息</p>
+	 * <p>处理DontHave消息</p>
 	 * 
 	 * @param buffer 消息
 	 */
 	private void dontHave(ByteBuffer buffer) {
 		final int index = buffer.getInt();
-		LOGGER.debug("处理dontHave消息：{}", index);
+		LOGGER.debug("处理DontHave消息：{}", index);
 		this.peerSession.pieceOff(index);
 	}
 

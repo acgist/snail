@@ -14,8 +14,6 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.extension.DhtExtensionMessageHandler;
-import com.acgist.snail.net.torrent.peer.extension.ExtensionMessageHandler;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
