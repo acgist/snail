@@ -196,10 +196,10 @@ public final class HlsSession {
 	/**
 	 * <p>校验是否完成</p>
 	 * <p>如果完成解锁任务下载锁</p>
+	 * <p>注意：需要实现幂等，文件完成会被多次调用，非幂等操作请在{@link #release()}方法中执行。</p>
 	 */
 	public void checkCompletedAndDone() {
-		final boolean completed = this.checkCompleted();
-		if(completed) {
+		if(this.checkCompleted()) {
 			final var downloader = this.taskSession.downloader();
 			if(downloader != null) {
 				downloader.unlockDownload(); // 解除下载锁
