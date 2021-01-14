@@ -155,9 +155,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		request.lockResponse();
 		final DhtResponse response = request.getResponse();
 		if(RESPONSE_SUCCESS.test(response)) {
-			final NodeSession nodeSession = NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
-			NodeManager.getInstance().sortNodes();
-			return nodeSession;
+			return NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
 		} else {
 			LOGGER.warn("发送Ping请求失败：{}-{}", socketAddress, response);
 		}

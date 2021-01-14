@@ -151,14 +151,12 @@ public class DhtResponse extends DhtMessage {
 			}
 			list.add(session);
 		}
-		NodeManager.getInstance().sortNodes(); // 排序
 		return list;
 	}
 	
 	/**
 	 * <p>反序列化节点</p>
 	 * <p>节点自动加入系统</p>
-	 * <p>不排序：所有节点加入系统列表后再统一排序</p>
 	 * 
 	 * @param buffer 消息
 	 * 
