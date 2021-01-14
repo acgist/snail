@@ -1,12 +1,9 @@
 package com.acgist.snail.net.torrent.dht;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +21,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
  * <p>BT=DHT、eMule=KAD</p>
  * 
- * TODO：观察是否需要定时清理Node
- * 
  * @author acgist
  */
 public final class NodeManager {
@@ -41,15 +36,7 @@ public final class NodeManager {
 	/**
 	 * <p>Node查找时返回的Node列表长度：{@value}</p>
 	 */
-	private static final int FIND_NODE_SIZE = 8;
-	/**
-	 * <p>Node查找时分片大小：{@value}</p>
-	 */
-	private static final int FIND_NODE_SLICE_SIZE = 3;
-	/**
-	 * <p>Node查找时分片最小列表长度：{@value}</p>
-	 */
-	private static final int FIND_NODE_MIN_SLICE_SIZE = FIND_NODE_SIZE * FIND_NODE_SLICE_SIZE;
+	private static final int MAX_NODE_SIZE = 8;
 	
 	/**
 	 * <p>当前客户端的NodeId</p>
@@ -57,9 +44,14 @@ public final class NodeManager {
 	private final byte[] nodeId;
 	/**
 	 * <p>节点列表</p>
+	 * <p>不要使用LinkedList，大量使用索引操作所以性能很差。</p>
+	 * <p>如果节点数量很大建议使用其他数据结构</p>
 	 */
 	private final List<NodeSession> nodes;
 	
+	/**
+	 * <p>禁止创建实例</p>
+	 */
 	private NodeManager() {
 		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
@@ -91,25 +83,12 @@ public final class NodeManager {
 	}
 	
 	/**
-	 * <p>获取所有节点的拷贝</p>
-	 * 
-	 * @return 所有节点的拷贝
-	 */
-	public List<NodeSession> nodes() {
-		synchronized (this.nodes) {
-			return new ArrayList<>(this.nodes);
-		}
-	}
-
-	/**
 	 * <p>注册DHT默认节点</p>
-	 * 
-	 * TODO：优化直接加入nodes，避免频繁加锁
 	 */
 	private void register() {
-		final var nodes = DhtConfig.getInstance().nodes();
-		if(MapUtils.isNotEmpty(nodes)) {
-			nodes.forEach((nodeId, address) -> {
+		final var defaultNodes = DhtConfig.getInstance().nodes();
+		if(MapUtils.isNotEmpty(defaultNodes)) {
+			defaultNodes.forEach((nodeId, address) -> {
 				LOGGER.debug("注册默认节点：{}-{}", nodeId, address);
 				final int index = address.lastIndexOf(':');
 				if(index != -1) {
@@ -122,7 +101,17 @@ public final class NodeManager {
 					LOGGER.warn("节点格式错误：{}-{}", nodeId, address);
 				}
 			});
-			this.sortNodes(); // 排序
+		}
+	}
+	
+	/**
+	 * <p>获取所有节点的拷贝</p>
+	 * 
+	 * @return 所有节点的拷贝
+	 */
+	public List<NodeSession> nodes() {
+		synchronized (this.nodes) {
+			return new ArrayList<>(this.nodes);
 		}
 	}
 	
@@ -147,7 +136,6 @@ public final class NodeManager {
 	/**
 	 * <p>添加DHT节点</p>
 	 * <p>加入时不验证状态，使用时才验证。</p>
-	 * <p>添加完成后需要调用{@link #sortNodes()}进行排序</p>
 	 * 
 	 * @param nodeId 节点ID
 	 * @param host 地址
@@ -157,27 +145,22 @@ public final class NodeManager {
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
-			NodeSession nodeSession = this.select(nodeId);
-			if(nodeSession == null) {
-				nodeSession = NodeSession.newInstance(nodeId, host, port);
-				if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("添加Node：{}-{}-{}", StringUtils.hex(nodeId), nodeSession.getHost(), nodeSession.getPort());
-					}
-					this.nodes.add(nodeSession);
+			final int[] nodeIndex = this.selectNode(nodeId);
+			final int index = nodeIndex[0];
+			final int signum = nodeIndex[1];
+			// 完全匹配
+			if(signum == 0) {
+				return this.nodes.get(index);
+			}
+			final NodeSession nodeSession = NodeSession.newInstance(nodeId, host, port);
+			if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
+				if(LOGGER.isDebugEnabled()) {
+					LOGGER.debug("添加Node：{}-{}-{}", StringUtils.hex(nodeId), nodeSession.getHost(), nodeSession.getPort());
 				}
+				// 添加指定节点位置
+				this.nodes.add(index, nodeSession);
 			}
 			return nodeSession;
-		}
-	}
-
-	/**
-	 * <p>排序节点</p>
-	 * <p>{@linkplain #newNodeSession(byte[], String, Integer) 添加DHT节点}后进行排序，添加大量节点时可以在添加完成后一次性排序。</p>
-	 */
-	public void sortNodes() {
-		synchronized (this.nodes) {
-			Collections.sort(this.nodes);
 		}
 	}
 	
@@ -194,114 +177,51 @@ public final class NodeManager {
 	
 	/**
 	 * <p>查找节点列表</p>
+	 * <p>如果节点数据很大，可以优化算法，分片进行查询。</p>
 	 * 
 	 * @param target InfoHash或者NodeId
 	 * 
 	 * @return 节点列表
-	 * 
-	 * TODO：缓存结果（使用WeakReference）
 	 */
 	public List<NodeSession> findNode(byte[] target) {
-		List<NodeSession> nodes; // 筛选节点的副本
+		List<NodeSession> closeNodes;
 		synchronized (this.nodes) {
-			nodes = this.nodes.stream()
-				// 排除正在验证中的节点
-				.filter(node -> node.getStatus() != NodeSession.Status.VERIFY)
-				.collect(Collectors.toList());
-		}
-		return this.findNode(nodes, target, 0, nodes.size());
-	}
-
-	/**
-	 * <p>查找节点列表</p>
-	 * <p>查找时节点列表组成一个环形结构并{@linkplain #FIND_NODE_SLICE_SIZE 分片}，然后在所有分片中选出最接近目标的片段，然后使用该片段继续查找直到找到最小片段为止。</p>
-	 * 
-	 * @param nodes 节点列表
-	 * @param target 目标
-	 * @param begin 开始索引
-	 * @param end 结束索引
-	 * 
-	 * @return 节点列表
-	 */
-	private List<NodeSession> findNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
-		int selectSize; // 当前选择Node的总数量
-		final int nodeSize = nodes.size(); // 当前节点的总数量
-		if(end > begin) { // 顺序
-			selectSize = end - begin;
-		} else { // 接头
-			selectSize = end + nodeSize - begin;
-		}
-		if(selectSize < FIND_NODE_MIN_SLICE_SIZE) { // 最小片段选择节点
-			return this.selectNode(nodes, target, begin, end);
-		} else { // 分片
-			// 分片中Node的数量
-			final int sliceSize = selectSize / FIND_NODE_SLICE_SIZE;
-			int sliceA, sliceB, sliceC;
-			// 分割节点下标
-			if(end > begin) { // 顺序
-				sliceA = begin;
-				sliceB = sliceA + sliceSize;
-				sliceC = sliceB + sliceSize;
-			} else { // 接头
-				sliceA = begin;
-				sliceB = (sliceA + sliceSize) % nodeSize;
-				sliceC = (sliceB + sliceSize) % nodeSize;
-			}
-			// 分割节点
-			final var nodeA = nodes.get(sliceA);
-			final var nodeB = nodes.get(sliceB);
-			final var nodeC = nodes.get(sliceC);
-			// 节点不同字节索引
-			final int diffIndexA = ArrayUtils.diffIndex(nodeA.getId(), target);
-			final int diffIndexB = ArrayUtils.diffIndex(nodeB.getId(), target);
-			final int diffIndexC = ArrayUtils.diffIndex(nodeC.getId(), target);
-			// 选择最接近的片段
-			if(diffIndexA > diffIndexB && diffIndexA > diffIndexC) {
-				return this.findNode(nodes, target, sliceC, sliceB);
-			} else if(diffIndexB > diffIndexA && diffIndexB > diffIndexC) {
-				return this.findNode(nodes, target, sliceA, sliceC);
-			} else if(diffIndexC > diffIndexA && diffIndexC > diffIndexB) {
-				return this.findNode(nodes, target, sliceB, sliceA);
-			} else { // 三个值一致时选择节点
-				return this.selectNode(nodes, target, begin, end);
-			}
-		}
-	}
-
-	/**
-	 * <p>选择节点列表</p>
-	 * <p>排序查找最近的节点</p>
-	 * <p>如果节点处于未知状态则修改为验证状态</p>
-	 * 
-	 * @param nodes 节点列表
-	 * @param target 目标
-	 * @param begin 开始索引
-	 * @param end 结束索引
-	 * 
-	 * @return 节点列表
-	 */
-	private List<NodeSession> selectNode(final List<NodeSession> nodes, final byte[] target, final int begin, final int end) {
-		Stream<NodeSession> select;
-		if(begin < end) {
-			final int size = end - begin;
-			select = nodes.stream().skip(begin).limit(size);
-		} else {
-			select = Stream.concat(nodes.stream().limit(end), nodes.stream().skip(begin));
-		}
-		return select
-			.map(node -> Map.entry(ArrayUtils.xor(node.getId(), target), node))
-			.sorted((a, b) -> ArrayUtils.compareUnsigned(a.getKey(), b.getKey()))
-			.map(Map.Entry::getValue)
-			.limit(FIND_NODE_SIZE)
-			.peek(node -> {
-				// 设置状态
-				if(node.getStatus() == NodeSession.Status.UNUSE) {
-					node.setStatus(NodeSession.Status.VERIFY);
+			final int nodeSize = this.nodes.size();
+			if(nodeSize <= MAX_NODE_SIZE) {
+				closeNodes = this.nodes.stream()
+					.filter(NodeSession::useableAndMark)
+					.collect(Collectors.toList());
+			} else {
+				closeNodes = new ArrayList<>();
+				final int[] nodeIndex = this.selectNode(target);
+				final int index = nodeIndex[0];
+				int size = 0;
+				int leftPos = 0;
+				int rightPos = 1;
+				NodeSession leftNode;
+				NodeSession rightNode;
+				while(
+					size < MAX_NODE_SIZE && // 指定数量结果
+					leftPos + rightPos < nodeSize // 轮询整个列表
+				) {
+					leftNode = this.select(index - leftPos, nodeSize);
+					if(leftNode.useableAndMark()) {
+						size++;
+						closeNodes.add(leftNode);
+					}
+					rightNode = this.select(index + rightPos, nodeSize);
+					if(rightNode.useableAndMark()) {
+						size++;
+						closeNodes.add(rightNode);
+					}
+					leftPos++;
+					rightPos++;
 				}
-			})
-			.collect(Collectors.toList());
+			}
+		}
+		return closeNodes;
 	}
-	
+
 	/**
 	 * <p>标记节点为可用状态</p>
 	 * 
@@ -315,6 +235,23 @@ public final class NodeManager {
 			}
 		}
 	}
+
+	/**
+	 * <p>选择节点</p>
+	 * 
+	 * @param index 节点索引
+	 * @param nodeSize 节点数量
+	 * 
+	 * @return 节点
+	 */
+	private NodeSession select(int index, int nodeSize) {
+		if(index < 0) {
+			index = nodeSize + index;
+		} else if(index >= nodeSize) {
+			index = index - nodeSize;
+		}
+		return this.nodes.get(index);
+	}
 	
 	/**
 	 * <p>选择节点</p>
@@ -324,15 +261,37 @@ public final class NodeManager {
 	 * @return 节点
 	 */
 	private NodeSession select(byte[] nodeId) {
-		if(nodeId == null) {
-			return null;
-		}
 		for (NodeSession nodeSession : this.nodes) {
 			if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
 				return nodeSession;
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * <p>查找最近节点信息</p>
+	 * <p>节点索引：最近节点索引</p>
+	 * <p>节点标记：等于零时表示完全匹配</p>
+	 * 
+	 * @param nodeId 节点ID
+	 * 
+	 * @return 最近节点信息：节点索引、节点标记
+	 */
+	private int[] selectNode(byte[] nodeId) {
+		int index = 0;
+		int signum = 1;
+		NodeSession nodeSession;
+		for (int jndex = 0; jndex < this.nodes.size(); jndex++) {
+			nodeSession = this.nodes.get(jndex);
+			signum = ArrayUtils.compareUnsigned(nodeId, nodeSession.getId());
+			if(signum > 0) {
+				index = jndex + 1;
+			} else {
+				break;
+			}
+		}
+		return new int[] {index, signum};
 	}
 	
 }

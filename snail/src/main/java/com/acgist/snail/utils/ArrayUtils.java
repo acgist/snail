@@ -24,13 +24,36 @@ public final class ArrayUtils {
 	public static final int NONE_INDEX = -1;
 	
 	/**
+	 * <p>异或运算</p>
+	 * 
+	 * @param sources 原始数据
+	 * @param targets 目标数据
+	 * 
+	 * @return 异或结果
+	 */
+	public static final byte[] xor(byte[] sources, byte[] targets) {
+		Objects.requireNonNull(sources, "异或运算原始参数错误");
+		Objects.requireNonNull(targets, "异或运算目标参数错误");
+		final int length = sources.length;
+		if (length != targets.length) {
+			throw new IllegalArgumentException("异或运算参数错误（长度）");
+		} else {
+			final byte[] result = new byte[length];
+			for (int index = 0; index < length; index++) {
+				result[index] = (byte) (sources[index] ^ targets[index]);
+			}
+			return result;
+		}
+	}
+	
+	/**
 	 * <p>判断数组是否相等</p>
 	 * <p>相等：数组元素全部一致</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return true-相等；false-不等；
+	 * @return 是否相等
 	 */
 	public static final boolean equals(byte[] sources, byte[] targets) {
 		if(sources == targets) {
@@ -52,77 +75,28 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>比较数组大小（无符号比较）</p>
+	 * <p>数组大小比较（无符号）</p>
 	 * <p>长度不同时：长度长的数组大</p>
-	 * <p>长度相同时：高位字符（索引小）大的数组大</p>
+	 * <p>长度相同时：高位大的数组大</p>
 	 * 
 	 * @param sources 原始数据
 	 * @param targets 比较数据
 	 * 
-	 * @return 1-sources大；-1-targets大；0-相等；
+	 * @return 整数、零、负数代表原始数据大于、等于、小于比较数据
 	 */
 	public static final int compareUnsigned(byte[] sources, byte[] targets) {
-		Objects.requireNonNull(sources, "数组比较参数错误");
-		Objects.requireNonNull(targets, "数组比较参数错误");
+		Objects.requireNonNull(sources, "数组大小比较原始参数错误");
+		Objects.requireNonNull(targets, "数组大小比较比较参数错误");
 		final int length = sources.length;
-		if(length != targets.length) {
+		if (length != targets.length) {
 			return length > targets.length ? 1 : -1;
 		} else {
 			for (int index = 0; index < length; index++) {
-				if(sources[index] != targets[index]) {
-					return ((char) (sources[index] & 0xFF)) > ((char) (targets[index] & 0xFF)) ? 1 : -1;
+				if (sources[index] != targets[index]) {
+					return ((char) sources[index]) - ((char) targets[index]);
 				}
 			}
 			return 0;
-		}
-	}
-	
-	/**
-	 * <p>异或运算</p>
-	 * 
-	 * @param sources 原始数据
-	 * @param targets 比较数据
-	 * 
-	 * @return 结果
-	 */
-	public static final byte[] xor(byte[] sources, byte[] targets) {
-		Objects.requireNonNull(sources, "异或运算参数错误");
-		Objects.requireNonNull(targets, "异或运算参数错误");
-		if (sources.length != targets.length) {
-			throw new IllegalArgumentException("异或运算参数错误（长度）");
-		} else {
-			final int length = sources.length;
-			final byte[] result = new byte[length];
-			for (int index = 0; index < length; index++) {
-				result[index] = (byte) (sources[index] ^ targets[index]);
-			}
-			return result;
-		}
-	}
-	
-	/**
-	 * <p>差异索引</p>
-	 * <p>差异索引越小：差距越大</p>
-	 * <p>差异索引越大：差距越小</p>
-	 * 
-	 * @param sources 原始数据
-	 * @param targets 比较数据
-	 * 
-	 * @return 差异索引
-	 */
-	public static final int diffIndex(byte[] sources, byte[] targets) {
-		Objects.requireNonNull(sources, "差异索引参数错误");
-		Objects.requireNonNull(targets, "差异索引参数错误");
-		if (sources.length != targets.length) {
-			throw new IllegalArgumentException("差异索引参数错误（长度）");
-		} else {
-			final int length = sources.length;
-			for (int index = 0; index < length; index++) {
-				if(sources[index] != targets[index]) {
-					return index;
-				}
-			}
-			return length;
 		}
 	}
 	

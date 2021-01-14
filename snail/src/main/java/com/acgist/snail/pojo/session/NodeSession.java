@@ -69,6 +69,25 @@ public final class NodeSession implements Comparable<NodeSession> {
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
 		return new NodeSession(id, host, port);
 	}
+
+	/**
+	 * <p>判断节点是否可以使用</p>
+	 * <p>如果节点没有使用标记验证</p>
+	 * 
+	 * @return 是否可以使用
+	 */
+	public boolean useableAndMark() {
+		if(this.getStatus() == NodeSession.Status.UNUSE) {
+			this.setStatus(NodeSession.Status.VERIFY);
+			return true;
+		} else if(this.getStatus() == NodeSession.Status.VERIFY) {
+			return false;
+		} else if(this.getStatus() == NodeSession.Status.AVAILABLE) {
+			return true;
+		} else {
+			return true;
+		}
+	}
 	
 	/**
 	 * <p>判断节点是否可以保存</p>
@@ -126,14 +145,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public int compareTo(NodeSession target) {
-		final byte[] sourceId = this.id;
-		final byte[] targetId = target.id;
-		for (int index = 0; index < sourceId.length; index++) {
-			if(sourceId[index] != targetId[index]) {
-				return sourceId[index] - targetId[index];
-			}
-		}
-		return 0;
+		return ArrayUtils.compareUnsigned(this.id, target.id);
 	}
 	
 	@Override

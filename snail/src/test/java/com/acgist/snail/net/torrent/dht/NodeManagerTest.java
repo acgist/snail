@@ -1,70 +1,93 @@
 package com.acgist.snail.net.torrent.dht;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
 public class NodeManagerTest extends Performance {
 
 	@Test
-	public void testFind() {
-		final var list = NodeManager.getInstance().findNode("1".repeat(20));
-		this.log(list);
-		assertNotNull(list);
-	}
-	
-	@Test
-	public void testCompare() {
-		final byte[] hex1 = ArrayUtils.xor(StringUtils.unhex("c15419ae6b3bdfd8e983062b0650ad114ce41859"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
-		final byte[] hex2 = ArrayUtils.xor(StringUtils.unhex("c1540515408feb76af06c6c588b1b345b5173c42"), StringUtils.unhex("c15417e6aeab33732a59085d826edd29978f9afa"));
-		this.log(StringUtils.hex(hex1));
-		this.log(StringUtils.hex(hex2));
-		this.log(ArrayUtils.compareUnsigned(hex1, hex2));
-		this.log(ArrayUtils.compareUnsigned(hex1, hex1));
-		this.log(ArrayUtils.compareUnsigned(hex2, hex1));
+	public void testNewNodeSession() {
+		LoggerConfig.off();
+//		this.costed(1000, () -> {
+//			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+//		});
+//		this.costed(1000, () -> {
+//			NodeManager.getInstance().sortNodes();
+//		});
+		this.costed(10000, () -> {
+			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+		});
+		var oldNodes = NodeManager.getInstance().nodes();
+		var newNodes = NodeManager.getInstance().nodes();
+		this.log(oldNodes.size());
+		this.log(newNodes.size());
+		Collections.sort(newNodes);
+		assertTrue(oldNodes != newNodes);
+		assertEquals(oldNodes.size(), newNodes.size());
+//		oldNodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+//		newNodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+		for (int index = 0; index < oldNodes.size(); index++) {
+			assertEquals(oldNodes.get(index), newNodes.get(index));
+		}
 	}
 
 	@Test
 	public void testFindNode() {
-		final List<NodeSession> nodes = new ArrayList<>();
-		for (int index = 100000; index < 110000; index++) {
-			nodes.add(NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0));
-		}
-		String id = "0000000000000000000000000000000000613709"; // 查找ID
-		nodes.add(NodeManager.getInstance().newNodeSession(StringUtils.unhex(id), "0", 0));
-		NodeManager.getInstance().sortNodes();
-		this.log("查找ID：{}", id);
-		this.cost();
-		var list = NodeManager.getInstance().findNode(id);
-		this.costed();
-		list.forEach(node -> {
-			this.log(StringUtils.hex(node.getId()));
+		LoggerConfig.off();
+		this.costed(10000, () -> {
+			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
-		id = this.buildId();
-		this.log("查找ID：{}", id);
-		this.cost();
-		list = NodeManager.getInstance().findNode(id);
-		this.costed();
-		list.forEach(node -> {
-			this.log(StringUtils.hex(node.getId()));
+		long size = NodeManager.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		this.log("可用节点：{}", size);
+		final var target = buildId();
+//		final var target = StringUtils.hex(NodeManager.getInstance().nodes().get(0).getId());
+		final var nodes = NodeManager.getInstance().findNode(target);
+		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+		assertEquals(8, nodes.size());
+		this.log(nodes.size());
+		this.log(target);
+		this.costed(10000, () -> NodeManager.getInstance().findNode(target));
+//		this.costed(10000, 10, () -> NodeManager.getInstance().findNode(target));
+		size = NodeManager.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		this.log("可用节点：{}", size);
+	}
+
+	@Test
+	public void testMinFindNode() {
+		LoggerConfig.off();
+		this.costed(2, () -> {
+			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
+		final var target = buildId();
+		final var nodes = NodeManager.getInstance().findNode(target);
+		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+		assertTrue(8 > nodes.size());
+		this.log(nodes.size());
+		this.log(target);
 	}
 
 	private String buildId() {
-		long value;
+//		long value;
+//		final Random random = new Random();
+//		while((value = random.nextLong()) < 0);
+//		return String.format("%040d", value);
+		final byte[] bytes = new byte[20];
 		final Random random = new Random();
-		while((value = random.nextInt()) < 0) {
+		for (int index = 0; index < 20; index++) {
+			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
 		}
-		return String.format("%040d", value);
+		return StringUtils.hex(bytes);
 	}
 	
 }
