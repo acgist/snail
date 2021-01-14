@@ -30,8 +30,6 @@ import com.acgist.snail.utils.PeerUtils;
  * <p>Peer Exchange (PEX)</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0011.html</p>
  * 
- * TODO：IPv6
- * 
  * @author acgist
  */
 public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandler {
@@ -82,13 +80,13 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * <p>创建PEX消息代理</p>
+	 * <p>创建PEX扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer
 	 * @param torrentSession BT任务信息
 	 * @param extensionMessageHandler 扩展消息代理
 	 * 
-	 * @return PEX消息代理
+	 * @return PEX扩展协议代理
 	 */
 	public static final PeerExchangeMessageHandler newInstance(PeerSession peerSession, TorrentSession torrentSession, ExtensionMessageHandler extensionMessageHandler) {
 		return new PeerExchangeMessageHandler(peerSession, torrentSession, extensionMessageHandler);
@@ -123,7 +121,9 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("处理pex消息错误（格式）：{}", decoder.oddString());
+			if(LOGGER.isWarnEnabled()) {
+				LOGGER.warn("处理pex消息错误（格式）：{}", decoder.oddString());
+			}
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);
@@ -158,7 +158,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {
-			return null;
+			return new byte[0];
 		}
 		final int length = SystemConfig.IP_PORT_LENGTH * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
