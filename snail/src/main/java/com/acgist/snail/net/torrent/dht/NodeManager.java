@@ -207,7 +207,8 @@ public final class NodeManager {
 					leftNode = this.select(index - leftPos, nodeSize);
 					if(leftNode.useableAndMark()) {
 						size++;
-						closeNodes.add(leftNode);
+						// 前面添加防止乱序
+						closeNodes.add(0, leftNode);
 					}
 					rightNode = this.select(index + rightPos, nodeSize);
 					if(rightNode.useableAndMark()) {
@@ -286,6 +287,7 @@ public final class NodeManager {
 			nodeSession = this.nodes.get(jndex);
 			signum = ArrayUtils.compareUnsigned(nodeId, nodeSession.getId());
 			if(signum > 0) {
+				// 尾部添加
 				index = jndex + 1;
 			} else {
 				break;
