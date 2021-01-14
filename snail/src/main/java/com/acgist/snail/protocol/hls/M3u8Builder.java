@@ -64,6 +64,14 @@ public final class M3u8Builder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(M3u8Builder.class);
 
 	/**
+	 * <p>IV长度：{@value}</p>
+	 */
+	private static final int IV_LEHGTH = 32;
+	/**
+	 * <p>IV长度（16进制开头）：{@value}</p>
+	 */
+	private static final int IV_PREFIX_LENGTH = 34;
+	/**
 	 * <p>类型标签</p>
 	 */
 	private static final String LABEL_EXTM3U = "EXTM3U";
@@ -337,20 +345,20 @@ public final class M3u8Builder {
 			}
 			final String sequence = optional.get().getValue();
 			final int length = sequence.length();
-			if(length > 32) {
+			if(length > IV_LEHGTH) {
 				LOGGER.error("HLS数据序列号错误：{}-{}", this.source, sequence);
 				return null;
 			} else {
 				// 填充：0
-				final String padding = "0".repeat(32 - length);
+				final String padding = "0".repeat(IV_LEHGTH - length);
 				return StringUtils.unhex(padding + sequence);
 			}
 		} else {
-			if(iv.length() == 32) {
+			if(iv.length() == IV_LEHGTH) {
 				return StringUtils.unhex(iv);
-			} else if(iv.length() == 34) {
+			} else if(iv.length() == IV_PREFIX_LENGTH) {
 				// 0x....
-				return StringUtils.unhex(iv.substring(2));
+				return StringUtils.unhex(iv.substring(IV_PREFIX_LENGTH - IV_LEHGTH));
 			} else {
 				LOGGER.error("HLS数据IV错误：{}-{}", this.source, iv);
 				return null;

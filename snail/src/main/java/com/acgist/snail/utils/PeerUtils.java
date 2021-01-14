@@ -27,6 +27,10 @@ public final class PeerUtils {
 	 * <p>allowedFast快速允许Piece长度（k）：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_K = 10;
+	/**
+	 * <p>allowedFast快速允许循环长度：{@value}</p>
+	 */
+	private static final int ALLOWED_FAST_LENGTH = 5;
 
 	/**
 	 * @param bytes 数据
@@ -80,9 +84,9 @@ public final class PeerUtils {
 		buffer.put(infoHash);
 		int size = 0;
 		final int[] seqs = new int[ALLOWED_FAST_K];
-		while(size < ALLOWED_FAST_K) {
+		while(size < ALLOWED_FAST_K && size < pieceSize) {
 			buffer = ByteBuffer.wrap(StringUtils.sha1(buffer.array()));
-			for (int index = 0; index < 5 && size < ALLOWED_FAST_K; index++) {
+			for (int index = 0; index < ALLOWED_FAST_LENGTH && size < ALLOWED_FAST_K; index++) {
 				final int seq = (int) (Integer.toUnsignedLong(buffer.getInt()) % pieceSize);
 				if(ArrayUtils.indexOf(seqs, 0, size, seq) == ArrayUtils.NONE_INDEX) {
 					seqs[size++] = seq;

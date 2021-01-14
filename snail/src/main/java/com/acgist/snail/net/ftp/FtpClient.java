@@ -23,6 +23,14 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
 	
 	/**
+	 * <p>UNIX文件信息长度</p>
+	 */
+	private static final int UNIX_LENGTH = 9;
+	/**
+	 * <p>MS-DOS文件信息长度</p>
+	 */
+	private static final int MS_DOS_LENGTH = 4;
+	/**
 	 * <p>FTP默认端口：{@value}</p>
 	 */
 	private static final int DEFAULT_PORT = 21;
@@ -227,11 +235,9 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
 				.toArray(String[]::new);
-			if(datas.length == 4) {
-				// MS-DOS
+			if(datas.length == MS_DOS_LENGTH) {
 				return Long.valueOf(datas[2]);
-			} else if(datas.length == 9) {
-				// UNIX
+			} else if(datas.length == UNIX_LENGTH) {
 				return Long.valueOf(datas[4]);
 			} else {
 				throw new NetException("读取FTP文件大小失败");

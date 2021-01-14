@@ -88,7 +88,11 @@ public class PeerClientTest extends Performance {
 
 	@Test
 	public void testAllowedFast() {
-		final int[] values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+		int[] values = PeerUtils.allowedFast(1, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+		for (int value : values) {
+			this.log("Piece索引：{}", value);
+		}
+		values = PeerUtils.allowedFast(1313, "80.4.4.200", StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 		for (int value : values) {
 			this.log("Piece索引：{}", value);
 		}
