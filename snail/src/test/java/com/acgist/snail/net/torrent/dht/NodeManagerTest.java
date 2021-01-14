@@ -3,6 +3,7 @@ package com.acgist.snail.net.torrent.dht;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
@@ -52,8 +53,17 @@ public class NodeManagerTest extends Performance {
 		this.log("可用节点：{}", size);
 		final var target = buildId();
 //		final var target = StringUtils.hex(NodeManager.getInstance().nodes().get(0).getId());
+//		NodeManager.getInstance().nodes().forEach(node -> this.log(StringUtils.hex(node.getId())));
+//		this.log("----");
 		final var nodes = NodeManager.getInstance().findNode(target);
 		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+//		this.log("----");
+		final var newNodes = new ArrayList<>(nodes);
+		Collections.sort(newNodes);
+//		newNodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
+		for (int index = 0; index < nodes.size(); index++) {
+			assertEquals(nodes.get(index), newNodes.get(index));
+		}
 		assertEquals(8, nodes.size());
 		this.log(nodes.size());
 		this.log(target);
