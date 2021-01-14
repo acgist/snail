@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
 import com.acgist.snail.pojo.session.PeerSession;
 

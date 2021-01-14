@@ -10,6 +10,7 @@ import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.config.PeerConfig.HolepunchErrorCode;
 import com.acgist.snail.config.PeerConfig.HolepunchType;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
