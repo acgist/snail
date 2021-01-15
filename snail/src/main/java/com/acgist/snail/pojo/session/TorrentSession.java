@@ -300,7 +300,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>加载文件流</p>
+	 * <p>加载文件流组</p>
 	 */
 	private void loadTorrentStreamGroup() {
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
@@ -891,7 +891,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * @return 被选中Piece位图
+	 * @return 选择下载Piece位图
 	 * 
 	 * @see TorrentStreamGroup#selectPieces()
 	 */

@@ -256,10 +256,10 @@ public final class StatisticsController extends Controller implements Initializa
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
 		if(defaultValue == null) {
-			// 没有选中任务：默认选中第一个任务
+			// 没有选中任务：默认选择第一个任务
 			this.selectInfoHashs.getSelectionModel().select(0);
 		} else {
-			// 已经选中任务：选中之前选中的任务
+			// 已经选中任务
 			final int index = obs.indexOf(defaultValue);
 			this.selectInfoHashs.getSelectionModel().select(index);
 		}
