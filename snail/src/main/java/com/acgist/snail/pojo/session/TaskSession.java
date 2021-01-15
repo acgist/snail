@@ -76,10 +76,11 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
-	public void verify() {
-		if(this.downloader != null) {
-			this.downloader.verify();
+	public boolean verify() {
+		if(this.downloader == null) {
+			return true;
 		}
+		return this.downloader.verify();
 	}
 	
 	@Override

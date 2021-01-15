@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -896,10 +897,17 @@ public final class TorrentSession {
 	}
 
 	/**
+	 * @return 是否校验成功
+	 * 
 	 * @see TorrentStreamGroup#verify()
 	 */
-	public void verify() {
-		this.torrentStreamGroup.verify();
+	public boolean verify() {
+		try {
+			return this.torrentStreamGroup.verify();
+		} catch (IOException e) {
+			LOGGER.error("文件校验异常", e);
+		}
+		return false;
 	}
 	
 	/**

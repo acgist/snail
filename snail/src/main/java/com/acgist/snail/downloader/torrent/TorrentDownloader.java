@@ -69,13 +69,19 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 	
 	@Override
-	public void verify() {
+	public boolean verify() {
 		if(this.torrentSession == null) {
 			LOGGER.debug("BT任务信息没有加载跳过文件校验");
+			return true;
+		}
+		final boolean verify = this.torrentSession.verify();
+		if(verify) {
+			LOGGER.debug("BT任务文件校验成功");
 		} else {
-			this.torrentSession.verify();
+			LOGGER.debug("BT任务文件校验失败：更新位图");
 			this.updatePayload(); // 保存位图
 		}
+		return verify;
 	}
 	
 	@Override
