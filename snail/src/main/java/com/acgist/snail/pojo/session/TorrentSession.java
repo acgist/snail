@@ -31,7 +31,6 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.TorrentBuilder;
@@ -485,8 +484,7 @@ public final class TorrentSession {
 	 * @return 选择下载文件列表
 	 */
 	private List<TorrentFile> buildSelectedFiles() {
-		final TorrentInfo torrentInfo = this.torrent.getInfo();
-		final List<TorrentFile> torrentFiles = torrentInfo.files();
+		final List<TorrentFile> torrentFiles = this.torrent.getInfo().files();
 		final List<String> selectedFiles = this.taskSession.multifileSelected();
 		for (TorrentFile torrentFile : torrentFiles) {
 			torrentFile.selected(selectedFiles.contains(torrentFile.path()));
@@ -684,6 +682,15 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * <p>文件流组</p>
+	 * 
+	 * @return 文件流组
+	 */
+	public TorrentStreamGroup torrentStreamGroup() {
+		return this.torrentStreamGroup;
+	}
+	
+	/**
 	 * <p>判断是否是私有种子</p>
 	 * 
 	 * @return 是否是私有种子
@@ -778,8 +785,7 @@ public final class TorrentSession {
 	public int reload() {
 		return this.torrentStreamGroup.reload(
 			this.taskSession.downloadFolder().getAbsolutePath(),
-			this.buildSelectedFiles(),
-			this
+			this.buildSelectedFiles()
 		);
 	}
 	

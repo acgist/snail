@@ -166,7 +166,7 @@ public final class TorrentStream {
 	 * @param torrentStreamGroup 文件流组
 	 * @param complete 是否完成
 	 * @param selectPieces 被选中的Piece
-	 * @param sizeCount 异步文件加载计数器
+	 * @param loadFileCountDownLatch 异步文件加载计数器
 	 * 
 	 * @return 文件流
 	 * 
@@ -175,10 +175,10 @@ public final class TorrentStream {
 	public static final TorrentStream newInstance(
 		long pieceLength, String path, long size, long pos,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup,
-		boolean complete, BitSet selectPieces, CountDownLatch sizeCount
+		boolean complete, BitSet selectPieces, CountDownLatch loadFileCountDownLatch
 	) throws DownloadException {
 		final var stream = new TorrentStream(pieceLength, path, size, pos, fileBufferSize, torrentStreamGroup);
-		stream.buildFileAsyn(complete, sizeCount); // 异步加载文件
+		stream.buildFileAsyn(complete, loadFileCountDownLatch); // 异步加载文件
 		stream.buildSelectPieces(selectPieces); // 加载被选中的Piece
 		stream.install(); // 选中下载
 		// TODO：{}，使用多行文本
@@ -270,13 +270,17 @@ public final class TorrentStream {
 	 * @return 下载Piece
 	 */
 	public TorrentPiece pick(int piecePos, final BitSet peerPieces, final BitSet suggestPieces) {
-		if(peerPieces.isEmpty()) { // Peer没有已下载Piece数据
+		if(peerPieces.isEmpty()) {
+			// Peer没有已下载Piece数据
 			return null;
 		}
 		if(piecePos > this.fileEndPieceIndex) {
 			return null;
 		}
 		synchronized (this) {
+			if(this.complete()) {
+				return null;
+			}
 			final BitSet pickPieces = new BitSet(); // 挑选的Piece
 			if(!suggestPieces.isEmpty()) {
 				// 优先使用Peer推荐Piece位图
@@ -635,18 +639,18 @@ public final class TorrentStream {
 	 * <p>异步加载：其他所有情况</p>
 	 * 
 	 * @param complete 任务是否完成
-	 * @param sizeCount 文件加载计数器
+	 * @param loadFileCountDownLatch 异步文件加载计数器
 	 */
-	private void buildFileAsyn(boolean complete, CountDownLatch sizeCount) {
+	private void buildFileAsyn(boolean complete, CountDownLatch loadFileCountDownLatch) {
 		if(complete) { // 同步：任务完成
-			this.buildFile(complete, sizeCount);
+			this.buildFile(complete, loadFileCountDownLatch);
 		} else if(this.fileSize < ASYN_SIZE) { // 同步：小文件
-			this.buildFile(complete, sizeCount);
+			this.buildFile(complete, loadFileCountDownLatch);
 		} else { // 异步
 			final var lock = this;
 			SystemThreadContext.submit(() -> {
 				synchronized (lock) {
-					this.buildFile(complete, sizeCount);
+					this.buildFile(complete, loadFileCountDownLatch);
 				}
 			});
 		}
@@ -656,16 +660,16 @@ public final class TorrentStream {
 	 * <p>加载文件</p>
 	 * 
 	 * @param complete 任务是否完成
-	 * @param sizeCount 文件加载计算器
+	 * @param loadFileCountDownLatch 异步文件加载计数器
 	 */
-	private void buildFile(boolean complete, CountDownLatch sizeCount) {
+	private void buildFile(boolean complete, CountDownLatch loadFileCountDownLatch) {
 		try {
 			this.buildFilePieces(complete);
 			this.buildFileDownloadSize();
 		} catch (IOException e) {
 			LOGGER.error("文件流异步加载异常", e);
 		} finally {
-			sizeCount.countDown();
+			loadFileCountDownLatch.countDown();
 		}
 	}
 	

@@ -952,7 +952,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("发送piece消息：任务不可上传");
 			return;
 		}
-		if(bytes == null) {
+		if(ArrayUtils.isEmpty(bytes)) {
 			LOGGER.debug("发送piece消息：数据为空");
 			return;
 		}

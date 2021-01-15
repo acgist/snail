@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -8,10 +10,12 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
@@ -22,27 +26,91 @@ import com.acgist.snail.utils.ThreadUtils;
 public class TorrentStreamGroupTest extends Performance {
 
 	@Test
-	public void testPick() throws DownloadException {
-//		LoggerConfig.off();
-		final var path = "E:/snail/12345.torrent";
+	public void testReload() throws DownloadException {
+		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentManager.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
-		entity.setFile("E:/tmp/12345/");
+		entity.setFile("E:/tmp/pick/");
 		entity.setType(Type.TORRENT);
 		entity.setStatus(Status.COMPLETE);
-		session.upload(TaskSession.newInstance(entity));
 		final var files = session.torrent().getInfo().files();
-		// 选择下载文件
+		final List<String> list = new ArrayList<>();
+		// 加载MKV文件
 		files.forEach(file -> {
-			file.selected(true);
+			if(file.path().endsWith("mkv")) {
+				file.selected(true);
+				list.add(file.path());
+			}
 		});
-		final var group = TorrentStreamGroup.newInstance("E:/tmp/12345/", files, session);
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
+		entity.setDescription(wrapper.serialize());
+		session.upload(TaskSession.newInstance(entity));
+		final var group = session.torrentStreamGroup();
+		ThreadUtils.sleep(1000);
+		this.log("------------------------");
+		// 加载空文件
+		group.reload(entity.getFile(), files);
+		ThreadUtils.sleep(1000);
+		this.log("------------------------");
+		// 加载PNG文件
+		files.forEach(file -> {
+			if(file.path().endsWith("png")) {
+				file.selected(true);
+			}
+		});
+		group.reload(entity.getFile(), files);
+		ThreadUtils.sleep(1000);
+		this.log("------------------------");
+		// 卸载PNG文件
+		files.forEach(file -> {
+			if(file.path().endsWith("png")) {
+				file.selected(false);
+			}
+		});
+		group.reload(entity.getFile(), files);
+		assertNotNull(group);
+	}
+	
+	@Test
+	public void testPick() throws DownloadException {
+		LoggerConfig.off();
+		final var path = "E:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent";
+		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var entity = new TaskEntity();
+		entity.setFile("E:/tmp/pick/");
+		entity.setType(Type.TORRENT);
+		entity.setStatus(Status.COMPLETE);
+		final var files = session.torrent().getInfo().files();
+		final List<String> list = new ArrayList<>();
+		// 加载MKV文件
+		files.forEach(file -> {
+			if(file.path().endsWith("mkv")) {
+				file.selected(true);
+				list.add(file.path());
+			}
+		});
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
+		entity.setDescription(wrapper.serialize());
+		session.upload(TaskSession.newInstance(entity));
+		final var group = session.torrentStreamGroup();
 		final BitSet peerPieces = new BitSet();
 		peerPieces.set(0, session.torrent().getInfo().pieceSize(), true);
 		final BitSet suggestPieces = new BitSet();
-		TorrentPiece index;
-		group.piecePos(620);
+//		this.costed(100000, 10, () -> {
+//			group.pick(peerPieces, suggestPieces);
+//		});
+//		group.piecePos(620);
+//		this.costed(10, 10, () -> {
+//			TorrentPiece index;
+//			while((index = group.pick(peerPieces, suggestPieces)) != null) {
+//				this.log(index.getIndex());
+//				group.done(index.getIndex());
+//				this.log(session.torrent().getInfo().pieceSize());
+////				group.write(index);
+//			}
+//		});
 		this.cost();
+		TorrentPiece index;
 		while((index = group.pick(peerPieces, suggestPieces)) != null) {
 			this.log(index.getIndex());
 			group.done(index.getIndex());
@@ -60,13 +128,19 @@ public class TorrentStreamGroupTest extends Performance {
 		entity.setFile("e:/tmp/verify/");
 		entity.setType(Type.TORRENT);
 		entity.setStatus(Status.COMPLETE);
-		session.upload(TaskSession.newInstance(entity));
 		final var files = session.torrent().getInfo().files();
-		// 选择下载文件
+		final List<String> list = new ArrayList<>();
+		// 加载MKV文件
 		files.forEach(file -> {
-			file.selected(true);
+			if(file.path().endsWith("mkv")) {
+				file.selected(true);
+				list.add(file.path());
+			}
 		});
-		final var group = TorrentStreamGroup.newInstance("e:/tmp/verify", files, session);
+		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
+		entity.setDescription(wrapper.serialize());
+		session.upload(TaskSession.newInstance(entity));
+		final var group = session.torrentStreamGroup();
 		ThreadUtils.sleep(10000); // 等待任务准备完成
 		final var downloadPieces = group.pieces();
 		int index = downloadPieces.nextSetBit(0);
