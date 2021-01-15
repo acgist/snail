@@ -30,7 +30,7 @@ public final class PeerUtils {
 	/**
 	 * <p>allowedFast快速允许循环长度：{@value}</p>
 	 */
-	private static final int ALLOWED_FAST_LENGTH = 5;
+	private static final int ALLOWED_FAST_LOOP_LENGTH = 5;
 
 	/**
 	 * @param bytes 数据
@@ -83,10 +83,12 @@ public final class PeerUtils {
 		buffer.putInt(ALLOWED_FAST_MASK & ipValue);
 		buffer.put(infoHash);
 		int size = 0;
-		final int[] seqs = new int[ALLOWED_FAST_K];
-		while(size < ALLOWED_FAST_K && size < pieceSize) {
+		// 选择数据长度
+		final int length = Math.min(ALLOWED_FAST_K, pieceSize);
+		final int[] seqs = new int[length];
+		while(size < length) {
 			buffer = ByteBuffer.wrap(StringUtils.sha1(buffer.array()));
-			for (int index = 0; index < ALLOWED_FAST_LENGTH && size < ALLOWED_FAST_K; index++) {
+			for (int index = 0; index < ALLOWED_FAST_LOOP_LENGTH && size < length; index++) {
 				final int seq = (int) (Integer.toUnsignedLong(buffer.getInt()) % pieceSize);
 				if(ArrayUtils.indexOf(seqs, 0, size, seq) == ArrayUtils.NONE_INDEX) {
 					seqs[size++] = seq;
