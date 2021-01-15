@@ -758,8 +758,10 @@ public final class TorrentStream {
 		int downloadPieceSize = this.pieces.cardinality();
 		if(this.fileInOnePiece()) {
 			// 第一块和最后一块大小一样
-			size += this.firstPieceSize();
-			downloadPieceSize--;
+			if(this.hasPiece(this.fileBeginPieceIndex)) {
+				size += this.firstPieceSize();
+				downloadPieceSize--;
+			}
 		} else {
 			if(this.hasPiece(this.fileBeginPieceIndex)) {
 				// 计算第一块Piece大小
