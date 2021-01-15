@@ -173,7 +173,8 @@ public final class TorrentStream {
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup, boolean complete, BitSet selectPieces
 	) throws DownloadException {
 		final var stream = new TorrentStream(pieceLength, path, size, pos, fileBufferSize, torrentStreamGroup);
-		stream.buildFile(complete); // 加载文件
+		stream.buildPieces(complete);
+		stream.buildFileDownloadSize();
 		stream.buildSelectPieces(selectPieces); // 加载选择下载Piece
 		stream.install(); // 选择下载
 		// TODO：{}，使用多行文本
@@ -568,17 +569,57 @@ public final class TorrentStream {
 	}
 
 	/**
+	 * <p>校验Piece数据</p>
+	 * <p>第一块和最后一块Piece数据不验证Hash：直接验证是有含有数据</p>
+	 * 
+	 * @param index Piece索引
+	 * @param digest SHA-1算法工具
+	 * 
+	 * @return 是否校验成功
+	 */
+	private boolean verify(int index, MessageDigest digest) {
+		int pos = 0;
+		int length = 0;
+		boolean verify = true; // 是否校验
+		if(this.fileInOnePiece()) {
+			pos = this.firstPiecePos();
+			length = this.firstPieceSize();
+			verify = false;
+		} else if(index == this.fileBeginPieceIndex) {
+			pos = this.firstPiecePos();
+			length = this.firstPieceSize();
+			verify = false;
+		} else if(index == this.fileEndPieceIndex) {
+			pos = 0;
+			length = this.lastPieceSize();
+			verify = false;
+		} else {
+			pos = 0;
+			length = (int) this.pieceLength;
+			verify = true;
+		}
+		final byte[] bytes = this.read(index, length, pos, true);
+		if(bytes == null) {
+			// 没有数据
+			return false;
+		} else if(verify) {
+			// 校验Hash
+			final byte[] hash = digest.digest(bytes);
+			final byte[] verifyHash = this.torrentStreamGroup.pieceHash(index);
+			return ArrayUtils.equals(hash, verifyHash);
+		} else {
+			// 不校验Hash：验证是否有数据
+			return this.hasData(bytes);
+		}
+	}
+	
+	/**
 	 * <p>文件强制校验</p>
 	 * <p>校验文件重新设置已下载文件信息</p>
 	 * 
 	 * @throws IOException IO异常
 	 */
 	public void verify() throws IOException {
-		int pos = 0;
-		int length = 0;
-		byte[] hash = null;
-		byte[] bytes = null;
-		boolean verify = true; // 是否校验
 		final boolean empty = this.fileStream.length() == 0; // 文件没有数据
 		synchronized (this) {
 			final MessageDigest digest = DigestUtils.sha1();
@@ -587,41 +628,10 @@ public final class TorrentStream {
 					this.undone(index);
 					continue;
 				}
-				if(this.fileInOnePiece()) {
-					verify = false;
-					pos = this.firstPiecePos();
-					length = this.firstPieceSize();
+				if(this.verify(index, digest)) {
+					this.done(index);
 				} else {
-					if(index == this.fileBeginPieceIndex) {
-						verify = false;
-						pos = this.firstPiecePos();
-						length = this.firstPieceSize();
-					} else if(index == this.fileEndPieceIndex) {
-						verify = false;
-						pos = 0;
-						length = this.lastPieceSize();
-					} else {
-						verify = true;
-						pos = 0;
-						length = (int) this.pieceLength;
-					}
-				}
-				bytes = this.read(index, length, pos, true); // 读取数据
-				if(verify) {
-					// 校验Hash
-					hash = digest.digest(bytes);
-					if(ArrayUtils.equals(hash, this.torrentStreamGroup.pieceHash(index))) {
-						this.done(index);
-					} else {
-						this.undone(index);
-					}
-				} else {
-					// 不校验Hash：验证是否有数据
-					if(this.hasData(bytes)) {
-						this.done(index);
-					} else {
-						this.undone(index);
-					}
+					this.undone(index);
 				}
 			}
 			this.buildFileDownloadSize();
@@ -702,28 +712,27 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>加载文件</p>
+	 * <p>加载已下载Piece位图</p>
 	 * 
 	 * @param complete 任务是否完成
 	 */
-	private void buildFile(boolean complete) {
-		this.buildFilePieces(complete);
-		this.buildFileDownloadSize();
-	}
-	
-	/**
-	 * <p>加载文件Piece位图</p>
-	 * <p>任务没有完成时已下载的Piece需要校验Hash（第一块和最后一块不校验）</p>
-	 * 
-	 * @param complete 任务是否完成
-	 */
-	private void buildFilePieces(boolean complete) {
+	private void buildPieces(boolean complete) {
+		final MessageDigest digest = DigestUtils.sha1();
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
 			if(complete) {
 				// 任务完成
 				this.done(index);
+			} else if(index == this.fileBeginPieceIndex) {
+				// 第一块文件
+				if(this.verify(index, digest)) {
+					this.done(index);
+				}
+			} else if(index == this.fileEndPieceIndex) {
+				// 最后一块文件
+				if(this.verify(index, digest)) {
+					this.done(index);
+				}
 			} else if(this.torrentStreamGroup.hasPiece(index)) {
-				// TODO：首尾文件必须加载数据校验
 				// 已经下载
 				this.done(index);
 			}

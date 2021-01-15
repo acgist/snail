@@ -177,11 +177,11 @@ public final class TorrentPiece {
 		if(this.position == this.length) {
 			return 0;
 		}
-		final int size = this.length - this.position;
+		final int remaining = this.length - this.position;
 		// 剩余大小不满足一个Slice
-		if(SLICE_LENGTH > size) {
+		if(SLICE_LENGTH > remaining) {
 			this.position = this.length;
-			return size;
+			return remaining;
 		} else {
 			this.position += SLICE_LENGTH;
 			return SLICE_LENGTH;
