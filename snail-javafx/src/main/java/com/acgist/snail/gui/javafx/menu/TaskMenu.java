@@ -190,8 +190,11 @@ public final class TaskMenu extends Menu {
 	private EventHandler<ActionEvent> verifyEvent = event -> {
 		SystemThreadContext.submit(() -> {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
-				session.verify();
-				Platform.runLater(() -> Alerts.info("校验成功", session.getName()));
+				if(session.verify()) {
+					Platform.runLater(() -> Alerts.info("校验成功", session.getName()));
+				} else {
+					Platform.runLater(() -> Alerts.warn("校验失败", "失败文件已经开始修复"));
+				}
 			});
 		});
 	};

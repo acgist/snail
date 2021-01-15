@@ -116,8 +116,10 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 
 	/**
 	 * <p>校验下载文件</p>
+	 * 
+	 * @return 校验结果
 	 */
-	void verify();
+	boolean verify();
 	
 	/**
 	 * <p>重置状态</p>

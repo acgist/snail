@@ -614,23 +614,29 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>文件强制校验</p>
+	 * <p>校验文件</p>
+	 * <p>使用种子Hash校验文件</p>
 	 * <p>校验文件重新设置已下载文件信息</p>
+	 * 
+	 * @return 校验结果
 	 * 
 	 * @throws IOException IO异常
 	 */
-	public void verify() throws IOException {
+	public boolean verify() throws IOException {
+		int verifyFailCount = 0; // 失败计数
 		final boolean empty = this.fileStream.length() == 0; // 文件没有数据
 		synchronized (this) {
 			final MessageDigest digest = DigestUtils.sha1();
 			for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
 				if(empty) {
+					verifyFailCount++;
 					this.undone(index);
 					continue;
 				}
 				if(this.verify(index, digest)) {
 					this.done(index);
 				} else {
+					verifyFailCount++;
 					this.undone(index);
 				}
 			}
@@ -642,6 +648,7 @@ public final class TorrentStream {
 				this.filePieceSize - this.pieces.cardinality()
 			);
 		}
+		return verifyFailCount == 0;
 	}
 	
 	/**

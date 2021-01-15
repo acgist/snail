@@ -536,22 +536,24 @@ public final class TorrentStreamGroup {
 	}
 
 	/**
-	 * <p>文件校验</p>
+	 * <p>校验文件</p>
+	 * 
+	 * @throws IOException IO异常 
 	 */
-	public void verify() {
+	public boolean verify() throws IOException {
+		int verifyFailCount = 0;
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
-				try {
-					torrentStream.verify();
-				} catch (IOException e) {
-					LOGGER.error("文件校验异常", e);
+				if(torrentStream.selected() && !torrentStream.verify()) {
+					verifyFailCount++;
 				}
 			}
 			this.torrentSession.downloadSize(this.downloadSize());
 		} finally {
 			this.readLock.unlock();
 		}
+		return verifyFailCount == 0;
 	}
 	
 	/**

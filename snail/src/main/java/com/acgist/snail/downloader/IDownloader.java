@@ -64,8 +64,10 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>校验下载文件</p>
+	 * 
+	 * @return 校验结果
 	 */
-	void verify();
+	boolean verify();
 	
 	/**
 	 * <dl>

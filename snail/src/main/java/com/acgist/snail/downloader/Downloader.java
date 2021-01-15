@@ -134,7 +134,8 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void verify() {
+	public boolean verify() {
+		return true;
 	}
 	
 	@Override
