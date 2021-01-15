@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -407,67 +406,55 @@ public final class FileUtils {
 	/**
 	 * <p>计算文件MD5值</p>
 	 * 
-	 * @param path 文件
+	 * @param path 文件路径
 	 * 
-	 * @return 文件MD5值：文件路径=MD5值
+	 * @return 文件MD5值
 	 * 
 	 * @see #hash(String, String)
 	 */
-	public static final Map<String, String> md5(String path) {
+	public static final String md5(String path) {
 		return hash(path, DigestUtils.ALGO_MD5);
 	}
 
 	/**
 	 * <p>计算文件SHA-1值</p>
 	 * 
-	 * @param path 文件
+	 * @param path 文件路径
 	 * 
-	 * @return 文件SHA-1值：文件路径=SHA-1值
+	 * @return 文件SHA-1值
 	 * 
 	 * @see #hash(String, String)
 	 */
-	public static final Map<String, String> sha1(String path) {
+	public static final String sha1(String path) {
 		return hash(path, DigestUtils.ALGO_SHA1);
 	}
 	
 	/**
-	 * <p>文件散列计算</p>
-	 * <p>如果路径是目录，递归计算目录中的所有文件散列值。</p>
+	 * <p>计算文件散列值</p>
 	 * 
 	 * @param path 文件路径
 	 * @param algo 算法名称
 	 * 
-	 * @return 文件散列值Map：文件路径=散列值
+	 * @return 文件散列值
 	 */
-	private static final Map<String, String> hash(String path, String algo) {
+	private static final String hash(String path, String algo) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(algo);
 		final File file = new File(path);
-		if(!file.exists()) {
-			return Map.of();
+		if(!file.exists() || !file.isFile()) {
+			return null;
 		}
-		final Map<String, String> data = new HashMap<>();
-		if (file.isDirectory()) {
-			final File[] files = file.listFiles();
-			for (File children : files) {
-				data.putAll(hash(children.getAbsolutePath(), algo));
+		int length;
+		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final MessageDigest digest = DigestUtils.digest(algo);
+		try (final var input = new BufferedInputStream(new FileInputStream(file))) {
+			while ((length = input.read(bytes)) != -1) {
+				digest.update(bytes, 0, length);
 			}
-			return data;
-		} else {
-			int length;
-			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
-			final MessageDigest digest = DigestUtils.digest(algo);
-			try (final var input = new BufferedInputStream(new FileInputStream(file))) {
-				while ((length = input.read(bytes)) != -1) {
-					digest.update(bytes, 0, length);
-				}
-			} catch (IOException e) {
-				LOGGER.error("文件散列计算异常：{}-{}", algo, path, e);
-				return data;
-			}
-			data.put(path, StringUtils.hex(digest.digest()));
-			return data;
+		} catch (IOException e) {
+			LOGGER.error("计算文件散列值异常：{}-{}", algo, path, e);
 		}
+		return StringUtils.hex(digest.digest());
 	}
 	
 	/**

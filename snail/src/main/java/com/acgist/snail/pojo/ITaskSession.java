@@ -113,6 +113,11 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		}
 
 	}
+
+	/**
+	 * <p>校验下载文件</p>
+	 */
+	void verify();
 	
 	/**
 	 * <p>重置状态</p>

@@ -1,5 +1,8 @@
 package com.acgist.snail.downloader.torrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.gui.GuiManager;
@@ -14,6 +17,8 @@ import com.acgist.snail.pojo.session.TorrentSession;
  */
 public final class TorrentDownloader extends TorrentSessionDownloader {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentDownloader.class);
+	
 	/**
 	 * @param taskSession 任务信息
 	 */
@@ -45,6 +50,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void refresh() {
 		// 任务没有被加载：不用重新加载（开始下载自动加载）
 		if(this.torrentSession == null) {
+			LOGGER.debug("BT任务信息没有加载跳过刷新");
 			// 任务已经完成不会再次加载：任务下载完成软件重启
 			if(this.taskSession.complete()) {
 				GuiManager.getInstance().alert("下载失败", "任务已经完成");
@@ -53,14 +59,22 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		}
 		// 重新加载任务
 		final int fileCount = this.torrentSession.reload();
-		// 加载文件数量
-		if(fileCount > 0) {
-			// 已经下载完成：修改暂停状态（任务下载完成软件没有重启）
-			if(this.taskSession.complete()) {
-				this.taskSession.setStatus(Status.PAUSE);
-				this.taskSession.setEndDate(null);
-				this.taskSession.update();
-			}
+		// 新增下载文件并且任务已经下载完成：修改暂停状态（任务下载完成软件没有重启）
+		if(fileCount > 0 && this.taskSession.complete()) {
+			LOGGER.debug("新增下载文件：{}", this.name());
+			this.taskSession.setStatus(Status.PAUSE);
+			this.taskSession.setEndDate(null);
+			this.taskSession.update();
+		}
+	}
+	
+	@Override
+	public void verify() {
+		if(this.torrentSession == null) {
+			LOGGER.debug("BT任务信息没有加载跳过文件校验");
+		} else {
+			this.torrentSession.verify();
+			this.updatePayload(); // 保存位图
 		}
 	}
 	
@@ -69,6 +83,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload(); // 释放下载资源
 			this.statistics.resetDownloadSpeed(); // 重置下载速度
+			this.updatePayload(); // 保存位图
 		}
 		super.release();
 	}
@@ -93,5 +108,14 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			this.complete = this.torrentSession.download();
 		}
 	}
-
+	
+	/**
+	 * <p>保存已下载Piece位图</p>
+	 */
+	private void updatePayload() {
+		final byte[] payload = this.torrentSession.pieces().toByteArray();
+		this.taskSession.setPayload(payload);
+		this.taskSession.update();
+	}
+	
 }

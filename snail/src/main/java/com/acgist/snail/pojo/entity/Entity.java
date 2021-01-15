@@ -17,19 +17,6 @@ public class Entity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>ID：{@value}</p>
-	 */
-	public static final String PROPERTY_ID = "id";
-	/**
-	 * <p>创建时间：{@value}</p>
-	 */
-	public static final String PROPERTY_CREATE_DATE = "createDate";
-	/**
-	 * <p>修改时间：{@value}</p>
-	 */
-	public static final String PROPERTY_MODIFY_DATE = "modifyDate";
-	
-	/**
 	 * <p>ID</p>
 	 */
 	protected String id;
