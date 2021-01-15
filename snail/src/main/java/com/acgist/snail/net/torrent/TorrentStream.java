@@ -117,13 +117,14 @@ public final class TorrentStream {
 	 * @param path 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
+	 * @param complete 是否完成
 	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	private TorrentStream(
-		long pieceLength, String path, long size, long pos,
+		long pieceLength, String path, long size, long pos, boolean complete,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
 		this.pieceLength = pieceLength;
@@ -150,6 +151,8 @@ public final class TorrentStream {
 		this.filePieces = new LinkedBlockingQueue<>();
 		this.fileStream = this.buildFileStream();
 		this.torrentStreamGroup = torrentStreamGroup;
+		this.buildPieces(complete);
+		this.buildFileDownloadSize();
 	}
 	
 	/**
@@ -159,24 +162,19 @@ public final class TorrentStream {
 	 * @param path 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
+	 * @param complete 是否完成
 	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
-	 * @param complete 是否完成
-	 * @param selectPieces 选择下载Piece
 	 * 
 	 * @return 文件流
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	public static final TorrentStream newInstance(
-		long pieceLength, String path, long size, long pos,
-		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup, boolean complete, BitSet selectPieces
+		long pieceLength, String path, long size, long pos, boolean complete,
+		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
-		final var stream = new TorrentStream(pieceLength, path, size, pos, fileBufferSize, torrentStreamGroup);
-		stream.buildPieces(complete);
-		stream.buildFileDownloadSize();
-		stream.buildSelectPieces(selectPieces); // 加载选择下载Piece
-		stream.install(); // 选择下载
+		final var stream = new TorrentStream(pieceLength, path, size, pos, complete, fileBufferSize, torrentStreamGroup);
 		// TODO：{}，使用多行文本
 		LOGGER.debug(
 			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
@@ -347,7 +345,6 @@ public final class TorrentStream {
 				verify = false;
 				end = this.lastPiecePos();
 			}
-			// TODO：单个文件验证第一块和最后一块
 			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, this.torrentStreamGroup.pieceHash(index), verify);
 		}
 	}

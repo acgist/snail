@@ -52,11 +52,11 @@ public class TorrentStreamTest extends Performance {
 			sourceFile,
 			torrentFile.getLength(),
 			pos,
-			new AtomicLong(),
-			group,
 			false,
-			new BitSet()
+			new AtomicLong(),
+			group
 		);
+		oldStream.install();
 		oldStream.verify();
 		final String targetFile = "E:/snail/tmp/server/Scans/Vol.1/Box_1.png";
 		final var newStream = TorrentStream.newInstance(
@@ -64,11 +64,11 @@ public class TorrentStreamTest extends Performance {
 			targetFile,
 			torrentFile.getLength(),
 			pos,
-			new AtomicLong(),
-			group,
 			false,
-			new BitSet()
+			new AtomicLong(),
+			group
 		);
+		newStream.install();
 		newStream.verify();
 		int begin = (int) (pos / pieceLength);
 		int end = (int) ((pos + torrentFile.getLength()) / pieceLength) + 1;

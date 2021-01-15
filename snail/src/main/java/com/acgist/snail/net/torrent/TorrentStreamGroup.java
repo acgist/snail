@@ -89,7 +89,7 @@ public final class TorrentStreamGroup {
 	 * <p>读写锁</p>
 	 * <p>保存文件流集合线程安全</p>
 	 * 
-	 * @see #load(int, long, boolean, String, List)
+	 * @see #load(boolean, String, List)
 	 */
 	private final ReadWriteLock readWriteLock;
 	/**
@@ -173,33 +173,29 @@ public final class TorrentStreamGroup {
 		this.selectPieces.clear(); // 清除所有已选择Piece
 		this.writeLock.lock();
 		try {
+			final long startTime = System.currentTimeMillis();
 			// 开始加载下载文件
 			long pos = 0; // 数据偏移
-			// 新增加载文件数量：原来没有加载
-			final int loadFileCount = (int) files.stream()
-				.filter(TorrentFile::selected)
-				.filter(file -> this.hasStream(FileUtils.file(folder, file.path())) == null)
-				.count();
-			LOGGER.debug("新增加载文件数量：{}", loadFileCount);
 			final long pieceLength = this.torrent.getInfo().getPieceLength();
 			final List<TorrentStream> sortList = new ArrayList<>(); // 排序
 			for (TorrentFile file : files) {
-				final long fileLength = file.getLength();
+				final long fileSize = file.getLength();
 				final String filePath = FileUtils.file(folder, file.path()); // 文件路径
-				final TorrentStream oldStream = this.hasStream(filePath);
+				final TorrentStream oldStream = this.oldStream(filePath);
 				try {
 					if(file.selected()) {
 						// 加载选择下载文件
 						if(oldStream == null) {
 							LOGGER.debug("文件选择下载（加载）：{}", filePath);
+							loadDownloadCount++;
 							final TorrentStream newStream = TorrentStream.newInstance(
-								pieceLength, filePath, fileLength, pos,
-								this.fileBufferSize, this,
-								complete, this.selectPieces
+								pieceLength, filePath, fileSize, pos, complete,
+								this.fileBufferSize, this
 							);
 							this.streams.add(newStream);
+							newStream.buildSelectPieces(selectPieces);
+							newStream.install();
 							sortList.add(newStream);
-							loadDownloadCount++;
 						} else {
 							LOGGER.debug("文件选择下载（重载）：{}", filePath);
 							// 文件没有选择下载
@@ -223,7 +219,7 @@ public final class TorrentStreamGroup {
 				} catch (Exception e) {
 					LOGGER.error("TorrentStream创建异常：{}", filePath, e);
 				}
-				pos += fileLength;
+				pos += fileSize;
 			}
 			// 文件排序
 			this.streams.sort((source, target) -> {
@@ -231,6 +227,8 @@ public final class TorrentStreamGroup {
 				final int targetIndex = sortList.indexOf(target);
 				return Integer.compare(sourceIndex, targetIndex);
 			});
+			final long finishTime = System.currentTimeMillis();
+			LOGGER.debug("任务-{}-加载完成耗时：{}", this.torrentSession.name(), (finishTime - startTime));
 		} finally {
 			this.writeLock.unlock();
 		}
@@ -246,7 +244,7 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 文件流（null-没有加载）
 	 */
-	private TorrentStream hasStream(String path) {
+	private TorrentStream oldStream(String path) {
 		for (TorrentStream torrentStream : this.streams) {
 			if(torrentStream.equalsPath(path)) {
 				return torrentStream;
@@ -341,7 +339,7 @@ public final class TorrentStreamGroup {
 			this.readLock.unlock();
 		}
 		if(buffer.position() < length) {
-			LOGGER.warn("读取Piece数据错误：{}-{}", length, buffer);
+			LOGGER.warn("读取Piece数据错误：{}-{}-{}", index, length, buffer);
 			return null;
 		}
 		return buffer.array();
@@ -399,6 +397,10 @@ public final class TorrentStreamGroup {
 	 * @return 是否已经下载
 	 */
 	public boolean hasPiece(int index) {
+		if(index < 0) {
+			// 此处需要验证：Peer请求Piece索引可能出错
+			return false;
+		}
 		return this.pieces.get(index);
 	}
 	
