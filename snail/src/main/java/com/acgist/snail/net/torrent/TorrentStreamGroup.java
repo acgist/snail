@@ -55,18 +55,18 @@ public final class TorrentStreamGroup {
 	 */
 	private final BitSet pieces;
 	/**
-	 * <p>被选中Piece位图</p>
+	 * <p>选择下载Piece位图</p>
 	 */
 	private final BitSet selectPieces;
 	/**
-	 * <p>是否含有完整的被选中Piece位图数据</p>
-	 * <p>含有完整数据健康度等于{@code 100}</p>
+	 * <p>是否含有完整的选择下载Piece位图数据</p>
+	 * <p>含有完整数据健康度等于：100</p>
 	 */
 	private boolean full;
 	/**
 	 * <p>完整Piece位图</p>
 	 * <p>已下载Piece位图和Peer含有的Piece位图数据，用来计算健康度。</p>
-	 * <p>只计算选中下载的Piece</p>
+	 * <p>只需计算选择下载Piece</p>
 	 * <dl>
 	 * 	<dt>更新条件</dt>
 	 * 	<dd>加载本地文件</dd>
@@ -116,7 +116,7 @@ public final class TorrentStreamGroup {
 
 	/**
 	 * @param pieces 已下载Piece位图
-	 * @param selectPieces 被选中Piece位图
+	 * @param selectPieces 选择下载Piece位图
 	 * @param streams 文件流集合
 	 * @param torrentSession BT任务信息
 	 */
@@ -212,7 +212,7 @@ public final class TorrentStreamGroup {
 					if(file.selected()) {
 						// 加载选择下载文件
 						if(oldStream == null) {
-							LOGGER.debug("文件选中下载（加载）：{}", filePath);
+							LOGGER.debug("文件选择下载（加载）：{}", filePath);
 							final TorrentStream newStream = TorrentStream.newInstance(
 								pieceLength, filePath, fileLength, pos,
 								this.fileBufferSize, this,
@@ -222,8 +222,8 @@ public final class TorrentStreamGroup {
 							sortList.add(newStream);
 							loadDownloadCount++;
 						} else {
-							LOGGER.debug("文件选中下载（重载）：{}", filePath);
-							// 文件没有选中下载
+							LOGGER.debug("文件选择下载（重载）：{}", filePath);
+							// 文件没有选择下载
 							if(!oldStream.selected()) {
 								loadDownloadCount++;
 							}
@@ -234,9 +234,9 @@ public final class TorrentStreamGroup {
 					} else {
 						// 加载没有选择下载文件
 						if(oldStream == null) {
-							LOGGER.debug("文件没有选中下载（忽略）：{}", filePath);
+							LOGGER.debug("文件没有选择下载（忽略）：{}", filePath);
 						} else {
-							LOGGER.debug("文件没有选中下载（卸载）：{}", filePath);
+							LOGGER.debug("文件没有选择下载（卸载）：{}", filePath);
 							oldStream.uninstall();
 							sortList.add(oldStream);
 						}
@@ -265,7 +265,7 @@ public final class TorrentStreamGroup {
 					if(success) {
 						final long finishTime = System.currentTimeMillis(); // 结束时间
 						LOGGER.debug("{}-任务准备完成（消耗时间）：{}", name, (finishTime - startTime));
-						this.torrentSession.downloadSize(this.size());
+						this.torrentSession.downloadSize(this.downloadSize());
 						this.fullPieces(this.pieces());
 					} else {
 						LOGGER.warn("{}-任务准备超时", name);
@@ -317,7 +317,6 @@ public final class TorrentStreamGroup {
 	
 	/**
 	 * <p>挑选下载Piece</p>
-	 * <p>如果文件流没有被选中下载不挑选Piece</p>
 	 * 
 	 * @param peerPieces Peer已下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图
@@ -331,7 +330,8 @@ public final class TorrentStreamGroup {
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
-				if(torrentStream.selected()) { // 下载选中文件
+				if(torrentStream.selected()) {
+					// 挑选选择下载文件
 					pickPiece = torrentStream.pick(this.piecePos, peerPieces, suggestPieces);
 					if(pickPiece != null) {
 						break;
@@ -481,9 +481,9 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>获取被选中Piece位图</p>
+	 * <p>获取选择下载Piece位图</p>
 	 * 
-	 * @return 被选中Piece位图
+	 * @return 选择下载Piece位图
 	 */
 	public BitSet selectPieces() {
 		return this.selectPieces;
@@ -502,9 +502,9 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>获取剩余选中未下载的Piece数量</p>
+	 * <p>获取剩余选择下载未下载的Piece数量</p>
 	 * 
-	 * @return 剩余选中未下载的Piece数量
+	 * @return 剩余选择下载未下载的Piece数量
 	 */
 	public int remainingPieceSize() {
 		final BitSet condition = new BitSet();
@@ -534,9 +534,9 @@ public final class TorrentStreamGroup {
 			return;
 		}
 		this.fullPieces.or(pieces);
-		// 排除没有选中的Piece：防止部分下载时健康度超过100
+		// 排除没有选择下载的Piece：防止部分下载时健康度超过100
 		this.fullPieces.and(this.selectPieces);
-		// 计算选中下载的Piece是否全部健康
+		// 计算选择下载的Piece是否全部健康
 		final BitSet condition = new BitSet();
 		condition.or(this.selectPieces);
 		condition.andNot(this.fullPieces);
@@ -549,7 +549,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>获取健康度</p>
 	 * <p>健康度范围：{@code 0} ~ {@code 100}</p>
-	 * <p>健康度：完整Piece数量除以选中下载Piece数量</p>
+	 * <p>健康度：完整Piece数量除以选择下载Piece数量</p>
 	 * 
 	 * @return 健康度
 	 */
@@ -596,27 +596,26 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 任务已下载大小
 	 * 
-	 * @see TorrentStream#size()
+	 * @see TorrentStream#downloadSize()
 	 */
-	public long size() {
-		long size = 0L;
+	public long downloadSize() {
+		long downloadSize = 0L;
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
 				if(torrentStream.selected()) {
-					// 下载选中文件
-					size += torrentStream.size();
+					downloadSize += torrentStream.downloadSize();
 				}
 			}
 		} finally {
 			this.readLock.unlock();
 		}
-		return size;
+		return downloadSize;
 	}
 	
 	/**
 	 * <p>检测任务是否下载完成</p>
-	 * <p>完成：所有选中文件流下载完成</p>
+	 * <p>完成：所有选择下载文件下载完成</p>
 	 * 
 	 * @return 是否下载完成
 	 */

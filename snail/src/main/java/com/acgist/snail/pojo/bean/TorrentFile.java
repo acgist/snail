@@ -60,7 +60,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	//================种子文件临时信息================//
 	
 	/**
-	 * <p>是否选中下载</p>
+	 * <p>是否选择下载</p>
 	 */
 	private transient boolean selected = false;
 
@@ -89,18 +89,18 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	}
 
 	/**
-	 * <p>判断是否选中下载</p>
+	 * <p>判断是否选择下载</p>
 	 * 
-	 * @return 是否选中下载
+	 * @return 是否选择下载
 	 */
 	public boolean selected() {
 		return this.selected;
 	}
 
 	/**
-	 * <p>设置是否选中下载</p>
+	 * <p>设置是否选择下载</p>
 	 * 
-	 * @param selected 是否选中下载
+	 * @param selected 是否选择下载
 	 */
 	public void selected(boolean selected) {
 		this.selected = selected;

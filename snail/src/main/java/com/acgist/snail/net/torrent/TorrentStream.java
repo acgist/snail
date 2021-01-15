@@ -28,8 +28,6 @@ import com.acgist.snail.utils.StringUtils;
  * <p>Torrent下载文件流</p>
  * <p>除了文件开头和结尾的Piece，每次下载必须是一个完整的Piece。</p>
  * 
- * TODO：优化使用读写锁
- * 
  * @author acgist
  */
 public final class TorrentStream {
@@ -38,12 +36,16 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>异步加载文件大小：{@value}</p>
-	 * <p>超过{@value}异步加载文件信息</p>
+	 * <p>超过文件大小异步加载文件信息</p>
 	 */
 	private static final int ASYN_SIZE = 100 * SystemConfig.ONE_MB;
+	/**
+	 * <p>文件流模式：{@value}</p>
+	 */
+	private static final String STREAM_MODE = "rw";
 
 	/**
-	 * <p>文件是否被选中下载</p>
+	 * <p>文件是否选择下载</p>
 	 */
 	private volatile boolean selected;
 	/**
@@ -89,31 +91,31 @@ public final class TorrentStream {
 	 */
 	private final AtomicLong fileDownloadSize;
 	/**
-	 * <p>Piece缓存队列</p>
-	 */
-	private final BlockingQueue<TorrentPiece> filePieces;
-	/**
 	 * <p>已下载Piece位图</p>
+	 * <p>选择Piece时排除这些Piece</p>
 	 */
 	private final BitSet pieces;
 	/**
 	 * <p>暂停Piece位图</p>
-	 * <p>上次下载失败的Piece，下次请求时暂时不选择，成功选择Piece后清除，以后还可以选择该Piece。</p>
+	 * <p>上次下载失败的Piece，下次选择Piece时排除这些Piece，成功选择Piece后清除。</p>
 	 */
 	private final BitSet pausePieces;
 	/**
 	 * <p>下载中Piece位图</p>
+	 * <p>选择Piece时排除这些Piece</p>
 	 */
 	private final BitSet downloadPieces;
 	/**
+	 * <p>Piece缓存队列</p>
+	 */
+	private final BlockingQueue<TorrentPiece> filePieces;
+	/**
 	 * <p>文件流</p>
-	 * 
-	 * TODO：替换FileChannel
-	 * TODO：下载完成修改读写模式
+	 * <p>不用使用NIO（FileChannel）没有性能提升</p>
 	 */
 	private final RandomAccessFile fileStream;
 	/**
-	 * <p>下载文件组</p>
+	 * <p>文件流组</p>
 	 */
 	private final TorrentStreamGroup torrentStreamGroup;
 	
@@ -136,22 +138,24 @@ public final class TorrentStream {
 		this.fileSize = size;
 		this.fileBeginPos = pos;
 		this.fileEndPos = pos + size;
-		this.fileBufferSize = fileBufferSize;
-		this.fileDownloadSize = new AtomicLong(0);
-		this.filePieces = new LinkedBlockingQueue<>();
 		this.fileBeginPieceIndex = (int) (this.fileBeginPos / this.pieceLength);
 		this.fileEndPieceIndex = (int) (this.fileEndPos / this.pieceLength);
 		final int filePieceSize = this.fileEndPieceIndex - this.fileBeginPieceIndex;
 		final int endPieceSize = (int) (this.fileEndPos % this.pieceLength);
-		if(endPieceSize > 0) { // 最后一块包含数据
+		if(endPieceSize > 0) {
+			// 最后一块包含数据
 			this.filePieceSize = filePieceSize + 1;
-		} else { // 最后一块没有包含数据
+		} else {
+			// 最后一块没有数据
 			this.filePieceSize = filePieceSize;
 		}
+		this.fileBufferSize = fileBufferSize;
+		this.fileDownloadSize = new AtomicLong(0);
 		this.pieces = new BitSet();
 		this.pausePieces = new BitSet();
 		this.downloadPieces = new BitSet();
-		this.fileStream = this.buildFileStream(); // 创建文件流
+		this.filePieces = new LinkedBlockingQueue<>();
+		this.fileStream = this.buildFileStream();
 		this.torrentStreamGroup = torrentStreamGroup;
 	}
 	
@@ -165,7 +169,7 @@ public final class TorrentStream {
 	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
 	 * @param complete 是否完成
-	 * @param selectPieces 被选中的Piece
+	 * @param selectPieces 选择下载Piece
 	 * @param loadFileCountDownLatch 异步文件加载计数器
 	 * 
 	 * @return 文件流
@@ -179,8 +183,8 @@ public final class TorrentStream {
 	) throws DownloadException {
 		final var stream = new TorrentStream(pieceLength, path, size, pos, fileBufferSize, torrentStreamGroup);
 		stream.buildFileAsyn(complete, loadFileCountDownLatch); // 异步加载文件
-		stream.buildSelectPieces(selectPieces); // 加载被选中的Piece
-		stream.install(); // 选中下载
+		stream.buildSelectPieces(selectPieces); // 加载选择下载Piece
+		stream.install(); // 选择下载
 		// TODO：{}，使用多行文本
 		LOGGER.debug(
 			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
@@ -207,7 +211,7 @@ public final class TorrentStream {
 		// 创建文件上级目录：上级目录不存在会抛出FileNotFoundException
 		FileUtils.buildFolder(this.filePath, true);
 		try {
-			return new RandomAccessFile(this.filePath, "rw");
+			return new RandomAccessFile(this.filePath, STREAM_MODE);
 		} catch (FileNotFoundException e) {
 			throw new DownloadException("创建文件流失败：" + this.filePath, e);
 		}
@@ -215,7 +219,6 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>加载文件流</p>
-	 * <p>设置选中下载</p>
 	 */
 	public void install() {
 		this.selected = true;
@@ -223,16 +226,15 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>卸载文件流</p>
-	 * <p>设置不选中下载</p>
 	 */
 	public void uninstall() {
 		this.selected = false;
 	}
 	
 	/**
-	 * <p>判断是否被选中下载</p>
+	 * <p>判断是否选择下载</p>
 	 * 
-	 * @return true-选中；false-没有选中；
+	 * @return 是否选择下载
 	 */
 	public boolean selected() {
 		return this.selected;
@@ -250,9 +252,9 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>加载被选中的Piece</p>
+	 * <p>加载选择下载Piece</p>
 	 * 
-	 * @param selectPieces 被选中的Piece
+	 * @param selectPieces 选择下载Piece
 	 */
 	public void buildSelectPieces(final BitSet selectPieces) {
 		selectPieces.set(this.fileBeginPieceIndex, this.fileEndPieceIndex + 1);
@@ -277,10 +279,10 @@ public final class TorrentStream {
 		if(piecePos > this.fileEndPieceIndex) {
 			return null;
 		}
+		if(this.complete()) {
+			return null;
+		}
 		synchronized (this) {
-			if(this.complete()) {
-				return null;
-			}
 			final BitSet pickPieces = new BitSet(); // 挑选的Piece
 			if(!suggestPieces.isEmpty()) {
 				// 优先使用Peer推荐Piece位图
@@ -367,7 +369,8 @@ public final class TorrentStream {
 			return false;
 		}
 		synchronized (this) {
-			if(this.hasPiece(piece.getIndex())) { // 最后阶段重复选中可能重复
+			if(this.hasPiece(piece.getIndex())) {
+				// 最后阶段重复选择可能导致重复下载
 				LOGGER.debug("Piece已经下载完成（忽略）：{}", piece.getIndex());
 				return false;
 			}
@@ -381,7 +384,7 @@ public final class TorrentStream {
 				// 下载完成数据刷出
 				if(this.complete()) {
 					this.flush();
-					// TODO：修改文件为读模式
+					// 可以在这里将文件流变为读取模式
 				}
 				return true;
 			} else {
@@ -501,7 +504,7 @@ public final class TorrentStream {
 	 * 
 	 * @return 文件已下载大小
 	 */
-	public long size() {
+	public long downloadSize() {
 		return this.fileDownloadSize.get();
 	}
 	

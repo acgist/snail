@@ -310,18 +310,18 @@ public final class MainController extends Controller implements Initializable {
 	}
 	
 	/**
-	 * <p>是否选中任务</p>
+	 * <p>判断是否选中任务</p>
 	 * 
-	 * @return true-选中；false-没有选中；
+	 * @return 是否选中任务
 	 */
 	public boolean hasSelected() {
 		return !this.selected().isEmpty();
 	}
 	
 	/**
-	 * <p>是否选中BT任务</p>
+	 * <p>判断是否选中BT任务</p>
 	 * 
-	 * @return true-选中；false-没有选中；
+	 * @return 是否选中BT任务
 	 */
 	public boolean hasSelectedTorrent() {
 		return this.selected().stream()

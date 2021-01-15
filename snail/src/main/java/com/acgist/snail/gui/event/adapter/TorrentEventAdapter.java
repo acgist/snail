@@ -73,7 +73,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
 				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
-				.filter(file -> selectFiles.contains(file.path())) // 设置选中文件
+				.filter(file -> selectFiles.contains(file.path())) // 设置选择下载文件
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(files);

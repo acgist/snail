@@ -148,8 +148,8 @@ public final class SelectorManager {
 	 */
 	public List<String> description() {
 		return this.selector.entrySet().stream()
-			.filter(entry -> entry.getValue().isFile()) // 文件
 			.filter(entry -> entry.getValue().isSelected()) // 选中
+			.filter(entry -> entry.getValue().isFile()) // 文件
 			.map(Entry::getKey)
 			.collect(Collectors.toList());
 	}
@@ -281,18 +281,18 @@ public final class SelectorManager {
 		}
 		
 		/**
-		 * <p>判断是否被选中</p>
+		 * <p>判断是否选中</p>
 		 * 
-		 * @return true-选中；false-没有选中；
+		 * @return 是否选中
 		 */
 		public boolean isSelected() {
 			return this.checkBox.isSelected();
 		}
 		
 		/**
-		 * <p>设置是否被选中</p>
+		 * <p>设置是否选中</p>
 		 * 
-		 * @param selected true-选中；false-没有选中；
+		 * @param selected 是否选中
 		 */
 		public void setSelected(boolean selected) {
 			this.checkBox.setSelected(selected);
