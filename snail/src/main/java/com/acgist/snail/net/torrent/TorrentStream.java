@@ -723,6 +723,7 @@ public final class TorrentStream {
 				// 任务完成
 				this.done(index);
 			} else if(this.torrentStreamGroup.hasPiece(index)) {
+				// TODO：首尾文件必须加载数据校验
 				// 已经下载
 				this.done(index);
 			}
