@@ -252,22 +252,19 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>选择未下载的Piece</p>
-	 * <p>选择Piece条件：没有下载完成、不是暂停中的Piece、不是下载中的Piece</p>
-	 * <p>选择完成后清除暂停Piece</p>
-	 * <p>如果挑选不到符合条件的Piece并且任务处于接近完成状态时，那么可以重复选择下载中的Piece进行下载。</p>
 	 * 
 	 * @param piecePos 指定下载Piece索引
 	 * @param peerPieces Peer已下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图：优先使用
 	 * 
-	 * @return 下载Piece
+	 * @return 未下载的Piece
 	 */
 	public TorrentPiece pick(int piecePos, final BitSet peerPieces, final BitSet suggestPieces) {
 		if(piecePos > this.fileEndPieceIndex) {
 			// 超过文件范围
 			return null;
 		}
-		if(peerPieces.isEmpty()) {
+		if(peerPieces.isEmpty() && suggestPieces.isEmpty()) {
 			// Peer没有已下载Piece位图
 			return null;
 		}
@@ -276,55 +273,11 @@ public final class TorrentStream {
 			return null;
 		}
 		synchronized (this) {
-			// 挑选Piece
-			final BitSet pickPieces = new BitSet();
-			if(!suggestPieces.isEmpty()) {
-				// 优先使用Peer推荐Piece位图
-				pickPieces.or(suggestPieces);
-				pickPieces.andNot(this.pieces);
-				pickPieces.andNot(this.pausePieces);
-				pickPieces.andNot(this.downloadPieces);
-			}
-			if(pickPieces.isEmpty()) {
-				// Peer已下载Piece位图
-				pickPieces.or(peerPieces);
-				pickPieces.andNot(this.pieces);
-				pickPieces.andNot(this.pausePieces);
-				pickPieces.andNot(this.downloadPieces);
-			}
-			this.pausePieces.clear(); // 清空暂停Piece位图
-			// 如果挑选不到Piece
-			if(pickPieces.isEmpty()) {
-				final int remainingPieceSize = this.torrentStreamGroup.remainingPieceSize();
-				if(remainingPieceSize == 0) {
-					// 任务已经完成
-					LOGGER.debug("选择Piece：没有可选Piece");
-					return null;
-				} else if(remainingPieceSize <= SystemConfig.getPieceRepeatSize()) {
-					// 任务接近完成：重复挑选下载中的Piece
-					LOGGER.debug("选择Piece：任务接近完成重复选择下载中的Piece");
-					pickPieces.or(peerPieces);
-					pickPieces.andNot(this.pieces);
-					if(pickPieces.isEmpty()) {
-						LOGGER.debug("选择Piece：Piece已经全部下载完成（接近完成）");
-						return null;
-					}
-				} else {
-					// 排除暂停Piece位图
-					LOGGER.debug("选择Piece：排除暂停Piece");
-					pickPieces.or(peerPieces);
-					pickPieces.andNot(this.pieces);
-					pickPieces.andNot(this.downloadPieces);
-					if(pickPieces.isEmpty()) {
-						LOGGER.debug("选择Piece：Piece已经全部下载完成（排除暂停）");
-						return null;
-					}
-				}
-			}
+			final BitSet pickPieces = this.pickPieces(peerPieces, suggestPieces);
 			final int indexPos = Math.max(piecePos, this.fileBeginPieceIndex);
 			final int index = pickPieces.nextSetBit(indexPos);
 			if(
-				index == -1 || // 没有匹配Piece
+				index < 0 || // 没有匹配Piece
 				index > this.fileEndPieceIndex // 超过文件范围
 			) {
 				LOGGER.debug("选择Piece（没有匹配）：{}-{}-{}-{}", index, piecePos, this.fileBeginPieceIndex, this.fileEndPieceIndex);
@@ -345,10 +298,65 @@ public final class TorrentStream {
 				verify = false;
 				end = this.lastPiecePos();
 			}
+			// 快速循环挑选Piece时：创建Piece数据块消耗性能
 			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, this.torrentStreamGroup.pieceHash(index), verify);
 		}
 	}
 
+	/**
+	 * <p>选择未下载的Piece位图</p>
+	 * <p>选择Piece位图条件：没有下载完成、不是暂停中的Piece、不是下载中的Piece</p>
+	 * <p>选择完成后清除暂停Piece</p>
+	 * <p>如果挑选不到数据（任务接近完成）：重复挑选下载中的Piece</p>
+	 * <p>如果挑选不到数据（任务正常下载）：可以挑选暂停中的Piece</p>
+	 * 
+	 * @param peerPieces Peer已下载Piece位图
+	 * @param suggestPieces Peer推荐Piece位图：优先使用
+	 * 
+	 * @return 未下载的Piece位图
+	 */
+	private BitSet pickPieces(final BitSet peerPieces, final BitSet suggestPieces) {
+		final BitSet pickPieces = new BitSet();
+		if(!suggestPieces.isEmpty()) {
+			// 优先使用Peer推荐Piece位图
+			pickPieces.or(suggestPieces);
+			pickPieces.andNot(this.pieces);
+			pickPieces.andNot(this.pausePieces);
+			pickPieces.andNot(this.downloadPieces);
+		}
+		if(pickPieces.isEmpty()) {
+			// 没有数据使用Peer已下载Piece位图
+			pickPieces.or(peerPieces);
+			pickPieces.andNot(this.pieces);
+			pickPieces.andNot(this.pausePieces);
+			pickPieces.andNot(this.downloadPieces);
+		}
+		if(pickPieces.isEmpty()) {
+			// 没有数据判断剩余Piece数量
+			final int remainingPieceSize = this.torrentStreamGroup.remainingPieceSize();
+			if(remainingPieceSize == 0) {
+				// 任务已经完成
+				LOGGER.debug("选择Piece：没有可选Piece");
+			} else if(remainingPieceSize <= SystemConfig.getPieceRepeatSize()) {
+				// 任务接近完成：重复挑选下载中的Piece
+				LOGGER.debug("选择Piece：任务接近完成重复选择下载中的Piece");
+				pickPieces.or(peerPieces);
+				pickPieces.andNot(this.pieces);
+			} else {
+				// 任务正常：排除暂停Piece位图
+				LOGGER.debug("选择Piece：排除暂停Piece");
+				pickPieces.or(peerPieces);
+				pickPieces.andNot(this.pieces);
+				pickPieces.andNot(this.downloadPieces);
+			}
+			if(pickPieces.isEmpty()) {
+				LOGGER.debug("选择Piece：没有可用Piece");
+			}
+		}
+		this.pausePieces.clear(); // 清空暂停Piece位图
+		return pickPieces;
+	}
+	
 	/**
 	 * <p>保存Piece</p>
 	 * <p>每次保存的必须是一个完成的Piece</p>
