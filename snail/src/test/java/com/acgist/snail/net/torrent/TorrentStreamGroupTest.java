@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +81,7 @@ public class TorrentStreamGroupTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/pick/");
 		entity.setType(Type.TORRENT);
-		entity.setStatus(Status.COMPLETE);
+		entity.setStatus(Status.AWAIT);
 		final var files = session.torrent().getInfo().files();
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件
@@ -111,13 +113,16 @@ public class TorrentStreamGroupTest extends Performance {
 //		});
 		this.cost();
 		TorrentPiece index;
+		final Set<Integer> indexSet = new HashSet<Integer>();
 		while((index = group.pick(peerPieces, suggestPieces)) != null) {
 			this.log(index.getIndex());
 			group.done(index.getIndex());
-			this.log(session.torrent().getInfo().pieceSize());
+			indexSet.add(index.getIndex());
 //			group.write(index);
 		}
 		this.costed();
+//		this.log(indexSet.size());
+//		indexSet.forEach(this::log);
 	}
 	
 	@Test
