@@ -123,4 +123,14 @@ public interface ITaskSessionEntity {
 	 */
 	void setDescription(String description);
 	
+	/**
+	 * @return 任务负载
+	 */
+	byte[] getPayload();
+
+	/**
+	 * @param payload 任务负载
+	 */
+	void setPayload(byte[] payload);
+	
 }

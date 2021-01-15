@@ -63,6 +63,11 @@ public interface IDownloader extends Runnable {
 	void refresh();
 	
 	/**
+	 * <p>校验下载文件</p>
+	 */
+	void verify();
+	
+	/**
 	 * <dl>
 	 * 	<dt>打开任务</dt>
 	 * 	<dd>初始化下载信息</dd>

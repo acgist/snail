@@ -1,9 +1,6 @@
 package com.acgist.snail.gui.javafx.menu;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +20,6 @@ import com.acgist.snail.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.stage.WindowEvent;
 
@@ -193,29 +189,10 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> verifyEvent = event -> {
 		SystemThreadContext.submit(() -> {
-			final Map<String, String> verifyFileHash = new HashMap<>();
 			MainWindow.getInstance().controller().selected().forEach(session -> {
-				if(session.complete()) {
-					verifyFileHash.putAll(FileUtils.sha1(session.getFile()));
-				}
+				session.verify();
+				Platform.runLater(() -> Alerts.info("校验成功", session.getName()));
 			});
-			if(verifyFileHash.isEmpty()) {
-				Platform.runLater(() -> {
-					Alerts.warn("校验失败", "请等待任务下载完成");
-				});
-			} else {
-				Platform.runLater(() -> {
-					final StringBuilder builder = new StringBuilder();
-					verifyFileHash.forEach((key, value) -> {
-						builder.append(value).append("=").append(FileUtils.fileName(key)).append("\n");
-					});
-					final Optional<ButtonType> optional = Alerts.info("文件SHA-1校验", builder.toString());
-					if(optional.isPresent() && ButtonType.OK == optional.get()) {
-						// 点击确认自动复制信息
-						Clipboards.copy(builder.toString());
-					}
-				});
-			}
 		});
 	};
 	

@@ -166,30 +166,14 @@ public class TorrentStreamGroupTest extends Performance {
 	}
 	
 	@Test
-	public void testSort() {
-		var source = new ArrayList<>(List.of("4", "1", "2", "3", "2", "3"));
-		var target = List.of("1", "3", "2");
-		source.sort((a, b) -> {
-			int indexA = target.indexOf(a);
-			int indexB = target.indexOf(b);
-			return Integer.compare(indexA, indexB);
-//			return indexA > indexB ? 1 : (indexA == indexB ? 0 : -1);
-		});
-		this.log(source);
-		this.log(target);
-	}
-	
-	@Test
-	public void testSha1Cost() {
+	public void testSHA1Costed() {
 		final byte[] bytes = "test".getBytes();
-		this.cost();
 		final var digest = DigestUtils.sha1();
-		for (int index = 0; index < 100000; index++) {
-//			StringUtils.sha1(bytes);
+		this.costed(100000, () -> {
 			digest.digest(bytes);
-			digest.reset();
-		}
-		this.costed();
+//			digest.reset(); // 可以不用调用
+//			StringUtils.sha1(bytes);
+		});
 	}
 
 }

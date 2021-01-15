@@ -17,15 +17,6 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>任务表名：{@value}</p>
-	 */
-	public static final String TABLE_NAME = "tb_task";
-	/**
-	 * <p>任务名称：{@value}</p>
-	 */
-	public static final String PROPERTY_NAME = "name";
-	
-	/**
 	 * <p>任务名称</p>
 	 */
 	private String name;
@@ -66,10 +57,15 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	/**
 	 * <p>下载描述</p>
 	 * <p>多文件下载时保持下载文件列表（B编码）</p>
-	 * <p>HLS任务文件链接</p>
 	 * <p>BT任务文件列表</p>
+	 * <p>HLS任务文件链接</p>
 	 */
 	private String description;
+	/**
+	 * <p>任务负载</p>
+	 * <p>BT任务已下载Piece位图</p>
+	 */
+	private byte[] payload;
 	
 	@Override
 	public String getName() {
@@ -171,4 +167,14 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 		this.description = description;
 	}
 
+	@Override
+	public byte[] getPayload() {
+		return this.payload;
+	}
+
+	@Override
+	public void setPayload(byte[] payload) {
+		this.payload = payload;
+	}
+	
 }

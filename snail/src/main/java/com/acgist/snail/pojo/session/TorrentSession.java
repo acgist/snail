@@ -628,6 +628,20 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * <p>创建已下载Piece位图</p>
+	 * 
+	 * @return 已下载Piece位图
+	 */
+	public BitSet buildPieces() {
+		final byte[] payload = this.taskSession.getPayload();
+		if(payload == null) {
+			return new BitSet(this.torrent.getInfo().pieceSize());
+		} else {
+			return BitSet.valueOf(payload);
+		}
+	}
+	
+	/**
 	 * <p>获取任务动作</p>
 	 * 
 	 * @return 任务动作
@@ -879,6 +893,13 @@ public final class TorrentSession {
 	 */
 	public int health() {
 		return this.torrentStreamGroup.health();
+	}
+
+	/**
+	 * @see TorrentStreamGroup#verify()
+	 */
+	public void verify() {
+		this.torrentStreamGroup.verify();
 	}
 	
 	/**

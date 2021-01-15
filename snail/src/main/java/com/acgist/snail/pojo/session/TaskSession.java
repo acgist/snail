@@ -76,6 +76,13 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
+	public void verify() {
+		if(this.downloader != null) {
+			this.downloader.verify();
+		}
+	}
+	
+	@Override
 	public void reset() {
 		// 非常重要：如果任务被错误的保存为下载状态需要重置为等待状态（否者不能正常下载）
 		if(this.download()) {
@@ -365,6 +372,16 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public void setDescription(String description) {
 		this.entity.setDescription(description);
+	}
+	
+	@Override
+	public byte[] getPayload() {
+		return this.entity.getPayload();
+	}
+
+	@Override
+	public void setPayload(byte[] payload) {
+		this.entity.setPayload(payload);
 	}
 	
 }

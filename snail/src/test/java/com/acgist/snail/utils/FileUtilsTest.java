@@ -42,13 +42,9 @@ public class FileUtilsTest extends Performance {
 	@Test
 	public void testVerify() {
 		this.cost();
-		FileUtils.md5("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
-			this.log(value + "=" + key);
-		});
+		FileUtils.md5("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv");
 		this.costed();
-		FileUtils.sha1("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv").forEach((key, value) -> {
-			this.log(value + "=" + key);
-		});
+		FileUtils.sha1("F:\\迅雷下载\\我的大叔\\[我的大叔][E008].mkv");
 		this.costed();
 	}
 	

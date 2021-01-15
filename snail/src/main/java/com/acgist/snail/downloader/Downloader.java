@@ -134,6 +134,10 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
+	public void verify() {
+	}
+	
+	@Override
 	public void unlockDownload() {
 		Snail.getInstance().unlockDownload();
 	}
