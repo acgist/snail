@@ -48,23 +48,40 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void refresh() {
-		// 任务没有被加载：不用重新加载（开始下载自动加载）
 		if(this.torrentSession == null) {
-			LOGGER.debug("BT任务信息没有加载跳过刷新");
-			// 任务已经完成不会再次加载：任务下载完成软件重启
+			// 任务没有加载（没有完成）：不用重新加载（开始下载自动加载）
 			if(this.taskSession.complete()) {
-				GuiManager.getInstance().alert("下载失败", "任务已经完成");
+				// 任务没有加载（已经完成）：加载任务进行校验
+				try {
+					this.torrentSession = this.loadTorrentSession();
+				} catch (DownloadException e) {
+					LOGGER.error("刷新任务异常", e);
+				}
+				if(this.torrentSession == null) {
+					GuiManager.getInstance().alert("下载失败", "任务加载失败");
+				} else if(this.torrentSession.verify()) {
+					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+				} else {
+					this.taskSession.setStatus(Status.PAUSE);
+					this.taskSession.setEndDate(null);
+					this.taskSession.update();
+				}
 			}
-			return;
-		}
-		// 重新加载任务
-		final int fileCount = this.torrentSession.reload();
-		// 新增下载文件并且任务已经下载完成：修改暂停状态（任务下载完成软件没有重启）
-		if(fileCount > 0 && this.taskSession.complete()) {
-			LOGGER.debug("新增下载文件：{}", this.name());
-			this.taskSession.setStatus(Status.PAUSE);
-			this.taskSession.setEndDate(null);
-			this.taskSession.update();
+		} else {
+			final int loadFileCount = this.torrentSession.reload();
+			// 任务没有完成：自动处理
+			if(this.taskSession.complete()) {
+				// 任务已经完成
+				if(loadFileCount <= 0) {
+					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+				} else if(this.torrentSession.verify()) {
+					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+				} else {
+					this.taskSession.setStatus(Status.PAUSE);
+					this.taskSession.setEndDate(null);
+					this.taskSession.update();
+				}
+			}
 		}
 	}
 	
