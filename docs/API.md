@@ -70,13 +70,13 @@ DownloaderManager.getInstance().download(url)
 #### Snail
 
 ```java
-Snail.getInstance().pause(url)
+Snail.getInstance().pause(downloader);
 ```
 
 #### DownloaderManager
 
 ```java
-DownloaderManager.getInstance().pause(url)
+DownloaderManager.getInstance().pause(taskSession);
 ```
 
 ### 删除任务
@@ -84,13 +84,13 @@ DownloaderManager.getInstance().pause(url)
 #### Snail
 
 ```java
-Snail.getInstance().delete(url)
+Snail.getInstance().delete(downloader);
 ```
 
 #### DownloaderManager
 
 ```java
-DownloaderManager.getInstance().delete(url)
+DownloaderManager.getInstance().delete(taskSession);
 ```
 
 ## BT管理
@@ -121,7 +121,7 @@ d4:type4:TEXT4:body7:messagee
 
 > 通过`socket`连接系统端口`16888`发送系统消息和接收系统通知
 
-> 参考实现（测试代码）：`com.acgist.snail.gui.extend`
+> 参考实现（测试代码）：`com.acgist.snail.gui.event`
 
 ### 系统消息
 
@@ -151,7 +151,7 @@ B编码Map
 
 #### 任务列表响应主体
 
-B编码List<Map>
+B编码List&lt;Map&gt;
 
 |名称|必要|描述|
 |:--|:--|:--|

@@ -164,10 +164,10 @@ public final class TorrentStreamGroup {
 	 */
 	private int load(boolean complete, String folder, List<TorrentFile> files) {
 		// 新增下载文件数量：原来没有下载
-		int loadDownloadCount = 0;
+		int loadFileCount = 0;
 		if(CollectionUtils.isEmpty(files)) {
 			LOGGER.error("任务文件列表为空：{}", files);
-			return loadDownloadCount;
+			return loadFileCount;
 		}
 		this.full = false; // 健康度重新检查
 		this.selectPieces.clear(); // 清除所有已选择Piece
@@ -187,7 +187,7 @@ public final class TorrentStreamGroup {
 						// 加载选择下载文件
 						if(oldStream == null) {
 							LOGGER.debug("文件选择下载（加载）：{}", filePath);
-							loadDownloadCount++;
+							loadFileCount++;
 							final TorrentStream newStream = TorrentStream.newInstance(
 								pieceLength, filePath, fileSize, pos, complete,
 								this.fileBufferSize, this
@@ -200,7 +200,7 @@ public final class TorrentStreamGroup {
 							LOGGER.debug("文件选择下载（重载）：{}", filePath);
 							// 文件没有选择下载
 							if(!oldStream.selected()) {
-								loadDownloadCount++;
+								loadFileCount++;
 							}
 							oldStream.buildSelectPieces(this.selectPieces);
 							oldStream.install();
@@ -234,7 +234,7 @@ public final class TorrentStreamGroup {
 		}
 		this.torrentSession.downloadSize(this.downloadSize());
 		this.fullPieces(this.pieces);
-		return loadDownloadCount;
+		return loadFileCount;
 	}
 	
 	/**

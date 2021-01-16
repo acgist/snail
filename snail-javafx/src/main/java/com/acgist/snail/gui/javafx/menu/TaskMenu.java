@@ -193,7 +193,7 @@ public final class TaskMenu extends Menu {
 				if(session.verify()) {
 					Platform.runLater(() -> Alerts.info("校验成功", session.getName()));
 				} else {
-					Platform.runLater(() -> Alerts.warn("校验失败", "失败文件已经开始修复"));
+					Platform.runLater(() -> Alerts.warn("校验失败", "开始下载进行修复"));
 				}
 			});
 		});
