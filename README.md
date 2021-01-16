@@ -42,7 +42,6 @@
 #### 编译
 
 ```bash
-# 编译系统和运行系统不一致时添加编译参数：-D javafx.platform=win|mac|linux
 mvn clean package -P release -D skipTests
 ```
 
