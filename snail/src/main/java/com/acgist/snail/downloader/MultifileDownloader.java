@@ -49,7 +49,7 @@ public abstract class MultifileDownloader extends Downloader {
 					Thread.currentThread().interrupt();
 				}
 				// 完成状态必须在同步块中检查
-				this.complete = this.checkCompleted();
+				this.complete = this.checkComplete();
 			}
 		}
 	}
@@ -74,6 +74,6 @@ public abstract class MultifileDownloader extends Downloader {
 	 * 
 	 * @return 是否下载完成
 	 */
-	protected abstract boolean checkCompleted();
+	protected abstract boolean checkComplete();
 	
 }

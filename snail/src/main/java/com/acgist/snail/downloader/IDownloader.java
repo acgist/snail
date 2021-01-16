@@ -95,12 +95,6 @@ public interface IDownloader extends Runnable {
 	void unlockDownload();
 	
 	/**
-	 * <p>检查任务是否完成</p>
-	 * <p>任务已经完成：标记为完成状态</p>
-	 */
-	void checkComplete();
-	
-	/**
 	 * <p>释放资源</p>
 	 */
 	void release();

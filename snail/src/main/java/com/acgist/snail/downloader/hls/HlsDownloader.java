@@ -51,11 +51,11 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	@Override
 	public void release() {
+		this.hlsSession.release();
 		if(this.complete) {
 			this.tsLink();
 			HlsManager.getInstance().remove(this.taskSession);
 		}
-		this.hlsSession.release();
 		super.release();
 	}
 	
@@ -65,7 +65,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 	
 	@Override
-	protected boolean checkCompleted() {
+	protected boolean checkComplete() {
 		return this.hlsSession.checkCompleted();
 	}
 

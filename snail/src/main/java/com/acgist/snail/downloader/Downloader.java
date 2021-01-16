@@ -144,14 +144,6 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void checkComplete() {
-		if(this.complete) {
-			this.updateStatus(Status.COMPLETE);
-			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
-		}
-	}
-	
-	@Override
 	public void release() {
 		this.gc();
 	}
@@ -164,6 +156,7 @@ public abstract class Downloader implements IDownloader {
 			LOGGER.debug("任务已经开始下载：{}", name);
 			return;
 		}
+		// 加锁：保证资源加载和释放原子性
 		synchronized (this.taskSession) {
 			if(this.taskSession.await()) {
 				LOGGER.debug("开始下载任务：{}", name);
@@ -177,7 +170,7 @@ public abstract class Downloader implements IDownloader {
 					LOGGER.error("任务下载异常", e);
 					this.fail(e.getMessage());
 				}
-				this.checkComplete(); // 检查完成状态
+				this.updateComplete(); // 标记完成
 				this.release(); // 释放资源
 				this.unlockDelete(); // 释放删除锁
 				LOGGER.debug("任务下载结束：{}", name);
@@ -203,7 +196,17 @@ public abstract class Downloader implements IDownloader {
 			!this.complete &&
 			this.taskSession.download();
 	}
-
+	
+	/**
+	 * <p>标记任务完成</p>
+	 */
+	private void updateComplete() {
+		if(this.complete) {
+			this.updateStatus(Status.COMPLETE);
+			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
+		}
+	}
+	
 	/**
 	 * <p>添加{@linkplain #deleteLock 删除锁}</p>
 	 */
