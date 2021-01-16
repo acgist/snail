@@ -175,6 +175,10 @@ public final class TorrentSession {
 	 * @throws DownloadException 下载异常
 	 */
 	public boolean magnet(ITaskSession taskSession) throws DownloadException {
+		if(this.uploadable && this.downloadable) {
+			LOGGER.debug("磁力链接已经开始转换");
+			return false;
+		}
 		this.action = Action.MAGNET;
 		this.taskSession = taskSession;
 		final boolean complete = this.torrent != null;
@@ -209,6 +213,11 @@ public final class TorrentSession {
 	 * @throws DownloadException 下载异常
 	 */
 	public TorrentSession upload(ITaskSession taskSession) {
+		if(this.uploadable) {
+			// 防止任务重复开启上传
+			LOGGER.debug("任务已经开始上传");
+			return this;
+		}
 		this.taskSession = taskSession;
 		this.loadExecutorTimer();
 		this.loadTorrentStreamGroup();
@@ -244,6 +253,11 @@ public final class TorrentSession {
 	 * @throws DownloadException 下载异常
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
+		if(this.downloadable) {
+			// 防止重复开始下载
+			LOGGER.debug("任务已经开始下载");
+			return false;
+		}
 		if(!this.uploadable) {
 			throw new DownloadException("请先开启任务上传");
 		}
@@ -539,6 +553,7 @@ public final class TorrentSession {
 	 * <p>释放资源（释放下载资源）</p>
 	 */
 	public void releaseDownload() {
+		this.downloadable = false;
 		LOGGER.debug("Torrent释放资源（下载）");
 		PeerManager.getInstance().uploadOnly(this.infoHashHex());
 		SystemThreadContext.shutdownNow(this.pexTimer);
@@ -555,13 +570,14 @@ public final class TorrentSession {
 			this.torrentStreamGroup.flush();
 		}
 		SystemThreadContext.shutdownNow(this.executor);
-		this.downloadable = false;
 	}
 	
 	/**
 	 * <p>释放资源（释放上传资源）</p>
 	 */
 	public void releaseUpload() {
+		this.useable = false;
+		this.uploadable = false;
 		LOGGER.debug("Torrent释放资源（上传）");
 		SystemThreadContext.shutdownNow(this.peerUploaderGroupTimer);
 		if(this.peerUploaderGroup != null) {
@@ -571,8 +587,6 @@ public final class TorrentSession {
 			this.torrentStreamGroup.release();
 		}
 		SystemThreadContext.shutdownNow(this.executorTimer);
-		this.useable = false;
-		this.uploadable = false;
 	}
 
 	/**
