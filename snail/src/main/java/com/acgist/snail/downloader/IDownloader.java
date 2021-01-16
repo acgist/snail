@@ -3,14 +3,14 @@ package com.acgist.snail.downloader;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus;
 
 /**
  * <p>下载器接口</p>
  * 
  * @author acgist
  */
-public interface IDownloader extends Runnable {
+public interface IDownloader extends Runnable, ITaskStatus {
 	
 	/**
 	 * <p>获取任务ID</p>

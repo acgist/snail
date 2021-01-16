@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;

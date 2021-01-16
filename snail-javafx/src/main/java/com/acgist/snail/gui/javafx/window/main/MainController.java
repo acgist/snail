@@ -23,7 +23,6 @@ import com.acgist.snail.gui.javafx.window.build.BuildWindow;
 import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.FileUtils;
@@ -269,13 +268,12 @@ public final class MainController extends Controller implements Initializable {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
 		DownloaderManager.getInstance().allTask().stream()
 			.filter(session -> {
-				final var status = session.getStatus();
 				if(this.filter == Filter.ALL) {
 					return true;
 				} else if(this.filter == Filter.DOWNLOAD) {
-					return status == Status.AWAIT || status == Status.DOWNLOAD;
+					return session.statusRunning();
 				} else if(this.filter == Filter.COMPLETE) {
-					return status == Status.COMPLETE;
+					return session.statusComplete();
 				} else {
 					return true;
 				}

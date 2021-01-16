@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo;
 
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus.Status;
 
 /**
  * <p>任务 - 实体操作接口</p>
@@ -10,6 +10,12 @@ import com.acgist.snail.pojo.ITaskSession.Status;
  */
 public interface ITaskSessionHandler {
 
+	/**
+	 * <p>重置状态</p>
+	 * <p>如果软件没有正常关闭，重置任务状态。</p>
+	 */
+	void reset();
+	
 	/**
 	 * <p>开始下载任务</p>
 	 * <p>添加下载任务并开始下载</p>
