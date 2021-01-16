@@ -69,22 +69,22 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public String id() {
+	public final String id() {
 		return this.taskSession.getId();
 	}
 	
 	@Override
-	public String name() {
+	public final String name() {
 		return this.taskSession.getName();
 	}
 	
 	@Override
-	public ITaskSession taskSession() {
+	public final ITaskSession taskSession() {
 		return this.taskSession;
 	}
 	
 	@Override
-	public void start() {
+	public final void start() {
 		// 任务已经开始不修改状态
 		if(this.taskSession.statusDownload()) {
 			return;
@@ -97,7 +97,7 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void pause() {
+	public final void pause() {
 		// 任务已经暂停不修改状态
 		if(this.taskSession.statusPause()) {
 			return;
@@ -110,7 +110,22 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void fail(String message) {
+	public void delete() {
+		this.pause(); // 暂停任务
+		this.lockDelete(); // 加锁
+	}
+	
+	@Override
+	public void refresh() throws DownloadException {
+	}
+	
+	@Override
+	public boolean verify() throws DownloadException {
+		return Files.exists(Paths.get(this.taskSession.getFile()));
+	}
+	
+	@Override
+	public final void fail(String message) {
 		this.fail = true;
 		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
@@ -126,22 +141,6 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void delete() {
-		this.pause(); // 暂停任务
-		this.lockDelete(); // 加锁
-		this.taskSession.delete(); // 删除任务
-	}
-	
-	@Override
-	public void refresh() throws DownloadException {
-	}
-	
-	@Override
-	public boolean verify() throws DownloadException {
-		return Files.exists(Paths.get(this.taskSession.getFile()));
-	}
-	
-	@Override
 	public void unlockDownload() {
 		Snail.getInstance().unlockDownload();
 	}
@@ -152,7 +151,7 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void run() {
+	public final void run() {
 		final String name = this.name();
 		if(this.taskSession.statusAwait()) {
 			// 验证任务状态：防止多次点击暂停开始导致阻塞后面下载任务线程
@@ -194,7 +193,7 @@ public abstract class Downloader implements IDownloader {
 	 * 
 	 * @return true-可以下载；false-不能下载；
 	 */
-	protected boolean downloadable() {
+	protected final boolean downloadable() {
 		return
 			!this.fail &&
 			!this.complete &&
@@ -204,7 +203,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>标记任务完成</p>
 	 */
-	private void updateComplete() {
+	private final void updateComplete() {
 		if(this.complete) {
 			this.updateStatus(Status.COMPLETE);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
@@ -214,7 +213,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>添加{@linkplain #deleteLock 删除锁}</p>
 	 */
-	private void lockDelete() {
+	private final void lockDelete() {
 		if(!this.deleteLock.get()) {
 			synchronized (this.deleteLock) {
 				if(!this.deleteLock.get()) {
@@ -232,7 +231,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>释放{@linkplain #deleteLock 删除锁}</p>
 	 */
-	private void unlockDelete() {
+	private final void unlockDelete() {
 		synchronized (this.deleteLock) {
 			this.deleteLock.set(true);
 			this.deleteLock.notifyAll();
@@ -245,7 +244,7 @@ public abstract class Downloader implements IDownloader {
 	 * 
 	 * @param status 任务状态
 	 */
-	private void updateStatus(Status status) {
+	private final void updateStatus(Status status) {
 		this.unlockDownload();
 		this.taskSession.updateStatus(status);
 	}
@@ -253,7 +252,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>垃圾回收</p>
 	 */
-	private void gc() {
+	private final void gc() {
 		LOGGER.debug("垃圾回收（GC）");
 		System.gc();
 	}

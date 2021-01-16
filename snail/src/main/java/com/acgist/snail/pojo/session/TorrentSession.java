@@ -527,10 +527,7 @@ public final class TorrentSession {
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {
 			LOGGER.debug("任务下载完成：{}", this.name());
-			final var downloader = this.taskSession.downloader();
-			if(downloader != null) {
-				downloader.unlockDownload(); // 解除下载锁
-			}
+			this.taskSession.unlockDownload(); // 释放下载锁
 		}
 	}
 	
@@ -598,13 +595,10 @@ public final class TorrentSession {
 		} catch (DownloadException e) {
 			LOGGER.error("解析种子异常", e);
 		}
-		final var downloader = this.taskSession.downloader();
 		final long size = FileUtils.fileSize(torrentFilePath);
 		this.taskSession.setSize(size); // 设置任务大小
 		this.taskSession.downloadSize(size); // 设置已下载大小
-		if(downloader != null) {
-			downloader.unlockDownload();
-		}
+		this.taskSession.unlockDownload(); // 释放下载锁
 	}
 	
 	/**

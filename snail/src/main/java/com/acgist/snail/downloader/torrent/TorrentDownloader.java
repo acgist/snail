@@ -48,6 +48,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void refresh() throws DownloadException {
+		super.refresh();
 		// 文件没有更改
 		boolean unchange = true;
 		if(this.torrentSession != null) {

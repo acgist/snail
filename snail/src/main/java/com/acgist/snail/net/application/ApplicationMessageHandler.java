@@ -245,7 +245,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
 			try {
-				DownloaderManager.getInstance().start(optional.get());
+				optional.get().start();
 				this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 			} catch (DownloadException e) {
 				this.send(ApplicationMessage.response(e.getMessage()));
@@ -264,7 +264,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		if(optional.isEmpty()) {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
-			DownloaderManager.getInstance().pause(optional.get());
+			optional.get().pause();
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		}
 	}
@@ -280,7 +280,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		if(optional.isEmpty()) {
 			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
 		} else {
-			DownloaderManager.getInstance().delete(optional.get());
+			optional.get().delete();
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		}
 	}

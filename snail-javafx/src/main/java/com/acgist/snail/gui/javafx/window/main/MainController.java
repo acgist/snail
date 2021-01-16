@@ -334,7 +334,7 @@ public final class MainController extends Controller implements Initializable {
 	public void start() {
 		this.selected().forEach(session -> {
 			try {
-				DownloaderManager.getInstance().start(session);
+				session.start();
 			} catch (DownloadException e) {
 				LOGGER.error("开始下载任务异常", e);
 				Alerts.warn("下载失败", e.getMessage());
@@ -346,7 +346,7 @@ public final class MainController extends Controller implements Initializable {
 	 * <p>暂停选中任务</p>
 	 */
 	public void pause() {
-		this.selected().forEach(session -> DownloaderManager.getInstance().pause(session));
+		this.selected().forEach(ITaskSession::pause);
 	}
 	
 	/**
@@ -358,7 +358,7 @@ public final class MainController extends Controller implements Initializable {
 		}
 		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiManager.MessageType.CONFIRM);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
-			this.selected().forEach(session -> DownloaderManager.getInstance().delete(session));
+			this.selected().forEach(ITaskSession::delete);
 		}
 	}
 
@@ -409,11 +409,11 @@ public final class MainController extends Controller implements Initializable {
 				}
 			} else if(session.statusRunning()) {
 				// 处于下载线程：暂停下载
-				DownloaderManager.getInstance().pause(session);
+				session.pause();
 			} else {
 				// 其他：开始下载
 				try {
-					DownloaderManager.getInstance().start(session);
+					session.start();
 				} catch (DownloadException e) {
 					LOGGER.error("开始下载任务异常", e);
 					Alerts.warn("下载失败", e.getMessage());

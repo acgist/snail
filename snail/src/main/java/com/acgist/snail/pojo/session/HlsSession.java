@@ -208,10 +208,7 @@ public final class HlsSession {
 	 */
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {
-			final var downloader = this.taskSession.downloader();
-			if(downloader != null) {
-				downloader.unlockDownload(); // 解除下载锁
-			}
+			this.taskSession.unlockDownload(); // 释放下载锁
 		}
 	}
 	

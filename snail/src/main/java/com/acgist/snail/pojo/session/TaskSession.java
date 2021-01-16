@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
@@ -78,31 +79,11 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
-	public boolean verify() throws DownloadException {
-		if(this.downloader == null) {
-			return Files.exists(Paths.get(this.getFile()));
-		}
-		return this.downloader.verify();
-	}
-	
-	@Override
 	public void reset() {
 		// 非常重要：如果任务被错误的保存为下载状态需要重置为等待状态（否者不能正常下载）
 		if(this.statusDownload()) {
 			this.setStatus(Status.AWAIT);
 		}
-	}
-	
-	@Override
-	public IDownloader downloader() {
-		return this.downloader;
-	}
-
-	@Override
-	public IDownloader removeDownloader() {
-		final IDownloader downloader = this.downloader;
-		this.downloader = null;
-		return downloader;
 	}
 	
 	@Override
@@ -242,15 +223,73 @@ public final class TaskSession implements ITaskSession {
 	//================实体操作================//
 	
 	@Override
-	public void update() {
-		EntityContext.getInstance().update(this.entity);
+	public void start() throws DownloadException {
+		// 提交下载队列
+		DownloaderManager.getInstance().submit(this);
+		if(this.downloader != null) {
+			this.downloader.start(); // 开始下载
+		}
+	}
+	
+	@Override
+	public void restart() throws DownloadException {
+		if(this.downloader != null) {
+			// 删除下载队列
+			DownloaderManager.getInstance().remove(this.downloader);
+			// 移除下载器
+			this.downloader = null;
+		}
+		this.start();
+	}
+	
+	@Override
+	public void pause() {
+		if(this.downloader != null) {
+			this.downloader.pause();
+		}
 	}
 	
 	@Override
 	public void delete() {
+		if(this.downloader != null) {
+			// 后台删除任务
+			SystemThreadContext.submit(this.downloader::delete);
+			// 删除下载队列
+			DownloaderManager.getInstance().remove(this.downloader);
+		}
+		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
+		// 刷新任务列表
+		GuiManager.getInstance().refreshTaskList();
 	}
 
+	@Override
+	public void refresh() throws DownloadException {
+		if(this.downloader != null) {
+			this.downloader.refresh();
+		}
+	}
+	
+	@Override
+	public boolean verify() throws DownloadException {
+		if(this.downloader == null) {
+			return Files.exists(Paths.get(this.getFile()));
+		}
+		return this.downloader.verify();
+	}
+	
+	@Override
+	public void unlockDownload() {
+		if(this.downloader != null) {
+			this.downloader.unlockDownload();
+		}
+	}
+	
+	@Override
+	public void update() {
+		EntityContext.getInstance().update(this.entity);
+	}
+	
 	@Override
 	public void updateStatus(Status status) {
 		if(this.statusComplete()) {

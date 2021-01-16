@@ -113,35 +113,12 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 		}
 
 	}
-
-	/**
-	 * <p>校验下载文件</p>
-	 * 
-	 * @return 校验结果
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	boolean verify() throws DownloadException;
 	
 	/**
 	 * <p>重置状态</p>
 	 * <p>如果软件没有正常关闭，重置任务状态。</p>
 	 */
 	void reset();
-	
-	/**
-	 * <p>获取下载器</p>
-	 * 
-	 * @return 下载器
-	 */
-	IDownloader downloader();
-
-	/**
-	 * <p>删除下载器</p>
-	 * 
-	 * @return 下载器
-	 */
-	IDownloader removeDownloader();
 	
 	/**
 	 * <p>创建下载器</p>

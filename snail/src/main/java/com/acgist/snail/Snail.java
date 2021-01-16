@@ -21,7 +21,6 @@ import com.acgist.snail.context.initializer.NatInitializer;
 import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.context.initializer.TrackerInitializer;
 import com.acgist.snail.downloader.DownloaderManager;
-import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.torrent.TorrentServer;
@@ -97,30 +96,8 @@ public final class Snail {
 	 * 
 	 * @see DownloaderManager#download(String)
 	 */
-	public IDownloader download(String url) throws DownloadException {
+	public ITaskSession download(String url) throws DownloadException {
 		return DownloaderManager.getInstance().download(url);
-	}
-	
-	/**
-	 * <p>暂停任务</p>
-	 * 
-	 * @param downloader 下载任务
-	 * 
-	 * @see DownloaderManager#pause(ITaskSession)
-	 */
-	public void pause(IDownloader downloader) {
-		DownloaderManager.getInstance().pause(downloader.taskSession());
-	}
-	
-	/**
-	 * <p>删除任务</p>
-	 * 
-	 * @param downloader 下载任务
-	 * 
-	 * @see DownloaderManager#delete(ITaskSession)
-	 */
-	public void delete(IDownloader downloader) {
-		DownloaderManager.getInstance().delete(downloader.taskSession());
 	}
 	
 	/**

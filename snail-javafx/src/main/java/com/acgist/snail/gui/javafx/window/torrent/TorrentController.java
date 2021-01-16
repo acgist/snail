@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
@@ -142,7 +141,7 @@ public final class TorrentController extends Controller implements Initializable
 			if(magnetToTorrent) {
 				// 切换下载器并且重新下载
 				try {
-					DownloaderManager.getInstance().restart(this.taskSession);
+					this.taskSession.restart();
 				} catch (DownloadException e) {
 					LOGGER.error("切换下载器异常", e);
 					Alerts.warn("下载失败", e.getMessage());
@@ -150,7 +149,7 @@ public final class TorrentController extends Controller implements Initializable
 			} else {
 				// 刷新任务
 				try {
-					DownloaderManager.getInstance().refresh(this.taskSession);
+					this.taskSession.refresh();
 				} catch (DownloadException e) {
 					LOGGER.error("刷新任务异常", e);
 					Alerts.warn("下载失败", e.getMessage());
