@@ -786,10 +786,10 @@ public final class TorrentSession {
 	/**
 	 * @return 是否处于完成状态
 	 * 
-	 * @see ITaskSession#complete()
+	 * @see ITaskSession#statusComplete()
 	 */
 	public boolean completed() {
-		return this.taskSession.complete();
+		return this.taskSession.statusComplete();
 	}
 	
 	/**

@@ -127,7 +127,7 @@ public final class PeerDownloaderGroup {
 	private void spinLock() {
 		final PeerManager peerManager = PeerManager.getInstance();
 		final String infoHashHex = this.torrentSession.infoHashHex();
-		while(this.taskSession.download()) {
+		while(this.taskSession.statusDownload()) {
 			if(peerManager.hasPeerSession(infoHashHex)) {
 				break;
 			}
@@ -181,7 +181,7 @@ public final class PeerDownloaderGroup {
 	 * @return 创建状态：true-继续；false-停止；
 	 */
 	private boolean buildPeerDownloader() {
-		if(!this.taskSession.download()) {
+		if(!this.taskSession.statusDownload()) {
 			return false;
 		}
 		if(this.peerDownloaders.size() >= SystemConfig.getPeerSize()) {

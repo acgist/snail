@@ -397,7 +397,7 @@ public final class MainController extends Controller implements Initializable {
 			if(session == null) {
 				return;
 			}
-			if(session.complete()) {
+			if(session.statusComplete()) {
 				// 下载完成：打开任务
 				if(session.getType() == Type.MAGNET) {
 					// 磁力链接：转换BT任务
@@ -407,7 +407,7 @@ public final class MainController extends Controller implements Initializable {
 					// TODO：文件可能存在病毒
 					Desktops.open(new File(session.getFile()));
 				}
-			} else if(session.inThreadPool()) {
+			} else if(session.statusRunning()) {
 				// 处于下载线程：暂停下载
 				DownloaderManager.getInstance().pause(session);
 			} else {

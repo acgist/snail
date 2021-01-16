@@ -203,7 +203,7 @@ public final class DownloaderManager {
 		synchronized (this.downloaders) {
 			// 当前任务正在下载数量
 			final long downloadCount = this.downloaders.stream()
-				.filter(downloader -> downloader.taskSession().download())
+				.filter(downloader -> downloader.taskSession().statusDownload())
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(downloadCount == downloadSize) {
@@ -212,14 +212,14 @@ public final class DownloaderManager {
 				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 大于：暂停部分下载任务
 				this.downloaders.stream()
-					.filter(downloader -> downloader.taskSession().download())
+					.filter(downloader -> downloader.taskSession().statusDownload())
 					.skip(downloadSize)
 					.forEach(IDownloader::pause);
 			} else {
 				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 小于：开始部分下载任务
 				this.downloaders.stream()
-					.filter(downloader -> downloader.taskSession().await())
+					.filter(downloader -> downloader.taskSession().statusAwait())
 					.limit(downloadSize - downloadCount)
 					.forEach(this.executor::submit);
 			}
@@ -260,7 +260,7 @@ public final class DownloaderManager {
 		try {
 			synchronized (this.downloaders) {
 				this.downloaders.stream()
-					.filter(downloader -> downloader.taskSession().inThreadPool())
+					.filter(downloader -> downloader.taskSession().statusRunning())
 					.forEach(IDownloader::pause);
 			}
 		} catch (Exception e) {

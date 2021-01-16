@@ -130,7 +130,7 @@ public final class Snail {
 	public void lockDownload() {
 		synchronized (this) {
 			this.lock = true;
-			while(DownloaderManager.getInstance().allTask().stream().anyMatch(ITaskSession::inThreadPool)) {
+			while(DownloaderManager.getInstance().allTask().stream().anyMatch(ITaskSession::statusRunning)) {
 				try {
 					this.wait();
 				} catch (InterruptedException e) {

@@ -88,7 +88,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public void reset() {
 		// 非常重要：如果任务被错误的保存为下载状态需要重置为等待状态（否者不能正常下载）
-		if(this.download()) {
+		if(this.statusDownload()) {
 			this.setStatus(Status.AWAIT);
 		}
 	}
@@ -151,28 +151,28 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
-	public boolean await() {
+	public boolean statusAwait() {
 		return this.getStatus() == Status.AWAIT;
 	}
 	
 	@Override
-	public boolean pause() {
+	public boolean statusPause() {
 		return this.getStatus() == Status.PAUSE;
 	}
 	
 	@Override
-	public boolean download() {
+	public boolean statusDownload() {
 		return this.getStatus() == Status.DOWNLOAD;
 	}
 	
 	@Override
-	public boolean complete() {
+	public boolean statusComplete() {
 		return this.getStatus() == Status.COMPLETE;
 	}
 	
 	@Override
-	public boolean inThreadPool() {
-		return this.await() || this.download();
+	public boolean statusRunning() {
+		return this.statusAwait() || this.statusDownload();
 	}
 	
 	@Override
@@ -191,7 +191,7 @@ public final class TaskSession implements ITaskSession {
 
 	@Override
 	public String getStatusValue() {
-		if(this.download()) {
+		if(this.statusDownload()) {
 			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
 		} else {
 			return this.getStatus().getValue();
@@ -200,7 +200,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public String getProgressValue() {
-		if(this.complete()) {
+		if(this.statusComplete()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
 			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
@@ -219,7 +219,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public String getEndDateValue() {
 		if(this.getEndDate() == null) {
-			if(this.download()) {
+			if(this.statusDownload()) {
 				final long downloadSpeed = this.statistics.downloadSpeed();
 				if(downloadSpeed == 0L) {
 					return "-";
@@ -253,7 +253,7 @@ public final class TaskSession implements ITaskSession {
 
 	@Override
 	public void updateStatus(Status status) {
-		if(this.complete()) {
+		if(this.statusComplete()) {
 			return;
 		}
 		if(status == Status.COMPLETE) {
