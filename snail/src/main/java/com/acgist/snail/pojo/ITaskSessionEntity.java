@@ -3,7 +3,7 @@ package com.acgist.snail.pojo;
 import java.util.Date;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**

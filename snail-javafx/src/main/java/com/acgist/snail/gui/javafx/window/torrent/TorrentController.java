@@ -12,7 +12,7 @@ import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;

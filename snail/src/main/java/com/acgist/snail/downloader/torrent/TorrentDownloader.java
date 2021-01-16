@@ -7,7 +7,6 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.TorrentSessionDownloader;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
@@ -54,13 +53,13 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			// 任务信息已经加载：重新加载下载文件信息
 			unchange = this.torrentSession.reload() <= 0;
-		} else if(this.taskSession.statusComplete()) {
+		} else if(this.statusComplete()) {
 			// 任务信息没有加载（软件重启）：任务完成加载任务信息
 			unchange = false;
 			this.torrentSession = this.loadTorrentSession();
 		}
 		// 如果任务没有完成修改数据开始下载自动加载任务
-		if(this.taskSession.statusComplete()) {
+		if(this.statusComplete()) {
 			// 完成任务校验数据
 			if(unchange) {
 				// 没有新增文件

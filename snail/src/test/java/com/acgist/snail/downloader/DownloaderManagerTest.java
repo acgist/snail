@@ -12,7 +12,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.Status;
+import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.http.HttpProtocol;
