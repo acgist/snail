@@ -63,7 +63,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		this.hlsSession.download();
+		this.complete = this.hlsSession.download();
 	}
 	
 	@Override
