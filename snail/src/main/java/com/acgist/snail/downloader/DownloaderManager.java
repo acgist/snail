@@ -153,8 +153,10 @@ public final class DownloaderManager {
 	 * <p>刷新任务</p>
 	 * 
 	 * @param taskSession 任务信息
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
-	public void refresh(ITaskSession taskSession) {
+	public void refresh(ITaskSession taskSession) throws DownloadException {
 		taskSession.downloader().refresh();
 	}
 

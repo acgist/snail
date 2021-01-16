@@ -193,7 +193,7 @@ public final class TorrentStreamGroup {
 								this.fileBufferSize, this
 							);
 							this.streams.add(newStream);
-							newStream.buildSelectPieces(selectPieces);
+							newStream.buildSelectPieces(this.selectPieces);
 							newStream.install();
 							sortList.add(newStream);
 						} else {

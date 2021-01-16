@@ -118,8 +118,10 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	 * <p>校验下载文件</p>
 	 * 
 	 * @return 校验结果
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
-	boolean verify();
+	boolean verify() throws DownloadException;
 	
 	/**
 	 * <p>重置状态</p>

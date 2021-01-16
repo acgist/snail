@@ -82,14 +82,15 @@ public final class TorrentController extends Controller implements Initializable
 			torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			LOGGER.error("种子文件解析异常", e);
-			Alerts.warn("下载失败", "种子文件解析失败：" + e.getMessage());
-			return;
+			Alerts.warn("下载失败", e.getMessage());
 		}
-		this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
-		torrent.getInfo().files().stream()
-			.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
-			.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
-		this.selectorManager.select(taskSession);
+		if(torrent != null) {
+			this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
+			torrent.getInfo().files().stream()
+				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
+				.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
+			this.selectorManager.select(taskSession);
+		}
 	}
 	
 	/**
@@ -144,10 +145,16 @@ public final class TorrentController extends Controller implements Initializable
 					DownloaderManager.getInstance().restart(this.taskSession);
 				} catch (DownloadException e) {
 					LOGGER.error("切换下载器异常", e);
+					Alerts.warn("下载失败", e.getMessage());
 				}
 			} else {
 				// 刷新任务
-				DownloaderManager.getInstance().refresh(this.taskSession);
+				try {
+					DownloaderManager.getInstance().refresh(this.taskSession);
+				} catch (DownloadException e) {
+					LOGGER.error("刷新任务异常", e);
+					Alerts.warn("下载失败", e.getMessage());
+				}
 			}
 		}
 		TaskDisplay.getInstance().refreshTaskStatus();

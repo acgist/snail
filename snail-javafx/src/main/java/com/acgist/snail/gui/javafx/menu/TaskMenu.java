@@ -1,11 +1,13 @@
 package com.acgist.snail.gui.javafx.menu;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
@@ -14,12 +16,14 @@ import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
+import com.acgist.snail.pojo.ITaskSession.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.stage.WindowEvent;
 
@@ -188,12 +192,25 @@ public final class TaskMenu extends Menu {
 	 * <p>文件校验</p>
 	 */
 	private EventHandler<ActionEvent> verifyEvent = event -> {
-		SystemThreadContext.submit(() -> {
+		Platform.runLater(() -> {
 			MainWindow.getInstance().controller().selected().forEach(session -> {
-				if(session.verify()) {
-					Platform.runLater(() -> Alerts.info("校验成功", session.getName()));
-				} else {
-					Platform.runLater(() -> Alerts.warn("校验失败", "开始下载进行修复"));
+				try {
+					if(session.verify()) {
+						Alerts.info("校验成功", session.getName());
+					} else if(session.complete()) {
+						// 任务完成：判断是否需要重新下载
+						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiManager.MessageType.CONFIRM);
+						if(optional.isPresent() && optional.get() == ButtonType.OK) {
+							session.setStatus(Status.PAUSE);
+							session.setEndDate(null);
+							session.update();
+						}
+					} else {
+						Alerts.warn("校验失败", "开始下载自动修复");
+					}
+				} catch (DownloadException e) {
+					LOGGER.error("文件校验异常", e);
+					Alerts.warn("校验失败", e.getMessage());
 				}
 			});
 		});

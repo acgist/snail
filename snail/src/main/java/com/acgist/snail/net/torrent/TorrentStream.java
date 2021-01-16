@@ -101,7 +101,7 @@ public final class TorrentStream {
 	/**
 	 * <p>Piece缓存队列</p>
 	 */
-	private final BlockingQueue<TorrentPiece> filePieces;
+	private final BlockingQueue<TorrentPiece> cachePieces;
 	/**
 	 * <p>文件流</p>
 	 * <p>不用使用NIO（FileChannel）没有性能提升</p>
@@ -148,7 +148,7 @@ public final class TorrentStream {
 		this.pieces = new BitSet();
 		this.pausePieces = new BitSet();
 		this.downloadPieces = new BitSet();
-		this.filePieces = new LinkedBlockingQueue<>();
+		this.cachePieces = new LinkedBlockingQueue<>();
 		this.fileStream = this.buildFileStream();
 		this.torrentStreamGroup = torrentStreamGroup;
 		this.buildPieces(complete);
@@ -378,7 +378,7 @@ public final class TorrentStream {
 				return false;
 			}
 			// 加入缓存队列
-			if(this.filePieces.offer(piece)) {
+			if(this.cachePieces.offer(piece)) {
 				LOGGER.debug("保存Piece：{}", index);
 				this.done(index);
 				// 更新缓存大小
@@ -463,7 +463,7 @@ public final class TorrentStream {
 			return null;
 		}
 		// 从Piece缓存中读取数据
-		final TorrentPiece cachePiece = this.filePieces(index);
+		final TorrentPiece cachePiece = this.cachePiece(index);
 		if(cachePiece != null) {
 			return cachePiece.read(pos, size);
 		}
@@ -662,7 +662,7 @@ public final class TorrentStream {
 	public void flush() {
 		synchronized (this) {
 			final var list = new ArrayList<TorrentPiece>();
-			this.filePieces.drainTo(list);
+			this.cachePieces.drainTo(list);
 			list.forEach(this::flush);
 		}
 	}
@@ -711,9 +711,9 @@ public final class TorrentStream {
 	 * 
 	 * @return Piece数据
 	 */
-	private TorrentPiece filePieces(int index) {
+	private TorrentPiece cachePiece(int index) {
 		TorrentPiece torrentPiece;
-		final var iterator = this.filePieces.iterator();
+		final var iterator = this.cachePieces.iterator();
 		while(iterator.hasNext()) {
 			torrentPiece = iterator.next();
 			if(torrentPiece.getIndex() == index) {
