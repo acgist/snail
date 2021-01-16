@@ -186,28 +186,28 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	 * 
 	 * @return 是否处于等待状态
 	 */
-	boolean await();
+	boolean statusAwait();
 	
 	/**
 	 * <p>判断任务是否处于暂停状态</p>
 	 * 
 	 * @return 是否处于暂停状态
 	 */
-	boolean pause();
+	boolean statusPause();
 	
 	/**
 	 * <p>判断任务是否处于下载状态</p>
 	 * 
 	 * @return 是否处于下载状态
 	 */
-	boolean download();
+	boolean statusDownload();
 	
 	/**
 	 * <p>判断任务是否处于完成状态</p>
 	 * 
 	 * @return 是否处于完成状态
 	 */
-	boolean complete();
+	boolean statusComplete();
 	
 	/**
 	 * <p>判断任务是否处于执行状态</p>
@@ -215,10 +215,10 @@ public interface ITaskSession extends ITaskSessionTable, ITaskSessionEntity, ITa
 	 * 
 	 * @return 是否处于执行状态
 	 * 
-	 * @see #await()
-	 * @see #download()
+	 * @see #statusAwait()
+	 * @see #statusDownload()
 	 */
-	boolean inThreadPool();
+	boolean statusRunning();
 	
 	/**
 	 * <p>获取任务信息（Map）</p>

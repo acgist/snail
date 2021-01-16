@@ -65,7 +65,7 @@ public abstract class Downloader implements IDownloader {
 		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 		this.taskSession.downloadSize(downloadSize);
 		// 初始化删除锁：任务没有下载可以直接删除
-		this.deleteLock.set(!this.taskSession.download());
+		this.deleteLock.set(!this.taskSession.statusDownload());
 	}
 	
 	@Override
@@ -86,11 +86,11 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void start() {
 		// 任务已经开始不修改状态
-		if(this.taskSession.download()) {
+		if(this.taskSession.statusDownload()) {
 			return;
 		}
 		// 任务已经完成不修改状态
-		if(this.taskSession.complete()) {
+		if(this.taskSession.statusComplete()) {
 			return;
 		}
 		this.updateStatus(Status.AWAIT);
@@ -99,11 +99,11 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void pause() {
 		// 任务已经暂停不修改状态
-		if(this.taskSession.pause()) {
+		if(this.taskSession.statusPause()) {
 			return;
 		}
 		// 任务已经完成不修改状态
-		if(this.taskSession.complete()) {
+		if(this.taskSession.statusComplete()) {
 			return;
 		}
 		this.updateStatus(Status.PAUSE);
@@ -154,11 +154,11 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void run() {
 		final String name = this.name();
-		if(this.taskSession.await()) {
+		if(this.taskSession.statusAwait()) {
 			// 验证任务状态：防止多次点击暂停开始导致阻塞后面下载任务线程
 			synchronized (this.taskSession) {
 				// 加锁：保证资源加载和释放原子性
-				if(this.taskSession.await()) {
+				if(this.taskSession.statusAwait()) {
 					LOGGER.debug("开始下载任务：{}", name);
 					this.fail = false; // 重置下载失败状态
 					this.complete = false; // 重置下载成功状态
@@ -189,7 +189,7 @@ public abstract class Downloader implements IDownloader {
 	 * 	<dt>判断任务是否可以下载</dt>
 	 * 	<dd>未被标记{@linkplain #fail 失败}</dd>
 	 * 	<dd>未被标记{@linkplain #complete 完成}</dd>
-	 * 	<dd>任务处于{@linkplain ITaskSession#download() 下载状态}</dd>
+	 * 	<dd>任务处于{@linkplain ITaskSession#statusDownload() 下载状态}</dd>
 	 * </dl>
 	 * 
 	 * @return true-可以下载；false-不能下载；
@@ -198,7 +198,7 @@ public abstract class Downloader implements IDownloader {
 		return
 			!this.fail &&
 			!this.complete &&
-			this.taskSession.download();
+			this.taskSession.statusDownload();
 	}
 	
 	/**
