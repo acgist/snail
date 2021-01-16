@@ -61,7 +61,7 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	}
 	
 	@Override
-	protected boolean checkCompleted() {
+	protected boolean checkComplete() {
 		return this.torrentSession.checkCompleted();
 	}
 
