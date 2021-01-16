@@ -181,26 +181,24 @@ public final class TorrentSession {
 		}
 		this.action = Action.MAGNET;
 		this.taskSession = taskSession;
-		final boolean complete = this.torrent != null;
-		if(complete) {
-			LOGGER.debug("磁力链接任务已经完成不加载资源");
-		} else {
-			this.loadMagnet();
-			this.loadExecutor();
-			this.loadExecutorTimer();
-			this.loadTrackerLauncherGroup();
-			this.loadTrackerLauncherGroupTimer();
-			this.loadDhtLauncher();
-			this.loadDhtLauncherTimer();
-			this.loadPeerUploaderGroup();
-			this.loadPeerUploaderGroupTimer();
-			this.loadPeerDownloaderGroup();
-			this.loadPeerDownloaderGroupTimer();
+		if(this.checkCompleted()) {
+			return true;
 		}
+		this.loadMagnet();
+		this.loadExecutor();
+		this.loadExecutorTimer();
+		this.loadTrackerLauncherGroup();
+		this.loadTrackerLauncherGroupTimer();
+		this.loadDhtLauncher();
+		this.loadDhtLauncherTimer();
+		this.loadPeerUploaderGroup();
+		this.loadPeerUploaderGroupTimer();
+		this.loadPeerDownloaderGroup();
+		this.loadPeerDownloaderGroupTimer();
 		this.useable = true;
 		this.uploadable = false;
 		this.downloadable = false;
-		return complete;
+		return false;
 	}
 	
 	/**
@@ -261,11 +259,8 @@ public final class TorrentSession {
 		if(!this.uploadable) {
 			throw new DownloadException("请先开启任务上传");
 		}
-		if(this.taskSession == null) {
-			throw new DownloadException("下载任务准备失败");
-		}
 		this.action = Action.TORRENT;
-		if(this.taskSession.complete() || this.torrentStreamGroup.complete()) {
+		if(this.checkCompleted()) {
 			return true;
 		}
 		this.loadExecutor();

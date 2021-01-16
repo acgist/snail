@@ -58,8 +58,6 @@ public final class HlsSession {
 	private final List<HlsClient> clients;
 	/**
 	 * <p>线程池</p>
-	 * 
-	 * TODO：开始创建？下载时创建（防止重复创建）
 	 */
 	private final ExecutorService executor;
 	/**
@@ -113,14 +111,17 @@ public final class HlsSession {
 	/**
 	 * <p>开始下载</p>
 	 * <p>任务全部下载结束后，如果任务可以下载并且没有完成将继续下载。</p>
+	 * 
+	 * @return 是否下载完成
 	 */
-	public void download() {
+	public boolean download() {
 		this.downloadable = true;
 		synchronized (this.clients) {
 			for (HlsClient client : this.clients) {
 				this.download(client);
 			}
 		}
+		return this.checkCompleted();
 	}
 	
 	/**
