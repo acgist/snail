@@ -77,7 +77,9 @@
 ### 环境
 
 Java：11+
+
 Maven：3.6.0+
+
 系统支持：win、mac、linux
 
 ### 编译
@@ -86,7 +88,7 @@ Maven：3.6.0+
 mvn clean package -P release -D skipTests
 ```
 
-> 编译系统和运行系统不一致时添加编译参数：-D javafx.platform=win|mac|linux
+> 编译系统和运行系统不一致时添加编译参数：`-D javafx.platform=win|mac|linux`
 
 ```bash
 mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
