@@ -7,6 +7,7 @@
 	* [添加协议](#添加协议)
 * [任务管理](#任务管理)
 	* [添加任务](#添加任务)
+	* [开始任务](#开始任务)
 	* [暂停任务](#暂停任务)
 	* [删除任务](#删除任务)
 * [BT管理](#bt管理)
@@ -56,41 +57,33 @@ ProtocolManager.getInstance().register(protocol);
 #### Snail
 
 ```java
-Snail.getInstance().download(url)
+ITaskSession taskSession = Snail.getInstance().download(url)
 ```
 
 #### DownloaderManager
 
 ```java
-DownloaderManager.getInstance().download(url)
+ITaskSession taskSession = DownloaderManager.getInstance().download(url)
+```
+
+> 任务添加完成自动开始下载不用调用开始任务方法
+
+### 开始任务
+
+```java
+ITaskSession#.start();
 ```
 
 ### 暂停任务
 
-#### Snail
-
 ```java
-Snail.getInstance().pause(downloader);
-```
-
-#### DownloaderManager
-
-```java
-DownloaderManager.getInstance().pause(taskSession);
+ITaskSession#.pause();
 ```
 
 ### 删除任务
 
-#### Snail
-
 ```java
-Snail.getInstance().delete(downloader);
-```
-
-#### DownloaderManager
-
-```java
-DownloaderManager.getInstance().delete(taskSession);
+ITaskSession#.delete();
 ```
 
 ## BT管理

@@ -42,18 +42,9 @@ public interface IDownloader extends Runnable {
 	 * <p>暂停任务</p>
 	 */
 	void pause();
-
-	/**
-	 * <p>标记失败</p>
-	 * <p>更新任务状态（{@linkplain Status#FAIL 失败}）、提示失败信息</p>
-	 * 
-	 * @param message 失败信息
-	 */
-	void fail(String message);
 	
 	/**
 	 * <p>删除任务</p>
-	 * <p>先暂停任务，等任务结束下载后再删除任务。</p>
 	 */
 	void delete();
 	
@@ -72,6 +63,14 @@ public interface IDownloader extends Runnable {
 	 * @throws DownloadException 下载异常
 	 */
 	boolean verify() throws DownloadException;
+
+	/**
+	 * <p>标记失败</p>
+	 * <p>更新任务状态（{@linkplain Status#FAIL 失败}）、提示失败信息</p>
+	 * 
+	 * @param message 失败信息
+	 */
+	void fail(String message);
 	
 	/**
 	 * <dl>

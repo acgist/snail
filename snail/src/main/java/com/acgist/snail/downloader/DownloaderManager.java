@@ -61,51 +61,18 @@ public final class DownloaderManager {
 	 * 
 	 * @param url 下载链接
 	 * 
-	 * @return 下载器
+	 * @return 下载任务
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public IDownloader download(String url) throws DownloadException {
+	public ITaskSession download(String url) throws DownloadException {
 		try {
 			final var session = this.manager.buildTaskSession(url);
-			return this.start(session);
+			session.start();
+			return session;
 		} finally {
 			GuiManager.getInstance().refreshTaskList();
 		}
-	}
-	
-	/**
-	 * <p>开始下载任务</p>
-	 * <p>添加下载任务并开始下载</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @return 下载器
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public IDownloader start(ITaskSession taskSession) throws DownloadException {
-		final IDownloader downloader = this.submit(taskSession);
-		downloader.start(); // 开始下载
-		return downloader;
-	}
-	
-	/**
-	 * <p>重新添加下载</p>
-	 * <p>先删除任务旧下载器，然后从{@linkplain #downloaders 下载队列}中删除任务，最后重新下载。</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @return 下载器
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public IDownloader restart(ITaskSession taskSession) throws DownloadException {
-		final IDownloader downloader = taskSession.removeDownloader(); // 删除旧下载器
-		synchronized (this.downloaders) {
-			this.downloaders.remove(downloader); // 下载队列删除
-		}
-		return this.start(taskSession); // 重新下载
 	}
 	
 	/**
@@ -141,42 +108,15 @@ public final class DownloaderManager {
 	}
 	
 	/**
-	 * <p>暂停任务</p>
+	 * <p>删除下载器</p>
 	 * 
-	 * @param taskSession 任务信息
+	 * @param downloader 下载器
 	 */
-	public void pause(ITaskSession taskSession) {
-		taskSession.downloader().pause();
-	}
-	
-	/**
-	 * <p>刷新任务</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public void refresh(ITaskSession taskSession) throws DownloadException {
-		taskSession.downloader().refresh();
-	}
-
-	/**
-	 * <p>删除任务</p>
-	 * <p>从{@linkplain #downloaders 下载队列}中立即删除，实际删除操作在后台进行。</p>
-	 * 
-	 * @param taskSession 任务信息
-	 */
-	public void delete(ITaskSession taskSession) {
-		// 获取下载器：防止队列删除后后台删除空指针
-		final var downloader = taskSession.downloader();
-		// 后台删除任务
-		SystemThreadContext.submit(downloader::delete);
+	public void remove(IDownloader downloader) {
 		synchronized (this.downloaders) {
 			// 下载队列删除
 			this.downloaders.remove(downloader);
 		}
-		// 刷新任务列表
-		GuiManager.getInstance().refreshTaskList();
 	}
 	
 	/**

@@ -28,13 +28,6 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	}
 	
 	@Override
-	public void open() throws NetException, DownloadException {
-		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
-		this.torrentSession = this.loadTorrentSession();
-		super.open();
-	}
-	
-	@Override
 	public void delete() {
 		// 删除任务信息
 		if(this.torrentSession != null) {
@@ -43,6 +36,13 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 			TorrentManager.getInstance().remove(infoHashHex); // 删除种子信息
 		}
 		super.delete();
+	}
+	
+	@Override
+	public void open() throws NetException, DownloadException {
+		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
+		this.torrentSession = this.loadTorrentSession();
+		super.open();
 	}
 	
 	/**
