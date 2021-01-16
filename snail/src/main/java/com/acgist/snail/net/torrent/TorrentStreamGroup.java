@@ -585,6 +585,8 @@ public final class TorrentStreamGroup {
 		} finally {
 			this.readLock.unlock();
 		}
+		// 更新Piece信息
+		this.torrentSession.updatePieces(false);
 	}
 	
 	/**
