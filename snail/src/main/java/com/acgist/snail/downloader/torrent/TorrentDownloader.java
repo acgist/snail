@@ -95,7 +95,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 				LOGGER.debug("BT任务文件校验成功");
 			} else {
 				LOGGER.debug("BT任务文件校验失败：更新位图");
-				this.updatePayload(); // 保存位图
+				this.torrentSession.updatePieces(true);
 			}
 		}
 		return verify;
@@ -106,7 +106,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload(); // 释放下载资源
 			this.statistics.resetDownloadSpeed(); // 重置下载速度
-			this.updatePayload(); // 保存位图
+			this.torrentSession.updatePieces(true);
 		}
 		super.release();
 	}
@@ -130,15 +130,6 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.complete = this.torrentSession.download();
 		}
-	}
-	
-	/**
-	 * <p>保存已下载Piece位图</p>
-	 */
-	private void updatePayload() {
-		final byte[] payload = this.torrentSession.pieces().toByteArray();
-		this.taskSession.setPayload(payload);
-		this.taskSession.update();
 	}
 	
 }

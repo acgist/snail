@@ -651,6 +651,19 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * <p>更新已下载Piece位图</p>
+	 * 
+	 * @param persistent 是否保存
+	 */
+	public void updatePieces(boolean persistent) {
+		final byte[] payload = this.pieces().toByteArray();
+		this.taskSession.setPayload(payload);
+		if(persistent) {
+			this.taskSession.update();
+		}
+	}
+	
+	/**
 	 * <p>获取任务动作</p>
 	 * 
 	 * @return 任务动作
