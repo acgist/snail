@@ -58,6 +58,8 @@ public final class HlsSession {
 	private final List<HlsClient> clients;
 	/**
 	 * <p>线程池</p>
+	 * 
+	 * TODO：开始创建？下载时创建（防止重复创建）
 	 */
 	private final ExecutorService executor;
 	/**
