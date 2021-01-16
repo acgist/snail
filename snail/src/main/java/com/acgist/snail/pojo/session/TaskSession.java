@@ -1,6 +1,8 @@
 package com.acgist.snail.pojo.session;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,9 +78,9 @@ public final class TaskSession implements ITaskSession {
 	}
 
 	@Override
-	public boolean verify() {
+	public boolean verify() throws DownloadException {
 		if(this.downloader == null) {
-			return true;
+			return Files.exists(Paths.get(this.getFile()));
 		}
 		return this.downloader.verify();
 	}
@@ -114,7 +116,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public File downloadFolder() {
-		final File file = new File(this.entity.getFile());
+		final File file = new File(this.getFile());
 		if(file.isFile()) {
 			return file.getParentFile();
 		} else {
@@ -124,7 +126,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public List<String> multifileSelected() {
-		final String description = this.entity.getDescription();
+		final String description = this.getDescription();
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
@@ -150,22 +152,22 @@ public final class TaskSession implements ITaskSession {
 
 	@Override
 	public boolean await() {
-		return this.entity.getStatus() == Status.AWAIT;
+		return this.getStatus() == Status.AWAIT;
 	}
 	
 	@Override
 	public boolean pause() {
-		return this.entity.getStatus() == Status.PAUSE;
+		return this.getStatus() == Status.PAUSE;
 	}
 	
 	@Override
 	public boolean download() {
-		return this.entity.getStatus() == Status.DOWNLOAD;
+		return this.getStatus() == Status.DOWNLOAD;
 	}
 	
 	@Override
 	public boolean complete() {
-		return this.entity.getStatus() == Status.COMPLETE;
+		return this.getStatus() == Status.COMPLETE;
 	}
 	
 	@Override
@@ -184,7 +186,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public String getNameValue() {
-		return this.entity.getName();
+		return this.getName();
 	}
 
 	@Override
@@ -192,16 +194,16 @@ public final class TaskSession implements ITaskSession {
 		if(this.download()) {
 			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
 		} else {
-			return this.entity.getStatus().getValue();
+			return this.getStatus().getValue();
 		}
 	}
 	
 	@Override
 	public String getProgressValue() {
 		if(this.complete()) {
-			return FileUtils.formatSize(this.entity.getSize());
+			return FileUtils.formatSize(this.getSize());
 		} else {
-			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.entity.getSize());
+			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
 		}
 	}
 
@@ -216,14 +218,14 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public String getEndDateValue() {
-		if(this.entity.getEndDate() == null) {
+		if(this.getEndDate() == null) {
 			if(this.download()) {
 				final long downloadSpeed = this.statistics.downloadSpeed();
 				if(downloadSpeed == 0L) {
 					return "-";
 				} else {
 					// 剩余下载时间
-					long second = (this.entity.getSize() - this.statistics.downloadSize()) / downloadSpeed;
+					long second = (this.getSize() - this.statistics.downloadSize()) / downloadSpeed;
 					if(second <= 0) {
 						second = 0;
 					}
@@ -233,7 +235,7 @@ public final class TaskSession implements ITaskSession {
 				return "-";
 			}
 		} else {
-			return DateUtils.dateFormat(this.entity.getEndDate(), PATTERN);
+			return DateUtils.dateFormat(this.getEndDate(), PATTERN);
 		}
 	}
 	
@@ -255,10 +257,10 @@ public final class TaskSession implements ITaskSession {
 			return;
 		}
 		if(status == Status.COMPLETE) {
-			this.entity.setEndDate(new Date()); // 设置完成时间
+			this.setEndDate(new Date()); // 设置完成时间
 		}
-		this.entity.setStatus(status);
-		EntityContext.getInstance().update(this.entity);
+		this.setStatus(status);
+		this.update();
 		DownloaderManager.getInstance().refresh(); // 刷新下载
 		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 	}

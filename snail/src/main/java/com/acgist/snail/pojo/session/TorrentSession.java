@@ -522,7 +522,6 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>检测任务是否下载完成</p>
-	 * <p>如果任务已经完成：刷出缓存、解除下载锁、UploadOnly</p>
 	 * <p>注意：需要实现幂等，文件完成会被多次调用，非幂等操作请在{@link #releaseDownload()}方法中执行。</p>
 	 */
 	public void checkCompletedAndDone() {

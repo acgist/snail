@@ -59,15 +59,19 @@ public interface IDownloader extends Runnable {
 	
 	/**
 	 * <p>刷新任务</p>
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
-	void refresh();
+	void refresh() throws DownloadException;
 	
 	/**
 	 * <p>校验下载文件</p>
 	 * 
 	 * @return 校验结果
+	 * 
+	 * @throws DownloadException 下载异常
 	 */
-	boolean verify();
+	boolean verify() throws DownloadException;
 	
 	/**
 	 * <dl>

@@ -47,56 +47,56 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 	
 	@Override
-	public void refresh() {
-		if(this.torrentSession == null) {
-			// 任务没有加载（没有完成）：不用重新加载（开始下载自动加载）
-			if(this.taskSession.complete()) {
-				// 任务没有加载（已经完成）：加载任务进行校验
-				try {
-					this.torrentSession = this.loadTorrentSession();
-				} catch (DownloadException e) {
-					LOGGER.error("刷新任务异常", e);
-				}
-				if(this.torrentSession == null) {
-					GuiManager.getInstance().alert("下载失败", "任务加载失败");
-				} else if(this.torrentSession.verify()) {
-					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
-				} else {
-					this.taskSession.setStatus(Status.PAUSE);
-					this.taskSession.setEndDate(null);
-					this.taskSession.update();
-				}
+	public void refresh() throws DownloadException {
+		// 文件没有更改
+		boolean unchange = true;
+		if(this.torrentSession != null) {
+			// 任务信息已经加载：重新加载下载文件信息
+			unchange = this.torrentSession.reload() <= 0;
+		} else if(this.taskSession.complete()) {
+			// 任务信息没有加载（软件重启）：任务完成加载任务信息
+			unchange = false;
+			this.torrentSession = this.loadTorrentSession();
+		}
+		// 如果任务没有完成修改数据开始下载自动加载任务
+		if(this.taskSession.complete()) {
+			// 完成任务校验数据
+			if(unchange) {
+				// 没有新增文件
+				GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+			} else if(this.torrentSession.verify()) {
+				// 文件校验成功
+				GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+			} else {
+				// 文件校验失败
+				this.taskSession.setStatus(Status.PAUSE);
+				this.taskSession.setEndDate(null);
+				this.taskSession.update();
 			}
-		} else {
-			final int loadFileCount = this.torrentSession.reload();
-			// 任务没有完成：自动处理
-			if(this.taskSession.complete()) {
-				// 任务已经完成
-				if(loadFileCount <= 0) {
-					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
-				} else if(this.torrentSession.verify()) {
-					GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
-				} else {
-					this.taskSession.setStatus(Status.PAUSE);
-					this.taskSession.setEndDate(null);
-					this.taskSession.update();
-				}
-			}
+		} else if(this.torrentSession != null) {
+			// 任务没有完成并且任务重启可能为空：开始下载自动加载
+			// 没有完成：校验下载状态
+			this.torrentSession.checkCompletedAndDone();
 		}
 	}
 	
 	@Override
-	public boolean verify() {
-		if(this.torrentSession == null) {
-			LOGGER.debug("BT任务信息没有加载跳过文件校验");
-			return true;
-		}
-		final boolean verify = this.torrentSession.verify();
+	public boolean verify() throws DownloadException {
+		// 优先验证文件是否存在
+		boolean verify = super.verify();
 		if(verify) {
-			LOGGER.debug("BT任务文件校验成功");
-		} else {
-			LOGGER.debug("BT任务文件校验失败：更新位图");
-			this.updatePayload(); // 保存位图
+			if(this.torrentSession == null) {
+				// 任务信息没有加载
+				this.torrentSession = this.loadTorrentSession();
+			}
+			// BT文件校验
+			verify = this.torrentSession.verify();
+			if(verify) {
+				LOGGER.debug("BT任务文件校验成功");
+			} else {
+				LOGGER.debug("BT任务文件校验失败：更新位图");
+				this.updatePayload(); // 保存位图
+			}
 		}
 		return verify;
 	}

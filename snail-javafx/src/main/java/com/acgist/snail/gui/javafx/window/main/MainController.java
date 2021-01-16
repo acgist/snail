@@ -337,6 +337,7 @@ public final class MainController extends Controller implements Initializable {
 				DownloaderManager.getInstance().start(session);
 			} catch (DownloadException e) {
 				LOGGER.error("开始下载任务异常", e);
+				Alerts.warn("下载失败", e.getMessage());
 			}
 		});
 	}
@@ -415,6 +416,7 @@ public final class MainController extends Controller implements Initializable {
 					DownloaderManager.getInstance().start(session);
 				} catch (DownloadException e) {
 					LOGGER.error("开始下载任务异常", e);
+					Alerts.warn("下载失败", e.getMessage());
 				}
 			}
 		}

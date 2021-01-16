@@ -1,11 +1,14 @@
 package com.acgist.snail.downloader;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.Snail;
+import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
@@ -130,12 +133,12 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public void refresh() {
+	public void refresh() throws DownloadException {
 	}
 	
 	@Override
-	public boolean verify() {
-		return true;
+	public boolean verify() throws DownloadException {
+		return Files.exists(Paths.get(this.taskSession.getFile()));
 	}
 	
 	@Override
@@ -150,33 +153,34 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void run() {
-		// 任务已经开始下载直接跳过：防止多次点击暂停开始导致阻塞后面下载任务线程
 		final String name = this.name();
-		if(this.taskSession.download()) {
-			LOGGER.debug("任务已经开始下载：{}", name);
-			return;
-		}
-		// 加锁：保证资源加载和释放原子性
-		synchronized (this.taskSession) {
-			if(this.taskSession.await()) {
-				LOGGER.debug("开始下载任务：{}", name);
-				this.fail = false; // 重置下载失败状态
-				this.deleteLock.set(false); // 设置删除锁状态
-				this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
-				try {
-					this.open();
-					this.download();
-				} catch (Exception e) {
-					LOGGER.error("任务下载异常", e);
-					this.fail(e.getMessage());
+		if(this.taskSession.await()) {
+			// 验证任务状态：防止多次点击暂停开始导致阻塞后面下载任务线程
+			synchronized (this.taskSession) {
+				// 加锁：保证资源加载和释放原子性
+				if(this.taskSession.await()) {
+					LOGGER.debug("开始下载任务：{}", name);
+					this.fail = false; // 重置下载失败状态
+					this.complete = false; // 重置下载成功状态
+					this.deleteLock.set(false); // 设置删除锁状态
+					this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
+					try {
+						this.open();
+						this.download();
+					} catch (Exception e) {
+						LOGGER.error("任务下载异常", e);
+						this.fail(e.getMessage());
+					}
+					this.updateComplete(); // 标记完成
+					this.release(); // 释放资源
+					this.unlockDelete(); // 释放删除锁
+					LOGGER.debug("任务下载结束：{}", name);
+				} else {
+					LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 				}
-				this.updateComplete(); // 标记完成
-				this.release(); // 释放资源
-				this.unlockDelete(); // 释放删除锁
-				LOGGER.debug("任务下载结束：{}", name);
-			} else {
-				LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 			}
+		} else {
+			LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
 		}
 	}
 	
