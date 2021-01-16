@@ -45,7 +45,7 @@
 mvn clean package -P release -D skipTests
 ```
 
-> 推荐下载[发行版](https://gitee.com/acgist/snail/releases)编译
+> 推荐使用[稳定版](https://gitee.com/acgist/snail/releases)编译
 
 #### Gui
 
