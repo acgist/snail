@@ -170,7 +170,7 @@ public final class TorrentSession {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return true-下载完成；false-等待下载；
+	 * @return 是否转换完成
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -213,7 +213,7 @@ public final class TorrentSession {
 	public TorrentSession upload(ITaskSession taskSession) {
 		if(this.uploadable) {
 			// 防止任务重复开启上传
-			LOGGER.debug("任务已经开始上传");
+			LOGGER.debug("BT任务已经开始上传");
 			return this;
 		}
 		this.taskSession = taskSession;
@@ -229,7 +229,7 @@ public final class TorrentSession {
 	/**
 	 * <p>开始下载</p>
 	 * 
-	 * @return true-下载完成；false-等待下载；
+	 * @return 是否下载完成
 	 * 
 	 * @throws DownloadException 下载异常
 	 * 
@@ -246,14 +246,14 @@ public final class TorrentSession {
 	 * 
 	 * @param findPeer 是否查找Peer（加载Tracker、DHT）：true-查找；false-不查找；
 	 * 
-	 * @return true-下载完成；false-等待下载；
+	 * @return 是否下载完成
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	public boolean download(boolean findPeer) throws DownloadException {
 		if(this.downloadable) {
 			// 防止重复开始下载
-			LOGGER.debug("任务已经开始下载");
+			LOGGER.debug("BT任务已经开始下载");
 			return false;
 		}
 		if(!this.uploadable) {

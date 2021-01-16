@@ -53,11 +53,9 @@ public final class HlsDownloader extends MultifileDownloader {
 	public void release() {
 		if(this.complete) {
 			this.tsLink();
-			this.hlsSession.shutdown();
 			HlsManager.getInstance().remove(this.taskSession);
-		} else {
-			this.hlsSession.release();
 		}
+		this.hlsSession.release();
 		super.release();
 	}
 	

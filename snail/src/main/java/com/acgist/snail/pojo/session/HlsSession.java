@@ -57,13 +57,13 @@ public final class HlsSession {
 	 */
 	private final List<HlsClient> clients;
 	/**
-	 * <p>线程池</p>
-	 */
-	private final ExecutorService executor;
-	/**
 	 * <p>统计信息</p>
 	 */
 	private final IStatisticsSession statistics;
+	/**
+	 * <p>线程池</p>
+	 */
+	private ExecutorService executor;
 	
 	/**
 	 * @param m3u8 M3U8
@@ -74,7 +74,6 @@ public final class HlsSession {
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
-		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		final var links = taskSession.multifileSelected();
 		this.fileSize = links.size();
 		this.clients = new ArrayList<>(this.fileSize);
@@ -115,12 +114,18 @@ public final class HlsSession {
 	 * @return 是否下载完成
 	 */
 	public boolean download() {
-		this.downloadable = true;
+		if(this.downloadable) {
+			LOGGER.debug("HLS任务已经开始下载");
+			return false;
+		}
+		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		synchronized (this.clients) {
 			for (HlsClient client : this.clients) {
-				this.download(client);
+				// 直接加入线程池：不要调用download方法（因为下载状态）
+				this.executor.submit(client);
 			}
 		}
+		this.downloadable = true;
 		return this.checkCompleted();
 	}
 	
@@ -217,20 +222,9 @@ public final class HlsSession {
 		LOGGER.debug("HLS任务释放资源：{}", this.taskSession.getName());
 		this.downloadable = false;
 		synchronized (this.clients) {
-			this.clients.forEach(client -> client.release());
-		}
-	}
-
-	/**
-	 * <p>释放资源并且清除所有数据</p>
-	 */
-	public void shutdown() {
-		this.release();
-		LOGGER.debug("HLS任务关闭资源：{}", this.taskSession.getName());
-		synchronized (this.clients) {
-			this.clients.clear();
+			this.clients.forEach(HlsClient::release);
 		}
 		SystemThreadContext.shutdownNow(this.executor);
 	}
-
+	
 }
