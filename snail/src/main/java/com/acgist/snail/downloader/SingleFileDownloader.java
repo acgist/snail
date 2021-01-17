@@ -61,6 +61,10 @@ public abstract class SingleFileDownloader extends Downloader {
 		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		try {
+			// TODO：使用NIO
+//			var r = Channels.newChannel(this.input);
+//			var w = Channels.newChannel(this.output);
+//			ByteBuffer dst = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			while(this.downloadable()) {
 				length = this.input.read(bytes, 0, bytes.length);
 				if(length >= 0) {
