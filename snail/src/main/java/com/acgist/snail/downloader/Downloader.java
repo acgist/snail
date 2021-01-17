@@ -103,50 +103,23 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public final void start() {
-		// 任务已经开始不修改状态
-		if(this.statusDownload()) {
-			return;
-		}
-		// 任务已经完成不修改状态
-		if(this.statusComplete()) {
-			return;
-		}
-		this.updateStatus(Status.AWAIT);
-	}
-	
-	@Override
-	public final void pause() {
-		// 任务已经暂停不修改状态
-		if(this.statusPause()) {
-			return;
-		}
-		// 任务已经完成不修改状态
-		if(this.statusComplete()) {
-			return;
-		}
-		this.updateStatus(Status.PAUSE);
-	}
-	
-	@Override
-	public void delete() {
-		this.pause(); // 暂停任务
-		this.lockDelete(); // 加锁
-	}
-	
-	@Override
 	public void refresh() throws DownloadException {
 	}
 	
 	@Override
 	public boolean verify() throws DownloadException {
-		return this.taskSession.downloadFile().exists();
+		final boolean verify = this.taskSession.downloadFile().exists();
+		if(!verify) {
+			// 如果文件已删除修改已下载大小
+			this.taskSession.downloadSize(0L);
+		}
+		return verify;
 	}
 	
 	@Override
 	public final void fail(String message) {
+		this.taskSession.updateStatus(Status.FAIL);
 		this.fail = true;
-		this.updateStatus(Status.FAIL);
 		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage
 			.append(this.name())
@@ -167,6 +140,11 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public void release() {
 		this.gc();
+	}
+	
+	@Override
+	public void delete() {
+		this.lockDelete(); // 加锁
 	}
 	
 	@Override
@@ -224,7 +202,7 @@ public abstract class Downloader implements IDownloader {
 	 */
 	private final void updateComplete() {
 		if(this.complete) {
-			this.updateStatus(Status.COMPLETE);
+			this.taskSession.updateStatus(Status.COMPLETE);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
 	}
@@ -255,17 +233,6 @@ public abstract class Downloader implements IDownloader {
 			this.deleteLock.set(true);
 			this.deleteLock.notifyAll();
 		}
-	}
-	
-	/**
-	 * <p>修改任务状态</p>
-	 * <p>释放下载锁、修改任务状态</p>
-	 * 
-	 * @param status 任务状态
-	 */
-	private final void updateStatus(Status status) {
-		this.unlockDownload();
-		this.taskSession.updateStatus(status);
 	}
 	
 	/**

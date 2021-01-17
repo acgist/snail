@@ -233,21 +233,26 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void start() throws DownloadException {
+		if(this.statusDownload()) {
+			// 任务已经开始不修改状态
+			return;
+		}
+		if(this.statusComplete()) {
+			// 任务已经完成不修改状态
+			return;
+		}
 		// 提交下载队列
 		DownloaderManager.getInstance().submit(this);
-		if(this.downloader != null) {
-			this.downloader.start(); // 开始下载
-		}
+		this.updateStatus(Status.AWAIT);
 	}
 	
 	@Override
 	public void restart() throws DownloadException {
+		// 暂停任务
+		this.pause();
 		if(this.downloader != null) {
-			// 暂停旧的任务
-			this.downloader.pause();
-			// 删除下载队列
-			DownloaderManager.getInstance().remove(this.downloader);
 			// 移除下载器
+			DownloaderManager.getInstance().remove(this.downloader);
 			this.downloader = null;
 		}
 		if(this.statusComplete()) {
@@ -256,6 +261,19 @@ public final class TaskSession implements ITaskSession {
 			this.setEndDate(null);
 		}
 		this.start();
+	}
+	
+	@Override
+	public void pause() {
+		if(this.statusPause()) {
+			// 任务已经暂停不修改状态
+			return;
+		}
+		if(this.statusComplete()) {
+			// 任务已经完成不修改状态
+			return;
+		}
+		this.updateStatus(Status.PAUSE);
 	}
 	
 	@Override
@@ -269,19 +287,15 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
-	public void pause() {
-		if(this.downloader != null) {
-			this.downloader.pause();
-		}
-	}
-	
-	@Override
 	public void delete() {
+		// 暂停任务
+		this.pause();
 		if(this.downloader != null) {
 			// 后台删除任务
 			SystemThreadContext.submit(this.downloader::delete);
-			// 删除下载队列
+			// 移除下载器
 			DownloaderManager.getInstance().remove(this.downloader);
+			this.downloader = null;
 		}
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
@@ -326,6 +340,7 @@ public final class TaskSession implements ITaskSession {
 		}
 		this.setStatus(status);
 		this.update();
+		this.unlockDownload(); // 状态修改完成才能调用
 		DownloaderManager.getInstance().refresh(); // 刷新下载
 		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 	}

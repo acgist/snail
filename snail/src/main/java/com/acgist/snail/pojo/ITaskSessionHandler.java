@@ -39,7 +39,7 @@ public interface ITaskSessionHandler {
 	
 	/**
 	 * <p>重新暂停任务</p>
-	 * <p>任务已经完成暂停任务</p>
+	 * <p>任务已经完成校验失败：暂停任务</p>
 	 */
 	void repause();
 	

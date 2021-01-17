@@ -30,14 +30,6 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	public static final MagnetDownloader newInstance(ITaskSession taskSession) {
 		return new MagnetDownloader(taskSession);
 	}
-	
-	@Override
-	public void delete() {
-		if(this.torrentSession != null) {
-			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
-		}
-		super.delete();
-	}
 
 	@Override
 	public void release() {
@@ -45,6 +37,14 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
 		}
 		super.release();
+	}
+	
+	@Override
+	public void delete() {
+		super.delete();
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
+		}
 	}
 	
 	@Override

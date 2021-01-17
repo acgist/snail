@@ -47,20 +47,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>单文件任务校验失败修改已下载大小</p>
-	 */
-	@Override
-	public boolean verify() throws DownloadException {
-		final boolean verify = super.verify();
-		if(!verify) {
-			this.taskSession.downloadSize(0L);
-		}
-		return verify;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
 	 * <p>创建{@linkplain #output 输出流}时需要验证服务端是否支持断点续传，所以优先创建{@linkplain #input 输入流}获取服务端信息。</p>
 	 */
 	@Override
