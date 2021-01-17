@@ -66,13 +66,9 @@ public final class DownloaderManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		try {
-			final var session = this.manager.buildTaskSession(url);
-			session.start();
-			return session;
-		} finally {
-			GuiManager.getInstance().refreshTaskList();
-		}
+		final var session = this.manager.buildTaskSession(url);
+		session.start();
+		return session;
 	}
 	
 	/**
@@ -99,6 +95,8 @@ public final class DownloaderManager {
 					LOGGER.debug("任务已经存在：{}", taskSession.getName());
 				} else {
 					this.downloaders.add(downloader);
+					// 刷新任务列表
+					GuiManager.getInstance().refreshTaskList();
 				}
 				return downloader;
 			}
@@ -118,6 +116,8 @@ public final class DownloaderManager {
 			// 下载队列删除
 			this.downloaders.remove(downloader);
 		}
+		// 刷新任务列表
+		GuiManager.getInstance().refreshTaskList();
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public final class DownloaderManager {
 					.filter(IDownloader::statusDownload)
 					.skip(downloadSize)
 					.map(IDownloader::taskSession)
-					.forEach(ITaskSession::pause);
+					.forEach(ITaskSession::await);
 			} else {
 				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 小于：开始部分下载任务
@@ -188,8 +188,6 @@ public final class DownloaderManager {
 			});
 			// 刷新下载
 			this.refresh();
-			// 刷新状态
-			GuiManager.getInstance().refreshTaskList();
 		}
 	}
 	
