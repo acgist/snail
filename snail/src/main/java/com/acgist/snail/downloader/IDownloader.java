@@ -86,7 +86,7 @@ public interface IDownloader extends Runnable, ITaskStatus {
 	 * <p>释放资源</p>
 	 */
 	void release();
-
+	
 	/**
 	 * <p>删除任务</p>
 	 */

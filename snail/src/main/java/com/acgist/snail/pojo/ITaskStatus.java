@@ -33,7 +33,11 @@ public interface ITaskStatus {
 		/**
 		 * <p>任务失败</p>
 		 */
-		FAIL("失败");
+		FAIL("失败"),
+		/**
+		 * <p>删除任务</p>
+		 */
+		DELETE("删除");
 		
 		/**
 		 * <p>状态名称</p>
@@ -85,6 +89,20 @@ public interface ITaskStatus {
 	 * @return 是否处于完成状态
 	 */
 	boolean statusComplete();
+	
+	/**
+	 * <p>判断任务是否处于失败状态</p>
+	 * 
+	 * @return 是否处于失败状态
+	 */
+	boolean statusFail();
+	
+	/**
+	 * <p>判断任务是否处于删除状态</p>
+	 * 
+	 * @return 是否处于删除状态
+	 */
+	boolean statusDelete();
 	
 	/**
 	 * <p>判断任务是否处于执行状态</p>

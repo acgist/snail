@@ -153,6 +153,16 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
+	public boolean statusFail() {
+		return this.getStatus() == Status.FAIL;
+	}
+	
+	@Override
+	public boolean statusDelete() {
+		return this.getStatus() == Status.DELETE;
+	}
+	
+	@Override
 	public boolean statusRunning() {
 		return this.statusAwait() || this.statusDownload();
 	}
@@ -296,11 +306,18 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void delete() {
-		// 暂停任务
-		this.pause();
-		if(this.downloader != null) {
-			// 后台删除任务
+		if(this.statusDelete()) {
+			// 任务已经删除不修改状态
+			return;
+		}
+		if(this.statusDownload()) {
+			// 正在下载：标记删除下载结束自动释放
+			this.updateStatus(Status.DELETE);
+		} else if(this.downloader != null) {
+			// 没有下载：异步删除
 			SystemThreadContext.submit(this.downloader::delete);
+		}
+		if(this.downloader != null) {
 			// 移除下载器
 			DownloaderManager.getInstance().remove(this.downloader);
 			this.downloader = null;

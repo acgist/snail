@@ -1,7 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,11 +20,6 @@ public abstract class Downloader implements IDownloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	/**
-	 * <p>{@linkplain #deleteLock 删除锁}等待时间（毫秒）：{@value}</p>
-	 */
-	private static final int DELETE_TIMEOUT = 5000;
-	
-	/**
 	 * <p>任务失败状态</p>
 	 * <p>true-失败；false-正常；</p>
 	 */
@@ -44,12 +37,6 @@ public abstract class Downloader implements IDownloader {
 	 * <p>统计信息</p>
 	 */
 	protected final IStatisticsSession statistics;
-	/**
-	 * <p>删除锁</p>
-	 * <p>true-任务没有下载（可以删除）</p>
-	 * <p>false-任务正在下载（不能删除）：等待任务结束</p>
-	 */
-	private final AtomicBoolean deleteLock = new AtomicBoolean(false);
 	
 	/**
 	 * @param taskSession 任务信息
@@ -58,8 +45,6 @@ public abstract class Downloader implements IDownloader {
 		taskSession.buildDownloadSize();
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
-		// 初始化删除锁：任务没有下载可以直接删除
-		this.deleteLock.set(!this.statusDownload());
 	}
 	
 	@Override
@@ -95,6 +80,16 @@ public abstract class Downloader implements IDownloader {
 	@Override
 	public final boolean statusComplete() {
 		return this.taskSession.statusComplete();
+	}
+	
+	@Override
+	public boolean statusFail() {
+		return this.taskSession.statusFail();
+	}
+	
+	@Override
+	public boolean statusDelete() {
+		return this.taskSession.statusDelete();
 	}
 	
 	@Override
@@ -141,10 +136,9 @@ public abstract class Downloader implements IDownloader {
 	public void release() {
 		this.gc();
 	}
-	
+
 	@Override
 	public void delete() {
-		this.lockDelete(); // 加锁
 	}
 	
 	@Override
@@ -158,7 +152,6 @@ public abstract class Downloader implements IDownloader {
 					LOGGER.debug("开始下载任务：{}", name);
 					this.fail = false; // 重置下载失败状态
 					this.complete = false; // 重置下载成功状态
-					this.deleteLock.set(false); // 设置删除锁状态
 					this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
 					try {
 						this.open();
@@ -169,7 +162,6 @@ public abstract class Downloader implements IDownloader {
 					}
 					this.checkAndMarkComplete(); // 标记完成
 					this.release(); // 释放资源
-					this.unlockDelete(); // 释放删除锁
 					LOGGER.debug("任务下载结束：{}", name);
 				} else {
 					LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());
@@ -204,34 +196,6 @@ public abstract class Downloader implements IDownloader {
 		if(this.complete) {
 			this.taskSession.updateStatus(Status.COMPLETE);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
-		}
-	}
-	
-	/**
-	 * <p>添加{@linkplain #deleteLock 删除锁}</p>
-	 */
-	private final void lockDelete() {
-		if(!this.deleteLock.get()) {
-			synchronized (this.deleteLock) {
-				if(!this.deleteLock.get()) {
-					try {
-						this.deleteLock.wait(DELETE_TIMEOUT);
-					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
-						Thread.currentThread().interrupt();
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * <p>释放{@linkplain #deleteLock 删除锁}</p>
-	 */
-	private final void unlockDelete() {
-		synchronized (this.deleteLock) {
-			this.deleteLock.set(true);
-			this.deleteLock.notifyAll();
 		}
 	}
 	
