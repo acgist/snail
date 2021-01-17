@@ -295,6 +295,10 @@ public final class HttpClient {
 		return this;
 	}
 	
+	public HttpHeaderWrapper responseHeader() {
+		return HttpHeaderWrapper.newInstance(this.httpURLConnection.getHeaderFields());
+	}
+	
 	/**
 	 * <p>获取响应信息</p>
 	 * <p>使用完成需要关闭</p>
