@@ -587,18 +587,18 @@ public final class TorrentSession {
 	public void saveTorrent() {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
-		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
-		this.taskSession.update();
 		try {
 			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
 			this.infoHash = this.torrent.infoHash();
 		} catch (DownloadException e) {
 			LOGGER.error("解析种子异常", e);
 		}
-		final long size = FileUtils.fileSize(torrentFilePath);
-		this.taskSession.setSize(size); // 设置任务大小
-		this.taskSession.downloadSize(size); // 设置已下载大小
+		final long torrentFileSize = FileUtils.fileSize(torrentFilePath);
+		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
+		this.taskSession.setSize(torrentFileSize); // 设置任务大小
+		this.taskSession.downloadSize(torrentFileSize); // 设置已下载大小
 		this.taskSession.unlockDownload(); // 释放下载锁
+		this.taskSession.update();
 	}
 	
 	/**

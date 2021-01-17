@@ -1,8 +1,6 @@
 package com.acgist.snail.pojo.session;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,8 +86,14 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
-	public File downloadFolder() {
+	public File downloadFile() {
 		final File file = new File(this.getFile());
+		return file;
+	}
+	
+	@Override
+	public File downloadFolder() {
+		final File file = this.downloadFile();
 		if(file.isFile()) {
 			return file.getParentFile();
 		} else {
@@ -123,6 +127,11 @@ public final class TaskSession implements ITaskSession {
 		this.statistics.downloadSize(size);
 	}
 
+	@Override
+	public void buildDownloadSize() {
+		this.downloadSize(FileUtils.fileSize(this.getFile()));
+	}
+	
 	@Override
 	public boolean statusAwait() {
 		return this.getStatus() == Status.AWAIT;
@@ -176,7 +185,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.statusComplete()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
-			return FileUtils.formatSize(this.statistics.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
+			return FileUtils.formatSize(this.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
 		}
 	}
 
@@ -198,7 +207,7 @@ public final class TaskSession implements ITaskSession {
 					return "-";
 				} else {
 					// 剩余下载时间
-					long second = (this.getSize() - this.statistics.downloadSize()) / downloadSpeed;
+					long second = (this.getSize() - this.downloadSize()) / downloadSpeed;
 					if(second <= 0) {
 						second = 0;
 					}
@@ -234,12 +243,32 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public void restart() throws DownloadException {
 		if(this.downloader != null) {
+			// 暂停旧的任务
+			this.downloader.pause();
 			// 删除下载队列
 			DownloaderManager.getInstance().remove(this.downloader);
 			// 移除下载器
 			this.downloader = null;
 		}
+		// 清空下载大小
+		this.downloadSize(0);
+		if(this.statusComplete()) {
+			// 已经完成任务：修改状态、清空完成时间
+			this.setStatus(Status.AWAIT);
+			this.setEndDate(null);
+		}
 		this.start();
+	}
+	
+	@Override
+	public void repause() {
+		if(this.statusComplete()) {
+			this.buildDownloadSize();
+			this.setStatus(Status.PAUSE);
+			this.setEndDate(null);
+			this.update();
+			GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
+		}
 	}
 	
 	@Override
@@ -273,7 +302,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public boolean verify() throws DownloadException {
 		if(this.downloader == null) {
-			return Files.exists(Paths.get(this.getFile()));
+			return this.downloadFile().exists();
 		}
 		return this.downloader.verify();
 	}

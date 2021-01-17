@@ -16,7 +16,6 @@ import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
-import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 
@@ -201,9 +200,7 @@ public final class TaskMenu extends Menu {
 						// 任务完成：判断是否需要重新下载
 						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiManager.MessageType.CONFIRM);
 						if(optional.isPresent() && optional.get() == ButtonType.OK) {
-							session.setStatus(Status.PAUSE);
-							session.setEndDate(null);
-							session.update();
+							session.repause();
 						}
 					} else {
 						Alerts.warn("校验失败", "开始下载自动修复");
@@ -221,7 +218,12 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> openFolderEvent = event -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			Desktops.open(session.downloadFolder());
+			final File folder = session.downloadFolder();
+			if(folder.exists()) {
+				Desktops.open(folder);
+			} else {
+				Alerts.warn("打开失败", "下载文件已经删除");
+			}
 		});
 	};
 	

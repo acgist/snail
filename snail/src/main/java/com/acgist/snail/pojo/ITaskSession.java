@@ -74,6 +74,13 @@ public interface ITaskSession extends ITaskStatus, ITaskSessionEntity, ITaskSess
 	IDownloader buildDownloader() throws DownloadException;
 	
 	/**
+	 * <p>获取下载文件</p>
+	 * 
+	 * @return 下载文件
+	 */
+	File downloadFile();
+	
+	/**
 	 * <p>获取下载目录</p>
 	 * 
 	 * @return 下载目录
@@ -100,6 +107,11 @@ public interface ITaskSession extends ITaskStatus, ITaskSessionEntity, ITaskSess
 	 * @param size 已下载大小
 	 */
 	void downloadSize(long size);
+	
+	/**
+	 * <p>更新任务大小</p>
+	 */
+	void buildDownloadSize();
 
 	/**
 	 * <p>获取任务信息（Map）</p>

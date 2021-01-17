@@ -54,18 +54,18 @@ public final class HttpDownloader extends SingleFileDownloader {
 	@Override
 	protected void buildInput() throws NetException {
 		// 已下载大小
-		final long size = FileUtils.fileSize(this.taskSession.getFile());
+		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 		// HTTP客户端
 		final var client = HTTPClient.newInstance(this.taskSession.getUrl(), SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
 		// HTTP响应
-		final HttpResponse<InputStream> response = client.range(size).get(BodyHandlers.ofInputStream());
+		final HttpResponse<InputStream> response = client.range(downloadSize).get(BodyHandlers.ofInputStream());
 		// 请求成功和部分请求成功
 		if(HTTPClient.downloadable(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			if(headers.range()) { // 支持断点续传
-				headers.verifyBeginRange(size);
-				this.taskSession.downloadSize(size);
+				headers.verifyBeginRange(downloadSize);
+				this.taskSession.downloadSize(downloadSize);
 			} else {
 				this.taskSession.downloadSize(0L);
 			}
@@ -73,7 +73,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 				this.complete = true;
 			} else {
-				this.fail("无法满足文件下载范围：" + size);
+				this.fail("无法满足文件下载范围：" + downloadSize);
 			}
 		} else {
 			if(response == null) {

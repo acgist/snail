@@ -69,9 +69,8 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 				GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
 			} else {
 				// 文件校验失败
-				this.taskSession.setStatus(Status.PAUSE);
-				this.taskSession.setEndDate(null);
-				this.taskSession.update();
+				this.taskSession.repause();
+				GuiManager.getInstance().alert("修改成功", "重新开始下载任务");
 			}
 		} else if(this.torrentSession != null) {
 			// 任务没有完成并且任务重启可能为空：开始下载自动加载
