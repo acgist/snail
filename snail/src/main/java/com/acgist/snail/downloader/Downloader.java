@@ -167,7 +167,7 @@ public abstract class Downloader implements IDownloader {
 						LOGGER.error("任务下载异常", e);
 						this.fail(e.getMessage());
 					}
-					this.updateComplete(); // 标记完成
+					this.checkAndMarkComplete(); // 标记完成
 					this.release(); // 释放资源
 					this.unlockDelete(); // 释放删除锁
 					LOGGER.debug("任务下载结束：{}", name);
@@ -200,7 +200,7 @@ public abstract class Downloader implements IDownloader {
 	/**
 	 * <p>标记任务完成</p>
 	 */
-	private final void updateComplete() {
+	private final void checkAndMarkComplete() {
 		if(this.complete) {
 			this.taskSession.updateStatus(Status.COMPLETE);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
