@@ -149,6 +149,8 @@ public final class TorrentController extends Controller implements Initializable
 		if(magnetToTorrent) {
 			// 磁力链接转为BT任务
 			this.taskSession.setType(Type.TORRENT);
+			// 清空已经下载大小
+			this.taskSession.downloadSize(0L);
 			// 切换下载器并且重新下载
 			this.taskSession.restart();
 		} else {

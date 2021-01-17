@@ -43,6 +43,20 @@ public abstract class SingleFileDownloader extends Downloader {
 	protected SingleFileDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>单文件任务校验失败修改已下载大小</p>
+	 */
+	@Override
+	public boolean verify() throws DownloadException {
+		final boolean verify = super.verify();
+		if(!verify) {
+			this.taskSession.downloadSize(0L);
+		}
+		return verify;
+	}
 	
 	/**
 	 * {@inheritDoc}
