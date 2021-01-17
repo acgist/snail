@@ -154,7 +154,8 @@ public final class DownloaderManager {
 				this.downloaders.stream()
 					.filter(IDownloader::statusDownload)
 					.skip(downloadSize)
-					.forEach(IDownloader::pause);
+					.map(IDownloader::taskSession)
+					.forEach(ITaskSession::pause);
 			} else {
 				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 小于：开始部分下载任务
@@ -201,7 +202,8 @@ public final class DownloaderManager {
 			synchronized (this.downloaders) {
 				this.downloaders.stream()
 					.filter(IDownloader::statusRunning)
-					.forEach(IDownloader::pause);
+					.map(IDownloader::taskSession)
+					.forEach(ITaskSession::pause);
 			}
 		} catch (Exception e) {
 			LOGGER.error("关闭下载器管理器异常", e);

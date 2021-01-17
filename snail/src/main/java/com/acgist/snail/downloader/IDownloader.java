@@ -34,21 +34,6 @@ public interface IDownloader extends Runnable, ITaskStatus {
 	ITaskSession taskSession();
 
 	/**
-	 * <p>开始任务</p>
-	 */
-	void start();
-	
-	/**
-	 * <p>暂停任务</p>
-	 */
-	void pause();
-	
-	/**
-	 * <p>删除任务</p>
-	 */
-	void delete();
-	
-	/**
 	 * <p>刷新任务</p>
 	 * 
 	 * @throws DownloadException 下载异常
@@ -102,4 +87,9 @@ public interface IDownloader extends Runnable, ITaskStatus {
 	 */
 	void release();
 
+	/**
+	 * <p>删除任务</p>
+	 */
+	void delete();
+	
 }

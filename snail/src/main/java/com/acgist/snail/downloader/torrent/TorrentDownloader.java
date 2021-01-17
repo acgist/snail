@@ -37,15 +37,6 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 	
 	@Override
-	public void delete() {
-		if(this.torrentSession != null) {
-			this.torrentSession.releaseUpload(); // 释放上传资源
-			this.statistics.resetUploadSpeed(); // 重置上传速度
-		}
-		super.delete();
-	}
-	
-	@Override
 	public void refresh() throws DownloadException {
 		super.refresh();
 		// 文件没有更改
@@ -108,6 +99,15 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			this.torrentSession.updatePieces(true);
 		}
 		super.release();
+	}
+	
+	@Override
+	public void delete() {
+		super.delete();
+		if(this.torrentSession != null) {
+			this.torrentSession.releaseUpload(); // 释放上传资源
+			this.statistics.resetUploadSpeed(); // 重置上传速度
+		}
 	}
 	
 	/**

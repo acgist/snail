@@ -60,6 +60,12 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 	
 	@Override
+	public void delete() {
+		super.delete();
+		HlsManager.getInstance().remove(this.taskSession);
+	}
+	
+	@Override
 	protected void loadDownload() throws DownloadException {
 		this.complete = this.hlsSession.download();
 	}
