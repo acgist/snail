@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.pojo.session.NodeSession;
@@ -23,7 +24,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class NodeManager {
+public final class NodeManager implements IManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeManager.class);
 	

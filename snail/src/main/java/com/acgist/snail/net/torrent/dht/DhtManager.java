@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
@@ -20,7 +21,7 @@ import com.acgist.snail.utils.NumberUtils;
  * 
  * @author acgist
  */
-public final class DhtManager {
+public final class DhtManager implements IManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtManager.class);
 	

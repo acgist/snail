@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.session.HlsSession;
@@ -15,7 +16,7 @@ import com.acgist.snail.pojo.session.HlsSession;
  * 
  * @author acgist
  */
-public final class HlsManager {
+public final class HlsManager implements IManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HlsManager.class);
 	

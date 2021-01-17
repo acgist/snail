@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
@@ -28,7 +29,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * 
  * @author acgist
  */
-public final class PeerManager {
+public final class PeerManager implements IManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerManager.class);
 
