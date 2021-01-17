@@ -20,7 +20,7 @@ public class HTTPClientTest extends Performance {
 //			body = HttpClient.newInstance("http://www.acgist.com").get().responseToString();
 			this.costed(10, () -> {
 				try {
-					HttpClient.newInstance("https://www.acgist.com").get().responseToString();
+					HttpClient.newInstance("https://www.acgist.com").get().responseToBytes();
 				} catch (NetException e) {
 					e.printStackTrace();
 				}
