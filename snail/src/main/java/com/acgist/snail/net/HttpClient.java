@@ -38,6 +38,7 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>HTTP客户端</p>
  * <p>配置参考：https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html</p>
  * <p>推荐直接使用HTTP协议下载：HTTPS下载CPU占用较高</p>
+ * <p>长连接（KeepAlive）：输入流关闭后归还连接，下次相同地址和端口继续使用。</p>
  * 
  * @author acgist
  */
@@ -363,6 +364,10 @@ public final class HttpClient {
 		return builder.toString();
 	}
 	
+	public void shutdown() {
+		this.httpURLConnection.disconnect();
+	}
+	
 	/**
 	 * <p>创建请求连接</p>
 	 * 
@@ -403,6 +408,9 @@ public final class HttpClient {
 	private void buildDefaultHeader() {
 		// 设置请求头
 		this.header(HttpHeaderWrapper.HEADER_USER_AGENT, USER_AGENT);
+		// 禁止长连接
+//		Connection:close
+//		keepAliveTimeout：保持时间
 	}
 	
 	/**
