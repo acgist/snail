@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -226,8 +225,9 @@ public final class HttpClient {
 	 * @param key 请求头名称
 	 * @param value 请求头值
 	 */
-	public void header(String key, String value) {
+	public HttpClient header(String key, String value) {
 		this.httpURLConnection.setRequestProperty(key, value);
+		return this;
 	}
 	
 	public HttpClient get() throws NetException {
@@ -239,14 +239,14 @@ public final class HttpClient {
 	}
 	
 	public HttpClient post(String data) throws NetException {
-		return this.execute(Method.POST, null);
+		return this.execute(Method.POST, data);
 	}
 	
 	public HttpClient post(Map<String, String> data) throws NetException {
-		this.header(HttpHeaderWrapper.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 		if(MapUtils.isEmpty(data)) {
 			return this.execute(Method.POST, null);
 		} else {
+			this.header(HttpHeaderWrapper.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded;charset=" + SystemConfig.DEFAULT_CHARSET);
 			final String body = data.entrySet().stream()
 				.map(entry -> entry.getKey() + "=" + UrlUtils.encode(entry.getValue()))
 				.collect(Collectors.joining("&"));
@@ -297,7 +297,8 @@ public final class HttpClient {
 	}
 	
 	public HttpHeaderWrapper responseHeader() {
-		return HttpHeaderWrapper.newInstance(this.httpURLConnection.getHeaderFields());
+//		return HttpHeaderWrapper.newInstance(this.httpURLConnection.getHeaderFields());
+		return null;
 	}
 	
 	/**
@@ -406,11 +407,21 @@ public final class HttpClient {
 	}
 	
 	private void buildDefaultHeader() {
+		this.header("Accept", "*/*");
 		// 设置请求头
 		this.header(HttpHeaderWrapper.HEADER_USER_AGENT, USER_AGENT);
+//		接收参数、发送参数类型等等
+	}
+
+	public void dontKeepAlive() {
+		
 		// 禁止长连接
 //		Connection:close
+	}
+	
+	public void keepAlive(int timeout) {
 //		keepAliveTimeout：保持时间
+		
 	}
 	
 	/**
