@@ -250,8 +250,6 @@ public final class TaskSession implements ITaskSession {
 			// 移除下载器
 			this.downloader = null;
 		}
-		// 清空下载大小
-		this.downloadSize(0);
 		if(this.statusComplete()) {
 			// 已经完成任务：修改状态、清空完成时间
 			this.setStatus(Status.AWAIT);
@@ -263,7 +261,6 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public void repause() {
 		if(this.statusComplete()) {
-			this.buildDownloadSize();
 			this.setStatus(Status.PAUSE);
 			this.setEndDate(null);
 			this.update();
