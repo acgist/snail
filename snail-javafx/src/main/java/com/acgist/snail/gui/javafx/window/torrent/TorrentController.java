@@ -12,7 +12,6 @@ import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskStatus.Status;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
@@ -127,37 +126,38 @@ public final class TorrentController extends Controller implements Initializable
 		this.taskSession.setSize(this.selectorManager.size());
 		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(list);
 		this.taskSession.setDescription(wrapper.serialize());
-		if(this.taskSession.getId() != null) { // 已经保存实体
-			boolean magnetToTorrent = false;
-			// 磁力链接转为BT任务
-			if(this.taskSession.getType() == Type.MAGNET) {
-				magnetToTorrent = true;
-				this.taskSession.setType(Type.TORRENT);
-				this.taskSession.setStatus(Status.AWAIT);
-				this.taskSession.setEndDate(null);
-			}
-			// 更新任务
-			this.taskSession.update();
-			if(magnetToTorrent) {
-				// 切换下载器并且重新下载
-				try {
-					this.taskSession.restart();
-				} catch (DownloadException e) {
-					LOGGER.error("切换下载器异常", e);
-					Alerts.warn("下载失败", e.getMessage());
-				}
-			} else {
-				// 刷新任务
-				try {
-					this.taskSession.refresh();
-				} catch (DownloadException e) {
-					LOGGER.error("刷新任务异常", e);
-					Alerts.warn("下载失败", e.getMessage());
-				}
+		if(this.taskSession.getId() != null) {
+			// 已经保存实体：修改任务
+			try {
+				this.updateTaskSession();
+			} catch (DownloadException e) {
+				LOGGER.error("编辑下载任务异常", e);
+				Alerts.warn("下载失败", e.getMessage());
 			}
 		}
-		TaskDisplay.getInstance().refreshTaskStatus();
+		// 新建任务自动刷新列表
 		TorrentWindow.getInstance().hide();
 	};
+	
+	/**
+	 * <p>更新下载任务</p>
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
+	private void updateTaskSession() throws DownloadException {
+		final boolean magnetToTorrent = this.taskSession.getType() == Type.MAGNET;
+		if(magnetToTorrent) {
+			// 磁力链接转为BT任务
+			this.taskSession.setType(Type.TORRENT);
+			// 切换下载器并且重新下载
+			this.taskSession.restart();
+		} else {
+			// 刷新任务
+			this.taskSession.refresh();
+		}
+		// 更新任务
+		this.taskSession.update();
+		TaskDisplay.getInstance().refreshTaskStatus(); // 刷新任务状态
+	}
 	
 }

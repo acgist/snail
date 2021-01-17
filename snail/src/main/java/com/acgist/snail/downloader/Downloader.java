@@ -1,7 +1,5 @@
 package com.acgist.snail.downloader;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -12,7 +10,6 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -58,11 +55,9 @@ public abstract class Downloader implements IDownloader {
 	 * @param taskSession 任务信息
 	 */
 	protected Downloader(ITaskSession taskSession) {
+		taskSession.buildDownloadSize();
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
-		// 已下载大小
-		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
-		this.taskSession.downloadSize(downloadSize);
 		// 初始化删除锁：任务没有下载可以直接删除
 		this.deleteLock.set(!this.statusDownload());
 	}
@@ -145,7 +140,7 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public boolean verify() throws DownloadException {
-		return Files.exists(Paths.get(this.taskSession.getFile()));
+		return this.taskSession.downloadFile().exists();
 	}
 	
 	@Override

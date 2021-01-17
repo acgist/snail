@@ -38,6 +38,12 @@ public interface ITaskSessionHandler {
 	void pause();
 	
 	/**
+	 * <p>重新暂停任务</p>
+	 * <p>任务已经完成暂停任务</p>
+	 */
+	void repause();
+	
+	/**
 	 * <p>删除任务</p>
 	 */
 	void delete();
@@ -70,6 +76,7 @@ public interface ITaskSessionHandler {
 	
 	/**
 	 * <p>更新状态</p>
+	 * <p>如果任务完成不会更新</p>
 	 * 
 	 * @param status 任务状态
 	 */
