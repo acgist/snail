@@ -297,8 +297,7 @@ public final class HttpClient {
 	}
 	
 	public HttpHeaderWrapper responseHeader() {
-//		return HttpHeaderWrapper.newInstance(this.httpURLConnection.getHeaderFields());
-		return null;
+		return HttpHeaderWrapper.newInstance(this.httpURLConnection.getHeaderFields());
 	}
 	
 	/**
@@ -325,15 +324,11 @@ public final class HttpClient {
 	 * @throws NetException 网络异常
 	 */
 	public byte[] responseToBytes() throws NetException {
-		int length;
 		final var input = this.response();
-		final var bytes = new byte[8 * SystemConfig.ONE_KB];
 		try {
-			final var output = new ByteArrayOutputStream(input.available());
-			while((length = input.read(bytes)) >= 0) {
-				output.write(bytes, 0, length);
-			}
-			return output.toByteArray();
+			final var bytes = new byte[input.available()];
+			input.read(bytes);
+			return bytes;
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {

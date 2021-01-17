@@ -101,6 +101,15 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	private HttpHeaderWrapper(Map<String, List<String>> headers) {
 		super(headers);
 	}
+	
+	/**
+	 * @param httpHeaders HTTP头部信息
+	 * 
+	 * @return HttpHeaderWrapper
+	 */
+	public static final HttpHeaderWrapper newInstance(Map<String, List<String>> httpHeaders) {
+		return new HttpHeaderWrapper(httpHeaders);
+	}
 
 	/**
 	 * @param httpHeaders HTTP头部信息
@@ -305,5 +314,5 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		);
 		return false;
 	}
-	
+
 }
