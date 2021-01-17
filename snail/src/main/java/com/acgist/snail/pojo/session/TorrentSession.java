@@ -581,6 +581,15 @@ public final class TorrentSession {
 	}
 
 	/**
+	 * <p>删除任务信息</p>
+	 */
+	public void delete() {
+		final String infoHashHex = this.infoHashHex();
+		PeerManager.getInstance().remove(infoHashHex); // 删除Peer信息
+		TorrentManager.getInstance().remove(infoHashHex); // 删除种子信息
+	}
+
+	/**
 	 * <p>保存种子文件</p>
 	 * <p>重新加载种子文件和InfoHash</p>
 	 */

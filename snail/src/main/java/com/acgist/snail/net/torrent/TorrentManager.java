@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
@@ -25,7 +28,7 @@ import com.acgist.snail.utils.StringUtils;
  */
 public final class TorrentManager {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentManager.class);
 	
 	private static final TorrentManager INSTANCE = new TorrentManager();
 	
@@ -81,6 +84,7 @@ public final class TorrentManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
+		LOGGER.debug("删除种子信息：{}", infoHashHex);
 		this.torrentSessions.remove(infoHashHex);
 	}
 	

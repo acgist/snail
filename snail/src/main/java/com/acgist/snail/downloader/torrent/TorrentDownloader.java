@@ -107,6 +107,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload(); // 释放上传资源
 			this.statistics.resetUploadSpeed(); // 重置上传速度
+			this.torrentSession.delete();
 		}
 	}
 	
@@ -126,9 +127,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		if(this.torrentSession != null) {
-			this.complete = this.torrentSession.download();
-		}
+		this.complete = this.torrentSession.download();
 	}
 	
 }

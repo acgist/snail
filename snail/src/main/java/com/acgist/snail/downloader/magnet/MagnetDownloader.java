@@ -44,14 +44,13 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 		super.delete();
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
+			this.torrentSession.delete();
 		}
 	}
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		if(this.torrentSession != null) {
-			this.complete = this.torrentSession.magnet(this.taskSession);
-		}
+		this.complete = this.torrentSession.magnet(this.taskSession);
 	}
 
 }

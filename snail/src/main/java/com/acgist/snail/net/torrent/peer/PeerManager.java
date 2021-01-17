@@ -125,6 +125,7 @@ public final class PeerManager {
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
+		LOGGER.debug("删除Peer队列：{}", infoHashHex);
 		// 删除have消息队列
 		this.haves.remove(infoHashHex);
 		// 删除Peer下载队列
