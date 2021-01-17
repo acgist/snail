@@ -606,8 +606,8 @@ public final class TorrentSession {
 		this.taskSession.setTorrent(torrentFilePath); // 保存种子文件路径
 		this.taskSession.setSize(torrentFileSize); // 设置任务大小
 		this.taskSession.downloadSize(torrentFileSize); // 设置已下载大小
-		this.taskSession.unlockDownload(); // 释放下载锁
 		this.taskSession.update();
+		this.taskSession.unlockDownload(); // 释放下载锁
 	}
 	
 	/**

@@ -33,6 +33,11 @@ public interface ITaskSessionHandler {
 	void restart() throws DownloadException;
 	
 	/**
+	 * <p>等待下载</p>
+	 */
+	void await();
+	
+	/**
 	 * <p>暂停任务</p>
 	 */
 	void pause();

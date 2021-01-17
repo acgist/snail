@@ -264,6 +264,15 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
+	public void await() {
+		if(this.statusDownload()) {
+			// 下载中的任务修改等待
+			this.setStatus(Status.AWAIT);
+			this.unlockDownload();
+		}
+	}
+	
+	@Override
 	public void pause() {
 		if(this.statusPause()) {
 			// 任务已经暂停不修改状态
@@ -282,7 +291,6 @@ public final class TaskSession implements ITaskSession {
 			this.setStatus(Status.PAUSE);
 			this.setEndDate(null);
 			this.update();
-			GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 		}
 	}
 	
@@ -299,8 +307,6 @@ public final class TaskSession implements ITaskSession {
 		}
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
-		// 刷新任务列表
-		GuiManager.getInstance().refreshTaskList();
 	}
 
 	@Override
@@ -342,7 +348,6 @@ public final class TaskSession implements ITaskSession {
 		this.update();
 		this.unlockDownload(); // 状态修改完成才能调用
 		DownloaderManager.getInstance().refresh(); // 刷新下载
-		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 	}
 	
 	//================实体================//
@@ -424,6 +429,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void setStatus(Status status) {
+		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
 		this.entity.setStatus(status);
 	}
 	
