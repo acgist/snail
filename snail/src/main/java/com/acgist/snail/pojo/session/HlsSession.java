@@ -118,14 +118,12 @@ public final class HlsSession {
 			LOGGER.debug("HLS任务已经开始下载");
 			return false;
 		}
+		// 修改开始下载：提交client需要判断
+		this.downloadable = true;
 		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		synchronized (this.clients) {
-			for (HlsClient client : this.clients) {
-				// 直接加入线程池：不要调用download方法（因为下载状态）
-				this.executor.submit(client);
-			}
+			this.clients.forEach(this::download);
 		}
-		this.downloadable = true;
 		return this.checkCompleted();
 	}
 	
