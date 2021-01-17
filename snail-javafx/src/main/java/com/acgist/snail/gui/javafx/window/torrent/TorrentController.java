@@ -53,7 +53,7 @@ public final class TorrentController extends Controller implements Initializable
 	/**
 	 * <p>任务文件选择器</p>
 	 */
-	private SelectorManager selectorManager;
+	private TorrentSelector torrentSelector;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -83,11 +83,11 @@ public final class TorrentController extends Controller implements Initializable
 			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(torrent != null) {
-			this.selectorManager = SelectorManager.newInstance(torrent.name(), this.download, tree);
+			this.torrentSelector = TorrentSelector.newInstance(torrent.name(), this.download, tree);
 			torrent.getInfo().files().stream()
 				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
-				.forEach(file -> this.selectorManager.build(file.path(), file.getLength()));
-			this.selectorManager.select(taskSession);
+				.forEach(file -> this.torrentSelector.build(file.path(), file.getLength()));
+			this.torrentSelector.select(taskSession);
 		}
 	}
 	
@@ -95,7 +95,7 @@ public final class TorrentController extends Controller implements Initializable
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		this.selectorManager = null;
+		this.torrentSelector = null;
 		this.treeBox.getChildren().clear();
 	}
 	
@@ -118,12 +118,12 @@ public final class TorrentController extends Controller implements Initializable
 	 * <p>下载按钮事件</p>
 	 */
 	private EventHandler<ActionEvent> downloadEvent = event -> {
-		final var list = this.selectorManager.description();
+		final var list = this.torrentSelector.description();
 		if(list.isEmpty()) {
 			Alerts.warn("下载失败", "请选择下载文件");
 			return;
 		}
-		this.taskSession.setSize(this.selectorManager.size());
+		this.taskSession.setSize(this.torrentSelector.size());
 		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(list);
 		this.taskSession.setDescription(wrapper.serialize());
 		if(this.taskSession.getId() != null) {

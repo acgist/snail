@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemThreadContext;
@@ -24,7 +25,7 @@ import com.acgist.snail.utils.CollectionUtils;
  * 
  * @author acgist
  */
-public final class DownloaderManager {
+public final class DownloaderManager implements IManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderManager.class);
 	

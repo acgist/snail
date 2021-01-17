@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.DownloadException;
@@ -29,7 +30,7 @@ import com.acgist.snail.utils.UrlUtils;
  * 
  * @author acgist
  */
-public final class TrackerManager {
+public final class TrackerManager implements IManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerManager.class);
 	

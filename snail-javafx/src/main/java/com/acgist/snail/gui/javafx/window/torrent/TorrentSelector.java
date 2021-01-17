@@ -27,7 +27,7 @@ import javafx.scene.text.Text;
  * 
  * @author acgist
  */
-public final class SelectorManager {
+public final class TorrentSelector {
 
 	/**
 	 * <p>下载按钮</p>
@@ -48,7 +48,7 @@ public final class SelectorManager {
 	 * @param download 下载按钮
 	 * @param tree 树形菜单
 	 */
-	private SelectorManager(String name, Button download, TreeView<HBox> tree) {
+	private TorrentSelector(String name, Button download, TreeView<HBox> tree) {
 		final TreeItem<HBox> root = this.buildTreeItem(null, "", name, null);
 		root.setExpanded(true);
 		tree.setRoot(root);
@@ -65,8 +65,8 @@ public final class SelectorManager {
 	 * 
 	 * @return SelectorManager
 	 */
-	public static final SelectorManager newInstance(String name, Button download, TreeView<HBox> tree) {
-		return new SelectorManager(name, download, tree);
+	public static final TorrentSelector newInstance(String name, Button download, TreeView<HBox> tree) {
+		return new TorrentSelector(name, download, tree);
 	}
 
 	/**

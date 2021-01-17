@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IManager;
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.context.recycle.windows.WindowsRecycle;
 import com.acgist.snail.utils.StringUtils;
@@ -14,7 +15,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class RecycleManager {
+public final class RecycleManager implements IManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleManager.class);
 	
