@@ -8,9 +8,30 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.HttpClient;
 import com.acgist.snail.utils.Performance;
 
 public class HTTPClientTest extends Performance {
+	
+	@Test
+	public void test() {
+		String body = null;
+		try {
+//			body = HttpClient.newInstance("http://www.acgist.com").get().responseToString();
+			this.costed(10, () -> {
+				try {
+					HttpClient.newInstance("https://www.acgist.com").get().responseToString();
+				} catch (NetException e) {
+					e.printStackTrace();
+				}
+			});
+			body = HttpClient.newInstance("https://www.baidu.com").get().responseToString();
+//			body = HttpClient.newInstance("http://favor.fund.eastmoney.com/").get().responseToString();
+		} catch (NetException e) {
+			e.printStackTrace();
+		}
+		this.log(body);
+	}
 	
 	@Test
 	public void testRequest() throws NetException {

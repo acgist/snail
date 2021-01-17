@@ -96,7 +96,8 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload(); // 释放下载资源
 			this.statistics.resetDownloadSpeed(); // 重置下载速度
-			this.torrentSession.updatePieces(true);
+			this.torrentSession.updatePieces(true); // 更新Piece
+			// 任务没有删除：做种
 			if(this.statusDelete()) {
 				this.delete();
 			}
