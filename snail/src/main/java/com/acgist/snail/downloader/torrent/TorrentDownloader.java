@@ -97,6 +97,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			this.torrentSession.releaseDownload(); // 释放下载资源
 			this.statistics.resetDownloadSpeed(); // 重置下载速度
 			this.torrentSession.updatePieces(true);
+			if(this.statusDelete()) {
+				this.delete();
+			}
 		}
 		super.release();
 	}
@@ -107,7 +110,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload(); // 释放上传资源
 			this.statistics.resetUploadSpeed(); // 重置上传速度
-			this.torrentSession.delete();
+			this.torrentSession.delete(); // 删除任务信息
 		}
 	}
 	

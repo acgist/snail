@@ -161,6 +161,7 @@ B编码List&lt;Map&gt;
 |size|√|文件大小|
 |endDate|○|完成时间|
 |description|○|下载描述|
+|payload|○|任务负载|
 
 *√=必要、○-可选*
 

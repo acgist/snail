@@ -55,7 +55,9 @@ public final class HlsDownloader extends MultifileDownloader {
 			this.hlsSession.release();
 			if(this.complete) {
 				this.tsLink();
-				this.hlsSession.delete();
+				this.delete();
+			} else if(this.statusDelete()) {
+				this.delete();
 			}
 		}
 		super.release();
@@ -65,7 +67,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	public void delete() {
 		super.delete();
 		if(this.hlsSession != null) {
-			this.hlsSession.delete();
+			this.hlsSession.delete(); // 删除任务信息
 		}
 	}
 	
