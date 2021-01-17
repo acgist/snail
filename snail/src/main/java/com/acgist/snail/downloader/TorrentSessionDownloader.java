@@ -3,7 +3,6 @@ package com.acgist.snail.downloader;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
@@ -32,17 +31,6 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 		// 不能在构造函数中初始化：防止种子被删除后还能点击下载
 		this.torrentSession = this.loadTorrentSession();
 		super.open();
-	}
-	
-	@Override
-	public void delete() {
-		super.delete();
-		// 删除任务信息
-		if(this.torrentSession != null) {
-			final String infoHashHex = this.torrentSession.infoHashHex();
-			PeerManager.getInstance().remove(infoHashHex); // 删除Peer信息
-			TorrentManager.getInstance().remove(infoHashHex); // 删除种子信息
-		}
 	}
 	
 	/**

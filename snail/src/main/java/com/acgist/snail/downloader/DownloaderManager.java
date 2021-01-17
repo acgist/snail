@@ -114,6 +114,7 @@ public final class DownloaderManager {
 	 */
 	public void remove(IDownloader downloader) {
 		synchronized (this.downloaders) {
+			LOGGER.debug("删除下载器：{}", downloader.name());
 			// 下载队列删除
 			this.downloaders.remove(downloader);
 		}
