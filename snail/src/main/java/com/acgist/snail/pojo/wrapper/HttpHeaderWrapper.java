@@ -26,6 +26,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpHeaderWrapper.class);
 
 	/**
+	 * <p>HTTP客户端信息：{@value}</p>
+	 */
+	public static final String HEADER_USER_AGENT = "User-Agent";
+	/**
 	 * <p>MIME类型：{@value}</p>
 	 */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
