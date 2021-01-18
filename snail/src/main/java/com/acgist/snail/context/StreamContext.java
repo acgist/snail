@@ -61,7 +61,8 @@ public final class StreamContext implements IContext {
 			// 没有更多数据
 			length < 0 ||
 			// 累计下载大小大于文件大小
-			(0L <= fileSize && fileSize <= downloadSize);
+			// 注意：文件大小必须大于零：可能存在不能正常获取网络文件大小
+			(0L < fileSize && fileSize <= downloadSize);
 	}
 	
 	/**

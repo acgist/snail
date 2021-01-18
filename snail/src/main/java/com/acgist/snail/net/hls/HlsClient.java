@@ -112,8 +112,7 @@ public final class HlsClient implements Runnable {
 					downloadSize = 0L;
 				}
 				while(this.downloadable()) {
-					this.input.read(buffer);
-					length = buffer.limit();
+					length = this.input.read(buffer);
 					if(length >= 0) {
 						buffer.flip();
 						this.output.write(buffer);
