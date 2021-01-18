@@ -399,6 +399,26 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
+	 * <p>获取磁盘缓存（单个）（B）</p>
+	 * <p>如果文件小于默认磁盘缓存直接使用文件大小作为缓存大小</p>
+	 * 
+	 * @param fileSize 文件大小
+	 * 
+	 * @return 磁盘缓存
+	 */
+	public static final int getMemoryBufferByte(final long fileSize) {
+		final int bufferSize = getMemoryBufferByte();
+		if(fileSize > 0L) {
+			if(bufferSize > fileSize) {
+				return (int) fileSize;
+			} else {
+				return bufferSize;
+			}
+		}
+		return bufferSize;
+	}
+	
+	/**
 	 * <p>刷新磁盘缓存</p>
 	 */
 	private void refreshMemoryBuffer() {

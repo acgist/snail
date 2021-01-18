@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.UrlUtils;
@@ -460,9 +460,14 @@ public final class HttpClient {
 	public byte[] responseToBytes() throws NetException {
 		final var input = this.response();
 		try {
-			final var bytes = new byte[input.available()];
-			input.read(bytes);
-			return bytes;
+			final int size = input.available();
+			final var bytes = new byte[size];
+			final int length = input.read(bytes);
+			if(length == size) {
+				return bytes;
+			} else {
+				return Arrays.copyOf(bytes, length);
+			}
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {
@@ -529,19 +534,19 @@ public final class HttpClient {
 	 */
 	private HttpURLConnection buildHttpURLConnection(int connectTimeout, int receiveTimeout) throws NetException {
 		try {
-			final var url = new URL(this.url);
-			final var httpURLConnection = (HttpURLConnection) url.openConnection();
+			final var requestUrl = new URL(this.url);
+			final var connection = (HttpURLConnection) requestUrl.openConnection();
 			// 是否读取
-			httpURLConnection.setDoInput(true);
+			connection.setDoInput(true);
 			// 是否缓存
-			httpURLConnection.setUseCaches(false);
+			connection.setUseCaches(false);
 			// 响应超时时间
-			httpURLConnection.setReadTimeout(receiveTimeout);
+			connection.setReadTimeout(receiveTimeout);
 			// 连接超时时间
-			httpURLConnection.setConnectTimeout(connectTimeout);
+			connection.setConnectTimeout(connectTimeout);
 			// 是否自动重定向
-			httpURLConnection.setInstanceFollowRedirects(true);
-			return httpURLConnection;
+			connection.setInstanceFollowRedirects(true);
+			return connection;
 		} catch (IOException e) {
 			throw new NetException(e);
 		}
@@ -581,7 +586,6 @@ public final class HttpClient {
 
 	/**
 	 * <p>域名验证</p>
-	 * <p>信任所有域名</p>
 	 * 
 	 * @author acgist
 	 */
@@ -596,15 +600,15 @@ public final class HttpClient {
 		}
 		
 		@Override
-		public boolean verify(String host, SSLSession sslSession) {
-			return true;
+		public boolean verify(String requestHost, SSLSession remoteSslSession) {
+			// 证书域名必须匹配
+			return requestHost.equalsIgnoreCase(remoteSslSession.getPeerHost());
 		}
 		
 	}
 	
 	/**
 	 * <p>证书验证</p>
-	 * <p>信任所有证书</p>
 	 * 
 	 * @author acgist
 	 */
@@ -625,14 +629,14 @@ public final class HttpClient {
 
 		@Override
 		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			if(ArrayUtils.isEmpty(chain)) {
+			if(chain == null) {
 				throw new CertificateException("证书验证失败");
 			}
 		}
 		
 		@Override
 		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			if(ArrayUtils.isEmpty(chain)) {
+			if(chain == null) {
 				throw new CertificateException("证书验证失败");
 			}
 		}
