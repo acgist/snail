@@ -123,9 +123,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	protected TorrentSession loadTorrentSession() throws DownloadException {
 		final var torrentSession = super.loadTorrentSession();
-		if(torrentSession != null) {
-			torrentSession.upload(this.taskSession);
-		}
+		torrentSession.upload(this.taskSession);
 		return torrentSession;
 	}
 	

@@ -76,10 +76,6 @@ public final class SystemThreadContext implements IContext {
 	 * <p>UDP服务端线程：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
-	/**
-	 * <p>HTTP客户端线程：{@value}</p>
-	 */
-	public static final String SNAIL_THREAD_HTTP_CLIENT = SNAIL_THREAD + "-HTTP-Client";
 	
 	/**
 	 * <p>系统线程池：加快系统运行、防止卡顿</p>

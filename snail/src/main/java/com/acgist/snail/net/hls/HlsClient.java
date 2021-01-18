@@ -210,11 +210,7 @@ public final class HlsClient implements Runnable {
 	 */
 	private void buildOutput() throws NetException {
 		try {
-			// 如果TS文件小于缓存大小直接使用文件大小
-			int bufferSize = DownloadConfig.getMemoryBufferByte();
-			if(this.size > 0L) {
-				bufferSize = (int) this.size;
-			}
+			final int bufferSize = DownloadConfig.getMemoryBufferByte(this.size);
 			BufferedOutputStream outputStream;
 			if(this.range) {
 				// 支持断点续传

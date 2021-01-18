@@ -92,8 +92,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public File downloadFile() {
-		final File file = new File(this.getFile());
-		return file;
+		return new File(this.getFile());
 	}
 	
 	@Override

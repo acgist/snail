@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.NetException;
@@ -23,17 +27,23 @@ public class HttpClientTest extends Performance {
 	@Test
 	public void testRequest() throws NetException {
 		var client = HttpClient.newInstance("https://gitee.com");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 		client = HttpClient.newInstance("http://www.acgist.com");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 		client = HttpClient.newInstance("https://www.acgist.com");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 		client = HttpClient.newInstance("https://www.baidu.com");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 		client = HttpClient.newInstance("https://www.aliyun.com");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 		client = HttpClient.newInstance("http://favor.fund.eastmoney.com/");
-		assertNotNull(client.get().responseToString());
+		assertNotNull(client.get());
+		this.log(client.responseToString());
 	}
 	
 	@Test
@@ -46,6 +56,25 @@ public class HttpClientTest extends Performance {
 			}
 		});
 		assertTrue(costed < 4000);
+	}
+
+	@Test
+	public void testUrlCosted() {
+		String url = "https://www.acgist.com";
+		this.costed(100000, () -> {
+			try {
+				URI.create(url).toURL();
+			} catch (MalformedURLException e) {
+				this.log("创建URL异常", e);
+			}
+		});
+		this.costed(100000, () -> {
+			try {
+				new URL(url);
+			} catch (MalformedURLException e) {
+				this.log("创建URL异常", e);
+			}
+		});
 	}
 	
 }

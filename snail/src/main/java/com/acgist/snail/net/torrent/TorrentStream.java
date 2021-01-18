@@ -586,11 +586,7 @@ public final class TorrentStream {
 		int pos = 0;
 		int length = 0;
 		boolean verify = true; // 是否校验
-		if(this.fileInOnePiece()) {
-			pos = this.firstPiecePos();
-			length = this.firstPieceSize();
-			verify = false;
-		} else if(index == this.fileBeginPieceIndex) {
+		if(index == this.fileBeginPieceIndex) {
 			pos = this.firstPiecePos();
 			length = this.firstPieceSize();
 			verify = false;
