@@ -41,3 +41,4 @@
 * 删除extend和android模块
 * 修复任务反复开始暂停时线程没有关闭错误
 * 修复任务加载时下载中状态任务不能正常下载错误
+* 使用HttpURLConnection替换JDK内置HTTP模块
