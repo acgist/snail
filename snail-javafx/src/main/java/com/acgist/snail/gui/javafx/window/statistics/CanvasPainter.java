@@ -19,8 +19,6 @@ import javafx.scene.paint.Color;
  */
 public final class CanvasPainter {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(CanvasPainter.class);
-
 	/**
 	 * <p>默认填充高宽：{@value}</p>
 	 */
@@ -71,6 +69,10 @@ public final class CanvasPainter {
 	 */
 	private final Color noneColor;
 	/**
+	 * <p>鼠标位置颜色</p>
+	 */
+	private final Color mouseColor;
+	/**
 	 * <p>边框颜色</p>
 	 */
 	private final Color borderColor;
@@ -78,6 +80,10 @@ public final class CanvasPainter {
 	 * <p>背景颜色</p>
 	 */
 	private final Color background;
+	/**
+	 * <p>鼠标位置</p>
+	 */
+	private int index;
 	/**
 	 * <p>图片宽度</p>
 	 */
@@ -124,6 +130,7 @@ public final class CanvasPainter {
 			Color.rgb(0, 153, 204),
 			Color.rgb(255, 232, 159),
 			Color.rgb(200, 200, 200),
+			Color.rgb(220, 78, 65),
 			Color.BLACK, Color.WHITE
 		);
 	}
@@ -137,6 +144,7 @@ public final class CanvasPainter {
 	 * @param fillColor 存在填充颜色
 	 * @param selectColor 选择填充颜色
 	 * @param noneColor 没有填充颜色
+	 * @param noneColor 鼠标位置颜色
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
 	 */
@@ -144,7 +152,7 @@ public final class CanvasPainter {
 		int wh, int col,
 		int length, BitSet bitSet, BitSet selectBitSet,
 		Color fillColor, Color selectColor, Color noneColor,
-		Color borderColor, Color background
+		Color mouseColor, Color borderColor, Color background
 	) {
 		this.wh = wh;
 		this.col = col;
@@ -152,6 +160,7 @@ public final class CanvasPainter {
 		this.fillColor = fillColor;
 		this.selectColor = selectColor;
 		this.noneColor = noneColor;
+		this.mouseColor = mouseColor;
 		this.borderColor = borderColor;
 		this.background = background;
 		this.length = length;
@@ -209,6 +218,7 @@ public final class CanvasPainter {
 	 * @param fillColor 存在填充颜色
 	 * @param selectColor 选择填充颜色
 	 * @param noneColor 没有填充颜色
+	 * @param noneColor 鼠标位置颜色
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
 	 * 
@@ -218,13 +228,13 @@ public final class CanvasPainter {
 		int wh, int col,
 		int length, BitSet bitSet, BitSet selectBitSet,
 		Color fillColor, Color selectColor, Color noneColor,
-		Color borderColor, Color background
+		 Color mouseColor, Color borderColor, Color background
 	) {
 		return new CanvasPainter(
 			wh, col,
 			length, bitSet, selectBitSet,
 			fillColor, selectColor, noneColor,
-			borderColor, background
+			mouseColor, borderColor, background
 		);
 	}
 
@@ -269,10 +279,7 @@ public final class CanvasPainter {
 		}
 		this.bitSet.set(index);
 		this.graphics.save();
-		final int wh = this.wh + BORDER_WH;
-		final int row = index / this.col;
-		final int col = index % this.col;
-		this.drawFill(index, col, row, wh);
+		this.drawFill(index);
 		this.graphics.restore();
 		return this;
 	}
@@ -300,6 +307,9 @@ public final class CanvasPainter {
 			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH; // 行数 * (高度 + 边框) + 底边框
 			// 创建画布
 			this.canvas = new Canvas(this.width, this.height);
+			this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
+			this.canvas.setOnMouseExited(event -> this.exited());
+			this.canvas.setOnMouseClicked(event -> this.clicked());
 		} else {
 			this.canvas = canvas;
 		}
@@ -358,12 +368,8 @@ public final class CanvasPainter {
 	 */
 	private void drawFill() {
 		this.graphics.save();
-		int col, row;
-		final int wh = this.wh + BORDER_WH;
 		for (int index = 0; index < this.length; index++) {
-			row = index / this.col;
-			col = index % this.col;
-			this.drawFill(index, col, row, wh);
+			this.drawFill(index);
 		}
 		this.graphics.restore();
 	}
@@ -372,11 +378,14 @@ public final class CanvasPainter {
 	 * <p>填充数据</p>
 	 * 
 	 * @param index 数据索引
-	 * @param col 列
-	 * @param row 行
-	 * @param wh 填充高宽
 	 */
-	private void drawFill(int index, int col, int row, int wh) {
+	private void drawFill(int index) {
+		if(index < 0) {
+			return;
+		}
+		final int row = index / this.col;
+		final int col = index % this.col;
+		final int wh = this.wh + BORDER_WH;
 		if(this.bitSet.get(index)) {
 			this.graphics.setFill(this.fillColor);
 		} else if(this.selectBitSet.get(index)) {
@@ -388,6 +397,56 @@ public final class CanvasPainter {
 		final int height = row * wh + BORDER_WH;
 		this.graphics.fillRect(width, height, this.wh, this.wh);
 	}
+
+	/**
+	 * <p>鼠标移动</p>
+	 * 
+	 * @param x x
+	 * @param y y 
+	 */
+	private void moved(double x, double y) {
+		final int wh = this.wh + BORDER_WH;
+		final int col = (int) (x / wh);
+		final int row = (int) (y / wh);
+		final int index = row * this.col + col;
+		if(this.index == index) {
+			// 没有变化
+			return;
+		}
+		final int oldIndex = this.index;
+		this.graphics.save();
+		this.drawFill(oldIndex);
+		if(this.selectBitSet.get(index)) {
+			this.index = index;
+			final int width = col * wh + BORDER_WH;
+			final int height = row * wh + BORDER_WH;
+			this.graphics.setFill(this.mouseColor);
+			this.graphics.fillRect(width, height, this.wh, this.wh);
+		} else {
+			this.index = -1;
+		}
+		this.graphics.restore();
+	};
+	
+	/**
+	 * <p>鼠标退出</p>
+	 */
+	private void exited() {
+		this.graphics.save();
+		this.drawFill(this.index);
+		this.graphics.restore();
+		// 删除位置
+		this.index = -1;
+	}
+	
+	/**
+	 * <p>鼠标点击</p>
+	 */
+	private void clicked() {
+		if(this.index >= 0 && this.selectBitSet.get(this.index)) {
+			StatisticsWindow.getInstance().piecePos(this.index);
+		}
+	};
 	
 	/**
 	 * <p>获取画布</p>

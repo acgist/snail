@@ -44,6 +44,15 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 		this.controller.statistics();
 		super.show();
 	}
+
+	/**
+	 * @param piecePos 指定下载Piece索引
+	 * 
+	 * @see StatisticsController#piecePos(int)
+	 */
+	public void piecePos(int index) {
+		this.controller.piecePos(index);
+	}
 	
 	/**
 	 * <p>窗口隐藏：释放资源</p>
