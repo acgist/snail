@@ -1,13 +1,10 @@
 package com.acgist.snail.protocol.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
@@ -19,19 +16,12 @@ import com.acgist.snail.protocol.Protocol;
  */
 public final class HttpProtocol extends Protocol {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HttpProtocol.class);
-	
 	private static final HttpProtocol INSTANCE = new HttpProtocol();
 	
 	public static final HttpProtocol getInstance() {
 		return INSTANCE;
 	}
 
-	/**
-	 * <p>获取HTTP下载响应头的最大重试次数：{@value}</p>
-	 */
-	private static final int HTTP_HEADER_RETRY_MAX_TIMES = 3;
-	
 	/**
 	 * <p>HTTP头部信息</p>
 	 */
@@ -89,19 +79,13 @@ public final class HttpProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void buildHttpHeader() throws DownloadException {
-		int index = 0;
-		while(index++ < HTTP_HEADER_RETRY_MAX_TIMES) {
-			try {
-				this.httpHeaderWrapper = HTTPClient.newInstance(this.url).head();
-			} catch (NetException e) {
-				LOGGER.error("获取HTTP头部信息异常：{}", index, e);
-			}
-			if(this.httpHeaderWrapper != null && this.httpHeaderWrapper.isNotEmpty()) {
-				break;
-			}
-		}
-		if(this.httpHeaderWrapper == null || this.httpHeaderWrapper.isEmpty()) {
-			throw new DownloadException("获取HTTP头部信息失败");
+		try {
+			this.httpHeaderWrapper = HttpClient
+				.newInstance(this.url)
+				.head()
+				.responseHeader();
+		} catch (NetException e) {
+			throw new DownloadException("获取HTTP头部信息失败", e);
 		}
 	}
 	

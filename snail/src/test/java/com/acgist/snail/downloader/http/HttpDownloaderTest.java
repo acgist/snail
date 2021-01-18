@@ -23,7 +23,7 @@ public class HttpDownloaderTest extends Performance {
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
 		assertNotNull(downloader);
-		taskSession.delete();
+//		taskSession.delete();
 	}
 
 	@Test

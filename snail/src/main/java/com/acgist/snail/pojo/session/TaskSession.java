@@ -280,6 +280,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.statusDownload()) {
 			// 下载中的任务修改等待
 			this.setStatus(Status.AWAIT);
+			// 直接调用解除下载：不用保存状态
 			this.unlockDownload();
 		}
 	}

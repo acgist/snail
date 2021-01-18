@@ -34,6 +34,9 @@ public final class UrlUtils {
 	 * @return 编码后内容
 	 */
 	public static final String encode(String content) {
+		if(StringUtils.isEmpty(content)) {
+			return content;
+		}
 		try {
 			return URLEncoder
 				.encode(content, SystemConfig.DEFAULT_CHARSET)
@@ -52,6 +55,9 @@ public final class UrlUtils {
 	 * @return 解码后内容
 	 */
 	public static final String decode(String content) {
+		if(StringUtils.isEmpty(content)) {
+			return content;
+		}
 		try {
 			return URLDecoder.decode(content, SystemConfig.DEFAULT_CHARSET);
 		} catch (UnsupportedEncodingException e) {

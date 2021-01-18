@@ -2,7 +2,6 @@ package com.acgist.snail.protocol.hls;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.bean.M3u8.Type;
 import com.acgist.snail.pojo.wrapper.KeyValueWrapper;
@@ -318,7 +317,10 @@ public final class M3u8Builder {
 	 */
 	private Cipher buildCipherAes128(String iv, String uri) throws NetException {
 		final String requestURI = UrlUtils.redirect(this.source, uri);
-		final byte[] secret = HTTPClient.get(requestURI, BodyHandlers.ofByteArray()).body();
+		final byte[] secret = HttpClient
+			.newInstance(requestURI)
+			.get()
+			.responseToBytes();
 		try {
 			return this.buildCipher(this.buildIv(iv), secret, "AES", "AES/CBC/NoPadding");
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {

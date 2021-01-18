@@ -607,7 +607,7 @@ public final class TorrentSession {
 		this.taskSession.setSize(torrentFileSize); // 设置任务大小
 		this.taskSession.downloadSize(torrentFileSize); // 设置已下载大小
 		this.taskSession.update();
-		this.taskSession.unlockDownload(); // 释放下载锁
+		this.checkCompletedAndDone();
 	}
 	
 	/**
@@ -819,7 +819,7 @@ public final class TorrentSession {
 	/**
 	 * @return 新增下载文件数量
 	 * 
-	 * @see TorrentStreamGroup#reload(String, List, TorrentSession)
+	 * @see TorrentStreamGroup#reload(String, List)
 	 */
 	public int reload() {
 		return this.torrentStreamGroup.reload(

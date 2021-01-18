@@ -47,6 +47,24 @@ public abstract class Downloader implements IDownloader {
 		this.statistics = taskSession.statistics();
 	}
 	
+	/**
+	 * <p>验证文件是否完成</p>
+	 * 
+	 * @param length 下载数据大小
+	 * @param downloadSize 累计下载大小
+	 * @param fileSize 文件大小
+	 * 
+	 * @return 是否完成
+	 */
+	public static final boolean checkFinish(int length, long downloadSize, long fileSize) {
+		return
+			// 没有更多数据
+			length < 0 ||
+			// 累计下载大小大于文件大小
+			// 注意：文件大小必须大于零：可能存在不能正常获取网络文件大小
+			(0L < fileSize && fileSize <= downloadSize);
+	}
+	
 	@Override
 	public final String id() {
 		return this.taskSession.getId();

@@ -1,5 +1,7 @@
 package com.acgist.snail.context;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +56,11 @@ public final class NatContext implements IContext {
 	 * <p>UPNP端口映射超时时间：{@value}</p>
 	 */
 	private static final int UPNP_TIMEOUT = SystemConfig.CONNECT_TIMEOUT_MILLIS;
+	/**
+	 * <p>注册NAT执行周期</p>
+	 * <p>如果NAT注册失败下次执行周期</p>
+	 */
+	private static final int NAT_INTERVAL = 10;
 	
 	/**
 	 * <p>内网穿透类型</p>
@@ -75,6 +82,10 @@ public final class NatContext implements IContext {
 	 * <p>必须外部调用不能单例注册：导致不能唤醒</p>
 	 */
 	public void register() {
+		if(this.type != Type.NONE) {
+			LOGGER.debug("注册NAT服务成功：{}", this.type);
+			return;
+		}
 		LOGGER.debug("注册NAT服务");
 		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
@@ -84,12 +95,15 @@ public final class NatContext implements IContext {
 				this.type = Type.UPNP;
 			} else {
 				LOGGER.debug("UPNP映射失败：使用STUN映射");
-				this.type = Type.STUN;
 				StunService.getInstance().mapping();
 			}
 		} else {
 			LOGGER.debug("已是公网IP地址：忽略NAT设置");
 			SystemConfig.setExternalIpAddress(NetUtils.LOCAL_HOST_ADDRESS);
+		}
+		if(this.type == Type.NONE) {
+			LOGGER.info("注册NAT服务下次执行时间：{}", NAT_INTERVAL);
+			SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
 		}
 	}
 	
@@ -100,6 +114,13 @@ public final class NatContext implements IContext {
 	 */
 	public Type type() {
 		return this.type;
+	}
+	
+	/**
+	 * <p>设置STUN穿透类型</p>
+	 */
+	public void stun() {
+		this.type = Type.STUN;
 	}
 	
 	/**
@@ -135,5 +156,5 @@ public final class NatContext implements IContext {
 			this.upnpLock.notifyAll();
 		}
 	}
-	
+
 }

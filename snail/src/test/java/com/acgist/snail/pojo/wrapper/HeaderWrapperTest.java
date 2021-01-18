@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.Performance;
 
@@ -36,9 +36,9 @@ public class HeaderWrapperTest extends Performance {
 	
 	@Test
 	public void testHttp() throws NetException {
-//		HTTPClient client = HTTPClient.newInstance("https://www.acgist.com/demo/weixin/view");
-		HTTPClient client = HTTPClient.newInstance("https://youku.com-youku.com/20180122/OgFJZjkT/900kb/hls/BM3D1t5288298.ts");
-		var headers = client.head();
+//		HttpClient client = HttpClient.newInstance("https://www.acgist.com/demo/weixin/view");
+		HttpClient client = HttpClient.newInstance("https://youku.com-youku.com/20180122/OgFJZjkT/900kb/hls/BM3D1t5288298.ts");
+		var headers = client.head().responseHeader();
 		headers.allHeaders().forEach((key, value) -> {
 			this.log(key + "<==>" + value);
 		});

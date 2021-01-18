@@ -41,10 +41,6 @@ public final class PeerDownloaderGroup {
 	 * <p>包含失败次数</p>
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
-	/**
-	 * <p>没有Peer自旋时间：{@value}</p>
-	 */
-	private static final int SPIN_LOCK_TIME = 1000;
 	
 	/**
 	 * <p>是否继续创建PeerDownloader</p>
@@ -132,7 +128,7 @@ public final class PeerDownloaderGroup {
 			if(peerContext.hasPeerSession(infoHashHex)) {
 				break;
 			}
-			ThreadUtils.sleep(SPIN_LOCK_TIME);
+			ThreadUtils.sleep(SystemConfig.ONE_SECOND_MILLIS);
 		}
 	}
 	

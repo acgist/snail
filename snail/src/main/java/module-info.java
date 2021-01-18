@@ -45,12 +45,6 @@ open module com.acgist.snail {
 	requires java.base;
 	// XML依赖
 	requires transitive java.xml;
-	// HTTP依赖
-	requires transitive java.net.http;
-	
-	//================JDK================//
-	// HTTP安全依赖：HTTPS
-	requires transitive jdk.crypto.ec;
 	
 	//================依赖================//
 	requires transitive org.slf4j;

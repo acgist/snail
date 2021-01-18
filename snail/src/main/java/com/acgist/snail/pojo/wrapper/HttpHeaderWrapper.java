@@ -1,18 +1,13 @@
 package com.acgist.snail.pojo.wrapper;
 
-import java.net.http.HttpHeaders;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
@@ -111,23 +106,6 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		return new HttpHeaderWrapper(httpHeaders);
 	}
 
-	/**
-	 * @param httpHeaders HTTP头部信息
-	 * 
-	 * @return HttpHeaderWrapper
-	 */
-	public static final HttpHeaderWrapper newInstance(HttpHeaders httpHeaders) {
-		Map<String, List<String>> headers = null;
-		if(httpHeaders != null) {
-			headers = httpHeaders.map().entrySet().stream()
-				.filter(entry -> CollectionUtils.isNotEmpty(entry.getValue()))
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		} else {
-			headers = new HashMap<>();
-		}
-		return new HttpHeaderWrapper(headers);
-	}
-	
 	/**
 	 * <p>获取文件名称</p>
 	 * <p>下载文件名称：如果不存在返回默认的文件名称</p>
