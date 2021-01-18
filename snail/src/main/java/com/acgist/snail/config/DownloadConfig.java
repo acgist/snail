@@ -5,8 +5,8 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.context.EntityContext;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -241,7 +241,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.size = size;
 		EntityContext.getInstance().mergeConfig(DOWNLOAD_SIZE, String.valueOf(size));
 		// 刷新下载任务
-		DownloaderManager.getInstance().refresh();
+		TaskManager.getInstance().refresh();
 	}
 
 	/**

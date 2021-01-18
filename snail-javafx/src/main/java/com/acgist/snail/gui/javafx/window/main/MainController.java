@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.context.SystemStatistics;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
@@ -266,7 +266,7 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	public void refreshTaskList() {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
-		DownloaderManager.getInstance().allTask().stream()
+		TaskManager.getInstance().allTask().stream()
 			.filter(session -> {
 				if(this.filter == Filter.ALL) {
 					return true;

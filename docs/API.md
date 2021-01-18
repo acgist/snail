@@ -60,10 +60,10 @@ ProtocolManager.getInstance().register(protocol);
 ITaskSession taskSession = Snail.getInstance().download(url)
 ```
 
-#### DownloaderManager
+#### TaskManager
 
 ```java
-ITaskSession taskSession = DownloaderManager.getInstance().download(url)
+ITaskSession taskSession = TaskManager.getInstance().download(url)
 ```
 
 > 任务添加完成自动开始下载不用调用开始任务方法

@@ -1,4 +1,4 @@
-package com.acgist.snail.downloader;
+package com.acgist.snail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemThreadContext;
@@ -21,17 +20,17 @@ import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>下载器管理器</p>
+ * <p>任务管理器</p>
  * 
  * @author acgist
  */
-public final class DownloaderManager implements IManager {
+public final class TaskManager implements IManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DownloaderManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskManager.class);
 	
-	private static final DownloaderManager INSTANCE = new DownloaderManager();
+	private static final TaskManager INSTANCE = new TaskManager();
 	
-	public static final DownloaderManager getInstance() {
+	public static final TaskManager getInstance() {
 		return INSTANCE;
 	}
 	
@@ -44,17 +43,17 @@ public final class DownloaderManager implements IManager {
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>下载队列</p>
+	 * <p>任务队列</p>
 	 */
-	private final List<IDownloader> downloaders;
+	private final List<ITaskSession> tasks;
 	
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private DownloaderManager() {
+	private TaskManager() {
 		this.manager = ProtocolManager.getInstance();
 		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
-		this.downloaders = new ArrayList<>(DownloadConfig.getSize());
+		this.tasks = new ArrayList<>(DownloadConfig.getSize());
 	}
 	
 	/**
@@ -78,28 +77,23 @@ public final class DownloaderManager implements IManager {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return 下载器
-	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	public IDownloader submit(ITaskSession taskSession) throws DownloadException {
+	public void submit(ITaskSession taskSession) throws DownloadException {
 		if(ProtocolManager.getInstance().available()) {
-			synchronized (this.downloaders) {
+			synchronized (this.tasks) {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
 				}
-				final var downloader = taskSession.buildDownloader();
-				if(downloader == null) {
-					throw new DownloadException("创建下载器失败" + taskSession);
-				}
-				if(this.downloaders.contains(downloader)) {
+				// 任务添加必须创建下载器
+				taskSession.buildDownloader();
+				if(this.tasks.contains(taskSession)) {
+					// 任务已经添加
 					LOGGER.debug("任务已经存在：{}", taskSession.getName());
 				} else {
-					this.downloaders.add(downloader);
-					// 刷新任务列表
-					GuiManager.getInstance().refreshTaskList();
+					this.tasks.add(taskSession); // 添加任务
+					GuiManager.getInstance().refreshTaskList(); // 刷新任务列表
 				}
-				return downloader;
 			}
 		} else {
 			throw new DownloadException("下载协议未初始化");
@@ -107,15 +101,14 @@ public final class DownloaderManager implements IManager {
 	}
 	
 	/**
-	 * <p>删除下载器</p>
+	 * <p>删除下载任务</p>
 	 * 
-	 * @param downloader 下载器
+	 * @param taskSession 下载任务
 	 */
-	public void remove(IDownloader downloader) {
-		synchronized (this.downloaders) {
-			LOGGER.debug("删除下载器：{}", downloader.name());
-			// 下载队列删除
-			this.downloaders.remove(downloader);
+	public void remove(ITaskSession taskSession) {
+		synchronized (this.tasks) {
+			LOGGER.debug("删除下载任务：{}", taskSession.getName());
+			this.tasks.remove(taskSession); // 删除任务
 		}
 		// 刷新任务列表
 		GuiManager.getInstance().refreshTaskList();
@@ -127,10 +120,8 @@ public final class DownloaderManager implements IManager {
 	 * @return 所有下载任务列表
 	 */
 	public List<ITaskSession> allTask() {
-		synchronized (this.downloaders) {
-			return this.downloaders.stream()
-				.map(IDownloader::taskSession)
-				.collect(Collectors.toList());
+		synchronized (this.tasks) {
+			return this.tasks.stream().collect(Collectors.toList());
 		}
 	}
 		
@@ -142,28 +133,29 @@ public final class DownloaderManager implements IManager {
 	 * </dl>
 	 */
 	public void refresh() {
-		synchronized (this.downloaders) {
+		synchronized (this.tasks) {
 			// 当前任务正在下载数量
-			final long downloadCount = this.downloaders.stream()
-				.filter(IDownloader::statusDownload)
+			final long downloadCount = this.tasks.stream()
+				.filter(ITaskSession::statusDownload)
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(downloadCount == downloadSize) {
 				// 等于：不操作
+				LOGGER.debug("下载任务数量正常：{}-{}", downloadSize, downloadCount);
 			} else if(downloadCount > downloadSize) {
-				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 大于：暂停部分下载任务
-				this.downloaders.stream()
-					.filter(IDownloader::statusDownload)
+				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
+				this.tasks.stream()
+					.filter(ITaskSession::statusDownload)
 					.skip(downloadSize)
-					.map(IDownloader::taskSession)
 					.forEach(ITaskSession::await);
 			} else {
-				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				// 小于：开始部分下载任务
-				this.downloaders.stream()
-					.filter(IDownloader::statusAwait)
+				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
+				this.tasks.stream()
+					.filter(ITaskSession::statusAwait)
 					.limit(downloadSize - downloadCount)
+					.map(ITaskSession::downloader)
 					.forEach(this.executor::submit);
 			}
 		}
@@ -193,20 +185,19 @@ public final class DownloaderManager implements IManager {
 	}
 	
 	/**
-	 * <p>关闭下载器管理器</p>
+	 * <p>关闭任务管理器</p>
 	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {
-		LOGGER.debug("关闭下载器管理器");
+		LOGGER.debug("关闭任务管理器");
 		try {
-			synchronized (this.downloaders) {
-				this.downloaders.stream()
-					.filter(IDownloader::statusRunning)
-					.map(IDownloader::taskSession)
+			synchronized (this.tasks) {
+				this.tasks.stream()
+					.filter(ITaskSession::statusRunning)
 					.forEach(ITaskSession::pause);
 			}
 		} catch (Exception e) {
-			LOGGER.error("关闭下载器管理器异常", e);
+			LOGGER.error("关闭任务管理器异常", e);
 		}
 		SystemThreadContext.shutdown(this.executor);
 	}

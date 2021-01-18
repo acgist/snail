@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail.SnailBuilder;
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
@@ -19,12 +20,17 @@ import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class DownloaderManagerTest extends Performance {
+public class TaskManagerTest extends Performance {
 
+	@Test
+	public void testDownloader() {
+		assertTrue(TaskManager.getInstance().allTask().isEmpty());
+	}
+	
 	@Test
 	public void testNewTask() throws DownloadException {
 		SnailBuilder.newBuilder().buildSync();
-		final var manager = DownloaderManager.getInstance();
+		final var manager = TaskManager.getInstance();
 		var exception = assertThrows(DownloadException.class, () -> manager.download("https://www.acgist.com"));
 		this.log(exception.getMessage());
 		exception = assertThrows(DownloadException.class, () -> manager.submit(null));
@@ -39,7 +45,7 @@ public class DownloaderManagerTest extends Performance {
 	@Test
 	public void testRefresh() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
-		final var manager = DownloaderManager.getInstance();
+		final var manager = TaskManager.getInstance();
 		final ITaskSession taskSession = manager.download("1234567890123456789012345678901234567890");
 		assertNotNull(taskSession);
 		DownloadConfig.setSize(0);
@@ -52,7 +58,7 @@ public class DownloaderManagerTest extends Performance {
 	@Test
 	public void testRestart() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
-		final var manager = DownloaderManager.getInstance();
+		final var manager = TaskManager.getInstance();
 		ITaskSession taskSession = manager.download("1234567890123456789012345678901234567890");
 		assertNotNull(taskSession);
 		assertTrue(manager.allTask().size() > 0);

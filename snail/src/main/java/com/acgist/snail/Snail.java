@@ -13,14 +13,13 @@ import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.ConfigInitializer;
 import com.acgist.snail.context.initializer.DhtInitializer;
-import com.acgist.snail.context.initializer.DownloaderInitializer;
 import com.acgist.snail.context.initializer.EntityInitializer;
 import com.acgist.snail.context.initializer.Initializer;
 import com.acgist.snail.context.initializer.LocalServiceDiscoveryInitializer;
 import com.acgist.snail.context.initializer.NatInitializer;
+import com.acgist.snail.context.initializer.TaskInitializer;
 import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.context.initializer.TrackerInitializer;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.torrent.TorrentServer;
@@ -59,13 +58,13 @@ public final class Snail {
 	 */
 	private boolean lock = false;
 	/**
+	 * <p>是否加载已有任务</p>
+	 */
+	private boolean buildTask = false;
+	/**
 	 * <p>是否创建Torrent任务</p>
 	 */
 	private boolean buildTorrent = false;
-	/**
-	 * <p>是否加载已有任务</p>
-	 */
-	private boolean buildDownloader = false;
 	/**
 	 * <p>是否启动系统监听</p>
 	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
@@ -94,10 +93,10 @@ public final class Snail {
 	 * 
 	 * @throws DownloadException 下载异常
 	 * 
-	 * @see DownloaderManager#download(String)
+	 * @see TaskManager#download(String)
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		return DownloaderManager.getInstance().download(url);
+		return TaskManager.getInstance().download(url);
 	}
 	
 	/**
@@ -107,7 +106,7 @@ public final class Snail {
 	public void lockDownload() {
 		synchronized (this) {
 			this.lock = true;
-			while(DownloaderManager.getInstance().allTask().stream().anyMatch(ITaskSession::statusRunning)) {
+			while(TaskManager.getInstance().allTask().stream().anyMatch(ITaskSession::statusRunning)) {
 				try {
 					this.wait();
 				} catch (InterruptedException e) {
@@ -148,7 +147,7 @@ public final class Snail {
 				ApplicationServer.getInstance().close();
 			}
 			// 优先关闭任务
-			DownloaderManager.getInstance().shutdown();
+			TaskManager.getInstance().shutdown();
 			if(INSTANCE.buildTorrent) {
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
@@ -251,10 +250,20 @@ public final class Snail {
 				list.add(TrackerInitializer.newInstance());
 				list.add(LocalServiceDiscoveryInitializer.newInstance());
 			}
-			if(INSTANCE.buildDownloader) {
-				list.add(DownloaderInitializer.newInstance());
+			if(INSTANCE.buildTask) {
+				list.add(TaskInitializer.newInstance());
 			}
 			return list;
+		}
+		
+		/**
+		 * <p>加载已有任务</p>
+		 * 
+		 * @return SnailBuilder
+		 */
+		public SnailBuilder loadTask() {
+			INSTANCE.buildTask = true;
+			return this;
 		}
 
 		/**
@@ -264,16 +273,6 @@ public final class Snail {
 		 */
 		public SnailBuilder application() {
 			INSTANCE.buildApplication = true;
-			return this;
-		}
-		
-		/**
-		 * <p>加载已有任务</p>
-		 * 
-		 * @return SnailBuilder
-		 */
-		public SnailBuilder downloader() {
-			INSTANCE.buildDownloader = true;
 			return this;
 		}
 		
