@@ -153,7 +153,7 @@ public final class TorrentPiece {
 	 * 
 	 * @return 是否完成
 	 */
-	public boolean complete() {
+	public boolean completed() {
 		return this.size >= this.length;
 	}
 	
@@ -201,7 +201,7 @@ public final class TorrentPiece {
 		synchronized (this) {
 			System.arraycopy(bytes, 0, this.data, begin - this.begin, bytes.length);
 			this.size += bytes.length;
-			return this.complete();
+			return this.completed();
 		}
 	}
 	

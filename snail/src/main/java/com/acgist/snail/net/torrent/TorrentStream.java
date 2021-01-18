@@ -117,14 +117,14 @@ public final class TorrentStream {
 	 * @param path 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
-	 * @param complete 是否完成
+	 * @param completed 是否完成
 	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	private TorrentStream(
-		long pieceLength, String path, long size, long pos, boolean complete,
+		long pieceLength, String path, long size, long pos, boolean completed,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
 		this.pieceLength = pieceLength;
@@ -151,7 +151,7 @@ public final class TorrentStream {
 		this.cachePieces = new LinkedBlockingQueue<>();
 		this.fileStream = this.buildFileStream();
 		this.torrentStreamGroup = torrentStreamGroup;
-		this.buildPieces(complete);
+		this.buildPieces(completed);
 		this.buildFileDownloadSize();
 	}
 	
@@ -162,7 +162,7 @@ public final class TorrentStream {
 	 * @param path 文件路径
 	 * @param size 文件大小
 	 * @param pos 文件开始偏移
-	 * @param complete 是否完成
+	 * @param completed 是否完成
 	 * @param fileBufferSize 缓冲大小
 	 * @param torrentStreamGroup 文件流组
 	 * 
@@ -171,10 +171,10 @@ public final class TorrentStream {
 	 * @throws DownloadException 下载异常
 	 */
 	public static final TorrentStream newInstance(
-		long pieceLength, String path, long size, long pos, boolean complete,
+		long pieceLength, String path, long size, long pos, boolean completed,
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
-		final var stream = new TorrentStream(pieceLength, path, size, pos, complete, fileBufferSize, torrentStreamGroup);
+		final var stream = new TorrentStream(pieceLength, path, size, pos, completed, fileBufferSize, torrentStreamGroup);
 		// TODO：{}，使用多行文本
 		LOGGER.debug(
 			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
@@ -268,7 +268,7 @@ public final class TorrentStream {
 			// Peer没有已下载Piece位图
 			return null;
 		}
-		if(this.complete()) {
+		if(this.completed()) {
 			// 文件已经下载完成
 			return null;
 		}
@@ -386,7 +386,7 @@ public final class TorrentStream {
 				// 设置已下载大小
 				this.buildFileDownloadSize();
 				// 下载完成数据刷出
-				if(this.complete()) {
+				if(this.completed()) {
 					this.flush();
 					// 可以将文件流变为读取模式
 				}
@@ -554,7 +554,7 @@ public final class TorrentStream {
 	 * 
 	 * @return 是否下载完成
 	 */
-	public boolean complete() {
+	public boolean completed() {
 		synchronized (this) {
 			return this.pieces.cardinality() >= this.filePieceSize;
 		}
@@ -726,12 +726,12 @@ public final class TorrentStream {
 	/**
 	 * <p>加载已下载Piece位图</p>
 	 * 
-	 * @param complete 任务是否完成
+	 * @param completed 任务是否完成
 	 */
-	private void buildPieces(boolean complete) {
+	private void buildPieces(boolean completed) {
 		final MessageDigest digest = DigestUtils.sha1();
 		for (int index = this.fileBeginPieceIndex; index <= this.fileEndPieceIndex; index++) {
-			if(complete) {
+			if(completed) {
 				// 任务完成
 				this.done(index);
 			} else if(index == this.fileBeginPieceIndex) {

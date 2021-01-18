@@ -82,7 +82,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 	
 	@Override
-	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void started(Integer sid, TorrentSession torrentSession) throws NetException {
 		// 获取连接ID
 		if(this.connectionId == null) {
 			// 添加连接锁
@@ -108,7 +108,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	@Override
-	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void completed(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
 			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 			this.send(announceMessage);
@@ -116,7 +116,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void stopped(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
 			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 			this.send(announceMessage);

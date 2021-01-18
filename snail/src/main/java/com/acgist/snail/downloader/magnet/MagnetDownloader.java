@@ -53,7 +53,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		this.complete = this.torrentSession.magnet(this.taskSession);
+		this.completed = this.torrentSession.magnet(this.taskSession);
 	}
 
 }

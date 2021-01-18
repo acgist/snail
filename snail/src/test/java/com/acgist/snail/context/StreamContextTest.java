@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.channels.Channels;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public class StreamContextTest extends Performance {
 	public void testNewRemove() {
 		final StreamContext context = StreamContext.getInstance();
 		final InputStream input = new ByteArrayInputStream(new byte[1024]);
-		final var session = context.newStreamSession(input);
+		final var session = context.newStreamSession(Channels.newChannel(input));
 		assertTrue(session.remove());
 	}
 	
@@ -29,7 +30,7 @@ public class StreamContextTest extends Performance {
 		}
 		final StreamContext context = StreamContext.getInstance();
 		final InputStream input = new ByteArrayInputStream(new byte[1024]);
-		final var session = context.newStreamSession(input);
+		final var session = context.newStreamSession(Channels.newChannel(input));
 		assertTrue(session.checkLive());
 		ThreadUtils.sleep(40 * 1000);
 		assertFalse(session.checkLive());

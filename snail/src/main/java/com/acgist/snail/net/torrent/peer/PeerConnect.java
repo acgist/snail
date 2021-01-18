@@ -44,7 +44,7 @@ public abstract class PeerConnect {
 	/**
 	 * <p>PICEC完成等待时间：{@value}</p>
 	 */
-	private static final int COMPLETE_TIMEOUT = 30 * SystemConfig.ONE_SECOND_MILLIS;
+	private static final int COMPLETED_TIMEOUT = 30 * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>释放等待时间：{@value}</p>
 	 */
@@ -73,9 +73,9 @@ public abstract class PeerConnect {
 	/**
 	 * <p>完成锁</p>
 	 * 
-	 * @see #COMPLETE_TIMEOUT
+	 * @see #COMPLETED_TIMEOUT
 	 */
-	private final AtomicBoolean completeLock = new AtomicBoolean(false);
+	private final AtomicBoolean completedLock = new AtomicBoolean(false);
 	/**
 	 * <p>释放锁</p>
 	 * 
@@ -279,10 +279,10 @@ public abstract class PeerConnect {
 		}
 		// 释放slice锁
 		this.unlockSlice();
-		final boolean complete = this.downloadPiece.write(begin, bytes);
+		final boolean completed = this.downloadPiece.write(begin, bytes);
 		// 下载完成：释放完成锁
-		if(complete) {
-			this.unlockComplete();
+		if(completed) {
+			this.unlockCompleted();
 		}
 	}
 
@@ -312,12 +312,12 @@ public abstract class PeerConnect {
 				success = false;
 			}
 		}
-		this.completeLock.set(true); // 设置完成
+		this.completedLock.set(true); // 设置完成
 		this.releaseDownload();
 		// 验证任务是否完成
 		this.torrentSession.checkCompletedAndDone();
 		// 验证最后选择的Piece是否下载完成
-		if(this.downloadPiece != null && !this.downloadPiece.complete()) {
+		if(this.downloadPiece != null && !this.downloadPiece.completed()) {
 			this.undone();
 		}
 		LOGGER.debug("结束请求下载：{}", this.peerSession);
@@ -367,7 +367,7 @@ public abstract class PeerConnect {
 			}
 		}
 		// 添加完成锁
-		this.lockComplete();
+		this.lockCompleted();
 		// 释放释放锁
 		this.unlockRelease();
 		return true;
@@ -380,7 +380,7 @@ public abstract class PeerConnect {
 	private void pick() {
 		if(this.downloadPiece == null) {
 			// 没有Piece
-		} else if(this.downloadPiece.complete()) {
+		} else if(this.downloadPiece.completed()) {
 			// 下载完成
 			if(this.downloadPiece.verify()) {
 				// 验证数据：保存数据
@@ -414,7 +414,7 @@ public abstract class PeerConnect {
 		}
 		// 设置状态
 		this.sliceLock.set(0);
-		this.completeLock.set(false);
+		this.completedLock.set(false);
 	}
 	
 	/**
@@ -434,7 +434,7 @@ public abstract class PeerConnect {
 				LOGGER.debug("PeerConnect释放下载：{}-{}", this.peerSession.host(), this.peerSession.port());
 				this.downloading = false;
 				// 没有完成：等待下载完成
-				if(!this.completeLock.get()) {
+				if(!this.completedLock.get()) {
 					// 添加释放锁
 					this.lockRelease();
 				}
@@ -474,12 +474,12 @@ public abstract class PeerConnect {
 	 * <p>添加完成锁</p>
 	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@value #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
 	 */
-	private void lockComplete() {
-		if(!this.completeLock.get()) {
-			synchronized (this.completeLock) {
-				if(!this.completeLock.get()) {
+	private void lockCompleted() {
+		if(!this.completedLock.get()) {
+			synchronized (this.completedLock) {
+				if(!this.completedLock.get()) {
 					try {
-						this.completeLock.wait(COMPLETE_TIMEOUT);
+						this.completedLock.wait(COMPLETED_TIMEOUT);
 					} catch (InterruptedException e) {
 						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
@@ -492,10 +492,10 @@ public abstract class PeerConnect {
 	/**
 	 * <p>释放完成锁</p>
 	 */
-	private void unlockComplete() {
-		synchronized (this.completeLock) {
-			this.completeLock.set(true);
-			this.completeLock.notifyAll();
+	private void unlockCompleted() {
+		synchronized (this.completedLock) {
+			this.completedLock.set(true);
+			this.completedLock.notifyAll();
 		}
 	}
 

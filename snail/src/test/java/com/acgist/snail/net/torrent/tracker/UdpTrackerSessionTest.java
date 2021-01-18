@@ -24,7 +24,7 @@ public class UdpTrackerSessionTest extends Performance {
 			.filter(value -> value.equalsAnnounceUrl(announceUrl))
 			.findFirst()
 			.get();
-		session.announce(1000, torrentSession);
+		session.started(1000, torrentSession);
 //		session.scrape(1000, torrentSession);
 		this.pause();
 	}

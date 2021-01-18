@@ -101,8 +101,11 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>数据传输默认大小：{@value}</p>
 	 * <p>一般IO读写缓冲数据大小</p>
+	 * <p>注意：默认系统最小下载速度</p>
+	 * 
+	 * @see #MIN_DOWNLOAD_BUFFER_KB
 	 */
-	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = 16 * ONE_KB;
+	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = MIN_DOWNLOAD_BUFFER_KB * ONE_KB;
 	/**
 	 * <p>连接超时时间（秒）：{@value}</p>
 	 */

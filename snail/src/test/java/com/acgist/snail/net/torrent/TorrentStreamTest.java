@@ -29,7 +29,7 @@ public class TorrentStreamTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setFile("E:/snail/tmp/");
 		entity.setType(Type.TORRENT);
-		entity.setStatus(Status.COMPLETE);
+		entity.setStatus(Status.COMPLETED);
 		final var files = session.torrent().getInfo().files();
 		long pos = 0L;
 		TorrentFile torrentFile = null;

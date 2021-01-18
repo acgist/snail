@@ -28,7 +28,7 @@ public abstract class Downloader implements IDownloader {
 	 * <p>任务完成状态</p>
 	 * <p>true-已完成；false-未完成；</p>
 	 */
-	protected volatile boolean complete = false;
+	protected volatile boolean completed = false;
 	/**
 	 * <p>任务信息</p>
 	 */
@@ -78,8 +78,8 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public final boolean statusComplete() {
-		return this.taskSession.statusComplete();
+	public final boolean statusCompleted() {
+		return this.taskSession.statusCompleted();
 	}
 	
 	@Override
@@ -151,7 +151,7 @@ public abstract class Downloader implements IDownloader {
 				if(this.statusAwait()) {
 					LOGGER.debug("开始下载任务：{}", name);
 					this.fail = false; // 重置下载失败状态
-					this.complete = false; // 重置下载成功状态
+					this.completed = false; // 重置下载成功状态
 					this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
 					try {
 						this.open();
@@ -160,7 +160,7 @@ public abstract class Downloader implements IDownloader {
 						LOGGER.error("任务下载异常", e);
 						this.fail(e.getMessage());
 					}
-					this.checkAndMarkComplete(); // 标记完成
+					this.checkAndMarkCompleted(); // 标记完成
 					this.release(); // 释放资源
 					LOGGER.debug("任务下载结束：{}", name);
 				} else {
@@ -176,7 +176,7 @@ public abstract class Downloader implements IDownloader {
 	 * <dl>
 	 * 	<dt>判断任务是否可以下载</dt>
 	 * 	<dd>未被标记{@linkplain #fail 失败}</dd>
-	 * 	<dd>未被标记{@linkplain #complete 完成}</dd>
+	 * 	<dd>未被标记{@linkplain #completed 完成}</dd>
 	 * 	<dd>任务处于{@linkplain #statusDownload() 下载状态}</dd>
 	 * </dl>
 	 * 
@@ -185,16 +185,16 @@ public abstract class Downloader implements IDownloader {
 	protected final boolean downloadable() {
 		return
 			!this.fail &&
-			!this.complete &&
+			!this.completed &&
 			this.statusDownload();
 	}
 	
 	/**
 	 * <p>标记任务完成</p>
 	 */
-	private final void checkAndMarkComplete() {
-		if(this.complete) {
-			this.taskSession.updateStatus(Status.COMPLETE);
+	private final void checkAndMarkCompleted() {
+		if(this.completed) {
+			this.taskSession.updateStatus(Status.COMPLETED);
 			GuiManager.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
 	}

@@ -156,13 +156,13 @@ public final class TorrentStreamGroup {
 	 * <p>需要下载文件：没有加载-加载；已经加载-重载；</p>
 	 * <p>不用下载文件：没有加载-忽略；已经加载-卸载；</p>
 	 * 
-	 * @param complete 任务是否完成
+	 * @param completed 任务是否完成
 	 * @param folder 任务下载目录
 	 * @param files 任务文件列表
 	 * 
 	 * @return 新增下载文件数量：原来没有下载
 	 */
-	private int load(boolean complete, String folder, List<TorrentFile> files) {
+	private int load(boolean completed, String folder, List<TorrentFile> files) {
 		// 新增下载文件数量：原来没有下载
 		int loadFileCount = 0;
 		if(CollectionUtils.isEmpty(files)) {
@@ -189,7 +189,7 @@ public final class TorrentStreamGroup {
 							LOGGER.debug("文件选择下载（加载）：{}", filePath);
 							loadFileCount++;
 							final TorrentStream newStream = TorrentStream.newInstance(
-								pieceLength, filePath, fileSize, pos, complete,
+								pieceLength, filePath, fileSize, pos, completed,
 								this.fileBufferSize, this
 							);
 							this.streams.add(newStream);
@@ -617,11 +617,11 @@ public final class TorrentStreamGroup {
 	 * 
 	 * @return 是否下载完成
 	 */
-	public boolean complete() {
+	public boolean completed() {
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
-				if(torrentStream.selected() && !torrentStream.complete()) {
+				if(torrentStream.selected() && !torrentStream.completed()) {
 					return false;
 				}
 			}

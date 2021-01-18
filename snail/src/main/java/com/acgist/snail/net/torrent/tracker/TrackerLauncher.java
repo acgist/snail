@@ -157,7 +157,7 @@ public final class TrackerLauncher {
 
 	/**
 	 * <p>释放资源</p>
-	 * <p>暂停发送stop消息、完成发送complete消息</p>
+	 * <p>暂停发送暂停消息、完成发送完成消息</p>
 	 */
 	public void release() {
 		if(this.needRelease && this.available()) {
@@ -166,10 +166,10 @@ public final class TrackerLauncher {
 			try {
 				if(this.torrentSession.completed()) { // 任务完成
 					LOGGER.debug("Tracker完成通知：{}", this.announceUrl());
-					this.session.complete(this.id, this.torrentSession);
+					this.session.completed(this.id, this.torrentSession);
 				} else { // 任务暂停
 					LOGGER.debug("Tracker暂停通知：{}", this.announceUrl());
-					this.session.stop(this.id, this.torrentSession);
+					this.session.stopped(this.id, this.torrentSession);
 				}
 			} catch (NetException e) {
 				LOGGER.error("TrackerLauncher关闭异常", e);

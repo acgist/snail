@@ -1,14 +1,16 @@
 package com.acgist.snail.net.hls;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,17 +58,17 @@ public final class HlsClient implements Runnable {
 	 */
 	private volatile boolean completed;
 	/**
-	 * <p>输入流</p>
-	 */
-	private InputStream input;
-	/**
-	 * <p>输出流</p>
-	 */
-	private OutputStream output;
-	/**
 	 * <p>HLS任务信息</p>
 	 */
 	private final HlsSession hlsSession;
+	/**
+	 * <p>输入流</p>
+	 */
+	protected ReadableByteChannel input;
+	/**
+	 * <p>输出流</p>
+	 */
+	protected WritableByteChannel output;
 	
 	/**
 	 * @param link 下载路径
@@ -100,8 +102,8 @@ public final class HlsClient implements Runnable {
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			int length = 0;
-			final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
 			final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
+			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			try {
 				this.buildInput(downloadSize);
 				this.buildOutput();
@@ -110,14 +112,17 @@ public final class HlsClient implements Runnable {
 					downloadSize = 0L;
 				}
 				while(this.downloadable()) {
-					length = this.input.read(bytes, 0, bytes.length);
+					this.input.read(buffer);
+					length = buffer.limit();
 					if(length >= 0) {
-						this.output.write(bytes, 0, length);
+						buffer.flip();
+						this.output.write(buffer);
+						buffer.clear();
 						downloadSize += length;
 						this.hlsSession.download(length); // 设置下载速度
 					}
 					streamSession.heartbeat();
-					if(this.checkCompleted(length, downloadSize)) {
+					if(StreamContext.checkFinish(length, downloadSize, this.size)) {
 						this.completed = true;
 						break;
 					}
@@ -154,11 +159,11 @@ public final class HlsClient implements Runnable {
 	 * <p>校验是否完成</p>
 	 * <p>文件是否存在、大小是否正确</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param downloadSize 已下载大小
 	 * 
 	 * @return 是否完成
 	 */
-	private boolean checkCompleted(final long size) {
+	private boolean checkCompleted(final long downloadSize) {
 		// 如果文件已经完成直接返回完成
 		if(this.completed) {
 			return this.completed;
@@ -171,29 +176,13 @@ public final class HlsClient implements Runnable {
 			// 文件实际大小
 			final var header = HTTPClient.newInstance(this.link).head();
 			this.size = header.fileSize();
-			return this.size == size;
+			return this.size == downloadSize;
 		} catch (NetException e) {
 			LOGGER.error("HLS文件校验异常：{}", this.link, e);
 		}
 		return false;
 	}
 
-	/**
-	 * <p>判断是否下载完成</p>
-	 * 
-	 * @param length 下载数据大小
-	 * @param size 已下载数据大小
-	 * 
-	 * @return 是否下载完成
-	 */
-	private boolean checkCompleted(int length, long size) {
-		return
-			// 没有更多数据
-			length <= -1 ||
-			// 已下载数据大小大于等于文件大小
-			(this.size > 0L && this.size <= size);
-	}
-	
 	/**
 	 * <p>创建{@linkplain #input 输入流}</p>
 	 * 
@@ -210,7 +199,7 @@ public final class HlsClient implements Runnable {
 		if(HTTPClient.downloadable(response)) {
 			final var headers = HttpHeaderWrapper.newInstance(response.headers());
 			this.range = headers.range();
-			this.input = new BufferedInputStream(response.body(), SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
+			this.input = Channels.newChannel(response.body());
 			if(this.range) { // 支持断点续传
 				headers.verifyBeginRange(downloadSize);
 			}
@@ -231,13 +220,15 @@ public final class HlsClient implements Runnable {
 			if(this.size > 0L) {
 				bufferSize = (int) this.size;
 			}
+			BufferedOutputStream outputStream;
 			if(this.range) {
 				// 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.path, true), bufferSize);
+				outputStream = new BufferedOutputStream(new FileOutputStream(this.path, true), bufferSize);
 			} else {
 				// 不支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.path), bufferSize);
+				outputStream = new BufferedOutputStream(new FileOutputStream(this.path), bufferSize);
 			}
+			this.output = Channels.newChannel(outputStream);
 		} catch (FileNotFoundException e) {
 			throw new NetException("HLS客户端输出流创建失败", e);
 		}
