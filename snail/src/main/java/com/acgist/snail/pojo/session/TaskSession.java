@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.SystemStatistics;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
@@ -74,6 +74,11 @@ public final class TaskSession implements ITaskSession {
 	 */
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
+	}
+	
+	@Override
+	public IDownloader downloader() {
+		return this.downloader;
 	}
 	
 	@Override
@@ -252,7 +257,7 @@ public final class TaskSession implements ITaskSession {
 			return;
 		}
 		// 提交下载队列
-		DownloaderManager.getInstance().submit(this);
+		TaskManager.getInstance().submit(this);
 		this.updateStatus(Status.AWAIT);
 	}
 	
@@ -260,11 +265,8 @@ public final class TaskSession implements ITaskSession {
 	public void restart() throws DownloadException {
 		// 暂停任务
 		this.pause();
-		if(this.downloader != null) {
-			// 移除下载器
-			DownloaderManager.getInstance().remove(this.downloader);
-			this.downloader = null;
-		}
+		// 删除下载器
+		this.downloader = null;
 		if(this.statusComplete()) {
 			// 已经完成任务：修改状态、清空完成时间
 			this.setStatus(Status.AWAIT);
@@ -317,11 +319,10 @@ public final class TaskSession implements ITaskSession {
 			// 没有下载：异步删除
 			SystemThreadContext.submit(this.downloader::delete);
 		}
-		if(this.downloader != null) {
-			// 移除下载器
-			DownloaderManager.getInstance().remove(this.downloader);
-			this.downloader = null;
-		}
+		// 删除下载任务
+		TaskManager.getInstance().remove(this);
+		// 删除下载器
+		this.downloader = null;
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
 	}
@@ -364,9 +365,9 @@ public final class TaskSession implements ITaskSession {
 		this.setStatus(status);
 		this.update();
 		this.unlockDownload(); // 状态修改完成才能调用
-		DownloaderManager.getInstance().refresh(); // 刷新下载
+		TaskManager.getInstance().refresh(); // 刷新下载
 	}
-	
+
 	//================实体================//
 	
 	@Override

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.utils.Performance;
 
 public class SnailTest extends Performance {
@@ -33,11 +32,6 @@ public class SnailTest extends Performance {
 		assertTrue(socket.isConnected());
 		socket.close();
 		Snail.shutdown();
-	}
-	
-	@Test
-	public void testDownloader() {
-		assertTrue(DownloaderManager.getInstance().allTask().isEmpty());
 	}
 	
 	@Test

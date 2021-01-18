@@ -133,7 +133,7 @@ public final class SystemContext {
 	public static final Snail build() {
 		LOGGER.info("系统初始化");
 		return SnailBuilder.newBuilder()
-			.downloader()
+			.loadTask()
 			.application()
 			.enableAllProtocol()
 			.buildAsyn();

@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.downloader.DownloaderManager;
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.window.Controller;
@@ -71,7 +71,7 @@ public final class BuildController extends Controller implements Initializable {
 		boolean success = true;
 		try {
 			// TODO：优化卡死现象
-			DownloaderManager.getInstance().download(url);
+			TaskManager.getInstance().download(url);
 		} catch (Exception e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			success = false;

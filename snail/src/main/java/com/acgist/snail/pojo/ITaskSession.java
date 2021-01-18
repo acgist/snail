@@ -64,6 +64,13 @@ public interface ITaskSession extends ITaskStatus, ITaskSessionEntity, ITaskSess
 	}
 	
 	/**
+	 * <p>获取下载器</p>
+	 * 
+	 * @return 下载器
+	 */
+	IDownloader downloader();
+	
+	/**
 	 * <p>创建下载器</p>
 	 * <p>如果已经存在下载器直接返回，否者创建下载器。</p>
 	 * 

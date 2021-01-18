@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DownloaderInitializerTest extends Performance {
+public class TaskInitializerTest extends Performance {
 
 	@Test
-	public void testDownloaderInitializer() {
-		assertDoesNotThrow(() -> DownloaderInitializer.newInstance().sync());
+	public void testTaskInitializer() {
+		assertDoesNotThrow(() -> TaskInitializer.newInstance().sync());
 	}
 	
 }

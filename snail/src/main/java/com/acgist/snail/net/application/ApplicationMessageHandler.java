@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.TaskManager;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.downloader.DownloaderManager;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.gui.GuiManager;
@@ -212,7 +212,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String files = decoder.getString("files");
 			synchronized (this) {
 				GuiManager.getInstance().files(files); // 设置选择文件
-				DownloaderManager.getInstance().download(url); // 开始下载任务
+				TaskManager.getInstance().download(url); // 开始下载任务
 			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
@@ -226,7 +226,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>返回任务列表（B编码）</p>
 	 */
 	private void onTaskList() {
-		final List<Map<String, Object>> list = DownloaderManager.getInstance().allTask().stream()
+		final List<Map<String, Object>> list = TaskManager.getInstance().allTask().stream()
 			.map(ITaskSession::taskMessage)
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
@@ -363,7 +363,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
 		final String body = message.getBody(); // 任务ID
-		return DownloaderManager.getInstance().allTask().stream()
+		return TaskManager.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
 	}
