@@ -22,6 +22,7 @@ import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -168,6 +169,23 @@ public final class StatisticsController extends Controller implements Initializa
 	public void handlePieceAction(ActionEvent event) {
 		this.filter = Filter.PIECE;
 		this.buildSelectPieceStatistics();
+	}
+
+	/**
+	 * @param piecePos 指定下载Piece索引
+	 * 
+	 * @see TorrentSession#piecePos(int)
+	 */
+	public void piecePos(int index) {
+		final String infoHashHex = this.selectInfoHashHex();
+		if(infoHashHex == null) {
+			return;
+		}
+		final TorrentSession session = TorrentContext.getInstance().torrentSession(infoHashHex);
+		if(session == null) {
+			return;
+		}
+		session.piecePos(index);
 	}
 	
 	/**
