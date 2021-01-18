@@ -443,7 +443,13 @@ public final class CanvasPainter {
 	 * <p>鼠标点击</p>
 	 */
 	private void clicked() {
-		if(this.index >= 0 && this.selectBitSet.get(this.index)) {
+		if(
+			this.index >= 0 &&
+			// 没有下载
+			!this.bitSet.get(this.index) &&
+			// 选择下载
+			this.selectBitSet.get(this.index)
+		) {
 			StatisticsWindow.getInstance().piecePos(this.index);
 		}
 	};
