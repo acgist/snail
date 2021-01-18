@@ -97,7 +97,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 			return;
 		}
 		try {
-			this.announce(sid, torrentSession); // 发送声明消息
+			this.started(sid, torrentSession); // 发送声明消息
 			this.weight++;
 			this.failTimes = 0; // 成功直接清空失败次数
 		} catch (Exception e) {
@@ -112,17 +112,17 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	}
 	
 	/**
-	 * <p>跟踪（声明）</p>
+	 * <p>声明：开始</p>
 	 * 
 	 * @param sid sid
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public abstract void announce(Integer sid, TorrentSession torrentSession) throws NetException;
+	public abstract void started(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
-	 * <p>完成</p>
+	 * <p>声明：完成</p>
 	 * <p>任务完成时发送</p>
 	 * 
 	 * @param sid sid
@@ -130,10 +130,10 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public abstract void complete(Integer sid, TorrentSession torrentSession) throws NetException;
+	public abstract void completed(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
-	 * <p>停止</p>
+	 * <p>声明：停止</p>
 	 * <p>任务暂停时发送</p>
 	 * 
 	 * @param sid sid
@@ -141,7 +141,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public abstract void stop(Integer sid, TorrentSession torrentSession) throws NetException;
+	public abstract void stopped(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
 	 * <p>刮檫</p>

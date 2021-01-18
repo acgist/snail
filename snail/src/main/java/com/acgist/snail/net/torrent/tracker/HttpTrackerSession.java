@@ -1,8 +1,10 @@
 package com.acgist.snail.net.torrent.tracker;
 
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -78,7 +80,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 
 	@Override
-	public void announce(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void started(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
 		// 注意：不能使用BodyHandlers.ofString()
 		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray());
@@ -97,13 +99,13 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 	
 	@Override
-	public void complete(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void completed(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
 	
 	@Override
-	public void stop(Integer sid, TorrentSession torrentSession) throws NetException {
+	public void stopped(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
 		HTTPClient.get(announceMessage, BodyHandlers.ofString());
 	}
@@ -181,15 +183,16 @@ public final class HttpTrackerSession extends TrackerSession {
 		final Integer incomplete = decoder.getInteger("incomplete");
 		final Integer interval = decoder.getInteger("interval");
 		final Integer minInterval = decoder.getInteger("min interval");
-		final String failureReason = decoder.getString("failure reason");
 		final String warngingMessage = decoder.getString("warnging message");
-		final var object = decoder.get("peers");
+		final String failureReason = decoder.getString("failure reason");
+		final Object peersObject = decoder.get("peers");
 		Map<String, Integer> peers;
-		if(object instanceof List) {
-			// TODO：解析
-			peers = null;
+		if(peersObject instanceof byte[]) {
+			peers = PeerUtils.read((byte[]) peersObject);
 		} else {
-			peers = PeerUtils.read((byte[]) object);
+			peers = new HashMap<>();
+			// TODO：List解析
+			LOGGER.warn("Peer声明消息格式没有适配：{}", peersObject);
 		}
 		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(sid);
@@ -227,8 +230,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			return List.of();
 		}
 		return files.values().stream()
-//			.filter(Objects::nonNull) // 可以替换以下方法
-			.filter(value -> value != null)
+			.filter(Objects::nonNull)
 			.map(value -> {
 				final Map<?, ?> map = (Map<?, ?>) value;
 				final ScrapeMessage message = new ScrapeMessage();

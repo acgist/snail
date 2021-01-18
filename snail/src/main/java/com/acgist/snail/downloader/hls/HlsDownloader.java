@@ -53,7 +53,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	public void release() {
 		if(this.hlsSession != null) {
 			this.hlsSession.release();
-			if(this.complete) {
+			if(this.completed) {
 				this.tsLink();
 				this.delete();
 			} else if(this.statusDelete()) {
@@ -73,11 +73,11 @@ public final class HlsDownloader extends MultifileDownloader {
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		this.complete = this.hlsSession.download();
+		this.completed = this.hlsSession.download();
 	}
 	
 	@Override
-	protected boolean checkComplete() {
+	protected boolean checkCompleted() {
 		return this.hlsSession.checkCompleted();
 	}
 

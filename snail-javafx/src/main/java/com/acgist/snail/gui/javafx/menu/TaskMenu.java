@@ -196,7 +196,7 @@ public final class TaskMenu extends Menu {
 				try {
 					if(session.verify()) {
 						Alerts.info("校验成功", session.getName());
-					} else if(session.statusComplete()) {
+					} else if(session.statusCompleted()) {
 						// 任务完成：判断是否需要重新下载
 						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiManager.MessageType.CONFIRM);
 						if(optional.isPresent() && optional.get() == ButtonType.OK) {

@@ -44,13 +44,13 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		if(this.torrentSession != null) {
 			// 任务信息已经加载：重新加载下载文件信息
 			unchange = this.torrentSession.reload() <= 0;
-		} else if(this.statusComplete()) {
+		} else if(this.statusCompleted()) {
 			// 任务信息没有加载（软件重启）：任务完成加载任务信息
 			unchange = false;
 			this.torrentSession = this.loadTorrentSession();
 		}
 		// 如果任务没有完成修改数据开始下载自动加载任务
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			// 完成任务校验数据
 			if(unchange) {
 				// 没有新增文件
@@ -131,7 +131,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	protected void loadDownload() throws DownloadException {
-		this.complete = this.torrentSession.download();
+		this.completed = this.torrentSession.download();
 	}
 	
 }

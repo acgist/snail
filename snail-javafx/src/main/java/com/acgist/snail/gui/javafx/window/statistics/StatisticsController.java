@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
-import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.net.torrent.TorrentManager;
@@ -213,7 +213,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>系统统计信息</p>
 	 */
 	private void buildSystemStatistics() {
-		final var statistics = SystemStatistics.getInstance().statistics();
+		final var statistics = StatisticsContext.getInstance().statistics();
 		// 累计上传
 		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
 		// 累计下载

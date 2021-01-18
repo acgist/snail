@@ -1,6 +1,6 @@
 package com.acgist.snail.context;
 
-import java.io.InputStream;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -47,13 +47,30 @@ public final class StreamContext {
 	}
 	
 	/**
+	 * <p>验证文件是否完成</p>
+	 * 
+	 * @param length 下载数据大小
+	 * @param downloadSize 累计下载大小
+	 * @param fileSize 文件大小
+	 * 
+	 * @return 是否完成
+	 */
+	public static final boolean checkFinish(int length, long downloadSize, long fileSize) {
+		return
+			// 没有更多数据
+			length < 0 ||
+			// 累计下载大小大于文件大小
+			(0L <= fileSize && fileSize <= downloadSize);
+	}
+	
+	/**
 	 * <p>新建数据流信息</p>
 	 * 
 	 * @param input 数据流
 	 * 
 	 * @return 数据流信息
 	 */
-	public StreamSession newStreamSession(InputStream input) {
+	public StreamSession newStreamSession(ReadableByteChannel input) {
 		final StreamSession session = new StreamSession(input);
 		synchronized (this.sessions) {
 			this.sessions.add(session);

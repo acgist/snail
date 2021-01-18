@@ -2,7 +2,7 @@ package com.acgist.snail.net.torrent.peer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskStatus.Status;
@@ -18,7 +18,7 @@ public class PeerSubMessageHandlerTest extends Performance {
 	public void testHave() throws DownloadException {
 		final var path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
 		final var session = TorrentManager.getInstance().newTorrentSession(path);
-		final var peerSession = PeerSession.newInstance(SystemStatistics.getInstance().statistics(), "192.168.1.1", 18888);
+		final var peerSession = PeerSession.newInstance(StatisticsContext.getInstance().statistics(), "192.168.1.1", 18888);
 		final var handler = PeerSubMessageHandler.newInstance(peerSession, session);
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/verify/");

@@ -3,8 +3,10 @@ package com.acgist.snail.downloader;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
@@ -18,7 +20,6 @@ import com.acgist.snail.pojo.session.StreamSession;
  * <p>单文件任务下载器</p>
  * 
  * TODO：分段下载技术（断点续传支持：突破网盘限速）
- * TODO：大文件下载内存优化
  * 
  * @author acgist
  */
@@ -27,11 +28,11 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * <p>输入流</p>
 	 */
-	protected InputStream input;
+	protected ReadableByteChannel input;
 	/**
 	 * <p>输出流</p>
 	 */
-	protected OutputStream output;
+	protected WritableByteChannel output;
 	/**
 	 * <p>数据流信息</p>
 	 */
@@ -58,23 +59,23 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void download() throws DownloadException {
 		int length = 0;
-		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final long fileSize = this.taskSession.getSize();
 		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
+		final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 		try {
-			// TODO：使用NIO
-//			var r = Channels.newChannel(this.input);
-//			var w = Channels.newChannel(this.output);
-//			ByteBuffer dst = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			while(this.downloadable()) {
-				length = this.input.read(bytes, 0, bytes.length);
+				this.input.read(buffer);
+				length = buffer.limit();
 				if(length >= 0) {
-					this.output.write(bytes, 0, length);
+					buffer.flip();
+					this.output.write(buffer);
+					buffer.clear();
 					this.statistics.download(length);
 					this.statistics.downloadLimit(length);
 				}
 				this.streamSession.heartbeat();
-				if(this.checkCompleted(length)) {
-					this.complete = true;
+				if(StreamContext.checkFinish(length, this.taskSession.downloadSize(), fileSize)) {
+					this.completed = true;
 					break;
 				}
 			}
@@ -95,21 +96,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>判断是否下载完成</p>
-	 * 
-	 * @param length 下载数据大小
-	 * 
-	 * @return 是否下载完成
-	 */
-	protected boolean checkCompleted(int length) {
-		return
-			// 没有更多数据
-			length <= -1 ||
-			// 已下载数据大小大于等于文件大小
-			this.taskSession.getSize() <= this.taskSession.downloadSize();
-	}
-	
-	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
 	 * <p>通过判断任务已下载大小判断是否支持断点续传</p>
 	 * 
@@ -118,13 +104,15 @@ public abstract class SingleFileDownloader extends Downloader {
 	protected void buildOutput() throws DownloadException {
 		try {
 			final long size = this.taskSession.downloadSize();
+			BufferedOutputStream outputStream;
 			if(size == 0L) {
 				// 不支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile()), DownloadConfig.getMemoryBufferByte());
+				outputStream = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile()), DownloadConfig.getMemoryBufferByte());
 			} else {
 				// 支持断点续传
-				this.output = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), DownloadConfig.getMemoryBufferByte());
+				outputStream = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), DownloadConfig.getMemoryBufferByte());
 			}
+			this.output = Channels.newChannel(outputStream);
 		} catch (FileNotFoundException e) {
 			throw new DownloadException("下载文件打开失败", e);
 		}

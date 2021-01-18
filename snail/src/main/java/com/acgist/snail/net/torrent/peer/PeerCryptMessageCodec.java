@@ -37,7 +37,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public ByteBuffer encode(ByteBuffer buffer) {
 //		buffer = super.encode(buffer); // 不用编码：提高性能
-		if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
+		if(this.mseCryptHandshakeHandler.completed()) { // 握手完成
 			this.mseCryptHandshakeHandler.encrypt(buffer); // 加密消息
 		} else { // 握手未完成
 			// 通过Peer加密策略结合软件加密策略决定是否加密
@@ -56,7 +56,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
 		if(this.mseCryptHandshakeHandler.available()) { // 可用
-			if(this.mseCryptHandshakeHandler.complete()) { // 握手完成
+			if(this.mseCryptHandshakeHandler.completed()) { // 握手完成
 				this.mseCryptHandshakeHandler.decrypt(buffer);
 				this.doNext(buffer, address);
 			} else { // 握手消息

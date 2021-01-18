@@ -34,7 +34,7 @@ public class TorrentStreamGroupTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/pick/");
 		entity.setType(Type.TORRENT);
-		entity.setStatus(Status.COMPLETE);
+		entity.setStatus(Status.COMPLETED);
 		final var files = session.torrent().getInfo().files();
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件
@@ -132,7 +132,7 @@ public class TorrentStreamGroupTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/verify/");
 		entity.setType(Type.TORRENT);
-		entity.setStatus(Status.COMPLETE);
+		entity.setStatus(Status.COMPLETED);
 		final var files = session.torrent().getInfo().files();
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件

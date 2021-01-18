@@ -83,7 +83,7 @@
 			<HBox fx:id="filters" styleClass="filters">
 				<Button fx:id="all" text="全部" onAction="#handleAllAction" />
 				<Button fx:id="download" text="下载" onAction="#handleDownloadAction" />
-				<Button fx:id="complete" text="完成" onAction="#handleCompleteAction" />
+				<Button fx:id="complete" text="完成" onAction="#handleCompletedAction" />
 			</HBox>
 			<HBox fx:id="statuses" styleClass="statuses">
 				<Label fx:id="downloadStatus" styleClass="snail-icon" text="↓" />

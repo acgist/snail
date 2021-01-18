@@ -29,7 +29,7 @@ public interface ITaskStatus {
 		/**
 		 * <p>任务完成：完成状态不能转换为其他任何状态</p>
 		 */
-		COMPLETE("完成"),
+		COMPLETED("完成"),
 		/**
 		 * <p>任务失败</p>
 		 */
@@ -88,7 +88,7 @@ public interface ITaskStatus {
 	 * 
 	 * @return 是否处于完成状态
 	 */
-	boolean statusComplete();
+	boolean statusCompleted();
 	
 	/**
 	 * <p>判断任务是否处于失败状态</p>

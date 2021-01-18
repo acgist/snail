@@ -122,7 +122,7 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>握手是否完成</p>
 	 */
-	private volatile boolean complete = false;
+	private volatile boolean completed = false;
 	/**
 	 * <p>加密握手锁</p>
 	 */
@@ -192,7 +192,7 @@ public final class MSECryptHandshakeHandler {
 	 * <p>设置明文</p>
 	 */
 	public void plaintext() {
-		this.complete(false);
+		this.completed(false);
 	}
 	
 	/**
@@ -200,8 +200,8 @@ public final class MSECryptHandshakeHandler {
 	 * 
 	 * @return 是否完成
 	 */
-	public boolean complete() {
-		return this.complete;
+	public boolean completed() {
+		return this.completed;
 	}
 	
 	/**
@@ -316,9 +316,9 @@ public final class MSECryptHandshakeHandler {
 	 * <p>添加加密握手锁</p>
 	 */
 	public void lockHandshake() {
-		if(!this.complete) {
+		if(!this.completed) {
 			synchronized (this.handshakeLock) {
-				if(!this.complete) {
+				if(!this.completed) {
 					try {
 						this.handshakeLock.wait(HANDSHAKE_TIMEOUT);
 					} catch (InterruptedException e) {
@@ -329,7 +329,7 @@ public final class MSECryptHandshakeHandler {
 			}
 		}
 		// 加密没有完成设置明文
-		if(!this.complete) {
+		if(!this.completed) {
 			LOGGER.debug("加密握手失败：使用明文");
 			this.plaintext();
 		}
@@ -561,7 +561,7 @@ public final class MSECryptHandshakeHandler {
 		message.put(padding);
 		this.cipher.encrypt(message);
 		this.peerSubMessageHandler.send(message);
-		this.complete(this.strategy.crypt());
+		this.completed(this.strategy.crypt());
 	}
 	
 	/**
@@ -615,7 +615,7 @@ public final class MSECryptHandshakeHandler {
 			if(LOGGER.isDebugEnabled()) {
 				this.msePaddingSync.allPadding().forEach(bytes -> LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", StringUtils.hex(bytes)));
 			}
-			this.complete(this.strategy.crypt());
+			this.completed(this.strategy.crypt());
 		}
 	}
 	
@@ -764,10 +764,10 @@ public final class MSECryptHandshakeHandler {
 	 * 
 	 * @param crypt 是否加密
 	 */
-	private void complete(boolean crypt) {
+	private void completed(boolean crypt) {
 		LOGGER.debug("加密握手完成：{}", crypt);
 		this.crypt = crypt;
-		this.complete = true;
+		this.completed = true;
 		this.buffer = null;
 		this.keyPair = null;
 		this.strategy = null;

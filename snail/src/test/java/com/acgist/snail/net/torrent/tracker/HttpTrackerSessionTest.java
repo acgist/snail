@@ -17,7 +17,7 @@ public class HttpTrackerSessionTest extends Performance {
 		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://5rt.tace.ru:60889/announce");
 //		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://opentracker.acgnx.se/announce");
 //		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://tracker3.itzmx.com:6961/announce");
-		session.announce(1000, torrentSession);
+		session.started(1000, torrentSession);
 //		session.scrape(1000, session);
 	}
 	

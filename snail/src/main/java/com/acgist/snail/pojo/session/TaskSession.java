@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.TaskManager;
 import com.acgist.snail.context.EntityContext;
-import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
@@ -60,7 +60,7 @@ public final class TaskSession implements ITaskSession {
 			throw new DownloadException("创建TaskSession失败（任务不存在）");
 		}
 		this.entity = entity;
-		this.statistics = new StatisticsSession(true, SystemStatistics.getInstance().statistics());
+		this.statistics = new StatisticsSession(true, StatisticsContext.getInstance().statistics());
 	}
 	
 	/**
@@ -153,8 +153,8 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
-	public boolean statusComplete() {
-		return this.getStatus() == Status.COMPLETE;
+	public boolean statusCompleted() {
+		return this.getStatus() == Status.COMPLETED;
 	}
 	
 	@Override
@@ -197,7 +197,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public String getProgressValue() {
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
 			return FileUtils.formatSize(this.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
@@ -252,7 +252,7 @@ public final class TaskSession implements ITaskSession {
 			// 任务已经开始不修改状态
 			return;
 		}
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			// 任务已经完成不修改状态
 			return;
 		}
@@ -267,7 +267,7 @@ public final class TaskSession implements ITaskSession {
 		this.pause();
 		// 删除下载器
 		this.downloader = null;
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			// 已经完成任务：修改状态、清空完成时间
 			this.setStatus(Status.AWAIT);
 			this.setEndDate(null);
@@ -290,7 +290,7 @@ public final class TaskSession implements ITaskSession {
 			// 任务已经暂停不修改状态
 			return;
 		}
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			// 任务已经完成不修改状态
 			return;
 		}
@@ -299,7 +299,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void repause() {
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			this.setStatus(Status.PAUSE);
 			this.setEndDate(null);
 			this.update();
@@ -356,10 +356,10 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void updateStatus(Status status) {
-		if(this.statusComplete()) {
+		if(this.statusCompleted()) {
 			return;
 		}
-		if(status == Status.COMPLETE) {
+		if(status == Status.COMPLETED) {
 			this.setEndDate(new Date()); // 设置完成时间
 		}
 		this.setStatus(status);

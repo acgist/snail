@@ -514,7 +514,7 @@ public final class TorrentSession {
 			return true;
 		}
 		if(this.action == Action.TORRENT) {
-			return this.torrentStreamGroup.complete();
+			return this.torrentStreamGroup.completed();
 		} else {
 			return this.torrent != null;
 		}
@@ -789,10 +789,10 @@ public final class TorrentSession {
 	/**
 	 * @return 是否处于完成状态
 	 * 
-	 * @see ITaskSession#statusComplete()
+	 * @see ITaskSession#statusCompleted()
 	 */
 	public boolean completed() {
-		return this.taskSession.statusComplete();
+		return this.taskSession.statusCompleted();
 	}
 	
 	/**

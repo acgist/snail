@@ -1,8 +1,7 @@
 package com.acgist.snail.downloader.ftp;
 
-import java.io.BufferedInputStream;
+import java.nio.channels.Channels;
 
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.ftp.FtpClient;
@@ -58,8 +57,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 		if(success) {
 			// 已下载大小
 			final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
-			final var inputStream = this.client.download(downloadSize);
-			this.input = new BufferedInputStream(inputStream, SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
+			this.input = Channels.newChannel(this.client.download(downloadSize));
 			if(this.client.range()) { // 支持断点续传
 				this.taskSession.downloadSize(downloadSize);
 			} else {

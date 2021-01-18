@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.TaskManager;
-import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
@@ -75,7 +75,7 @@ public final class MainController extends Controller implements Initializable {
 		/** 显示正在下载任务 */
 		DOWNLOAD,
 		/** 显示下载完成任务 */
-		COMPLETE;
+		COMPLETED;
 		
 	}
 	
@@ -255,8 +255,8 @@ public final class MainController extends Controller implements Initializable {
 	 * @param event 事件
 	 */
 	@FXML
-	public void handleCompleteAction(ActionEvent event) {
-		this.filter = Filter.COMPLETE;
+	public void handleCompletedAction(ActionEvent event) {
+		this.filter = Filter.COMPLETED;
 		TaskDisplay.getInstance().refreshTaskList();
 	}
 	
@@ -272,8 +272,8 @@ public final class MainController extends Controller implements Initializable {
 					return true;
 				} else if(this.filter == Filter.DOWNLOAD) {
 					return session.statusRunning();
-				} else if(this.filter == Filter.COMPLETE) {
-					return session.statusComplete();
+				} else if(this.filter == Filter.COMPLETED) {
+					return session.statusCompleted();
 				} else {
 					return true;
 				}
@@ -290,9 +290,9 @@ public final class MainController extends Controller implements Initializable {
 		this.taskTable.refresh(); // 刷新Table
 		// 刷新下载、上传速度
 		Platform.runLater(() -> {
-			final long downloadSpeed = SystemStatistics.getInstance().downloadSpeed();
+			final long downloadSpeed = StatisticsContext.getInstance().downloadSpeed();
 			this.downloadBuffer.setText(FileUtils.formatSize(downloadSpeed) + "/S"); // 下载速度
-			final long uploadSpeed = SystemStatistics.getInstance().uploadSpeed();
+			final long uploadSpeed = StatisticsContext.getInstance().uploadSpeed();
 			this.uploadBuffer.setText(FileUtils.formatSize(uploadSpeed) + "/S"); // 上传速度
 		});
 	}
@@ -395,7 +395,7 @@ public final class MainController extends Controller implements Initializable {
 			if(session == null) {
 				return;
 			}
-			if(session.statusComplete()) {
+			if(session.statusCompleted()) {
 				// 下载完成：打开任务
 				if(session.getType() == Type.MAGNET) {
 					// 磁力链接：转换BT任务

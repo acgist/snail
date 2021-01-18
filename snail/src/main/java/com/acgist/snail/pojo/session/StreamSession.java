@@ -1,6 +1,6 @@
 package com.acgist.snail.pojo.session;
 
-import java.io.InputStream;
+import java.nio.channels.ReadableByteChannel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public final class StreamSession {
 	/**
 	 * <p>数据流</p>
 	 */
-	private final InputStream input;
+	private final ReadableByteChannel input;
 	/**
 	 * <p>最后一次心跳时间</p>
 	 */
@@ -40,7 +40,7 @@ public final class StreamSession {
 	/**
 	 * @param input 数据流
 	 */
-	public StreamSession(InputStream input) {
+	public StreamSession(ReadableByteChannel input) {
 		this.input = input;
 		this.heartbeatTime = System.currentTimeMillis();
 	}

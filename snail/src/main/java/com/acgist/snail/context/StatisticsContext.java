@@ -6,17 +6,17 @@ import com.acgist.snail.pojo.IStatisticsSessionGetter;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
- * <p>系统统计</p>
+ * <p>系统统计上下文</p>
  * <p>系统统计：累计下载、累计上传、速度采样</p>
  * <p>系统只限制单个任务的速度，如果需要限制整个系统的速度，可以打开{@link #statistics}限速。</p>
  * 
  * @author acgist
  */
-public final class SystemStatistics implements ISpeedGetter, IStatisticsSessionGetter {
+public final class StatisticsContext implements ISpeedGetter, IStatisticsSessionGetter {
 	
-	private static final SystemStatistics INSTANCE = new SystemStatistics();
+	private static final StatisticsContext INSTANCE = new StatisticsContext();
 	
-	public static final SystemStatistics getInstance() {
+	public static final StatisticsContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -28,7 +28,7 @@ public final class SystemStatistics implements ISpeedGetter, IStatisticsSessionG
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private SystemStatistics() {
+	private StatisticsContext() {
 		this.statistics = new StatisticsSession();
 	}
 	

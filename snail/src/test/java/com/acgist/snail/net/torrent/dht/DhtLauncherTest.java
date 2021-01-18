@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig.Source;
-import com.acgist.snail.context.SystemStatistics;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -27,7 +27,7 @@ public class DhtLauncherTest extends Performance {
 		final String infoHashHex = "261adf9754a0eece8e2a228cda4e46102ae86629";
 		final DhtLauncher launcher = DhtLauncher.newInstance(TorrentSession.newInstance(InfoHash.newInstance(infoHashHex), null));
 		launcher.put("127.0.0.1", 18888);
-		PeerManager.getInstance().newPeerSession(infoHashHex, SystemStatistics.getInstance().statistics(), "128.0.0.1", 18888, Source.CONNECT);
+		PeerManager.getInstance().newPeerSession(infoHashHex, StatisticsContext.getInstance().statistics(), "128.0.0.1", 18888, Source.CONNECT);
 		launcher.run();
 		this.log(NodeManager.getInstance().nodes().size());
 		assertTrue(PeerManager.getInstance().hasPeerSession(infoHashHex));
