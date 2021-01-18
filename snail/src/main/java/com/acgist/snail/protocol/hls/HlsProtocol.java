@@ -1,14 +1,11 @@
 package com.acgist.snail.protocol.hls;
 
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
@@ -82,14 +79,11 @@ public final class HlsProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void buildM3u8() throws NetException, DownloadException {
-		final var client = HTTPClient.newInstance(this.url);
-		HttpResponse<String> response;
-		try {
-			response = client.get(BodyHandlers.ofString());
-		} catch (NetException e) {
-			throw new DownloadException("获取M3U8信息失败", e);
-		}
-		final var m3u8 = M3u8Builder.newInstance(response.body(), this.url).build();
+		final var response = HttpClient
+			.newInstance(this.url)
+			.get()
+			.responseToString();
+		final var m3u8 = M3u8Builder.newInstance(response, this.url).build();
 		if(m3u8.getType() == M3u8.Type.M3U8) {
 			this.url = m3u8.maxRateLink();
 			this.buildM3u8();

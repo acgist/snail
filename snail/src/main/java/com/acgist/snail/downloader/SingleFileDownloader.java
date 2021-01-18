@@ -10,11 +10,10 @@ import java.nio.channels.WritableByteChannel;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.StreamContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.session.StreamSession;
+import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>单文件任务下载器</p>
@@ -26,6 +25,11 @@ import com.acgist.snail.pojo.session.StreamSession;
 public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
+	 * <p>快速失败时间</p>
+	 */
+	private static final long FAST_CHECK_TIME = 2 * SystemConfig.ONE_SECOND_MILLIS;
+	
+	/**
 	 * <p>输入流</p>
 	 */
 	protected ReadableByteChannel input;
@@ -34,9 +38,9 @@ public abstract class SingleFileDownloader extends Downloader {
 	 */
 	protected WritableByteChannel output;
 	/**
-	 * <p>数据流信息</p>
+	 * <p>快速失败检测时间</p>
 	 */
-	private StreamSession streamSession;
+	private volatile long fastCheckTime;
 	
 	/**
 	 * @param taskSession 下载任务
@@ -60,7 +64,6 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void download() throws DownloadException {
 		int length = 0;
 		final long fileSize = this.taskSession.getSize();
-		this.streamSession = StreamContext.getInstance().newStreamSession(this.input);
 		final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 		try {
 			while(this.downloadable()) {
@@ -71,29 +74,27 @@ public abstract class SingleFileDownloader extends Downloader {
 					buffer.clear();
 					this.statistics.download(length);
 					this.statistics.downloadLimit(length);
+					this.fastCheckTime = System.currentTimeMillis();
 				}
-				this.streamSession.heartbeat();
-				if(StreamContext.checkFinish(length, this.taskSession.downloadSize(), fileSize)) {
+				if(Downloader.checkFinish(length, this.taskSession.downloadSize(), fileSize)) {
 					this.completed = true;
 					break;
 				}
 			}
 		} catch (Exception e) {
 			throw new DownloadException("数据流操作失败", e);
-		} finally {
-			this.streamSession.remove();
-		}
-	}
-
-	@Override
-	public void unlockDownload() {
-		super.unlockDownload();
-		if(this.streamSession != null) {
-			// 快速失败
-			this.streamSession.fastCheckLive();
 		}
 	}
 	
+	@Override
+	public void unlockDownload() {
+		super.unlockDownload();
+		// 快速失败
+		if(System.currentTimeMillis() - this.fastCheckTime > FAST_CHECK_TIME) {
+			IoUtils.close(this.input);
+		}
+	}
+
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
 	 * <p>通过判断任务已下载大小判断是否支持断点续传</p>

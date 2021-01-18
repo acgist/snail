@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.NatContext;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -53,9 +54,10 @@ public final class StunService {
 	 */
 	public void mapping(String externalIpAddress, int port) {
 		LOGGER.debug("STUN端口映射：{}-{}", externalIpAddress, port);
+		PeerConfig.nat(); // 设置使用NAT穿透
+		NatContext.getInstance().stun(); // 设置STUN穿透类型
 		SystemConfig.setExternalIpAddress(externalIpAddress);
 		SystemConfig.setTorrentPortExt(port);
-		PeerConfig.nat(); // 设置使用NAT穿透
 	}
 
 	/**

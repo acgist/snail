@@ -1,7 +1,5 @@
 package com.acgist.snail.context;
 
-import java.net.http.HttpResponse.BodyHandlers;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ import com.acgist.snail.logger.LoggerContext;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.utils.FileUtils;
 
 /**
@@ -182,8 +180,11 @@ public final class SystemContext implements IContext {
 		try {
 			// 本地版本：1.0.0
 			final String version = SystemConfig.getVersion();
-			final var response = HTTPClient.get(SystemConfig.getLatestRelease(), BodyHandlers.ofString());
-			final JSON json = JSON.ofString(response.body());
+			final var body = HttpClient
+				.newInstance(SystemConfig.getLatestRelease())
+				.get()
+				.responseToString();
+			final JSON json = JSON.ofString(body);
 			// 最新版本：v1.0.0
 			final String latestVersion = json.getString("tag_name");
 			LOGGER.debug("版本信息：{}-{}", version, latestVersion);

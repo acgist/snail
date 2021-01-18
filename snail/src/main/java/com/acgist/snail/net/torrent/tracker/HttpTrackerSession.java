@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.tracker;
 
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
@@ -83,12 +82,13 @@ public final class HttpTrackerSession extends TrackerSession {
 	@Override
 	public void started(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-		// 注意：不能使用BodyHandlers.ofString()
-		final var response = HTTPClient.get(announceMessage, BodyHandlers.ofByteArray());
-		if(!HTTPClient.StatusCode.OK.verifyCode(response)) {
+		final var client = HttpClient
+			.newInstance(announceMessage)
+			.get();
+		if(!client.ok()) {
 			throw new NetException("HTTP Tracker声明失败");
 		}
-		final var body = response.body();
+		final var body = client.responseToBytes();
 		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
@@ -102,13 +102,13 @@ public final class HttpTrackerSession extends TrackerSession {
 	@Override
 	public void completed(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
-		HTTPClient.get(announceMessage, BodyHandlers.ofString());
+		HttpClient.newInstance(announceMessage).get();
 	}
 	
 	@Override
 	public void stopped(Integer sid, TorrentSession torrentSession) throws NetException {
 		final String announceMessage = (String) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
-		HTTPClient.get(announceMessage, BodyHandlers.ofString());
+		HttpClient.newInstance(announceMessage).get();
 	}
 	
 	@Override
@@ -118,11 +118,13 @@ public final class HttpTrackerSession extends TrackerSession {
 			LOGGER.debug("HTTP Tracker刮檫消息错误：{}", this.announceUrl);
 			return;
 		}
-		final var response = HTTPClient.get(scrapeMessage, BodyHandlers.ofByteArray());
-		if(!HTTPClient.StatusCode.OK.verifyCode(response)) {
+		final var client = HttpClient
+			.newInstance(scrapeMessage)
+			.get();
+		if(!client.ok()) {
 			throw new NetException("HTTP Tracker刮檫失败");
 		}
-		final var body = response.body();
+		final var body = client.responseToBytes();
 		final var decoder = BEncodeDecoder.newInstance(body);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {

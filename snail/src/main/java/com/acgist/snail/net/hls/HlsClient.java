@@ -4,9 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -17,13 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.StreamContext;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.http.HTTPClient;
+import com.acgist.snail.downloader.Downloader;
+import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.HlsSession;
-import com.acgist.snail.pojo.session.StreamSession;
-import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -102,7 +97,6 @@ public final class HlsClient implements Runnable {
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			int length = 0;
-			final StreamSession streamSession = StreamContext.getInstance().newStreamSession(this.input);
 			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 			try {
 				this.buildInput(downloadSize);
@@ -120,16 +114,13 @@ public final class HlsClient implements Runnable {
 						downloadSize += length;
 						this.hlsSession.download(length); // 设置下载速度
 					}
-					streamSession.heartbeat();
-					if(StreamContext.checkFinish(length, downloadSize, this.size)) {
+					if(Downloader.checkFinish(length, downloadSize, this.size)) {
 						this.completed = true;
 						break;
 					}
 				}
 			} catch (Exception e) {
 				LOGGER.error("HLS下载异常：{}", this.link, e);
-			} finally {
-				streamSession.remove();
 			}
 		}
 		this.release();
@@ -172,8 +163,11 @@ public final class HlsClient implements Runnable {
 			return false;
 		}
 		try {
+			final var header = HttpClient
+				.newInstance(this.link)
+				.head()
+				.responseHeader();
 			// 文件实际大小
-			final var header = HTTPClient.newInstance(this.link).head();
 			this.size = header.fileSize();
 			return this.size == downloadSize;
 		} catch (NetException e) {
@@ -191,15 +185,17 @@ public final class HlsClient implements Runnable {
 	 */
 	private void buildInput(final long downloadSize) throws NetException {
 		// HTTP客户端
-		final var client = HTTPClient.newInstance(this.link, SystemConfig.CONNECT_TIMEOUT, SystemConfig.DOWNLOAD_TIMEOUT);
-		// HTTP响应
-		final HttpResponse<InputStream> response = client.range(downloadSize).get(BodyHandlers.ofInputStream());
+		final var client = HttpClient
+			.newDownloader(this.link)
+			.range(downloadSize)
+			.get();
 		// 请求成功和部分请求成功
-		if(HTTPClient.downloadable(response)) {
-			final var headers = HttpHeaderWrapper.newInstance(response.headers());
+		if(client.downloadable()) {
+			final var headers = client.responseHeader();
 			this.range = headers.range();
-			this.input = Channels.newChannel(response.body());
-			if(this.range) { // 支持断点续传
+			this.input = Channels.newChannel(client.response());
+			if(this.range) {
+				// 支持断点续传
 				headers.verifyBeginRange(downloadSize);
 			}
 		} else {

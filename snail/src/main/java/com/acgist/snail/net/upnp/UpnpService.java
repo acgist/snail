@@ -1,6 +1,5 @@
 package com.acgist.snail.net.upnp;
 
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
-import com.acgist.snail.net.http.HTTPClient;
-import com.acgist.snail.net.http.HTTPClient.StatusCode;
+import com.acgist.snail.net.http.HttpClient;
+import com.acgist.snail.net.http.HttpClient.StatusCode;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
@@ -103,8 +102,10 @@ public final class UpnpService {
 			LOGGER.info("UPNP描述文件错误：{}", location);
 			return this;
 		}
-		final var response = HTTPClient.get(location, BodyHandlers.ofString());
-		final var body = response.body();
+		final var body = HttpClient
+			.newInstance(location)
+			.get()
+			.responseToString();
 		final var xml = XML.load(body);
 		// 服务类型和服务地址
 		final List<String> serviceTypes = xml.elementValues("serviceType");
@@ -159,11 +160,11 @@ public final class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildGetExternalIPAddress();
-		final var client = HTTPClient.newInstance(this.controlUrl);
-		final var response = client
+		final var body = HttpClient
+			.newInstance(this.controlUrl)
 			.header("SOAPAction", "\"" + this.serviceType + "#GetExternalIPAddress\"")
-			.post(xml, BodyHandlers.ofString());
-		final var body = response.body();
+			.post(xml)
+			.responseToString();
 		return UpnpResponse.parseGetExternalIPAddress(body);
 	}
 
@@ -185,14 +186,14 @@ public final class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildGetSpecificPortMappingEntry(portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlUrl);
-		final var response = client
+		final var client = HttpClient
+			.newInstance(this.controlUrl)
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
-			.post(xml, BodyHandlers.ofString());
-		final var body = response.body();
-		if(HTTPClient.StatusCode.INTERNAL_SERVER_ERROR.verifyCode(response)) {
+			.post(xml);
+		if(client.internalServerError()) {
 			return Status.MAPABLE;
 		}
+		final var body = client.responseToString();
 		final var mappingIP = UpnpResponse.parseGetSpecificPortMappingEntry(body);
 		if(NetUtils.LOCAL_HOST_ADDRESS.equals(mappingIP)) {
 			return Status.USEABLE;
@@ -220,11 +221,11 @@ public final class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildAddPortMapping(port, NetUtils.LOCAL_HOST_ADDRESS, portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlUrl);
-		final var response = client
+		return HttpClient
+			.newInstance(this.controlUrl)
 			.header("SOAPAction", "\"" + this.serviceType + "#AddPortMapping\"")
-			.post(xml, BodyHandlers.ofString());
-		return HTTPClient.StatusCode.OK.verifyCode(response);
+			.post(xml)
+			.ok();
 	}
 	
 	/**
@@ -244,11 +245,11 @@ public final class UpnpService {
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildDeletePortMapping(portExt, protocol);
-		final var client = HTTPClient.newInstance(this.controlUrl);
-		final var response = client
+		return HttpClient
+			.newInstance(this.controlUrl)
 			.header("SOAPAction", "\"" + this.serviceType + "#DeletePortMapping\"")
-			.post(xml, BodyHandlers.ofString());
-		return HTTPClient.StatusCode.OK.verifyCode(response);
+			.post(xml)
+			.ok();
 	}
 	
 	/**
