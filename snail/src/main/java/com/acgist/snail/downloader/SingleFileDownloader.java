@@ -64,8 +64,7 @@ public abstract class SingleFileDownloader extends Downloader {
 		final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
 		try {
 			while(this.downloadable()) {
-				this.input.read(buffer);
-				length = buffer.limit();
+				length = this.input.read(buffer);
 				if(length >= 0) {
 					buffer.flip();
 					this.output.write(buffer);
