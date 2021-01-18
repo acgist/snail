@@ -14,13 +14,13 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
+import com.acgist.snail.context.NodeContext;
+import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.StatisticsContext;
+import com.acgist.snail.context.TorrentContext;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.dht.NodeManager;
-import com.acgist.snail.net.torrent.peer.PeerManager;
-import com.acgist.snail.net.torrent.tracker.TrackerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
@@ -224,7 +224,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>DHT统计信息</p>
 	 */
 	private void buildDhtStatistics() {
-		final List<NodeSession> nodes = NodeManager.getInstance().nodes();
+		final List<NodeSession> nodes = NodeContext.getInstance().nodes();
 		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
 		this.dhtTotal.setText(String.valueOf(nodes.size()));
@@ -237,7 +237,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>Tracker统计信息</p>
 	 */
 	private void buildTrackerStatistics() {
-		final List<TrackerSession> sessions = TrackerManager.getInstance().sessions();
+		final List<TrackerSession> sessions = TrackerContext.getInstance().sessions();
 		final Map<Boolean, Long> clientGroup = sessions.stream()
 			.collect(Collectors.groupingBy(TrackerSession::available, Collectors.counting()));
 		this.trackerTotal.setText(String.valueOf(sessions.size()));
@@ -251,7 +251,7 @@ public final class StatisticsController extends Controller implements Initializa
 	private void buildInfoHashStatistics() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
-		TorrentManager.getInstance().allTorrentSession().stream()
+		TorrentContext.getInstance().allTorrentSession().stream()
 			.filter(session -> session.useable()) // 准备完成
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
@@ -312,7 +312,7 @@ public final class StatisticsController extends Controller implements Initializa
 		if(infoHashHex == null) {
 			return;
 		}
-		final var peers = PeerManager.getInstance().listPeerSession(infoHashHex);
+		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
 		// Peer
 		final var utpCount = new AtomicInteger(0);
 		final var availableCount = new AtomicInteger(0);
@@ -407,8 +407,8 @@ public final class StatisticsController extends Controller implements Initializa
 		if(infoHashHex == null) {
 			return;
 		}
-		final var peers = PeerManager.getInstance().listPeerSession(infoHashHex);
-		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
+		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		// Peer分类
 		final List<String> categoriesPeer = new ArrayList<>();
 		// 上传流量
@@ -488,7 +488,7 @@ public final class StatisticsController extends Controller implements Initializa
 		if(infoHashHex == null) {
 			return;
 		}
-		final var torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		// 已下载Piece位图
 		final var torrent = torrentSession.torrent();
 		if(torrent == null) { // 磁力链接为空

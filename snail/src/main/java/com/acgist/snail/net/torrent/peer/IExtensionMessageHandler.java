@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>扩展协议</p>
+ * <p>扩展协议接口</p>
  * 
  * @author acgist
  */

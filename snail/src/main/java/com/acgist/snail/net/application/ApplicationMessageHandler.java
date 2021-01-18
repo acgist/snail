@@ -8,16 +8,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.TaskManager;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.LineMessageCodec;
@@ -150,7 +150,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
 	 */
 	private void onGui() {
-		final boolean success = GuiManager.getInstance().extendGuiMessageHandler(this);
+		final boolean success = GuiContext.getInstance().extendGuiMessageHandler(this);
 		if(success) {
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} else {
@@ -179,7 +179,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>唤醒窗口</p>
 	 */
 	private void onNotify() {
-		GuiManager.getInstance().show();
+		GuiContext.getInstance().show();
 	}
 	
 	/**
@@ -211,8 +211,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
 			synchronized (this) {
-				GuiManager.getInstance().files(files); // 设置选择文件
-				TaskManager.getInstance().download(url); // 开始下载任务
+				GuiContext.getInstance().files(files); // 设置选择文件
+				TaskContext.getInstance().download(url); // 开始下载任务
 			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
@@ -226,7 +226,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>返回任务列表（B编码）</p>
 	 */
 	private void onTaskList() {
-		final List<Map<String, Object>> list = TaskManager.getInstance().allTask().stream()
+		final List<Map<String, Object>> list = TaskContext.getInstance().allTask().stream()
 			.map(ITaskSession::taskMessage)
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
@@ -289,14 +289,14 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>显示窗口</p>
 	 */
 	private void onShow() {
-		GuiManager.getInstance().show();
+		GuiContext.getInstance().show();
 	}
 	
 	/**
 	 * <p>隐藏窗口</p>
 	 */
 	private void onHide() {
-		GuiManager.getInstance().hide();
+		GuiContext.getInstance().hide();
 	}
 	
 	/**
@@ -312,7 +312,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String type = decoder.getString("type");
 			final String title = decoder.getString("title");
 			final String content = decoder.getString("message");
-			GuiManager.getInstance().alert(title, content, GuiManager.MessageType.valueOf(type));
+			GuiContext.getInstance().alert(title, content, GuiContext.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示窗口异常", e);
 		}
@@ -331,7 +331,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String type = decoder.getString("type");
 			final String title = decoder.getString("title");
 			final String content = decoder.getString("message");
-			GuiManager.getInstance().notice(title, content, GuiManager.MessageType.valueOf(type));
+			GuiContext.getInstance().notice(title, content, GuiContext.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示消息异常", e);
 		}
@@ -341,7 +341,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <p>刷新任务</p>
 	 */
 	private void onRefresh() {
-		GuiManager.getInstance().refreshTaskList();
+		GuiContext.getInstance().refreshTaskList();
 	}
 	
 	/**
@@ -350,7 +350,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onResponse(ApplicationMessage message) {
-		GuiManager.getInstance().response(message.getBody());
+		GuiContext.getInstance().response(message.getBody());
 	}
 	
 	/**
@@ -363,7 +363,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
 		final String body = message.getBody(); // 任务ID
-		return TaskManager.getInstance().allTask().stream()
+		return TaskContext.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
 	}

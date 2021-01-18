@@ -10,10 +10,11 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.pojo.ITaskStatus.Status;
+import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -30,7 +31,7 @@ public class TorrentStreamGroupTest extends Performance {
 	@Test
 	public void testReload() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
-		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/pick/");
 		entity.setType(Type.TORRENT);
@@ -77,7 +78,7 @@ public class TorrentStreamGroupTest extends Performance {
 	public void testPick() throws DownloadException {
 		LoggerConfig.off();
 		final var path = "E:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent";
-		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/pick/");
 		entity.setType(Type.TORRENT);
@@ -128,7 +129,7 @@ public class TorrentStreamGroupTest extends Performance {
 	@Test
 	public void testVerify() throws DownloadException, NetException {
 		final var path = "e:/snail/verify.torrent";
-		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
 		entity.setFile("e:/tmp/verify/");
 		entity.setType(Type.TORRENT);

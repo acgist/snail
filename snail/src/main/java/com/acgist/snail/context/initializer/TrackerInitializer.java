@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.TrackerConfig;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.net.torrent.tracker.TrackerManager;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 
 /**
@@ -32,7 +32,7 @@ public final class TrackerInitializer extends Initializer {
 		LOGGER.debug("初始化Tracker");
 		TrackerConfig.getInstance();
 		TrackerServer.getInstance();
-		TrackerManager.getInstance();
+		TrackerContext.getInstance();
 	}
 
 }

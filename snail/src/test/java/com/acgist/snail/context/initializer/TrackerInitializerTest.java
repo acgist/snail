@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.net.torrent.tracker.TrackerManager;
 import com.acgist.snail.utils.Performance;
 
 public class TrackerInitializerTest extends Performance {
@@ -13,7 +13,7 @@ public class TrackerInitializerTest extends Performance {
 	@Test
 	public void testTrackerInitializer() {
 		TrackerInitializer.newInstance().sync();
-		assertTrue(TrackerManager.getInstance().sessions().size() > 0);
+		assertTrue(TrackerContext.getInstance().sessions().size() > 0);
 	}
 	
 	@Test

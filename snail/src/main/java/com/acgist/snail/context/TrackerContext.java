@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.tracker;
+package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.torrent.tracker.HttpTrackerSession;
+import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
+import com.acgist.snail.net.torrent.tracker.UdpTrackerSession;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -25,18 +28,18 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>Tracker管理器</p>
+ * <p>Tracker上下文</p>
  * <p>管理TrackerSession和TrackerLauncher</p>
  * 
  * @author acgist
  */
-public final class TrackerManager implements IManager {
+public final class TrackerContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerContext.class);
 	
-	private static final TrackerManager INSTANCE = new TrackerManager();
+	private static final TrackerContext INSTANCE = new TrackerContext();
 	
-	public static final TrackerManager getInstance() {
+	public static final TrackerContext getInstance() {
 		return INSTANCE;
 	}
 
@@ -56,7 +59,7 @@ public final class TrackerManager implements IManager {
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
-	private TrackerManager() {
+	private TrackerContext() {
 		this.trackerSessions = new ConcurrentHashMap<>();
 		this.trackerLaunchers = new ConcurrentHashMap<>();
 		this.register();

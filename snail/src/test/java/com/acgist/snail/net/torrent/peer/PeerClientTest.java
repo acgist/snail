@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -31,7 +31,7 @@ public class PeerClientTest extends Performance {
 	@Test
 	public void testDownload() throws DownloadException {
 		final var path = "e:/snail/1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3.torrent"; // 种子文件
-		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
+		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
 		final var size = new AtomicLong(0);
 		final List<String> list = new ArrayList<>();

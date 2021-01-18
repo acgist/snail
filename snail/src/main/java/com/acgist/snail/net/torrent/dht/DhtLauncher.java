@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
@@ -91,7 +92,7 @@ public final class DhtLauncher implements Runnable {
 	 * @return DHT节点
 	 */
 	private List<InetSocketAddress> pick() {
-		return NodeManager.getInstance().findNode(this.infoHash.infoHash()).stream()
+		return NodeContext.getInstance().findNode(this.infoHash.infoHash()).stream()
 			.map(node -> NetUtils.buildSocketAddress(node.getHost(), node.getPort()))
 			.collect(Collectors.toList());
 	}
@@ -104,8 +105,8 @@ public final class DhtLauncher implements Runnable {
 	 * @see #peerNodes
 	 */
 	private void joinNodes(List<InetSocketAddress> peerNodes) {
-		final NodeManager manager = NodeManager.getInstance();
-		peerNodes.forEach(address -> manager.newNodeSession(address.getHostString(), address.getPort()));
+		final NodeContext nodeContext = NodeContext.getInstance();
+		peerNodes.forEach(address -> nodeContext.newNodeSession(address.getHostString(), address.getPort()));
 	}
 	
 	/**

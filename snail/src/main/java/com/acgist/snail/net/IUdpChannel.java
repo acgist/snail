@@ -10,7 +10,7 @@ import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>UDP通道</p>
+ * <p>UDP通道接口</p>
  * 
  * @author acgist
  */

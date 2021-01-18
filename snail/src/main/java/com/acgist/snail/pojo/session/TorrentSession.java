@@ -13,15 +13,15 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig.Action;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.TimerException;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.dht.DhtLauncher;
 import com.acgist.snail.net.torrent.peer.PeerDownloaderGroup;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerUploader;
 import com.acgist.snail.net.torrent.peer.PeerUploaderGroup;
@@ -429,7 +429,7 @@ public final class TorrentSession {
 			pexInterval,
 			pexInterval,
 			TimeUnit.SECONDS,
-			() -> PeerManager.getInstance().pex(this.infoHashHex())
+			() -> PeerContext.getInstance().pex(this.infoHashHex())
 		);
 	}
 	
@@ -546,7 +546,7 @@ public final class TorrentSession {
 	public void releaseDownload() {
 		this.downloadable = false;
 		LOGGER.debug("Torrent释放资源（下载）");
-		PeerManager.getInstance().uploadOnly(this.infoHashHex());
+		PeerContext.getInstance().uploadOnly(this.infoHashHex());
 		SystemThreadContext.shutdownNow(this.pexTimer);
 		SystemThreadContext.shutdownNow(this.peerDownloaderGroupTimer);
 		if(this.peerDownloaderGroup != null) {
@@ -585,8 +585,8 @@ public final class TorrentSession {
 	 */
 	public void delete() {
 		final String infoHashHex = this.infoHashHex();
-		PeerManager.getInstance().remove(infoHashHex); // 删除Peer信息
-		TorrentManager.getInstance().remove(infoHashHex); // 删除种子信息
+		PeerContext.getInstance().remove(infoHashHex); // 删除Peer信息
+		TorrentContext.getInstance().remove(infoHashHex); // 删除种子信息
 	}
 
 	/**
@@ -597,7 +597,7 @@ public final class TorrentSession {
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
 		try {
-			this.torrent = TorrentManager.loadTorrent(torrentFilePath);
+			this.torrent = TorrentContext.loadTorrent(torrentFilePath);
 			this.infoHash = this.torrent.infoHash();
 		} catch (DownloadException e) {
 			LOGGER.error("解析种子异常", e);
@@ -615,10 +615,10 @@ public final class TorrentSession {
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @see PeerManager#have(String, int)
+	 * @see PeerContext#have(String, int)
 	 */
 	public void have(int index) {
-		PeerManager.getInstance().have(this.infoHashHex(), index);
+		PeerContext.getInstance().have(this.infoHashHex(), index);
 	}
 	
 	/**

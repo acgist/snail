@@ -1,8 +1,8 @@
 package com.acgist.snail.downloader;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
@@ -45,7 +45,7 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 		// 加载磁力链接信息
 		final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
 		final var infoHashHex = magnet.getHash();
-		return TorrentManager.getInstance().newTorrentSession(infoHashHex, torrentPath);
+		return TorrentContext.getInstance().newTorrentSession(infoHashHex, torrentPath);
 	}
 	
 	@Override

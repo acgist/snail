@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.Mode;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.gui.event.GuiEventArgs;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentInfo;
@@ -31,7 +31,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 	}
 
 	@Override
-	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
+	protected final void executeExtend(GuiContext.Mode mode, Object ... args) {
 		if(!this.check(args, 1)) {
 			return;
 		}
@@ -58,14 +58,14 @@ public class TorrentEventAdapter extends GuiEventArgs {
 	 * @param taskSession 任务信息
 	 */
 	protected void executeExtendExtend(ITaskSession taskSession) {
-		final String files = GuiManager.getInstance().files();
+		final String files = GuiContext.getInstance().files();
 		if(StringUtils.isEmpty(files)) {
 			LOGGER.debug("种子文件选择没有文件信息：{}", files);
 			return;
 		}
 		try {
 			final var decoder = BEncodeDecoder.newInstance(files);
-			final var torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
+			final var torrent = TorrentContext.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 			// 选择文件列表
 			final var selectFiles = decoder.nextList().stream()
 				.map(StringUtils::getString)

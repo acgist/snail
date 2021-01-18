@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>加密消息代理</p>
+ * <p>加密消息代理接口</p>
  * 
  * @author acgist
  */

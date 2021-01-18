@@ -1,4 +1,4 @@
-package com.acgist.snail.gui;
+package com.acgist.snail.context;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
@@ -16,17 +16,17 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>GUI管理器</p>
+ * <p>GUI上下文</p>
  * 
  * @author acgist
  */
-public final class GuiManager implements IManager {
+public final class GuiContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(GuiManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GuiContext.class);
 	
-	private static final GuiManager INSTANCE = new GuiManager();
+	private static final GuiContext INSTANCE = new GuiContext();
 	
-	public static final GuiManager getInstance() {
+	public static final GuiContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -114,7 +114,7 @@ public final class GuiManager implements IManager {
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private GuiManager() {
+	private GuiContext() {
 	}
 	
 	/**
@@ -130,13 +130,13 @@ public final class GuiManager implements IManager {
 	}
 
 	/**
-	 * <p>初始化GUI管理器</p>
+	 * <p>初始化GUI上下文</p>
 	 * 
 	 * @param args 启动参数
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager init(String ... args) {
+	public GuiContext init(String ... args) {
 		if(args == null) {
 			// 没有参数
 		} else {
@@ -159,36 +159,36 @@ public final class GuiManager implements IManager {
 	/**
 	 * <p>显示窗口</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager show() {
+	public GuiContext show() {
 		return this.event(Type.SHOW);
 	}
 	
 	/**
 	 * <p>隐藏窗口</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager hide() {
+	public GuiContext hide() {
 		return this.event(Type.HIDE);
 	}
 	
 	/**
 	 * <p>退出窗口</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager exit() {
+	public GuiContext exit() {
 		return this.event(Type.EXIT);
 	}
 
 	/**
 	 * <p>创建窗口</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager build() {
+	public GuiContext build() {
 		return this.event(Type.BUILD);
 	}
 	
@@ -198,10 +198,10 @@ public final class GuiManager implements IManager {
 	 * @param title 标题
 	 * @param message 内容
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager alert(String title, String message) {
-		return this.alert(title, message, GuiManager.MessageType.INFO);
+	public GuiContext alert(String title, String message) {
+		return this.alert(title, message, GuiContext.MessageType.INFO);
 	}
 
 	/**
@@ -211,9 +211,9 @@ public final class GuiManager implements IManager {
 	 * @param message 内容
 	 * @param type 类型
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager alert(String title, String message, GuiManager.MessageType type) {
+	public GuiContext alert(String title, String message, GuiContext.MessageType type) {
 		return this.event(Type.ALERT, title, message, type);
 	}
 	
@@ -223,10 +223,10 @@ public final class GuiManager implements IManager {
 	 * @param title 标题
 	 * @param message 内容
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager notice(String title, String message) {
-		return this.notice(title, message, GuiManager.MessageType.INFO);
+	public GuiContext notice(String title, String message) {
+		return this.notice(title, message, GuiContext.MessageType.INFO);
 	}
 	
 	/**
@@ -236,9 +236,9 @@ public final class GuiManager implements IManager {
 	 * @param message 内容
 	 * @param type 类型
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager notice(String title, String message, GuiManager.MessageType type) {
+	public GuiContext notice(String title, String message, GuiContext.MessageType type) {
 		return this.event(Type.NOTICE, title, message, type);
 	}
 	
@@ -247,9 +247,9 @@ public final class GuiManager implements IManager {
 	 * 
 	 * @param taskSession 任务信息
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager torrent(ITaskSession taskSession) {
+	public GuiContext torrent(ITaskSession taskSession) {
 		return this.event(Type.TORRENT, taskSession);
 	}
 	
@@ -258,27 +258,27 @@ public final class GuiManager implements IManager {
 	 * 
 	 * @param message 消息
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager response(String message) {
+	public GuiContext response(String message) {
 		return this.event(Type.RESPONSE, message);
 	}
 	
 	/**
 	 * <p>刷新任务列表</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager refreshTaskList() {
+	public GuiContext refreshTaskList() {
 		return this.event(Type.REFRESH_TASK_LIST);
 	}
 	
 	/**
 	 * <p>刷新任务状态</p>
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager refreshTaskStatus() {
+	public GuiContext refreshTaskStatus() {
 		return this.event(Type.REFRESH_TASK_STATUS);
 	}
 
@@ -288,9 +288,9 @@ public final class GuiManager implements IManager {
 	 * @param type 类型
 	 * @param args 参数
 	 * 
-	 * @return GUI管理器
+	 * @return GuiContext
 	 */
-	public GuiManager event(GuiEvent.Type type, Object ... args) {
+	public GuiContext event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;

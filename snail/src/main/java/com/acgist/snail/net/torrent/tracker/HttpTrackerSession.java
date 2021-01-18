@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.http.HTTPClient;
@@ -95,7 +96,7 @@ public final class HttpTrackerSession extends TrackerSession {
 		}
 		final var message = convertAnnounceMessage(sid, decoder);
 		this.trackerId = message.getTrackerId(); // 跟踪器ID
-		TrackerManager.getInstance().announce(message);
+		TrackerContext.getInstance().announce(message);
 	}
 	
 	@Override
@@ -129,7 +130,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			return;
 		}
 		final var messages = convertScrapeMessage(sid, decoder);
-		messages.forEach(message -> TrackerManager.getInstance().scrape(message));
+		messages.forEach(message -> TrackerContext.getInstance().scrape(message));
 	}
 	
 	@Override

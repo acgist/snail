@@ -2,10 +2,10 @@ package com.acgist.snail.gui.event;
 
 import java.util.Map;
 
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.MessageType;
+import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.MessageType;
-import com.acgist.snail.gui.GuiManager.Mode;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 
 /**
@@ -31,13 +31,13 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 	}
 
 	@Override
-	protected final void executeExtend(GuiManager.Mode mode, Object ... args) {
+	protected final void executeExtend(GuiContext.Mode mode, Object ... args) {
 		if(!this.check(args, 2, 3)) {
 			return;
 		}
 		final String title = (String) this.getArg(args, 0);
 		final String message = (String) this.getArg(args, 1);
-		final GuiManager.MessageType type = (MessageType) this.getArg(args, 2, GuiManager.MessageType.INFO);
+		final GuiContext.MessageType type = (MessageType) this.getArg(args, 2, GuiContext.MessageType.INFO);
 		if(mode == Mode.NATIVE) {
 			this.executeNativeExtend(type, title, message);
 		} else {
@@ -52,7 +52,7 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
+	protected void executeNativeExtend(GuiContext.MessageType type, String title, String message) {
 		this.executeExtendExtend(type, title, message);
 	}
 	
@@ -63,7 +63,7 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 	 * @param title 标题
 	 * @param message 消息
 	 */
-	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
+	protected void executeExtendExtend(GuiContext.MessageType type, String title, String message) {
 		final Map<String, String> map = Map.of(
 			"type", type.name(),
 			"title", title,
@@ -71,7 +71,7 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 		);
 		final String body = BEncodeEncoder.encodeMapString(map);
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(this.messageType, body);
-		GuiManager.getInstance().sendExtendGuiMessage(applicationMessage);
+		GuiContext.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 
 }

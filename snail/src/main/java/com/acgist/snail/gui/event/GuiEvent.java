@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event;
 
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.Mode;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.Mode;
 
 /**
  * <p>GUI事件</p>
@@ -86,7 +86,7 @@ public abstract class GuiEvent {
 	 * @param mode 运行模式
 	 * @param args 参数
 	 */
-	public final void execute(GuiManager.Mode mode, Object ... args) {
+	public final void execute(GuiContext.Mode mode, Object ... args) {
 		if(mode == Mode.NATIVE) {
 			this.executeNative(args);
 		} else {

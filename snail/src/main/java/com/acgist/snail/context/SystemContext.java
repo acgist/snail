@@ -5,12 +5,12 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.Snail;
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.JSON;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.logger.LoggerContext;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
@@ -23,7 +23,7 @@ import com.acgist.snail.utils.FileUtils;
  * 
  * @author acgist
  */
-public final class SystemContext {
+public final class SystemContext implements IContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemContext.class);
 
@@ -149,18 +149,18 @@ public final class SystemContext {
 		if(Snail.available()) {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中...");
-				GuiManager.getInstance().hide();
+				GuiContext.getInstance().hide();
 				Snail.shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				GuiManager.getInstance().exit();
+				GuiContext.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
 				LoggerContext.shutdown();
 			});
 		} else {
-			GuiManager.getInstance().alert("关闭提示", "系统正在关闭中...");
+			GuiContext.getInstance().alert("关闭提示", "系统正在关闭中...");
 		}
 	}
 	

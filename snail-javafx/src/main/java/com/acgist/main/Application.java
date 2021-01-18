@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.Snail;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.event.AlertEvent;
 import com.acgist.snail.gui.javafx.event.BuildEvent;
 import com.acgist.snail.gui.javafx.event.ExitEvent;
@@ -51,7 +51,7 @@ public final class Application {
 		SystemContext.build(); // 初始化系统上下文
 		if(Snail.available()) {
 			registerGuiEvent();
-			GuiManager.getInstance().init(args).build();
+			GuiContext.getInstance().init(args).build();
 		} else {
 			LOGGER.debug("启动系统失败");
 		}
@@ -62,16 +62,16 @@ public final class Application {
 	 * <p>注册GUI事件</p>
 	 */
 	private static final void registerGuiEvent() {
-		GuiManager.register(ShowEvent.getInstance());
-		GuiManager.register(HideEvent.getInstance());
-		GuiManager.register(ExitEvent.getInstance());
-		GuiManager.register(BuildEvent.getInstance());
-		GuiManager.register(AlertEvent.getInstance());
-		GuiManager.register(NoticeEvent.getInstance());
-		GuiManager.register(TorrentEvent.getInstance());
-		GuiManager.register(ResponseEvent.getInstance());
-		GuiManager.register(RefreshTaskListEvent.getInstance());
-		GuiManager.register(RefreshTaskStatusEvent.getInstance());
+		GuiContext.register(ShowEvent.getInstance());
+		GuiContext.register(HideEvent.getInstance());
+		GuiContext.register(ExitEvent.getInstance());
+		GuiContext.register(BuildEvent.getInstance());
+		GuiContext.register(AlertEvent.getInstance());
+		GuiContext.register(NoticeEvent.getInstance());
+		GuiContext.register(TorrentEvent.getInstance());
+		GuiContext.register(ResponseEvent.getInstance());
+		GuiContext.register(RefreshTaskListEvent.getInstance());
+		GuiContext.register(RefreshTaskStatusEvent.getInstance());
 	}
 
 }

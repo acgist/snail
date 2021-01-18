@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.tracker.TrackerManager;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -242,7 +242,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	public void persistent() {
 		LOGGER.debug("保存Tracker服务器配置");
 		final AtomicInteger index = new AtomicInteger(0);
-		final var data = TrackerManager.getInstance().sessions().stream()
+		final var data = TrackerContext.getInstance().sessions().stream()
 			.filter(TrackerSession::available)
 			.limit(MAX_TRACKER_SIZE)
 			.collect(Collectors.toMap(

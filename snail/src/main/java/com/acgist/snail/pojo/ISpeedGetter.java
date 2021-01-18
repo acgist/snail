@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo;
 
 /**
- * <p>速度（上传、下载）获取接口</p>
+ * <p>获取速度（上传、下载）接口</p>
  * 
  * @author acgist
  */

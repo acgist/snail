@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.ITaskSessionEntity;
-import com.acgist.snail.pojo.ITaskStatus.Status;
+import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**

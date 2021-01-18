@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.dht;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,22 +15,22 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class NodeManagerTest extends Performance {
+public class NodeContextTest extends Performance {
 
 	@Test
 	public void testNewNodeSession() {
 		LoggerConfig.off();
 //		this.costed(1000, () -> {
-//			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+//			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 //		});
 //		this.costed(1000, () -> {
-//			NodeManager.getInstance().sortNodes();
+//			NodeContext.getInstance().sortNodes();
 //		});
 		this.costed(10000, () -> {
-			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
-		var oldNodes = NodeManager.getInstance().nodes();
-		var newNodes = NodeManager.getInstance().nodes();
+		var oldNodes = NodeContext.getInstance().nodes();
+		var newNodes = NodeContext.getInstance().nodes();
 		this.log(oldNodes.size());
 		this.log(newNodes.size());
 		Collections.sort(newNodes);
@@ -47,15 +47,15 @@ public class NodeManagerTest extends Performance {
 	public void testFindNode() {
 		LoggerConfig.off();
 		this.costed(10000, () -> {
-			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
-		long size = NodeManager.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
 		this.log("可用节点：{}", size);
 		final var target = buildId();
-//		final var target = StringUtils.hex(NodeManager.getInstance().nodes().get(0).getId());
-//		NodeManager.getInstance().nodes().forEach(node -> this.log(StringUtils.hex(node.getId())));
+//		final var target = StringUtils.hex(NodeContext.getInstance().nodes().get(0).getId());
+//		NodeContext.getInstance().nodes().forEach(node -> this.log(StringUtils.hex(node.getId())));
 //		this.log("----");
-		final var nodes = NodeManager.getInstance().findNode(target);
+		final var nodes = NodeContext.getInstance().findNode(target);
 		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
 //		this.log("----");
 		final var newNodes = new ArrayList<>(nodes);
@@ -67,9 +67,9 @@ public class NodeManagerTest extends Performance {
 		assertEquals(8, nodes.size());
 		this.log(nodes.size());
 		this.log(target);
-		this.costed(10000, () -> NodeManager.getInstance().findNode(target));
-//		this.costed(10000, 10, () -> NodeManager.getInstance().findNode(target));
-		size = NodeManager.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		this.costed(10000, () -> NodeContext.getInstance().findNode(target));
+//		this.costed(10000, 10, () -> NodeContext.getInstance().findNode(target));
+		size = NodeContext.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
 		this.log("可用节点：{}", size);
 	}
 
@@ -77,10 +77,10 @@ public class NodeManagerTest extends Performance {
 	public void testMinFindNode() {
 		LoggerConfig.off();
 		this.costed(2, () -> {
-			NodeManager.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
 		final var target = buildId();
-		final var nodes = NodeManager.getInstance().findNode(target);
+		final var nodes = NodeContext.getInstance().findNode(target);
 		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
 		assertTrue(8 > nodes.size());
 		this.log(nodes.size());

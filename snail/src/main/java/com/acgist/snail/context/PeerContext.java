@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer;
+package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -24,18 +23,18 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>Peer管理器</p>
+ * <p>Peer上下文</p>
  * <p>Peer放入两个队列：{@linkplain #peers 下载队列}、{@linkplain #storagePeers 存档队列}</p>
  * 
  * @author acgist
  */
-public final class PeerManager implements IManager {
+public final class PeerContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerContext.class);
 
-	private static final PeerManager INSTANCE = new PeerManager();
+	private static final PeerContext INSTANCE = new PeerContext();
 	
-	public static final PeerManager getInstance() {
+	public static final PeerContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -55,7 +54,7 @@ public final class PeerManager implements IManager {
 	 */
 	private final Map<String, List<PeerSession>> storagePeers;
 	
-	private PeerManager() {
+	private PeerContext() {
 		this.haves = new ConcurrentHashMap<>();
 		this.peers = new ConcurrentHashMap<>();
 		this.storagePeers = new ConcurrentHashMap<>();

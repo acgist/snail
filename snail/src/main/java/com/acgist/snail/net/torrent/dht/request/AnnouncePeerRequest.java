@@ -9,12 +9,12 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.dht.DhtManager;
+import com.acgist.snail.context.DhtContext;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.net.torrent.dht.response.AnnouncePeerResponse;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -60,12 +60,12 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	public static final AnnouncePeerResponse execute(DhtRequest request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		// 验证Token
-		if(!ArrayUtils.equals(token, DhtManager.getInstance().token())) {
+		if(!ArrayUtils.equals(token, DhtContext.getInstance().token())) {
 			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
 			// 默认端口
 			Integer peerPort = request.getInteger(DhtConfig.KEY_PORT);
@@ -78,7 +78,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 				// 自动配置端口
 				peerPort = socketAddress.getPort();
 			}
-			final var peerSession = PeerManager.getInstance().newPeerSession(
+			final var peerSession = PeerContext.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
 				peerHost,

@@ -10,8 +10,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskStatus.Status;
+import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
@@ -25,7 +26,7 @@ public class TorrentStreamTest extends Performance {
 	@Test
 	public void testReadWrite() throws DownloadException, IOException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
-		final var session = TorrentManager.getInstance().newTorrentSession(path);
+		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
 		entity.setFile("E:/snail/tmp/");
 		entity.setType(Type.TORRENT);

@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
@@ -132,7 +132,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		if(MapUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
-				final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+				final PeerSession peerSession = PeerContext.getInstance().newPeerSession(
 					this.torrentSession.infoHashHex(),
 					this.torrentSession.statistics(),
 					host,

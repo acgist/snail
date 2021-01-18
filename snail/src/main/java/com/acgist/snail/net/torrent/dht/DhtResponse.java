@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
@@ -50,7 +51,7 @@ public class DhtResponse extends DhtMessage {
 	 */
 	protected DhtResponse(byte[] t) {
 		this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
+		this.put(DhtConfig.KEY_ID, NodeContext.getInstance().nodeId());
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public class DhtResponse extends DhtMessage {
 			buffer.get(nodeId);
 			final String host = NetUtils.intToIP(buffer.getInt());
 			final int port = NetUtils.portToInt(buffer.getShort());
-			return NodeManager.getInstance().newNodeSession(nodeId, host, port);
+			return NodeContext.getInstance().newNodeSession(nodeId, host, port);
 		}
 		return null;
 	}

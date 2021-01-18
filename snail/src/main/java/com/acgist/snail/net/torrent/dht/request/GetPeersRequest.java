@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.torrent.TorrentManager;
+import com.acgist.snail.context.NodeContext;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
-import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.net.torrent.dht.response.GetPeersResponse;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
@@ -58,11 +58,11 @@ public final class GetPeersRequest extends DhtRequest {
 		final GetPeersResponse response = GetPeersResponse.newInstance(request);
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		// 查找Peer
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
-			final var list = PeerManager.getInstance().listPeerSession(infoHashHex);
+			final var list = PeerContext.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
 				// 返回Peer
 				needNodes = false;
@@ -84,7 +84,7 @@ public final class GetPeersRequest extends DhtRequest {
 		}
 		// 没有Peer返回Node节点
 		if(needNodes) {
-			final var nodes = NodeManager.getInstance().findNode(infoHash);
+			final var nodes = NodeContext.getInstance().findNode(infoHash);
 			response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		}
 		return response;

@@ -3,11 +3,11 @@ package com.acgist.snail.pojo;
 import java.util.Date;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.pojo.ITaskStatus.Status;
+import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**
- * <p>任务 - 实体接口</p>
+ * <p>任务信息实体接口</p>
  * 
  * @author acgist
  */

@@ -1,9 +1,9 @@
 package com.acgist.snail.protocol.magnet;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
@@ -96,7 +96,7 @@ public final class MagnetProtocol extends Protocol {
 		if(!success) {
 			// 清除种子信息
 			if(this.magnet != null) {
-				TorrentManager.getInstance().remove(this.magnet.getHash());
+				TorrentContext.getInstance().remove(this.magnet.getHash());
 			}
 		}
 		this.magnet = null;
@@ -110,7 +110,7 @@ public final class MagnetProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void exist(Magnet magnet) throws DownloadException {
-		if(TorrentManager.getInstance().exist(magnet.getHash())) {
+		if(TorrentContext.getInstance().exist(magnet.getHash())) {
 			throw new DownloadException("任务已经存在");
 		}
 	}

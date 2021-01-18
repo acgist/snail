@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo;
 
 /**
- * <p>任务 - Gui面板数据绑定接口</p>
+ * <p>任务信息面板数据绑定接口</p>
  * 
  * @author acgist
  */

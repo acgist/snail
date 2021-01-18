@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.utils.Performance;
@@ -30,12 +30,12 @@ public class LocalServiceDiscoveryTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setUrl(this.hashA);
 		entity.setSize(0L);
-		TorrentManager.getInstance().newTorrentSession(this.hashA, null).magnet(TaskSession.newInstance(entity));
+		TorrentContext.getInstance().newTorrentSession(this.hashA, null).magnet(TaskSession.newInstance(entity));
 		assertNotNull(server);
-		while(!PeerManager.getInstance().hasPeerSession(this.hashA)) {
+		while(!PeerContext.getInstance().hasPeerSession(this.hashA)) {
 			ThreadUtils.sleep(1000);
 		}
-		assertTrue(PeerManager.getInstance().hasPeerSession(this.hashA));
+		assertTrue(PeerContext.getInstance().hasPeerSession(this.hashA));
 	}
 	
 	@Test

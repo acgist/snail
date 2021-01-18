@@ -1,10 +1,10 @@
 package com.acgist.snail.pojo;
 
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskStatus.Status;
+import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 
 /**
- * <p>任务 - 实体操作接口</p>
+ * <p>任务信息操作接口</p>
  * 
  * @author acgist
  */

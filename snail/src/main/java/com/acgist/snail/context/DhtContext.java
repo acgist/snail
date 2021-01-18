@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.dht;
+package com.acgist.snail.context;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,26 +8,27 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.net.torrent.dht.DhtRequest;
+import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * <p>DHT管理器</p>
+ * <p>DHT上下文</p>
  * <p>管理DHT请求</p>
  * 
  * @author acgist
  */
-public final class DhtManager implements IManager {
+public final class DhtContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DhtManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DhtContext.class);
 	
-	private static final DhtManager INSTANCE = new DhtManager();
+	private static final DhtContext INSTANCE = new DhtContext();
 	
-	public static final DhtManager getInstance() {
+	public static final DhtContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -60,7 +61,7 @@ public final class DhtManager implements IManager {
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private DhtManager() {
+	private DhtContext() {
 		this.token = this.buildToken();
 		this.requests = new LinkedList<>();
 		this.register();
@@ -154,7 +155,7 @@ public final class DhtManager implements IManager {
 			return null;
 		}
 		// 设置节点为可用状态
-		NodeManager.getInstance().available(response.getNodeId());
+		NodeContext.getInstance().available(response.getNodeId());
 		DhtRequest request;
 		synchronized (this.requests) {
 			request = this.remove(response.getT());

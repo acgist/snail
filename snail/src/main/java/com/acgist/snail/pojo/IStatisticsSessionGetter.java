@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo;
 
 /**
- * <p>统计信息获取接口</p>
+ * <p>获取统计信息接口</p>
  * 
  * @author acgist
  */

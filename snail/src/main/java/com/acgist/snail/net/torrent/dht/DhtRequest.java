@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.QType;
+import com.acgist.snail.context.DhtContext;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
@@ -57,8 +59,8 @@ public class DhtRequest extends DhtMessage {
 	 * @param q 请求类型
 	 */
 	protected DhtRequest(DhtConfig.QType q) {
-		this(DhtManager.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
-		this.put(DhtConfig.KEY_ID, NodeManager.getInstance().nodeId());
+		this(DhtContext.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
+		this.put(DhtConfig.KEY_ID, NodeContext.getInstance().nodeId());
 	}
 	
 	/**

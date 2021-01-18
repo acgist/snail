@@ -14,9 +14,9 @@ import com.acgist.snail.config.CryptConfig.CryptAlgo;
 import com.acgist.snail.config.CryptConfig.Strategy;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder.MSEPrivateKey;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
@@ -498,7 +498,7 @@ public final class MSECryptHandshakeHandler {
 		final byte[] req3 = digest.digest();
 		InfoHash infoHash = null;
 		// 获取种子信息
-		for (InfoHash infoHashMatch : TorrentManager.getInstance().allInfoHash()) {
+		for (InfoHash infoHashMatch : TorrentContext.getInstance().allInfoHash()) {
 			digest.reset();
 			digest.update("req2".getBytes());
 			digest.update(infoHashMatch.infoHash());

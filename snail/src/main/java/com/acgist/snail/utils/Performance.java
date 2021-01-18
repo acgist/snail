@@ -160,7 +160,7 @@ public abstract class Performance {
 	}
 	
 	/**
-	 * <p>消耗任务</p>
+	 * <p>消耗任务接口</p>
 	 * 
 	 * @author acgist
 	 */

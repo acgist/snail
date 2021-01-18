@@ -3,7 +3,7 @@ package com.acgist.snail.gui.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
 
 /**
@@ -25,7 +25,7 @@ public final class AlertEvent extends AlertEventAdapter {
 	}
 	
 	@Override
-	protected void executeExtendExtend(GuiManager.MessageType type, String title, String message) {
+	protected void executeExtendExtend(GuiContext.MessageType type, String title, String message) {
 		super.executeExtendExtend(type, title, message);
 		LOGGER.debug("收到提示窗口事件：{}-{}-{}", type, title, message);
 	}

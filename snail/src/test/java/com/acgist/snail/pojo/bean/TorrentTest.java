@@ -2,8 +2,8 @@ package com.acgist.snail.pojo.bean;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.Performance;
@@ -16,7 +16,7 @@ public class TorrentTest extends Performance {
 		String path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
 //		String path = "e:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent"; // 没有编码：UTF-8
 //		String path = "e:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
-		TorrentSession session = TorrentManager.getInstance().newTorrentSession(path);
+		TorrentSession session = TorrentContext.getInstance().newTorrentSession(path);
 		Torrent torrent = session.torrent();
 		this.log("注释：" + torrent.getComment());
 		this.log("Piece数量：" + torrent.getInfo().pieceSize());
@@ -62,7 +62,7 @@ public class TorrentTest extends Performance {
 	public void testCos() throws DownloadException {
 		this.cost();
 		for (int i = 0; i < 10000; i++) {
-			TorrentManager.loadTorrent("e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent");
+			TorrentContext.loadTorrent("e:/snail/868f1199b18d05bf103aa8a8321f6428854d712e.torrent");
 		}
 		this.costed();
 	}

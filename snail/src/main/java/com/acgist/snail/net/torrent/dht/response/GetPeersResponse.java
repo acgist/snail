@@ -7,11 +7,11 @@ import java.util.List;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.dht.DhtManager;
+import com.acgist.snail.context.DhtContext;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -30,7 +30,7 @@ public final class GetPeersResponse extends DhtResponse {
 	private GetPeersResponse(byte[] t) {
 		super(t);
 		// 设置Token：声明Peer时使用
-		this.put(DhtConfig.KEY_TOKEN, DhtManager.getInstance().token());
+		this.put(DhtConfig.KEY_TOKEN, DhtContext.getInstance().token());
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * @return Peer列表
 	 */
 	public List<PeerSession> getValues(String infoHashHex) {
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			return List.of();
 		}
@@ -118,7 +118,7 @@ public final class GetPeersResponse extends DhtResponse {
 		for (Object object : values) {
 			buffer.put((byte[]) object);
 			buffer.flip();
-			session = PeerManager.getInstance().newPeerSession(
+			session = PeerContext.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
 				NetUtils.intToIP(buffer.getInt()),

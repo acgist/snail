@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.window.Controller;
@@ -59,7 +59,7 @@ public final class AboutController extends Controller implements Initializable {
 		if(SystemContext.latestRelease()) {
 			Alerts.info("检测更新", "当前已是最新版本");
 		} else {
-			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiManager.MessageType.CONFIRM);
+			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiContext.MessageType.CONFIRM);
 			if(optional.isPresent() && optional.get() == ButtonType.OK) {
 				Desktops.browse(SystemConfig.getSource());
 			}

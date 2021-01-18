@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.hls.HlsClient;
-import com.acgist.snail.net.hls.HlsManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
@@ -227,7 +227,7 @@ public final class HlsSession {
 	 * <p>删除任务信息</p>
 	 */
 	public void delete() {
-		HlsManager.getInstance().remove(this.taskSession);
+		HlsContext.getInstance().remove(this.taskSession);
 	}
 	
 }

@@ -1,8 +1,8 @@
 package com.acgist.snail.net.torrent.dht.request;
 
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
-import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.net.torrent.dht.response.FindNodeResponse;
 
 /**
@@ -39,7 +39,7 @@ public final class FindNodeRequest extends DhtRequest {
 	public static final FindNodeResponse execute(DhtRequest request) {
 		final FindNodeResponse response = FindNodeResponse.newInstance(request);
 		final byte[] target = request.getBytes(DhtConfig.KEY_TARGET);
-		final var nodes = NodeManager.getInstance().findNode(target);
+		final var nodes = NodeContext.getInstance().findNode(target);
 		response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		return response;
 	}

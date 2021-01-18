@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.net.torrent.dht.NodeManager;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.protocol.Protocol;
@@ -134,7 +134,7 @@ public final class TorrentBuilder {
 	 * @param data 种子信息
 	 */
 	private void buildNodes(Map<String, Object> data) {
-		final var sessions = NodeManager.getInstance().findNode(this.infoHash.infoHash());
+		final var sessions = NodeContext.getInstance().findNode(this.infoHash.infoHash());
 		if(CollectionUtils.isNotEmpty(sessions)) {
 			final var nodes = sessions.stream()
 				.filter(session -> NetUtils.ipAddress(session.getHost()))

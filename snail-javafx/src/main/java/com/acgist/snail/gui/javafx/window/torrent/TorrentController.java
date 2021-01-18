@@ -6,11 +6,11 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
@@ -77,7 +77,7 @@ public final class TorrentController extends Controller implements Initializable
 		this.taskSession = taskSession;
 		final TreeView<HBox> tree = buildTree();
 		try {
-			torrent = TorrentManager.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
+			torrent = TorrentContext.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
 		} catch (DownloadException e) {
 			LOGGER.error("种子文件解析异常", e);
 			Alerts.warn("下载失败", e.getMessage());

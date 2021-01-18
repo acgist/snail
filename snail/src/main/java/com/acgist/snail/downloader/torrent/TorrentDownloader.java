@@ -3,9 +3,9 @@ package com.acgist.snail.downloader.torrent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.TorrentSessionDownloader;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 
@@ -54,14 +54,14 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			// 完成任务校验数据
 			if(unchange) {
 				// 没有新增文件
-				GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+				GuiContext.getInstance().alert("下载成功", "任务已经完成下载");
 			} else if(this.torrentSession.verify()) {
 				// 文件校验成功
-				GuiManager.getInstance().alert("下载成功", "任务已经完成下载");
+				GuiContext.getInstance().alert("下载成功", "任务已经完成下载");
 			} else {
 				// 文件校验失败
 				this.taskSession.repause();
-				GuiManager.getInstance().alert("修改成功", "重新开始下载任务");
+				GuiContext.getInstance().alert("修改成功", "重新开始下载任务");
 			}
 		} else if(this.torrentSession != null) {
 			// 任务没有完成并且任务重启可能为空：开始下载自动加载

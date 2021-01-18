@@ -7,9 +7,9 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.TorrentInitializer;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -21,7 +21,7 @@ public class MagnetDownloaderTest extends Performance {
 	public void testMagnetDownloaderBuild() throws DownloadException {
 //		final String url = "902FFAA29EE632C8DC966ED9AB573409BA9A518E";
 		final String url = "magnet:?xt=urn:btih:902FFAA29EE632C8DC966ED9AB573409BA9A518E";
-		ProtocolManager.getInstance().register(MagnetProtocol.getInstance()).available(true);
+		ProtocolContext.getInstance().register(MagnetProtocol.getInstance()).available(true);
 		final var taskSession = MagnetProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
@@ -42,7 +42,7 @@ public class MagnetDownloaderTest extends Performance {
 		// 推荐使用活跃磁力链接测试
 //		final String url = "902FFAA29EE632C8DC966ED9AB573409BA9A518E";
 		final String url = "magnet:?xt=urn:btih:902FFAA29EE632C8DC966ED9AB573409BA9A518E";
-		ProtocolManager.getInstance().register(MagnetProtocol.getInstance()).available(true);
+		ProtocolContext.getInstance().register(MagnetProtocol.getInstance()).available(true);
 		final var taskSession = MagnetProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 		downloader.run();

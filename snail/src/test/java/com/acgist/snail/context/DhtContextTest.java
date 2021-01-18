@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.dht;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -8,20 +8,20 @@ import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.net.torrent.dht.response.PingResponse;
 import com.acgist.snail.utils.Performance;
 
-public class DhtManagerTest extends Performance {
+public class DhtContextTest extends Performance {
 
 	@Test
 	public void testRequest() {
 		final var request = PingRequest.newRequest();
-		DhtManager.getInstance().request(request);
-		final var response = DhtManager.getInstance().response(PingResponse.newInstance(request));
+		DhtContext.getInstance().request(request);
+		final var response = DhtContext.getInstance().response(PingResponse.newInstance(request));
 		assertNotNull(response);
 	}
 	
 	@Test
 	public void testCosted() {
 		this.costed(100000, () -> this.testRequest());
-//		this.costed(100000, () -> DhtManager.getInstance().buildRequestId());
+//		this.costed(100000, () -> DhtContext.getInstance().buildRequestId());
 	}
 	
 }

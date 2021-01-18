@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx;
 
 import java.util.Optional;
 
-import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.scene.Scene;
@@ -34,7 +34,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> info(String title, String message) {
-		return build(title, message, GuiManager.MessageType.INFO);
+		return build(title, message, GuiContext.MessageType.INFO);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> warn(String title, String message) {
-		return build(title, message, GuiManager.MessageType.WARN);
+		return build(title, message, GuiContext.MessageType.WARN);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public final class Alerts {
 	 * 
 	 * @return 点击按钮类型
 	 */
-	public static final Optional<ButtonType> build(String title, String message, GuiManager.MessageType type) {
+	public static final Optional<ButtonType> build(String title, String message, GuiContext.MessageType type) {
 		final Alert alert = new Alert(getAlertType(type));
 		final Scene scene = alert.getDialogPane().getScene();
 		Themes.applyTheme(scene);
@@ -76,7 +76,7 @@ public final class Alerts {
 	 * 
 	 * @return JavaFX窗口类型
 	 */
-	private static final AlertType getAlertType(GuiManager.MessageType type) {
+	private static final AlertType getAlertType(GuiContext.MessageType type) {
 		switch (type) {
 		case NONE:
 			return AlertType.NONE;
