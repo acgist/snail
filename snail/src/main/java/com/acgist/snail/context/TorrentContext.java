@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent;
+package com.acgist.snail.context;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
@@ -23,17 +23,17 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Torrent管理器</p>
+ * <p>Torrent上下文</p>
  * 
  * @author acgist
  */
-public final class TorrentManager implements IManager {
+public final class TorrentContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentContext.class);
 	
-	private static final TorrentManager INSTANCE = new TorrentManager();
+	private static final TorrentContext INSTANCE = new TorrentContext();
 	
-	public static final TorrentManager getInstance() {
+	public static final TorrentContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -43,7 +43,7 @@ public final class TorrentManager implements IManager {
 	 */
 	private final Map<String, TorrentSession> torrentSessions;
 	
-	private TorrentManager() {
+	private TorrentContext() {
 		this.torrentSessions = new ConcurrentHashMap<>();
 	}
 	

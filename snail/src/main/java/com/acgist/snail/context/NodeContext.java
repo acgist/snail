@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.dht;
+package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
@@ -18,19 +19,19 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>DHT节点管理器</p>
+ * <p>DHT节点上下文</p>
  * <p>协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
  * <p>BT=DHT、eMule=KAD</p>
  * 
  * @author acgist
  */
-public final class NodeManager implements IManager {
+public final class NodeContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(NodeManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeContext.class);
 	
-	private static final NodeManager INSTANCE = new NodeManager();
+	private static final NodeContext INSTANCE = new NodeContext();
 	
-	public static final NodeManager getInstance() {
+	public static final NodeContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -53,7 +54,7 @@ public final class NodeManager implements IManager {
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private NodeManager() {
+	private NodeContext() {
 		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
 		this.register();

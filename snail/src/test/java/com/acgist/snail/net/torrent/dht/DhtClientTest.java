@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.utils.Performance;
@@ -37,31 +38,31 @@ public class DhtClientTest extends Performance {
 	
 	@Test
 	public void testFindNode() {
-		final int size = NodeManager.getInstance().nodes().size();
+		final int size = NodeContext.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
 		while(true) {
 			client.findNode(HASH);
 			ThreadUtils.sleep(1000);
-			if(size != NodeManager.getInstance().nodes().size()) {
+			if(size != NodeContext.getInstance().nodes().size()) {
 				break;
 			}
 		}
-		assertTrue(size != NodeManager.getInstance().nodes().size());
+		assertTrue(size != NodeContext.getInstance().nodes().size());
 	}
 	
 	@Test
 	public void testGetPeers() throws DownloadException {
-		final int size = NodeManager.getInstance().nodes().size();
+		final int size = NodeContext.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var infoHash = InfoHash.newInstance(HASH);
 		while(true) {
 			client.getPeers(infoHash);
 			ThreadUtils.sleep(1000);
-			if(size != NodeManager.getInstance().nodes().size()) {
+			if(size != NodeContext.getInstance().nodes().size()) {
 				break;
 			}
 		}
-		assertFalse(size != NodeManager.getInstance().nodes().size());
+		assertFalse(size != NodeContext.getInstance().nodes().size());
 	}
 	
 	@Test

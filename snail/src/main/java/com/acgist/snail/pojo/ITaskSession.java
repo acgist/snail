@@ -8,11 +8,11 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 
 /**
- * <p>任务信息</p>
+ * <p>任务信息接口</p>
  * 
  * @author acgist
  */
-public interface ITaskSession extends ITaskStatus, ITaskSessionEntity, ITaskSessionHandler, ITaskSessionTable, IStatisticsSessionGetter {
+public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, ITaskSessionHandler, ITaskSessionTable, IStatisticsSessionGetter {
 
 	/**
 	 * <p>文件类型</p>

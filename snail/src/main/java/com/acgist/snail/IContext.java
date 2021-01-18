@@ -1,10 +1,10 @@
 package com.acgist.snail;
 
 /**
- * <p>管理器接口</p>
+ * <p>上下文接口</p>
  * 
  * @author acgist
  */
-public interface IManager {
+public interface IContext {
 
 }

@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.TaskManager;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.StatisticsContext;
+import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
@@ -24,7 +25,6 @@ import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -266,7 +266,7 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	public void refreshTaskList() {
 		final ObservableList<ITaskSession> obs = FXCollections.observableArrayList();
-		TaskManager.getInstance().allTask().stream()
+		TaskContext.getInstance().allTask().stream()
 			.filter(session -> {
 				if(this.filter == Filter.ALL) {
 					return true;
@@ -354,7 +354,7 @@ public final class MainController extends Controller implements Initializable {
 		if(!this.hasSelected()) {
 			return;
 		}
-		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiManager.MessageType.CONFIRM);
+		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiContext.MessageType.CONFIRM);
 		if(optional.isPresent() && optional.get() == ButtonType.OK) {
 			this.selected().forEach(ITaskSession::delete);
 		}
@@ -426,7 +426,7 @@ public final class MainController extends Controller implements Initializable {
 	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.taskTable) {
 			final String url = this.dragboard(event);
-			if(ProtocolManager.getInstance().support(url)) {
+			if(ProtocolContext.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
 				event.acceptTransferModes(TransferMode.NONE);

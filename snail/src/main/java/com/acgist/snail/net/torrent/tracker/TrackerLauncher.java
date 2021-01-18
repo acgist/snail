@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
@@ -145,8 +146,8 @@ public final class TrackerLauncher {
 		if(MapUtils.isEmpty(peers)) {
 			return;
 		}
-		final PeerManager manager = PeerManager.getInstance();
-		peers.forEach((host, port) -> manager.newPeerSession(
+		final PeerContext peerContext = PeerContext.getInstance();
+		peers.forEach((host, port) -> peerContext.newPeerSession(
 			this.torrentSession.infoHashHex(),
 			this.torrentSession.statistics(),
 			host,
@@ -174,7 +175,7 @@ public final class TrackerLauncher {
 			} catch (NetException e) {
 				LOGGER.error("TrackerLauncher关闭异常", e);
 			}
-			TrackerManager.getInstance().removeTrackerLauncher(this.id);
+			TrackerContext.getInstance().removeTrackerLauncher(this.id);
 		}
 	}
 	

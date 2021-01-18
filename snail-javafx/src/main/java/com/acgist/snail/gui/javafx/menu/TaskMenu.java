@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
@@ -198,7 +198,7 @@ public final class TaskMenu extends Menu {
 						Alerts.info("校验成功", session.getName());
 					} else if(session.statusCompleted()) {
 						// 任务完成：判断是否需要重新下载
-						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiManager.MessageType.CONFIRM);
+						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
 						if(optional.isPresent() && optional.get() == ButtonType.OK) {
 							session.repause();
 						}

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.context.exception.TimerException;
 
 /**
@@ -23,7 +24,7 @@ import com.acgist.snail.context.exception.TimerException;
  * 
  * @author acgist
  */
-public final class SystemThreadContext {
+public final class SystemThreadContext implements IContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	

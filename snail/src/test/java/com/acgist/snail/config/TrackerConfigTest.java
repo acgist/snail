@@ -6,8 +6,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.net.torrent.tracker.TrackerManager;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
@@ -16,7 +16,7 @@ public class TrackerConfigTest extends Performance {
 	@Test
 	public void testPersistent() throws DownloadException {
 		final TrackerConfig config = TrackerConfig.getInstance();
-		TrackerManager.getInstance().sessions("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
+		TrackerContext.getInstance().sessions("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
 		config.persistent();
 		assertTrue(FileUtils.userDirFile("/config/bt.tracker.properties").exists());
 	}

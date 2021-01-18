@@ -63,7 +63,7 @@ public final class TorrentSelector {
 	 * @param download 下载按钮
 	 * @param tree 树形菜单
 	 * 
-	 * @return SelectorManager
+	 * @return TorrentSelector
 	 */
 	public static final TorrentSelector newInstance(String name, Button download, TreeView<HBox> tree) {
 		return new TorrentSelector(name, download, tree);

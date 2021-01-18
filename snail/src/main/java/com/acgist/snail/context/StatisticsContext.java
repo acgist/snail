@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.pojo.ISpeedGetter;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.IStatisticsSessionGetter;
@@ -12,7 +13,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  * 
  * @author acgist
  */
-public final class StatisticsContext implements ISpeedGetter, IStatisticsSessionGetter {
+public final class StatisticsContext implements IContext, ISpeedGetter, IStatisticsSessionGetter {
 	
 	private static final StatisticsContext INSTANCE = new StatisticsContext();
 	

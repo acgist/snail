@@ -3,11 +3,11 @@ package com.acgist.snail.protocol.hls;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
-import com.acgist.snail.net.hls.HlsManager;
 import com.acgist.snail.net.http.HTTPClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
@@ -119,7 +119,7 @@ public final class HlsProtocol extends Protocol {
 	protected void release(boolean success) {
 		if(success) {
 			// 成功添加管理
-			HlsManager.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
+			HlsContext.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
 		}
 		super.release(success);
 		this.m3u8 = null;

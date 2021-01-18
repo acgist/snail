@@ -3,6 +3,7 @@ package com.acgist.snail.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.stun.StunService;
 import com.acgist.snail.net.upnp.UpnpClient;
@@ -11,13 +12,13 @@ import com.acgist.snail.net.upnp.UpnpService;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>NAT（内网穿透）</p>
+ * <p>NAT（内网穿透）上下文</p>
  * <p>已是公网IP不会进行内网穿透</p>
  * <p>优先使用UPNP进行端口映射，UPNP映射失败后使用STUN。</p>
  * 
  * @author acgist
  */
-public final class NatContext {
+public final class NatContext implements IContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NatContext.class);
 	

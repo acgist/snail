@@ -10,6 +10,8 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.NatContext;
+import com.acgist.snail.context.ProtocolContext;
+import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.ConfigInitializer;
 import com.acgist.snail.context.initializer.DhtInitializer;
@@ -29,7 +31,6 @@ import com.acgist.snail.net.torrent.tracker.TrackerServer;
 import com.acgist.snail.net.torrent.utp.UtpRequestQueue;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.ftp.FtpProtocol;
 import com.acgist.snail.protocol.hls.HlsProtocol;
 import com.acgist.snail.protocol.http.HttpProtocol;
@@ -93,10 +94,10 @@ public final class Snail {
 	 * 
 	 * @throws DownloadException 下载异常
 	 * 
-	 * @see TaskManager#download(String)
+	 * @see TaskContext#download(String)
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		return TaskManager.getInstance().download(url);
+		return TaskContext.getInstance().download(url);
 	}
 	
 	/**
@@ -106,7 +107,7 @@ public final class Snail {
 	public void lockDownload() {
 		synchronized (this) {
 			this.lock = true;
-			while(TaskManager.getInstance().allTask().stream().anyMatch(ITaskSession::statusRunning)) {
+			while(TaskContext.getInstance().allTask().stream().anyMatch(ITaskSession::statusRunning)) {
 				try {
 					this.wait();
 				} catch (InterruptedException e) {
@@ -147,7 +148,7 @@ public final class Snail {
 				ApplicationServer.getInstance().close();
 			}
 			// 优先关闭任务
-			TaskManager.getInstance().shutdown();
+			TaskContext.getInstance().shutdown();
 			if(INSTANCE.buildTorrent) {
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
@@ -221,7 +222,7 @@ public final class Snail {
 				INSTANCE.available = ApplicationServer.getInstance().listen();
 			}
 			if(INSTANCE.available) {
-				ProtocolManager.getInstance().available(INSTANCE.available);
+				ProtocolContext.getInstance().available(INSTANCE.available);
 				this.buildInitializers().forEach(initializer -> {
 					if(sync) {
 						initializer.sync();
@@ -284,7 +285,7 @@ public final class Snail {
 		 * @return SnailBuilder
 		 */
 		public SnailBuilder register(Protocol protocol) {
-			ProtocolManager.getInstance().register(protocol);
+			ProtocolContext.getInstance().register(protocol);
 			return this;
 		}
 		

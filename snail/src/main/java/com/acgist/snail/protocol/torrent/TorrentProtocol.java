@@ -1,10 +1,10 @@
 package com.acgist.snail.protocol.torrent;
 
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.bean.Torrent;
@@ -125,7 +125,7 @@ public final class TorrentProtocol extends Protocol {
 		if(!success) {
 			// 清除种子信息
 			if(this.torrentSession != null) {
-				TorrentManager.getInstance().remove(this.torrentSession.infoHashHex());
+				TorrentContext.getInstance().remove(this.torrentSession.infoHashHex());
 			}
 		}
 		this.torrentFile = null;
@@ -138,8 +138,8 @@ public final class TorrentProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void exist() throws DownloadException {
-		final Torrent torrent = TorrentManager.loadTorrent(this.url);
-		if(TorrentManager.getInstance().exist(torrent.infoHash().infoHashHex())) {
+		final Torrent torrent = TorrentContext.loadTorrent(this.url);
+		if(TorrentContext.getInstance().exist(torrent.infoHash().infoHashHex())) {
 			throw new DownloadException("任务已经存在");
 		}
 	}
@@ -152,7 +152,7 @@ public final class TorrentProtocol extends Protocol {
 	 */
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
-		final TorrentSession torrentSession = TorrentManager.getInstance().newTorrentSession(torrentFile);
+		final TorrentSession torrentSession = TorrentContext.getInstance().newTorrentSession(torrentFile);
 		this.url = Protocol.Type.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
 		this.torrentFile = torrentFile;
 		this.torrentSession = torrentSession;
@@ -188,7 +188,7 @@ public final class TorrentProtocol extends Protocol {
 		ITaskSession taskSession = null;
 		try {
 			taskSession = TaskSession.newInstance(this.taskEntity);
-			GuiManager.getInstance().torrent(taskSession);
+			GuiContext.getInstance().torrent(taskSession);
 		} catch (DownloadException e) {
 			throw e;
 		} catch (Exception e) {

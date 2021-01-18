@@ -10,9 +10,9 @@ import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.config.PeerConfig.HolepunchErrorCode;
 import com.acgist.snail.config.PeerConfig.HolepunchType;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpClient;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -141,7 +141,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			return;
 		}
 		// 目标Peer
-		final var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
+		final var peerSession = PeerContext.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
 		// 目标不存在
 		if(peerSession == null) {
 			LOGGER.debug("处理holepunch消息-rendezvous失败：目标不存在");
@@ -191,9 +191,9 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private void onConnect(String host, int port) {
 		LOGGER.debug("处理holepunch消息-connect：{}-{}", host, port);
-		var peerSession = PeerManager.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
+		var peerSession = PeerContext.getInstance().findPeerSession(this.torrentSession.infoHashHex(), host, port);
 		if(peerSession == null) {
-			peerSession = PeerManager.getInstance().newPeerSession(
+			peerSession = PeerContext.getInstance().newPeerSession(
 				this.torrentSession.infoHashHex(),
 				this.torrentSession.statistics(),
 				host,

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -114,7 +115,7 @@ public final class PeerDownloaderGroup {
 			this.peerDownloaders.forEach(downloader -> {
 				SystemThreadContext.submit(downloader::release);
 				// 下载列表中的Peer属于优质Peer
-				PeerManager.getInstance().preference(this.torrentSession.infoHashHex(), downloader.peerSession());
+				PeerContext.getInstance().preference(this.torrentSession.infoHashHex(), downloader.peerSession());
 			});
 			this.peerDownloaders.clear();
 		}
@@ -125,10 +126,10 @@ public final class PeerDownloaderGroup {
 	 * <p>下载器检查是否找到Peer，如果没有找到进行自旋等待。</p>
 	 */
 	private void spinLock() {
-		final PeerManager peerManager = PeerManager.getInstance();
+		final PeerContext peerContext = PeerContext.getInstance();
 		final String infoHashHex = this.torrentSession.infoHashHex();
 		while(this.taskSession.statusDownload()) {
-			if(peerManager.hasPeerSession(infoHashHex)) {
+			if(peerContext.hasPeerSession(infoHashHex)) {
 				break;
 			}
 			ThreadUtils.sleep(SPIN_LOCK_TIME);
@@ -187,7 +188,7 @@ public final class PeerDownloaderGroup {
 		if(this.peerDownloaders.size() >= SystemConfig.getPeerSize()) {
 			return false;
 		}
-		final PeerSession peerSession = PeerManager.getInstance().pick(this.torrentSession.infoHashHex());
+		final PeerSession peerSession = PeerContext.getInstance().pick(this.torrentSession.infoHashHex());
 		if(peerSession != null) {
 			final PeerDownloader peerDownloader = PeerDownloader.newInstance(peerSession, this.torrentSession);
 			final boolean success = peerDownloader.handshake();
@@ -196,7 +197,7 @@ public final class PeerDownloaderGroup {
 				this.offer(peerDownloader);
 			} else {
 				// 失败后需要放回队列
-				PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
+				PeerContext.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 			}
 			return true;
 		} else {
@@ -284,7 +285,7 @@ public final class PeerDownloaderGroup {
 			final PeerSession peerSession = peerDownloader.peerSession();
 			LOGGER.debug("剔除劣质PeerDownloader：{}-{}", peerSession.host(), peerSession.port());
 			SystemThreadContext.submit(() -> peerDownloader.release());
-			PeerManager.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
+			PeerContext.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
 		}
 	}
 	

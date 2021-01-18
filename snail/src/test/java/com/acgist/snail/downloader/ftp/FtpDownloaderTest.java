@@ -7,8 +7,8 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.protocol.ftp.FtpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
@@ -19,7 +19,7 @@ public class FtpDownloaderTest extends Performance {
 	public void testFtpDownloaderBuild() throws DownloadException {
 //		final String url = "ftp://localhost/ftp/FTPserver.exe";
 		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
-		ProtocolManager.getInstance().register(FtpProtocol.getInstance()).available(true);
+		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);
 		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
@@ -36,7 +36,7 @@ public class FtpDownloaderTest extends Performance {
 		final String url = "ftp://localhost/ftp/中文文件.exe";
 //		final String url = "ftp://localhost/ftp/FTPserver.exe";
 //		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
-		ProtocolManager.getInstance().register(FtpProtocol.getInstance()).available(true);
+		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);
 		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 		downloader.run();

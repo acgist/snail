@@ -3,6 +3,6 @@
  * 
  * @author acgist
  * 
- * @see com.acgist.snail.gui.GuiManagerTest
+ * @see com.acgist.snail.context.GuiContextTest
  */
 package com.acgist.snail.net.application;

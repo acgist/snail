@@ -7,19 +7,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.TaskManager;
 import com.acgist.snail.context.EntityContext;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -86,7 +86,7 @@ public final class TaskSession implements ITaskSession {
 		if(this.downloader != null) {
 			return this.downloader;
 		}
-		this.downloader = ProtocolManager.getInstance().buildDownloader(this);
+		this.downloader = ProtocolContext.getInstance().buildDownloader(this);
 		return this.downloader;
 	}
 	
@@ -257,7 +257,7 @@ public final class TaskSession implements ITaskSession {
 			return;
 		}
 		// 提交下载队列
-		TaskManager.getInstance().submit(this);
+		TaskContext.getInstance().submit(this);
 		this.updateStatus(Status.AWAIT);
 	}
 	
@@ -320,7 +320,7 @@ public final class TaskSession implements ITaskSession {
 			SystemThreadContext.submit(this.downloader::delete);
 		}
 		// 删除下载任务
-		TaskManager.getInstance().remove(this);
+		TaskContext.getInstance().remove(this);
 		// 删除下载器
 		this.downloader = null;
 		// 删除实体
@@ -365,7 +365,7 @@ public final class TaskSession implements ITaskSession {
 		this.setStatus(status);
 		this.update();
 		this.unlockDownload(); // 状态修改完成才能调用
-		TaskManager.getInstance().refresh(); // 刷新下载
+		TaskContext.getInstance().refresh(); // 刷新下载
 	}
 
 	//================实体================//
@@ -447,7 +447,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void setStatus(Status status) {
-		GuiManager.getInstance().refreshTaskStatus(); // 刷新状态
+		GuiContext.getInstance().refreshTaskStatus(); // 刷新状态
 		this.entity.setStatus(status);
 	}
 	

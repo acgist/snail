@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.EntityInitializer;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -28,7 +28,7 @@ public class PeerServerTest extends Performance {
 	@Test
 	public void testServer() throws DownloadException {
 		final var path = "e:/snail/12345.torrent";
-		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
+		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
 		final List<String> list = new ArrayList<>();
 		files.forEach(file -> {
@@ -53,7 +53,7 @@ public class PeerServerTest extends Performance {
 	public void testClient() throws DownloadException {
 		EntityInitializer.newInstance().sync(); // 初始化实体
 		final var path = "e:/snail/12345.torrent"; // 种子文件
-		final var torrentSession = TorrentManager.getInstance().newTorrentSession(path);
+		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final var files = torrentSession.torrent().getInfo().files();
 		final List<String> list = new ArrayList<>();
 		// 选择下载文件

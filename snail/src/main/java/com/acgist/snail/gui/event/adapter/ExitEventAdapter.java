@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.event.adapter;
 
-import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
 
 /**
@@ -21,7 +21,7 @@ public class ExitEventAdapter extends GuiEvent {
 	
 	@Override
 	protected void executeExtend(Object ... args) {
-		GuiManager.getInstance().unlock();
+		GuiContext.getInstance().unlock();
 	}
 	
 }

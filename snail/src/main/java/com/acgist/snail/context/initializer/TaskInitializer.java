@@ -3,7 +3,7 @@ package com.acgist.snail.context.initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.TaskManager;
+import com.acgist.snail.context.TaskContext;
 
 /**
  * <p>初始化任务</p>
@@ -27,7 +27,7 @@ public final class TaskInitializer extends Initializer {
 	@Override
 	protected void init() {
 		LOGGER.debug("初始化任务");
-		TaskManager.getInstance().loadTaskEntity();
+		TaskContext.getInstance().loadTaskEntity();
 	}
 
 }

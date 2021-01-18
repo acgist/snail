@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.pojo.session.StreamSession;
 
@@ -18,7 +19,7 @@ import com.acgist.snail.pojo.session.StreamSession;
  * 
  * @author acgist
  */
-public final class StreamContext {
+public final class StreamContext implements IContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreamContext.class);
 	

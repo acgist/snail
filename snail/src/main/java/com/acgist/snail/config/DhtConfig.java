@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.net.torrent.dht.NodeManager;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;
 import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
@@ -90,7 +90,7 @@ public final class DhtConfig extends PropertiesConfig {
 	/**
 	 * <p>NodeId：{@value}</p>
 	 * 
-	 * @see NodeManager#nodeId()
+	 * @see NodeContext#nodeId()
 	 */
 	public static final String KEY_ID = "id";
 	/**
@@ -347,7 +347,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public void persistent() {
 		LOGGER.debug("保存DHT节点配置");
-		final var persistentNodes = NodeManager.getInstance().nodes();
+		final var persistentNodes = NodeContext.getInstance().nodes();
 		final int size = persistentNodes.size();
 		final Random random = NumberUtils.random();
 		final var data = persistentNodes.stream()

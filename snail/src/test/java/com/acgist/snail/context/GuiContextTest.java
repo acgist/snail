@@ -1,4 +1,4 @@
-package com.acgist.snail.gui;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,9 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail;
-import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.context.GuiContext.MessageType;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.GuiManager.MessageType;
 import com.acgist.snail.gui.event.AlertEvent;
 import com.acgist.snail.gui.event.BuildEvent;
 import com.acgist.snail.gui.event.ExitEvent;
@@ -29,7 +28,7 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
-public class GuiManagerTest extends Performance {
+public class GuiContextTest extends Performance {
 
 	/**
 	 * <p>测试环境客户端和服务端使用同一套事件</p>
@@ -37,32 +36,32 @@ public class GuiManagerTest extends Performance {
 	 */
 	@BeforeAll
 	public static final void registerEvent() {
-		GuiManager.register(ShowEvent.getInstance());
-		GuiManager.register(HideEvent.getInstance());
-		GuiManager.register(ExitEvent.getInstance());
-		GuiManager.register(BuildEvent.getInstance());
-		GuiManager.register(AlertEvent.getInstance());
-		GuiManager.register(NoticeEvent.getInstance());
-		GuiManager.register(TorrentEvent.getInstance());
-		GuiManager.register(ResponseEvent.getInstance());
-		GuiManager.register(RefreshTaskListEvent.getInstance());
-		GuiManager.register(RefreshTaskStatusEvent.getInstance());
+		GuiContext.register(ShowEvent.getInstance());
+		GuiContext.register(HideEvent.getInstance());
+		GuiContext.register(ExitEvent.getInstance());
+		GuiContext.register(BuildEvent.getInstance());
+		GuiContext.register(AlertEvent.getInstance());
+		GuiContext.register(NoticeEvent.getInstance());
+		GuiContext.register(TorrentEvent.getInstance());
+		GuiContext.register(ResponseEvent.getInstance());
+		GuiContext.register(RefreshTaskListEvent.getInstance());
+		GuiContext.register(RefreshTaskStatusEvent.getInstance());
 	}
 
 	@Test
 	public void testEvent() {
-		final var manager = GuiManager.getInstance();
-		manager.alert("acgist", "acgist");
-		manager.notice("acgist", "acgist");
-		manager.show();
-		manager.hide();
-		manager.alert("acgist", "acgist");
-		manager.alert("acgist", "acgist", MessageType.ERROR);
-		manager.notice("acgist", "acgist");
-		manager.notice("acgist", "acgist", MessageType.ERROR);
-		manager.refreshTaskList();
-		manager.refreshTaskStatus();
-		assertNotNull(manager);
+		final var guiContext = GuiContext.getInstance();
+		guiContext.alert("acgist", "acgist");
+		guiContext.notice("acgist", "acgist");
+		guiContext.show();
+		guiContext.hide();
+		guiContext.alert("acgist", "acgist");
+		guiContext.alert("acgist", "acgist", MessageType.ERROR);
+		guiContext.notice("acgist", "acgist");
+		guiContext.notice("acgist", "acgist", MessageType.ERROR);
+		guiContext.refreshTaskList();
+		guiContext.refreshTaskStatus();
+		assertNotNull(guiContext);
 	}
 	
 	@Test
@@ -77,7 +76,7 @@ public class GuiManagerTest extends Performance {
 		assertTrue(Snail.available());
 		if(Snail.available()) {
 			final String[] args = new String[] { "mode=extend" }; // 后台模式启动
-			GuiManager.getInstance().init(args).build(); // 初始化GUI
+			GuiContext.getInstance().init(args).build(); // 初始化GUI
 		} else {
 			LOGGER.debug("启动系统失败");
 		}

@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.DhtConfig.QType;
+import com.acgist.snail.context.DhtContext;
+import com.acgist.snail.context.NodeContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;
 import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
@@ -106,7 +108,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * @param response 响应
 	 */
 	private void onResponse(final DhtResponse response) {
-		final DhtRequest request = DhtManager.getInstance().response(response);
+		final DhtRequest request = DhtContext.getInstance().response(response);
 		if(request == null) {
 			LOGGER.warn("处理DHT响应失败：没有对应请求");
 			return;
@@ -155,7 +157,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		request.lockResponse();
 		final DhtResponse response = request.getResponse();
 		if(RESPONSE_SUCCESS.test(response)) {
-			return NodeManager.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
+			return NodeContext.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
 		} else {
 			LOGGER.warn("发送Ping请求失败：{}-{}", socketAddress, response);
 		}
@@ -261,7 +263,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		// 发送声明消息
 		final byte[] token = getPeersResponse.getToken();
 		if(token != null) {
-			final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+			final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 			if(torrentSession != null && torrentSession.uploadable()) {
 				this.announcePeer(request.getSocketAddress(), token, infoHash);
 			}
@@ -310,7 +312,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private void pushRequest(DhtRequest request, InetSocketAddress socketAddress) {
 		request.setSocketAddress(socketAddress);
-		DhtManager.getInstance().request(request);
+		DhtContext.getInstance().request(request);
 		this.pushMessage(request, socketAddress);
 	}
 	

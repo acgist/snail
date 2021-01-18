@@ -16,9 +16,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.EntityException;
-import com.acgist.snail.context.recycle.RecycleManager;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.entity.Entity;
 import com.acgist.snail.pojo.entity.TaskEntity;
@@ -29,7 +29,7 @@ import com.acgist.snail.utils.FileUtils;
  * 
  * @author acgist
  */
-public final class EntityContext {
+public final class EntityContext implements IContext {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityContext.class);
 	
@@ -142,7 +142,7 @@ public final class EntityContext {
 		// 删除文件
 		if(SystemConfig.getTaskFileDelete()) {
 			final var file = entity.getFile();
-			final boolean success = RecycleManager.recycle(file);
+			final boolean success = RecycleContext.recycle(file);
 			if(!success) {
 				LOGGER.debug("不支持回收站直接删除文件：{}", file);
 				FileUtils.delete(file);

@@ -1,4 +1,4 @@
-package com.acgist.snail.protocol;
+package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,25 +8,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载协议管理器</p>
+ * <p>下载协议上下文</p>
  * 
  * @author acgist
  */
-public final class ProtocolManager implements IManager {
+public final class ProtocolContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolContext.class);
 
-	private static final ProtocolManager INSTANCE = new ProtocolManager();
+	private static final ProtocolContext INSTANCE = new ProtocolContext();
 	
-	public static final ProtocolManager getInstance() {
+	public static final ProtocolContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -40,7 +41,7 @@ public final class ProtocolManager implements IManager {
 	 */
 	private final AtomicBoolean availableLock = new AtomicBoolean(false);
 	
-	private ProtocolManager() {
+	private ProtocolContext() {
 		this.protocols = new ArrayList<>();
 	}
 	
@@ -49,9 +50,9 @@ public final class ProtocolManager implements IManager {
 	 * 
 	 * @param protocol 协议
 	 * 
-	 * @return ProtocolManager
+	 * @return ProtocolContext
 	 */
-	public ProtocolManager register(Protocol protocol) {
+	public ProtocolContext register(Protocol protocol) {
 		if(this.protocols.contains(protocol)) {
 			LOGGER.debug("下载协议已经注册：{}", protocol.name());
 		} else {

@@ -1,4 +1,4 @@
-package com.acgist.snail.context.recycle;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class RecycleManagerTest extends Performance {
+public class RecycleContextTest extends Performance {
 
 	@Test
-	public void testRecycleManager() {
-		assertNotNull(RecycleManager.newInstance("E://snail/tmp.txt"));
+	public void testRecycleContext() {
+		assertNotNull(RecycleContext.newInstance("E://snail/tmp.txt"));
 	}
 	
 	@Test
@@ -24,7 +24,7 @@ public class RecycleManagerTest extends Performance {
 		final File file = new File(path);
 		file.createNewFile();
 		assertTrue(file.exists());
-		RecycleManager.recycle(path);
+		RecycleContext.recycle(path);
 		assertFalse(file.exists());
 	}
 	

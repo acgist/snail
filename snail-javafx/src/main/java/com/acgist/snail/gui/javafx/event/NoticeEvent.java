@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.javafx.event;
 
-import com.acgist.snail.gui.GuiManager;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
 import com.acgist.snail.gui.javafx.menu.TrayMenu;
@@ -22,7 +22,7 @@ public final class NoticeEvent extends NoticeEventAdapter {
 	}
 	
 	@Override
-	protected void executeNativeExtend(GuiManager.MessageType type, String title, String message) {
+	protected void executeNativeExtend(GuiContext.MessageType type, String title, String message) {
 		TrayMenu.getInstance().notice(title, message, type);
 	}
 

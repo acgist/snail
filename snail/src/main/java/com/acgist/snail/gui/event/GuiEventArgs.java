@@ -3,8 +3,8 @@ package com.acgist.snail.gui.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.Mode;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.Mode;
 
 /**
  * <p>GUI变长参数事件</p>
@@ -99,6 +99,6 @@ public abstract class GuiEventArgs extends GuiEvent {
 	 * @param mode 运行模式
 	 * @param args 变长参数
 	 */
-	protected abstract void executeExtend(GuiManager.Mode mode, Object ... args);
+	protected abstract void executeExtend(GuiContext.Mode mode, Object ... args);
 
 }

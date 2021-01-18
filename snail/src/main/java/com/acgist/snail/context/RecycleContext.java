@@ -1,23 +1,24 @@
-package com.acgist.snail.context.recycle;
+package com.acgist.snail.context;
 
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.context.SystemContext.SystemType;
+import com.acgist.snail.context.recycle.Recycle;
 import com.acgist.snail.context.recycle.windows.WindowsRecycle;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>回收站管理器</p>
+ * <p>回收站上下文</p>
  * 
  * @author acgist
  */
-public final class RecycleManager implements IManager {
+public final class RecycleContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleContext.class);
 	
 	/**
 	 * <p>回收站创建器</p>
@@ -38,7 +39,7 @@ public final class RecycleManager implements IManager {
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private RecycleManager() {
+	private RecycleContext() {
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public final class RecycleManager implements IManager {
 			LOGGER.warn("删除文件路径错误：{}", filePath);
 			return false;
 		}
-		final var recycle = RecycleManager.newInstance(filePath);
+		final var recycle = RecycleContext.newInstance(filePath);
 		if(recycle == null) {
 			// 不支持回收站
 			return false;

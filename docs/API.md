@@ -27,7 +27,7 @@
 ### 注册协议
 
 ```java
-ProtocolManager.getInstance().register(protocol);
+ProtocolContext.getInstance().register(protocol);
 ```
 
 ### 添加协议
@@ -60,10 +60,10 @@ ProtocolManager.getInstance().register(protocol);
 ITaskSession taskSession = Snail.getInstance().download(url)
 ```
 
-#### TaskManager
+#### TaskContext
 
 ```java
-ITaskSession taskSession = TaskManager.getInstance().download(url)
+ITaskSession taskSession = TaskContext.getInstance().download(url)
 ```
 
 > 任务添加完成自动开始下载不用调用开始任务方法
@@ -90,19 +90,19 @@ ITaskSession#.delete();
 
 ### DHT管理
 
-`NodeManager`
+`NodeContext`
 
 ### Peer管理
 
-`PeerManager`
+`PeerContext`
 
 ### Tracker管理
 
-`TrackerManager`
+`TrackerContext`
 
 ### Torrent管理
 
-`TorrentManager`
+`TorrentContext`
 
 ## 消息通知
 

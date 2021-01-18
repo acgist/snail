@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Menu;
@@ -190,7 +190,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void info(String title, String content) {
-		this.notice(title, content, GuiManager.MessageType.INFO);
+		this.notice(title, content, GuiContext.MessageType.INFO);
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 */
 	public void warn(String title, String content) {
-		this.notice(title, content, GuiManager.MessageType.WARN);
+		this.notice(title, content, GuiContext.MessageType.WARN);
 	}
 
 	/**
@@ -210,7 +210,7 @@ public final class TrayMenu extends Menu {
 	 * @param content 内容
 	 * @param type 类型
 	 */
-	public void notice(String title, String content, GuiManager.MessageType type) {
+	public void notice(String title, String content, GuiContext.MessageType type) {
 		if(DownloadConfig.getNotice() && this.support) {
 			this.trayIcon.displayMessage(title, content, this.getMessageType(type));
 		}
@@ -316,7 +316,7 @@ public final class TrayMenu extends Menu {
 	 * 
 	 * @return JavaFX消息类型
 	 */
-	public MessageType getMessageType(GuiManager.MessageType type) {
+	public MessageType getMessageType(GuiContext.MessageType type) {
 		switch (type) {
 		case NONE:
 			return MessageType.NONE;

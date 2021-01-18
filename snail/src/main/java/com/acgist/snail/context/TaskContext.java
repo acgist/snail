@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,52 +8,49 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.EntityContext;
-import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>任务管理器</p>
+ * <p>任务上下文</p>
  * 
  * @author acgist
  */
-public final class TaskManager implements IManager {
+public final class TaskContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskContext.class);
 	
-	private static final TaskManager INSTANCE = new TaskManager();
+	private static final TaskContext INSTANCE = new TaskContext();
 	
-	public static final TaskManager getInstance() {
+	public static final TaskContext getInstance() {
 		return INSTANCE;
 	}
 	
 	/**
-	 * <p>下载协议管理器</p>
+	 * <p>任务队列</p>
 	 */
-	private final ProtocolManager manager;
+	private final List<ITaskSession> tasks;
 	/**
 	 * <p>下载器线程池</p>
 	 */
 	private final ExecutorService executor;
 	/**
-	 * <p>任务队列</p>
+	 * <p>下载协议上下文</p>
 	 */
-	private final List<ITaskSession> tasks;
+	private final ProtocolContext protocolContext;
 	
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private TaskManager() {
-		this.manager = ProtocolManager.getInstance();
-		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
+	private TaskContext() {
 		this.tasks = new ArrayList<>(DownloadConfig.getSize());
+		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
+		this.protocolContext = ProtocolContext.getInstance();
 	}
 	
 	/**
@@ -66,7 +63,7 @@ public final class TaskManager implements IManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		final var session = this.manager.buildTaskSession(url);
+		final var session = this.protocolContext.buildTaskSession(url);
 		session.start();
 		return session;
 	}
@@ -80,7 +77,7 @@ public final class TaskManager implements IManager {
 	 * @throws DownloadException 下载异常
 	 */
 	public void submit(ITaskSession taskSession) throws DownloadException {
-		if(ProtocolManager.getInstance().available()) {
+		if(ProtocolContext.getInstance().available()) {
 			synchronized (this.tasks) {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
@@ -92,7 +89,7 @@ public final class TaskManager implements IManager {
 					LOGGER.debug("任务已经存在：{}", taskSession.getName());
 				} else {
 					this.tasks.add(taskSession); // 添加任务
-					GuiManager.getInstance().refreshTaskList(); // 刷新任务列表
+					GuiContext.getInstance().refreshTaskList(); // 刷新任务列表
 				}
 			}
 		} else {
@@ -111,7 +108,7 @@ public final class TaskManager implements IManager {
 			this.tasks.remove(taskSession); // 删除任务
 		}
 		// 刷新任务列表
-		GuiManager.getInstance().refreshTaskList();
+		GuiContext.getInstance().refreshTaskList();
 	}
 	
 	/**
@@ -185,11 +182,11 @@ public final class TaskManager implements IManager {
 	}
 	
 	/**
-	 * <p>关闭任务管理器</p>
+	 * <p>关闭任务上下文</p>
 	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {
-		LOGGER.debug("关闭任务管理器");
+		LOGGER.debug("关闭任务上下文");
 		try {
 			synchronized (this.tasks) {
 				this.tasks.stream()
@@ -197,7 +194,7 @@ public final class TaskManager implements IManager {
 					.forEach(ITaskSession::pause);
 			}
 		} catch (Exception e) {
-			LOGGER.error("关闭任务管理器异常", e);
+			LOGGER.error("关闭任务上下文异常", e);
 		}
 		SystemThreadContext.shutdown(this.executor);
 	}

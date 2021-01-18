@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.net.torrent.dht.DhtManager;
-import com.acgist.snail.net.torrent.dht.NodeManager;
+import com.acgist.snail.context.DhtContext;
+import com.acgist.snail.context.NodeContext;
 
 /**
  * <p>初始化DHT</p>
@@ -30,8 +30,8 @@ public final class DhtInitializer extends Initializer {
 	protected void init() {
 		LOGGER.debug("初始化DHT");
 		DhtConfig.getInstance();
-		DhtManager.getInstance();
-		NodeManager.getInstance();
+		DhtContext.getInstance();
+		NodeContext.getInstance();
 	}
 
 }

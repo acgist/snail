@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
-import com.acgist.snail.net.torrent.TorrentManager;
-import com.acgist.snail.net.torrent.peer.PeerManager;
 import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
@@ -79,12 +79,12 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	 * @param infoHashHex InfoHashHex
 	 */
 	private void doInfoHash(String host, String port, String infoHashHex) {
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			LOGGER.debug("本地发现消息处理失败（种子信息不存在）：{}", infoHashHex);
 		} else {
 			LOGGER.debug("本地发现消息：{}-{}-{}", infoHashHex, host, port);
-			PeerManager.getInstance().newPeerSession(
+			PeerContext.getInstance().newPeerSession(
 				infoHashHex,
 				torrentSession.statistics(),
 				host,

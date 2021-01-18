@@ -7,11 +7,11 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.TaskManager;
+import com.acgist.snail.context.ProtocolContext;
+import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.window.Controller;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;
@@ -71,7 +71,7 @@ public final class BuildController extends Controller implements Initializable {
 		boolean success = true;
 		try {
 			// TODO：优化卡死现象
-			TaskManager.getInstance().download(url);
+			TaskContext.getInstance().download(url);
 		} catch (Exception e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
 			success = false;
@@ -119,7 +119,7 @@ public final class BuildController extends Controller implements Initializable {
 	private EventHandler<DragEvent> dragOverAction = event -> {
 		if (event.getGestureSource() != this.root) {
 			final String url = this.dragboard(event);
-			if(ProtocolManager.getInstance().support(url)) {
+			if(ProtocolContext.getInstance().support(url)) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
 				event.acceptTransferModes(TransferMode.NONE);

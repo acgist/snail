@@ -5,11 +5,11 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
-import com.acgist.snail.protocol.ProtocolManager;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -59,7 +59,7 @@ public final class ThunderProtocol extends Protocol {
 	public synchronized ITaskSession buildTaskSession(final String url) throws DownloadException {
 		final String sourceUrl = this.sourceUrl(url);
 		LOGGER.debug("迅雷原始链接：{}", sourceUrl);
-		final var realProtocol = ProtocolManager.getInstance().protocol(sourceUrl);
+		final var realProtocol = ProtocolContext.getInstance().protocol(sourceUrl);
 		if(realProtocol.isEmpty()) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}

@@ -1,11 +1,11 @@
 package com.acgist.snail.pojo;
 
 /**
- * <p>任务状态</p>
+ * <p>任务信息状态接口</p>
  * 
  * @author acgist
  */
-public interface ITaskStatus {
+public interface ITaskSessionStatus {
 
 	/**
 	 * <p>任务状态</p>
@@ -15,11 +15,11 @@ public interface ITaskStatus {
 	public enum Status {
 		
 		/**
-		 * <p>任务添加到下载队列时处于等待状态</p>
+		 * <p>任务添加到下载队列时</p>
 		 */
 		AWAIT("等待中"),
 		/**
-		 * <p>任务下载时的状态：由下载管理器自动修改（不能直接设置此状态）</p>
+		 * <p>任务下载状态：系统自动修改（不能直接设置为下载中状态）</p>
 		 */
 		DOWNLOAD("下载中"),
 		/**

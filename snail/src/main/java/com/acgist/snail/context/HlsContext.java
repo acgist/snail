@@ -1,4 +1,4 @@
-package com.acgist.snail.net.hls;
+package com.acgist.snail.context;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,23 +6,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.IManager;
+import com.acgist.snail.IContext;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.session.HlsSession;
 
 /**
- * <p>HLS任务信息管理</p>
+ * <p>HLS上下文</p>
  * 
  * @author acgist
  */
-public final class HlsManager implements IManager {
+public final class HlsContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HlsManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HlsContext.class);
 	
-	private static final HlsManager INSTANCE = new HlsManager();
+	private static final HlsContext INSTANCE = new HlsContext();
 	
-	public static final HlsManager getInstance() {
+	public static final HlsContext getInstance() {
 		return INSTANCE;
 	}
 
@@ -40,7 +40,7 @@ public final class HlsManager implements IManager {
 	/**
 	 * <p>禁止创建实例</p>
 	 */
-	private HlsManager() {
+	private HlsContext() {
 		this.m3u8s = new ConcurrentHashMap<>();
 		this.sessions = new ConcurrentHashMap<>();
 	}

@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event.adapter;
 
-import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.gui.GuiManager.Mode;
+import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -46,7 +46,7 @@ public class ResponseEventAdapter extends GuiEventArgs {
 	 */
 	protected void executeExtendExtend(String message) {
 		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.RESPONSE, message);
-		GuiManager.getInstance().sendExtendGuiMessage(applicationMessage);
+		GuiContext.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 	
 }

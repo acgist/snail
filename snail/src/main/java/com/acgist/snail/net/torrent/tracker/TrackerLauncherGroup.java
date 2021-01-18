@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig.Action;
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
@@ -76,16 +77,16 @@ public final class TrackerLauncherGroup {
 		final var action = this.torrentSession.action(); // 下载动作
 		if(action == Action.TORRENT) { // BT任务
 			final var torrent = this.torrentSession.torrent();
-			sessions = TrackerManager.getInstance().sessions(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
+			sessions = TrackerContext.getInstance().sessions(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.isPrivateTorrent());
 		} else if(action == Action.MAGNET) { // 磁力链接任务
 			final var magnet = this.torrentSession.magnet();
-			sessions = TrackerManager.getInstance().sessions(magnet.getTr());
+			sessions = TrackerContext.getInstance().sessions(magnet.getTr());
 		} else {
 			LOGGER.warn("加载TrackerLauncher失败（未知动作）：{}", action);
 			return;
 		}
 		final var list = sessions.stream()
-			.map(client -> TrackerManager.getInstance().buildTrackerLauncher(client, this.torrentSession))
+			.map(client -> TrackerContext.getInstance().buildTrackerLauncher(client, this.torrentSession))
 			.collect(Collectors.toList());
 		synchronized (this.trackerLaunchers) {
 			this.trackerLaunchers.addAll(list);

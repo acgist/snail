@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.Type;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.PeerContext;
+import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.codec.IMessageCodec;
-import com.acgist.snail.net.torrent.TorrentManager;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -173,7 +174,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.debug("Peer接入失败：PeerId一致");
 			return false;
 		}
-		final TorrentSession torrentSession = TorrentManager.getInstance().torrentSession(infoHashHex);
+		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			LOGGER.warn("Peer接入失败：种子信息不存在");
 			return false;
@@ -187,7 +188,7 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
 			return false;
 		}
-		final PeerSession peerSession = PeerManager.getInstance().newPeerSession(
+		final PeerSession peerSession = PeerContext.getInstance().newPeerSession(
 			infoHashHex,
 			torrentSession.statistics(),
 			socketAddress.getHostString(),
