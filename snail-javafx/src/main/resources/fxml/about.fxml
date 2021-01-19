@@ -6,59 +6,64 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<GridPane
+<BorderPane
 	fx:id="root"
-	hgap="2" vgap="2"
 	styleClass="root,about" stylesheets="@/style/fxml.css"
 	fx:controller="com.acgist.snail.gui.javafx.window.about.AboutController"
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
-	<VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="info-box">
-		<TextFlow>
-			<Label>软件名称：</Label>
-			<Text fx:id="name">蜗牛（Snail）</Text>
-		</TextFlow>
-		<TextFlow>
-			<Label>软件版本：</Label>
-			<Text fx:id="version">1.0.0</Text>
-		</TextFlow>
-		<TextFlow>
-			<Label>开发语言：</Label>
-			<Text>Java</Text>
-		</TextFlow>
-		<TextFlow>
-			<Label>GUI框架：</Label>
-			<Text>JavaFX</Text>
-		</TextFlow>
-		<TextFlow>
-			<Label>开源协议：</Label>
-			<Text>Apache-2.0</Text>
-		</TextFlow>
-		<TextFlow>
-			<Label>下载协议：</Label>
-			<Text>BT、HLS、FTP、HTTP</Text>
-		</TextFlow>
-	</VBox>
+	<top>
+		<VBox styleClass="sponsor">
+			<ImageView
+				fx:id="sponsor"
+				disable="false"
+				fitWidth="150"
+				layoutX="0" layoutY="0"
+				translateY="0" translateX="0"
+				pickOnBounds="true" preserveRatio="true">
+				<image>
+					<Image url="@/image/sponsor.png" />
+				</image>
+			</ImageView>
+		</VBox>
+	</top>
 	
-	<VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
-		<ImageView
-			fx:id="sponsor"
-			disable="false"
-			fitWidth="150"
-			layoutX="0" layoutY="0"
-			translateY="0" translateX="0"
-			pickOnBounds="true" preserveRatio="true">
-			<image>
-				<Image url="@/image/sponsor.png" />
-			</image>
-		</ImageView>
-	</VBox>
+	<center>
+		<VBox styleClass="info-box">
+			<TextFlow>
+				<Label>软件名称：</Label>
+				<Text fx:id="name">蜗牛（Snail）</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>软件版本：</Label>
+				<Text fx:id="version">1.0.0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>开发语言：</Label>
+				<Text>Java</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>GUI框架：</Label>
+				<Text>JavaFX</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>开源协议：</Label>
+				<Text>Apache-2.0</Text>
+			</TextFlow>
+			<TextFlow>
+				<Label>下载协议：</Label>
+				<Text>BT、HLS、FTP、HTTP</Text>
+			</TextFlow>
+		</VBox>
+	</center>
 	
-	<HBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" styleClass="button-box">
-		<Button fx:id="author" text="作者" onAction="#handleAuthorAction" />
-		<Button fx:id="update" text="检测更新" onAction="#handleUpdateAction" />
-		<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" />
-		<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" />
-	</HBox>
+	<bottom>
+		<HBox styleClass="button-box">
+			<Button fx:id="author" text="作者" onAction="#handleAuthorAction" />
+			<Button fx:id="update" text="检测更新" onAction="#handleUpdateAction" />
+			<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" />
+			<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" />
+		</HBox>
+	</bottom>
 	
-</GridPane>
+</BorderPane>

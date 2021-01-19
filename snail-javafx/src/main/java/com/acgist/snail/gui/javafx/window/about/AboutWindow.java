@@ -33,7 +33,7 @@ public final class AboutWindow extends Window<AboutController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "关于", 600, 300, "/fxml/about.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, "关于", 600, 500, "/fxml/about.fxml", Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 	}
 	
