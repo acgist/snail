@@ -14,6 +14,7 @@
 * [注释](#注释)
 * [日志](#日志)
 * [命名](#命名)
+	* [版本号](#版本号)
 	* [包命名](#包命名)
 	* [类命名](#类命名)
 	* [方法命名](#方法命名)
@@ -84,7 +85,17 @@ list.stream()
 * 常量、枚举必须大写
 * 不使用不规范的缩写
 
-#### 包命名
+### 版本号
+
+#### 规则
+
+`大版本号.小版本号.JDK版本`
+
+###### 示例
+
+`2.2.11`
+
+### 包命名
 
 不同功能的类和接口必须放到对应功能的包目录下
 
@@ -101,18 +112,18 @@ list.stream()
 |protocol|协议|
 |utils|工具|
 
-#### 类命名
+### 类命名
 
 * 接口必须以`I`开头
 * 测试类必须以`Test`结尾
 * 抽象类不使用`Abstract`或`Base`开头（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
 * 继承时子类命名必须以父类后缀结尾（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
 
-#### 方法命名
+### 方法命名
 
 * 测试方法必须以`test`开头
 
-#### 变量命名
+### 变量命名
 
 * 基本类型根据用途命名
 * 其他类型使用`Eclipse`自动提示
@@ -144,11 +155,11 @@ list.stream()
 
 ## 检查工具
 
-#### 规范检查
+### 规范检查
 
 使用阿里[P3C](https://github.com/alibaba/p3c)对代码进行规范检查（[Eclipse插件](https://p3c.alibaba.com/plugin/eclipse/update)）
 
-#### 质量检查
+### 质量检查
 
 * 使用Sonar对代码进行质量检查
 * 使用JaCoCo对代码进行覆盖率检测
