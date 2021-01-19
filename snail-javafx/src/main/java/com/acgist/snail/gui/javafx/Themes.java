@@ -24,7 +24,7 @@ public final class Themes {
 	/**
 	 * <p>默认主题颜色</p>
 	 */
-	public static final Color DEFAULT_THEME_COLOR = Color.rgb(0, 153, 204);
+	public static final Color DEFAULT_THEME_COLOR = ITheme.COLOR_BLUD;
 	/**
 	 * <p>系统主题颜色</p>
 	 */

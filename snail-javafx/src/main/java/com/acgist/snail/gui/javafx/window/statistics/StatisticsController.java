@@ -2,6 +2,7 @@ package com.acgist.snail.gui.javafx.window.statistics;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,9 +20,11 @@ import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.TrackerContext;
+import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
@@ -45,6 +48,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -65,6 +69,14 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>图表高度：{@value}</p>
 	 */
 	private static final int CHART_HEIGHT = 400;
+	/**
+	 * <p>位图宽度</p>
+	 */
+	private static final int WH = 12;
+	/**
+	 * <p>位图列长</p>
+	 */
+	private static final int COL = 50;
 	
 	/**
 	 * <p>统计信息筛选</p>
@@ -73,13 +85,33 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	public enum Filter {
 		
-		/** 系统信息 */
+		/**
+		 * <p>系统信息</p>
+		 */
 		SYSTEM,
-		/** PEER统计 */
-		PEER,
-		/** 流量统计 */
+		/**
+		 * <p>节点统计</p>
+		 */
+		NODE,
+		/**
+		 * <p>Tracker统计</p>
+		 */
+		TRACKER,
+		/**
+		 * <p>来源统计</p>
+		 */
+		SOURCE,
+		/**
+		 * <p>连接统计</p>
+		 */
+		CONNECT,
+		/**
+		 * <p>流量统计</p>
+		 */
 		TRAFFIC,
-		/** 下载统计 */
+		/**
+		 * <p>Piece统计</p>
+		 */
 		PIECE;
 		
 	}
@@ -92,20 +124,6 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	private Text download;
 	@FXML
-	private Text dhtTotal;
-	@FXML
-	private Text dhtAvailable;
-	@FXML
-	private Text dhtUnuse;
-	@FXML
-	private Text dhtVerify;
-	@FXML
-	private Text trackerTotal;
-	@FXML
-	private Text trackerAvailable;
-	@FXML
-	private Text trackerDisable;
-	@FXML
 	private ChoiceBox<SelectInfoHash> selectInfoHashs;
 	@FXML
 	private VBox statisticsBox;
@@ -115,16 +133,6 @@ public final class StatisticsController extends Controller implements Initializa
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		this.selectInfoHashs.setOnAction(this.selectInfoHashsEvent);
-	}
-	
-	/**
-	 * <p>刷新按钮</p>
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleRefreshAction(ActionEvent event) {
-		this.statistics();
 	}
 	
 	/**
@@ -139,14 +147,57 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>Peer统计</p>
+	 * <p>节点统计</p>
 	 * 
 	 * @param event 事件
 	 */
 	@FXML
-	public void handlePeerAction(ActionEvent event) {
-		this.filter = Filter.PEER;
-		this.buildSelectPeerStatistics();
+	public void handleNodeAction(ActionEvent event) {
+		this.filter = Filter.NODE;
+		this.buildSelectNodeStatistics();
+	}
+	
+	/**
+	 * <p>Tracker统计</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleTrackerAction(ActionEvent event) {
+		this.filter = Filter.TRACKER;
+		this.buildSelectTrackerStatistics();
+	}
+	
+	/**
+	 * <p>刷新按钮</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleRefreshAction(ActionEvent event) {
+		this.statistics();
+	}
+	
+	/**
+	 * <p>来源统计</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleSourceAction(ActionEvent event) {
+		this.filter = Filter.SOURCE;
+		this.buildSelectSourceStatistics();
+	}
+	
+	/**
+	 * <p>连接统计</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleConnectAction(ActionEvent event) {
+		this.filter = Filter.CONNECT;
+		this.buildSelectConnectStatistics();
 	}
 	
 	/**
@@ -161,7 +212,7 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>下载统计</p>
+	 * <p>Piece统计</p>
 	 * 
 	 * @param event 事件
 	 */
@@ -191,18 +242,14 @@ public final class StatisticsController extends Controller implements Initializa
 	/**
 	 * <p>统计信息</p>
 	 * 
-	 * @see #buildSystemStatistics()
-	 * @see #buildDhtStatistics()
-	 * @see #buildTrackerStatistics()
-	 * @see #buildInfoHashStatistics()
+	 * @see #buildSelectInfoHashs()
 	 * @see #buildSelectStatistics()
+	 * @see #buildSystemTrafficStatistics()
 	 */
 	public void statistics() {
-		this.buildSystemStatistics();
-		this.buildDhtStatistics();
-		this.buildTrackerStatistics();
-		this.buildInfoHashStatistics();
+		this.buildSelectInfoHashs();
 		this.buildSelectStatistics();
+		this.buildSystemTrafficStatistics();
 	}
 	
 	/**
@@ -213,60 +260,9 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 
 	/**
-	 * <p>创建统计信息</p>
+	 * <p>设置InfoHash信息</p>
 	 */
-	private void buildSelectStatistics() {
-		if(this.filter == Filter.PEER) {
-			this.buildSelectPeerStatistics();
-		} else if(this.filter == Filter.TRAFFIC) {
-			this.buildSelectTrafficStatistics();
-		} else if(this.filter == Filter.PIECE) {
-			this.buildSelectPieceStatistics();
-		} else {
-			this.buildSelectSystemStatistics();
-		}
-	}
-	
-	/**
-	 * <p>系统统计信息</p>
-	 */
-	private void buildSystemStatistics() {
-		final var statistics = StatisticsContext.getInstance().statistics();
-		// 累计上传
-		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
-		// 累计下载
-		this.download.setText(FileUtils.formatSize(statistics.downloadSize()));
-	}
-	
-	/**
-	 * <p>DHT统计信息</p>
-	 */
-	private void buildDhtStatistics() {
-		final List<NodeSession> nodes = NodeContext.getInstance().nodes();
-		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
-			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
-		this.dhtTotal.setText(String.valueOf(nodes.size()));
-		this.dhtUnuse.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.UNUSE, 0L)));
-		this.dhtVerify.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.VERIFY, 0L)));
-		this.dhtAvailable.setText(String.valueOf(nodeGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L)));
-	}
-	
-	/**
-	 * <p>Tracker统计信息</p>
-	 */
-	private void buildTrackerStatistics() {
-		final List<TrackerSession> sessions = TrackerContext.getInstance().sessions();
-		final Map<Boolean, Long> clientGroup = sessions.stream()
-			.collect(Collectors.groupingBy(TrackerSession::available, Collectors.counting()));
-		this.trackerTotal.setText(String.valueOf(sessions.size()));
-		this.trackerDisable.setText(String.valueOf(clientGroup.getOrDefault(Boolean.FALSE, 0L)));
-		this.trackerAvailable.setText(String.valueOf(clientGroup.getOrDefault(Boolean.TRUE, 0L)));
-	}
-	
-	/**
-	 * <p>InfoHash统计信息</p>
-	 */
-	private void buildInfoHashStatistics() {
+	private void buildSelectInfoHashs() {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentContext.getInstance().allTorrentSession().stream()
@@ -282,37 +278,70 @@ public final class StatisticsController extends Controller implements Initializa
 			this.selectInfoHashs.getSelectionModel().select(index);
 		}
 	}
-
+	
 	/**
-	 * <p>选择系统统计信息</p>
+	 * <p>统计选择筛选条件</p>
 	 */
-	private void buildSelectSystemStatistics() {
-		final VBox systemInfo = new VBox(
-			this.buildSystemText("本机IP", NetUtils.LOCAL_HOST_ADDRESS),
-			this.buildSystemText("外网IP", SystemConfig.getExternalIpAddress()),
-			this.buildSystemText("外网端口", SystemConfig.getTorrentPortExt()),
-			this.buildSystemText("内网穿透", NatContext.getInstance().type()),
-			this.buildSystemText("软件版本", SystemConfig.getVersion()),
-			this.buildSystemText("系统名称", System.getProperty("os.name")),
-			this.buildSystemText("系统版本", System.getProperty("os.version")),
-			this.buildSystemText("Java版本", System.getProperty("java.version")),
-			this.buildSystemText("虚拟机名称", System.getProperty("java.vm.name"))
-		);
-		systemInfo.getStyleClass().add("system-info");
-		this.statisticsBox.getChildren().clear();
-		this.statisticsBox.getChildren().add(systemInfo);
+	private void buildSelectStatistics() {
+		if(this.filter == Filter.NODE) {
+			this.buildSelectNodeStatistics();
+		} else if(this.filter == Filter.TRACKER) {
+			this.buildSelectTrackerStatistics();
+		} else if(this.filter == Filter.SOURCE) {
+			this.buildSelectSourceStatistics();
+		} else if(this.filter == Filter.CONNECT) {
+			this.buildSelectConnectStatistics();
+		} else if(this.filter == Filter.TRAFFIC) {
+			this.buildSelectTrafficStatistics();
+		} else if(this.filter == Filter.PIECE) {
+			this.buildSelectPieceStatistics();
+		} else  {
+			this.buildSelectSystemStatistics();
+		}
 	}
 	
 	/**
-	 * <p>创建系统统计节点</p>
+	 * <p>系统流量统计</p>
+	 */
+	private void buildSystemTrafficStatistics() {
+		final var statistics = StatisticsContext.getInstance().statistics();
+		// 累计上传
+		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
+		// 累计下载
+		this.download.setText(FileUtils.formatSize(statistics.downloadSize()));
+	}
+	
+	/**
+	 * <p>系统信息</p>
+	 */
+	private void buildSelectSystemStatistics() {
+		final VBox systemInfo = new VBox(
+			this.buildSelectSystemStatistics("本机IP", NetUtils.LOCAL_HOST_ADDRESS),
+			this.buildSelectSystemStatistics("外网IP", SystemConfig.getExternalIpAddress()),
+			this.buildSelectSystemStatistics("外网端口", SystemConfig.getTorrentPortExt()),
+			this.buildSelectSystemStatistics("内网穿透", NatContext.getInstance().type()),
+			this.buildSelectSystemStatistics("软件版本", SystemConfig.getVersion()),
+			this.buildSelectSystemStatistics("系统名称", System.getProperty("os.name")),
+			this.buildSelectSystemStatistics("系统版本", System.getProperty("os.version")),
+			this.buildSelectSystemStatistics("Java版本", System.getProperty("java.version")),
+			this.buildSelectSystemStatistics("虚拟机名称", System.getProperty("java.vm.name"))
+		);
+		systemInfo.getStyleClass().add("system-info");
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(systemInfo);
+	}
+	
+	/**
+	 * <p>创建系统信息节点</p>
 	 * 
 	 * @param name 名称
 	 * @param info 信息
 	 * 
 	 * @return 节点
 	 */
-	private TextFlow buildSystemText(String name, Object info) {
-		final Label label = new Label(name);
+	private TextFlow buildSelectSystemStatistics(String name, Object info) {
+		final Label label = new Label(name + "：");
 		Text text;
 		if(info == null) {
 			text = new Text("获取失败");
@@ -323,21 +352,73 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>选择Peer统计信息</p>
+	 * <p>节点统计</p>
 	 */
-	private void buildSelectPeerStatistics() {
+	private void buildSelectNodeStatistics() {
+		final List<NodeSession> dhtNodes = NodeContext.getInstance().nodes();
+		final Map<NodeSession.Status, Long> nodeGroup = dhtNodes.stream()
+			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
+		final int total = dhtNodes.size();
+		final long unuse = nodeGroup.getOrDefault(NodeSession.Status.UNUSE, 0L);
+		final long verify = nodeGroup.getOrDefault(NodeSession.Status.VERIFY, 0L);
+		final long available = nodeGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L);
+		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+			new PieChart.Data("验证", verify),
+			new PieChart.Data("可用", available),
+			new PieChart.Data("未知", unuse)
+		);
+		final PieChart pieChart = new PieChart(pieChartData);
+		pieChart.setTitle(String.format("总量：%d", total));
+		pieChartData.forEach(data -> {
+			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
+		});
+		pieChart.setPrefWidth(CHART_WIDTH);
+		pieChart.setPrefHeight(CHART_HEIGHT);
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(pieChart);
+		LOGGER.debug("节点统计，总量：{}、验证：{}、可用：{}、未知：{}", total, verify, available, unuse);
+	}
+	
+	/**
+	 * <p>Tracker统计</p>
+	 */
+	private void buildSelectTrackerStatistics() {
+		final List<TrackerSession> sessions = TrackerContext.getInstance().sessions();
+		final Map<Boolean, Long> clientGroup = sessions.stream()
+			.collect(Collectors.groupingBy(TrackerSession::available, Collectors.counting()));
+		final int total = sessions.size();
+		final long disable = clientGroup.getOrDefault(Boolean.FALSE, 0L);
+		final long available = clientGroup.getOrDefault(Boolean.TRUE, 0L);
+		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+			new PieChart.Data("禁用", disable),
+			new PieChart.Data("可用", available)
+		);
+		final PieChart pieChart = new PieChart(pieChartData);
+		pieChart.setTitle(String.format("总量：%d", total));
+		pieChartData.forEach(data -> {
+			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
+		});
+		pieChart.setPrefWidth(CHART_WIDTH);
+		pieChart.setPrefHeight(CHART_HEIGHT);
+		final var nodes= this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(pieChart);
+		LOGGER.debug("Tracker统计，总量：{}、禁用：{}、可用：{}", total, disable, available);
+	}
+	
+	/**
+	 * <p>来源统计</p>
+	 */
+	private void buildSelectSourceStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
-		// Peer
-		final var utpCount = new AtomicInteger(0);
 		final var availableCount = new AtomicInteger(0);
-		// 上传数量、下载数量
 		final var uploadCount = new AtomicInteger(0);
 		final var downloadCount = new AtomicInteger(0);
-		// 来源数量
 		final var pexCount = new AtomicInteger(0);
 		final var dhtCount = new AtomicInteger(0);
 		final var lsdCount = new AtomicInteger(0);
@@ -345,9 +426,6 @@ public final class StatisticsController extends Controller implements Initializa
 		final var connectCount = new AtomicInteger(0);
 		final var holepunchCount = new AtomicInteger(0);
 		peers.forEach(peer -> {
-			if(peer.utp()) {
-				utpCount.incrementAndGet();
-			}
 			if(peer.available()) {
 				availableCount.incrementAndGet();
 			}
@@ -383,7 +461,6 @@ public final class StatisticsController extends Controller implements Initializa
 				}
 			});
 		});
-		// 来源图表
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
 			new PieChart.Data("DHT", dhtCount.get()),
 			new PieChart.Data("PEX", pexCount.get()),
@@ -396,17 +473,20 @@ public final class StatisticsController extends Controller implements Initializa
 		pieChart.setTitle(
 			String.format(
 				"总量：%d 可用：%d 下载：%d 上传：%d",
-				peers.size(), availableCount.get(), downloadCount.get(), uploadCount.get()
+				peers.size(),
+				availableCount.get(),
+				downloadCount.get(),
+				uploadCount.get()
 			)
 		);
-		// 设置提示信息
 		pieChartData.forEach(data -> {
 			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
 		});
 		pieChart.setPrefWidth(CHART_WIDTH);
 		pieChart.setPrefHeight(CHART_HEIGHT);
-		this.statisticsBox.getChildren().clear();
-		this.statisticsBox.getChildren().add(pieChart);
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(pieChart);
 		LOGGER.debug(
 			"Peer统计，总量：{}、可用：{}、下载：{}、上传：{}",
 			peers.size(), availableCount.get(), downloadCount.get(), uploadCount.get()
@@ -418,16 +498,16 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
-	 * <p>选择流量统计信息</p>
+	 * <p>连接统计</p>
 	 */
-	private void buildSelectTrafficStatistics() {
+	private void buildSelectConnectStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
 		if(infoHashHex == null) {
 			return;
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
 		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
-		// Peer分类
+		// 分类：上传、下载
 		final List<String> categoriesPeer = new ArrayList<>();
 		// 上传流量
 		final List<XYChart.Data<String, Number>> uploadPeer = new ArrayList<>();
@@ -474,7 +554,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
 		stackedBarChart.setPrefWidth(CHART_WIDTH);
 		stackedBarChart.setPrefHeight(CHART_HEIGHT);
-		stackedBarChart.setTitle("流量统计");
+		stackedBarChart.setTitle("连接统计");
 		// 上传流量
 		final XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
 		uploadSeries.setName("上传");
@@ -486,7 +566,6 @@ public final class StatisticsController extends Controller implements Initializa
 		// 添加数据
 		stackedBarChart.getData().add(uploadSeries);
 		stackedBarChart.getData().add(downloadSeries);
-//		stackedBarChart.getData().addAll(List.of(uploadSeries, downloadSeries));
 		// 设置提示消息
 		uploadPeer.forEach(data -> {
 			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 上传：%.2fMB", data.getXValue(), data.getYValue())));
@@ -494,12 +573,55 @@ public final class StatisticsController extends Controller implements Initializa
 		downloadPeer.forEach(data -> {
 			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue())));
 		});
-		this.statisticsBox.getChildren().clear();
-		this.statisticsBox.getChildren().add(stackedBarChart);
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(stackedBarChart);
 	}
 	
 	/**
-	 * <p>选择下载统计信息</p>
+	 * <p>流量统计</p>
+	 */
+	private void buildSelectTrafficStatistics() {
+		final String infoHashHex = this.selectInfoHashHex();
+		if(infoHashHex == null) {
+			return;
+		}
+		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
+		final int length = peers.size();
+		PeerSession peer;
+		long uploadSize = 0L;
+		long downloadSize = 0L;
+		final BitSet connectPeers = new BitSet();
+		final BitSet uploadPeers = new BitSet();
+		final BitSet downloadPeers = new BitSet();
+		for (int index = 0; index < length; index++) {
+			peer = peers.get(index);
+			uploadSize = peer.uploadSize();
+			downloadSize = peer.downloadSize();
+			if(uploadSize != 0L && downloadSize != 0L) {
+				connectPeers.set(index);
+			} else if(uploadSize > 0) {
+				uploadPeers.set(index);
+			} else if(downloadSize > 0) {
+				downloadPeers.set(index);
+			} else {
+				connectPeers.set(index);
+			}
+		}
+		final CanvasPainter painter = CanvasPainter.newInstance(
+			WH, COL, length,
+			new BitSet[] { connectPeers, uploadPeers, downloadPeers },
+			new Color[] { ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW }
+		)
+			.build()
+			.draw();
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		nodes.add(painter.canvas());
+	}
+	
+	/**
+	 * <p>Piece统计</p>
 	 */
 	private void buildSelectPieceStatistics() {
 		final String infoHashHex = this.selectInfoHashHex();
@@ -507,25 +629,37 @@ public final class StatisticsController extends Controller implements Initializa
 			return;
 		}
 		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
-		// 已下载Piece位图
 		final var torrent = torrentSession.torrent();
-		if(torrent == null) { // 磁力链接为空
+		if(torrent == null) {
+			// 磁力链接
 			this.filter = Filter.SYSTEM;
 			this.buildSelectSystemStatistics();
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
-		final CanvasPainter painter = CanvasPainter.newInstance(12, 50, pieceSize, torrentSession.pieces(), torrentSession.selectPieces())
+		final BitSet pieces = torrentSession.pieces(); // 已经下载Pieces
+		final BitSet selectPieces = torrentSession.selectPieces(); // 选择下载Pieces
+		final BitSet mousePieces = new BitSet(); // 鼠标可选Pieces
+		mousePieces.or(selectPieces);
+		mousePieces.andNot(pieces);
+		final CanvasPainter painter = CanvasPainter.newInstance(
+			WH, COL, pieceSize,
+			new BitSet[] { pieces, selectPieces },
+			new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW },
+			mousePieces, this::piecePos
+		)
 			.build()
 			.draw();
-		this.statisticsBox.getChildren().clear();
-		this.statisticsBox.getChildren().add(painter.canvas());
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
 		// 健康度
 		final Text healthText = new Text("健康度：" + torrentSession.health() + "%");
 		final TextFlow healthTextFlow = new TextFlow(healthText);
 		final HBox healthHBox = new HBox(healthTextFlow);
 		healthHBox.getStyleClass().add("health");
-		this.statisticsBox.getChildren().add(healthHBox);
+		// 添加节点
+		nodes.add(healthHBox);
+		nodes.add(painter.canvas());
 	}
 	
 	/**
@@ -602,7 +736,6 @@ public final class StatisticsController extends Controller implements Initializa
 				return true;
 			}
 			if(object instanceof SelectInfoHash) {
-				// TODO：新版强转写法
 				final SelectInfoHash selectInfoHash = (SelectInfoHash) object;
 				return StringUtils.equals(this.hash, selectInfoHash.hash);
 			}

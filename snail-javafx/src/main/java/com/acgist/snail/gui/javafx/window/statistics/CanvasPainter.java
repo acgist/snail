@@ -2,7 +2,9 @@ package com.acgist.snail.gui.javafx.window.statistics;
 
 import java.util.BitSet;
 import java.util.Objects;
+import java.util.function.Consumer;
 
+import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.utils.NumberUtils;
 
 import javafx.scene.canvas.Canvas;
@@ -12,8 +14,6 @@ import javafx.scene.paint.Color;
 /**
  * <p>位图工具</p>
  * <p>使用画布实现</p>
- * 
- * TODO：观察者实时更新
  * 
  * @author acgist
  */
@@ -49,29 +49,17 @@ public final class CanvasPainter {
 	 */
 	private final int length;
 	/**
-	 * <p>数据</p>
+	 * <p>数据数组</p>
 	 */
-	private final BitSet bitSet;
+	private final BitSet[] bitSets;
 	/**
-	 * <p>选择数据</p>
+	 * <p>颜色数组</p>
 	 */
-	private final BitSet selectBitSet;
-	/**
-	 * <p>存在填充颜色</p>
-	 */
-	private final Color fillColor;
-	/**
-	 * <p>选择填充颜色</p>
-	 */
-	private final Color selectColor;
+	private final Color[] colors;
 	/**
 	 * <p>没有填充颜色</p>
 	 */
 	private final Color noneColor;
-	/**
-	 * <p>鼠标位置颜色</p>
-	 */
-	private final Color mouseColor;
 	/**
 	 * <p>边框颜色</p>
 	 */
@@ -79,11 +67,23 @@ public final class CanvasPainter {
 	/**
 	 * <p>背景颜色</p>
 	 */
-	private final Color background;
+	private final Color backgroundColor;
+	/**
+	 * <p>鼠标位置颜色</p>
+	 */
+	private final Color mouseColor;
+	/**
+	 * <p>鼠标选择范围</p>
+	 */
+	private final BitSet mouseBitSet;
+	/**
+	 * <p>鼠标选择事件</p>
+	 */
+	private final Consumer<Integer> mouseSelect;
 	/**
 	 * <p>鼠标位置</p>
 	 */
-	private int index;
+	private int mouseIndex;
 	/**
 	 * <p>图片宽度</p>
 	 */
@@ -105,34 +105,59 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 */
 	private CanvasPainter(BitSet bitSet) {
-		this(bitSet.size(), bitSet, bitSet);
+		this(bitSet.size(), new BitSet[] { bitSet }, new Color[] { ITheme.COLOR_GREEN });
 	}
 
 	/**
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 */
-	private CanvasPainter(int length, BitSet bitSet, BitSet selectBitSet) {
-		this(DEFAULT_WH, DEFAULT_COL, length, bitSet, selectBitSet);
+	private CanvasPainter(int length, BitSet[] bitSets, Color[] colors) {
+		this(DEFAULT_WH, DEFAULT_COL, length, bitSets, colors);
 	}
 	
 	/**
 	 * @param wh 填充高宽
 	 * @param col 列数
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 */
-	private CanvasPainter(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
+	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors) {
+		this(wh, col, length, bitSets, colors, null, null);
+	}
+	
+	/**
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
+	 * @param mouseSelect 鼠标选择事件
+	 */
+	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, Consumer<Integer> mouseSelect) {
+		this(wh, col, length, bitSets, colors, null, mouseSelect);
+	}
+	
+	/**
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
+	 * @param mouseBitSet 鼠标选择范围
+	 * @param mouseSelect 鼠标选择事件
+	 */
+	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, Consumer<Integer> mouseSelect) {
 		this(
-			wh, col, length, bitSet, selectBitSet,
-			Color.rgb(0x22, 0xAA, 0x22),
-			Color.rgb(0xFF, 0xEE, 0x99),
-			Color.rgb(0xCC, 0xCC, 0xCC),
-			Color.rgb(0xDD, 0x33, 0x55),
+			wh, col, length, bitSets, colors,
+			ITheme.COLOR_GRAY,
 			Color.BLACK,
-			Color.WHITE
+			Color.WHITE,
+			ITheme.COLOR_RED,
+			mouseBitSet,
+			mouseSelect
 		);
 	}
 	
@@ -140,33 +165,36 @@ public final class CanvasPainter {
 	 * @param wh 填充高宽
 	 * @param col 列数
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
-	 * @param fillColor 存在填充颜色
-	 * @param selectColor 选择填充颜色
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 * @param noneColor 没有填充颜色
-	 * @param mouseColor 鼠标位置颜色
 	 * @param borderColor 边框颜色
-	 * @param background 背景颜色
+	 * @param backgroundColor 背景颜色
+	 * @param mouseColor 鼠标位置颜色
+	 * @param mouseBitSet 鼠标选择范围
+	 * @param mouseSelect 鼠标选择事件
 	 */
 	private CanvasPainter(
-		int wh, int col,
-		int length, BitSet bitSet, BitSet selectBitSet,
-		Color fillColor, Color selectColor, Color noneColor,
-		Color mouseColor, Color borderColor, Color background
+		int wh, int col, int length,
+		BitSet[] bitSets, Color[] colors,
+		Color noneColor, Color borderColor, Color backgroundColor,
+		Color mouseColor, BitSet mouseBitSet, Consumer<Integer> mouseSelect
 	) {
+		if(bitSets.length != colors.length) {
+			throw new IllegalArgumentException("参数长度错误");
+		}
 		this.wh = wh;
 		this.col = col;
-		this.row = NumberUtils.ceilDiv(length, col);
-		this.fillColor = fillColor;
-		this.selectColor = selectColor;
-		this.noneColor = noneColor;
-		this.mouseColor = mouseColor;
-		this.borderColor = borderColor;
-		this.background = background;
 		this.length = length;
-		this.bitSet = bitSet;
-		this.selectBitSet = selectBitSet;
+		this.row = NumberUtils.ceilDiv(length, col);
+		this.bitSets = bitSets;
+		this.colors = colors;
+		this.noneColor = noneColor;
+		this.borderColor = borderColor;
+		this.backgroundColor = backgroundColor;
+		this.mouseColor = mouseColor;
+		this.mouseBitSet = mouseBitSet;
+		this.mouseSelect = mouseSelect;
 	}
 	
 	/**
@@ -184,13 +212,13 @@ public final class CanvasPainter {
 	 * <p>创建工具</p>
 	 * 
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 * 
 	 * @return CanvasPainter
 	 */
-	public static final CanvasPainter newInstance(int length, BitSet bitSet, BitSet selectBitSet) {
-		return new CanvasPainter(length, bitSet, selectBitSet);
+	public static final CanvasPainter newInstance(int length, BitSet[] bitSets, Color[] colors) {
+		return new CanvasPainter(length, bitSets, colors);
 	}
 	
 	/**
@@ -199,13 +227,13 @@ public final class CanvasPainter {
 	 * @param wh 填充高宽
 	 * @param col 列数
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 * 
 	 * @return CanvasPainter
 	 */
-	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
-		return new CanvasPainter(wh, col, length, bitSet, selectBitSet);
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors) {
+		return new CanvasPainter(wh, col, length, bitSets, colors);
 	}
 	
 	/**
@@ -214,29 +242,57 @@ public final class CanvasPainter {
 	 * @param wh 填充高宽
 	 * @param col 列数
 	 * @param length 数据长度
-	 * @param bitSet 数据
-	 * @param selectBitSet 选择数据
-	 * @param fillColor 存在填充颜色
-	 * @param selectColor 选择填充颜色
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
+	 * @param mouseSelect 鼠标选择事件
+	 * 
+	 * @return CanvasPainter
+	 */
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, Consumer<Integer> mouseSelect) {
+		return new CanvasPainter(wh, col, length, bitSets, colors, mouseSelect);
+	}
+	
+	/**
+	 * <p>创建工具</p>
+	 * 
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
+	 * @param mouseBitSet 鼠标选择范围
+	 * @param mouseSelect 鼠标选择事件
+	 * 
+	 * @return CanvasPainter
+	 */
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, Consumer<Integer> mouseSelect) {
+		return new CanvasPainter(wh, col, length, bitSets, colors, mouseBitSet, mouseSelect);
+	}
+	
+	/**
+	 * <p>创建工具</p>
+	 * 
+	 * @param wh 填充高宽
+	 * @param col 列数
+	 * @param length 数据长度
+	 * @param bitSets 数据数组
+	 * @param colors 颜色数组
 	 * @param noneColor 没有填充颜色
-	 * @param noneColor 鼠标位置颜色
 	 * @param borderColor 边框颜色
-	 * @param background 背景颜色
+	 * @param backgroundColor 背景颜色
+	 * @param mouseColor 鼠标位置颜色
+	 * @param mouseBitSet 鼠标选择范围
+	 * @param mouseSelect 鼠标选择事件
 	 * 
 	 * @return CanvasPainter
 	 */
 	public static final CanvasPainter newInstance(
-		int wh, int col,
-		int length, BitSet bitSet, BitSet selectBitSet,
-		Color fillColor, Color selectColor, Color noneColor,
-		 Color mouseColor, Color borderColor, Color background
+		int wh, int col, int length,
+		BitSet[] bitSets, Color[] colors,
+		Color noneColor, Color borderColor, Color backgroundColor,
+		Color mouseColor, BitSet mouseBitSet, Consumer<Integer> mouseSelect
 	) {
-		return new CanvasPainter(
-			wh, col,
-			length, bitSet, selectBitSet,
-			fillColor, selectColor, noneColor,
-			mouseColor, borderColor, background
-		);
+		return new CanvasPainter(wh, col, length, bitSets, colors, noneColor, borderColor, backgroundColor, mouseColor, mouseBitSet, mouseSelect);
 	}
 
 	/**
@@ -252,14 +308,19 @@ public final class CanvasPainter {
 	/**
 	 * <p>开始画图</p>
 	 * 
-	 * @param bitSet 数据
+	 * @param index 数据数组索引
+	 * @param data 数据
 	 * 
 	 * @return CanvasPainter
 	 */
-	public CanvasPainter draw(BitSet bitSet) {
-		this.bitSet.or(bitSet);
+	public CanvasPainter draw(int index, BitSet data) {
+		if(index < 0 || this.bitSets.length <= index || data == null) {
+			return this;
+		}
+		final BitSet oldBitSet = this.bitSets[index];
+		oldBitSet.or(data);
 		// 没有数据增加
-		if(this.bitSet.cardinality() == bitSet.cardinality()) {
+		if(oldBitSet.cardinality() == data.cardinality()) {
 			return this;
 		}
 		this.drawFill();
@@ -269,18 +330,23 @@ public final class CanvasPainter {
 	/**
 	 * <p>开始画图</p>
 	 * 
-	 * @param index 数据索引
+	 * @param dataIndex 数据数组索引
+	 * @param dataIndex 数据索引
 	 * 
 	 * @return CanvasPainter
 	 */
-	public CanvasPainter draw(int index) {
-		// 已经包含数据
-		if(this.bitSet.get(index)) {
+	public CanvasPainter draw(int index, int dataIndex) {
+		if(index < 0 || this.bitSets.length <= index || dataIndex < 0) {
 			return this;
 		}
-		this.bitSet.set(index);
+		final BitSet oldBitSet = this.bitSets[index];
+		// 已经包含数据
+		if(oldBitSet.get(dataIndex)) {
+			return this;
+		}
+		oldBitSet.set(dataIndex);
 		this.graphics.save();
-		this.drawFill(index);
+		this.drawFill(dataIndex);
 		this.graphics.restore();
 		return this;
 	}
@@ -308,9 +374,11 @@ public final class CanvasPainter {
 			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH; // 行数 * (高度 + 边框) + 底边框
 			// 创建画布
 			this.canvas = new Canvas(this.width, this.height);
-			this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
-			this.canvas.setOnMouseExited(event -> this.exited());
-			this.canvas.setOnMouseClicked(event -> this.clicked());
+			if(this.mouseSelect != null) {
+				this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
+				this.canvas.setOnMouseExited(event -> this.exited());
+				this.canvas.setOnMouseClicked(event -> this.clicked());
+			}
 		} else {
 			this.canvas = canvas;
 		}
@@ -329,7 +397,7 @@ public final class CanvasPainter {
 		// 清空背景
 		this.graphics.clearRect(0, 0, this.width, this.height);
 		// 背景
-		this.graphics.setFill(this.background);
+		this.graphics.setFill(this.backgroundColor);
 		this.graphics.fillRect(0, 0, this.width, this.height);
 		this.graphics.restore();
 	}
@@ -384,16 +452,22 @@ public final class CanvasPainter {
 		if(index < 0) {
 			return;
 		}
+		BitSet bitSet;
+		boolean none = true;
+		for (int jndex = 0; jndex < this.bitSets.length; jndex++) {
+			bitSet = this.bitSets[jndex];
+			if(bitSet.get(index)) {
+				none = false;
+				this.graphics.setFill(this.colors[jndex]);
+				break;
+			}
+		}
+		if(none) {
+			this.graphics.setFill(this.noneColor);
+		}
 		final int row = index / this.col;
 		final int col = index % this.col;
 		final int wh = this.wh + BORDER_WH;
-		if(this.bitSet.get(index)) {
-			this.graphics.setFill(this.fillColor);
-		} else if(this.selectBitSet.get(index)) {
-			this.graphics.setFill(this.selectColor);
-		} else {
-			this.graphics.setFill(this.noneColor);
-		}
 		final int width = col * wh + BORDER_WH;
 		final int height = row * wh + BORDER_WH;
 		this.graphics.fillRect(width, height, this.wh, this.wh);
@@ -410,21 +484,21 @@ public final class CanvasPainter {
 		final int col = (int) (x / wh);
 		final int row = (int) (y / wh);
 		final int index = row * this.col + col;
-		if(this.index == index) {
+		if(this.mouseIndex == index) {
 			// 没有变化
 			return;
 		}
-		final int oldIndex = this.index;
+		final int oldIndex = this.mouseIndex;
 		this.graphics.save();
 		this.drawFill(oldIndex);
-		if(this.selectBitSet.get(index)) {
-			this.index = index;
+		if(this.mouseSelect(index)) {
+			this.mouseIndex = index;
 			final int width = col * wh + BORDER_WH;
 			final int height = row * wh + BORDER_WH;
 			this.graphics.setFill(this.mouseColor);
 			this.graphics.fillRect(width, height, this.wh, this.wh);
 		} else {
-			this.index = -1;
+			this.mouseIndex = -1;
 		}
 		this.graphics.restore();
 	};
@@ -434,10 +508,10 @@ public final class CanvasPainter {
 	 */
 	private void exited() {
 		this.graphics.save();
-		this.drawFill(this.index);
+		this.drawFill(this.mouseIndex);
 		this.graphics.restore();
 		// 删除位置
-		this.index = -1;
+		this.mouseIndex = -1;
 	}
 	
 	/**
@@ -445,15 +519,26 @@ public final class CanvasPainter {
 	 */
 	private void clicked() {
 		if(
-			this.index >= 0 &&
-			// 没有下载
-			!this.bitSet.get(this.index) &&
-			// 选择下载
-			this.selectBitSet.get(this.index)
+			this.mouseSelect != null &&
+			this.mouseSelect(this.mouseIndex)
 		) {
-			StatisticsWindow.getInstance().piecePos(this.index);
+			this.mouseSelect.accept(this.mouseIndex);
 		}
 	};
+	
+	/**
+	 * <p>判断当前位置是否可以选择</p>
+	 * 
+	 * @param index 索引
+	 * 
+	 * @return 是否可以选择
+	 */
+	private boolean mouseSelect(int index) {
+		return
+			index >= 0  &&
+			index < this.length &&
+			(this.mouseBitSet == null || this.mouseBitSet.get(index));
+	}
 	
 	/**
 	 * <p>获取画布</p>
