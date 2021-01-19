@@ -134,15 +134,21 @@
  */
 .about {
 }
+.about .sponsor {
+	-fx-padding:10px 0;
+	-fx-alignment:center;
+}
 .about .info-box {
-	-fx-padding:0 10px 0 0;
+	-fx-padding:20px 0;
 }
 .about .info-box TextFlow {
 	-fx-padding:0 0 5px 0;
+	-fx-text-alignment:center;
 }
 .about .button-box {
 	-fx-spacing:10px;
 	-fx-padding:10px 0;
+	-fx-alignment:center;
 }
 /**
  * <p>新建窗口：build.fxml</p>

@@ -15,7 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 
 /**
@@ -26,7 +26,7 @@ import javafx.scene.text.Text;
 public final class AboutController extends Controller implements Initializable {
 	
 	@FXML
-	private GridPane root;
+	private BorderPane root;
 	
 	@FXML
 	private Text name;

@@ -127,11 +127,12 @@ public final class CanvasPainter {
 	private CanvasPainter(int wh, int col, int length, BitSet bitSet, BitSet selectBitSet) {
 		this(
 			wh, col, length, bitSet, selectBitSet,
-			Color.rgb(0, 153, 204),
-			Color.rgb(255, 232, 159),
-			Color.rgb(200, 200, 200),
-			Color.rgb(220, 78, 65),
-			Color.BLACK, Color.WHITE
+			Color.rgb(0x22, 0xAA, 0x22),
+			Color.rgb(0xFF, 0xEE, 0x99),
+			Color.rgb(0xCC, 0xCC, 0xCC),
+			Color.rgb(0xDD, 0x33, 0x55),
+			Color.BLACK,
+			Color.WHITE
 		);
 	}
 	
@@ -144,7 +145,7 @@ public final class CanvasPainter {
 	 * @param fillColor 存在填充颜色
 	 * @param selectColor 选择填充颜色
 	 * @param noneColor 没有填充颜色
-	 * @param noneColor 鼠标位置颜色
+	 * @param mouseColor 鼠标位置颜色
 	 * @param borderColor 边框颜色
 	 * @param background 背景颜色
 	 */
