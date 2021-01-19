@@ -12,63 +12,30 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 	
 	<VBox styleClass="info-box">
-		<HBox fx:id="systemTraffic" styleClass="system-traffic">
+		<HBox fx:id="systemTraffic" styleClass="tabs">
 			<TextFlow styleClass="red">
 				<Label>累计上传</Label>
 				<Text fx:id="upload">0</Text>
 			</TextFlow>
-			<TextFlow styleClass="orange">
+			<TextFlow styleClass="green">
 				<Label>累计下载</Label>
 				<Text fx:id="download">0</Text>
 			</TextFlow>
 		</HBox>
-		<HBox fx:id="dht" styleClass="dht">
-			<TextFlow styleClass="blue">
-				<Label>DHT</Label>
-			</TextFlow>
-			<TextFlow styleClass="orange">
-				<Label>总量</Label>
-				<Text fx:id="dhtTotal">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="green">
-				<Label>可用</Label>
-				<Text fx:id="dhtAvailable">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="red">
-				<Label>未知</Label>
-				<Text fx:id="dhtUnuse">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="violet">
-				<Label>验证</Label>
-				<Text fx:id="dhtVerify">0</Text>
-			</TextFlow>
+		<HBox fx:id="systemTabs" styleClass="tabs">
+			<Button fx:id="system" text="系统信息" onAction="#handleSystemAction" />
+			<Button fx:id="node" text="节点统计"  onAction="#handleNodeAction" />
+			<Button fx:id="tracker" text="Tracker统计" onAction="#handleTrackerAction" />
 		</HBox>
-		<HBox fx:id="tracker" styleClass="tracker">
-			<TextFlow styleClass="blue">
-				<Label>Tracker</Label>
-			</TextFlow>
-			<TextFlow styleClass="orange">
-				<Label>总量</Label>
-				<Text fx:id="trackerTotal">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="green">
-				<Label>可用</Label>
-				<Text fx:id="trackerAvailable">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="red">
-				<Label>禁用</Label>
-				<Text fx:id="trackerDisable">0</Text>
-			</TextFlow>
-		</HBox>
-		<HBox fx:id="infoHash" styleClass="info-hash">
+		<HBox fx:id="infoHashTabs" styleClass="tabs">
 			<ChoiceBox fx:id="selectInfoHashs"></ChoiceBox>
 			<Button fx:id="refresh" text="刷新" onAction="#handleRefreshAction" />
 		</HBox>
-		<HBox fx:id="tabs" styleClass="tabs">
-			<Button fx:id="system" text="系统信息" onAction="#handleSystemAction" />
-			<Button fx:id="peer" text="Peer统计" onAction="#handlePeerAction" />
+		<HBox fx:id="torrentTabs" styleClass="tabs">
+			<Button fx:id="source" text="来源统计" onAction="#handleSourceAction" />
+			<Button fx:id="connect" text="连接统计" onAction="#handleConnectAction" />
 			<Button fx:id="traffic" text="流量统计" onAction="#handleTrafficAction" />
-			<Button fx:id="piece" text="下载统计" onAction="#handlePieceAction" />
+			<Button fx:id="piece" text="Piece统计" onAction="#handlePieceAction" />
 		</HBox>
 	</VBox>
 	

@@ -17,6 +17,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
+import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.gui.javafx.menu.TaskMenu;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
@@ -50,7 +51,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -153,7 +153,7 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	private Node buildPlaceholder() {
 		// 颜色
-		final var color = Color.rgb(198, 198, 198);
+		final var color = ITheme.COLOR_GRAY;
 		// 图标
 		final var icon = SnailIcon.AS_DOWNLOAD3.iconLabel();
 		icon.getStyleClass().add("placeholder"); // 特殊样式

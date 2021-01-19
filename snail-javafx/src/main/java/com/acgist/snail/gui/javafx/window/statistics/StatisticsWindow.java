@@ -34,7 +34,7 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "统计", 840, 640, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, "统计", 800, 640, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 		this.windowHidden();
 	}

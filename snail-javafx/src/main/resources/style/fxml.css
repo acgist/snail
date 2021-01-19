@@ -323,34 +323,40 @@
  * <p>统计窗口：statistics.fxml</p>
  */
 .statistics .info-box TextFlow {
-	-fx-padding:3px 0;
-	-fx-pref-width:130px;
+	-fx-padding:10px;
+	-fx-pref-width:260px;
 	-fx-border-width:0 0 0 10px;
 	-fx-border-color:-fx-snail-main-color;
 	-fx-background-color:-fx-snail-main-color;
 }
 .statistics .info-box TextFlow Label {
-	-fx-padding:0 5px;
+	-fx-padding:0 10px 0 0;
 	-fx-text-fill:#FFFFFF;
 }
 .statistics .info-box TextFlow Text {
 	-fx-fill:#FFFFFF;
+	-fx-font-size:24px;
 	-fx-font-weight:bold;
 }
-.statistics .info-box .info-hash {
-	-fx-padding:5px 0;
+/**
+ * <p>背景颜色 = 边框颜色 * 透明度</p>
+ */
+.statistics .info-box TextFlow.red {
+	-fx-border-color:-fx-snail-red-color;
+	-fx-background-color:derive(-fx-snail-red-color, 40%);
 }
-.statistics .info-box .info-hash ChoiceBox {
-	-fx-pref-width:390px;
-}
-.statistics .info-box .info-hash Button {
-	-fx-pref-width:130px;
+.statistics .info-box TextFlow.green {
+	-fx-border-color:-fx-snail-green-color;
+	-fx-background-color:derive(-fx-snail-green-color, 40%);
 }
 .statistics .info-box .tabs {
-	-fx-padding:0 0 5px 0;
+	-fx-padding:2px 0;
 }
 .statistics .info-box .tabs Button {
 	-fx-pref-width:130px;
+}
+.statistics .info-box .tabs ChoiceBox {
+	-fx-pref-width:390px;
 }
 .statistics .scroll-pane {
 	-fx-padding:0;
@@ -363,57 +369,13 @@
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
 }
-/**
- * <p>背景颜色 = 边框颜色 * 透明度</p>
- */
-.statistics .info-box TextFlow.red {
-	-fx-border-color:-fx-snail-red-color;
-	-fx-background-color:derive(-fx-snail-red-color, 40%);
-}
-.statistics .info-box TextFlow.blue {
-	-fx-border-color:-fx-snail-blue-color;
-	-fx-background-color:derive(-fx-snail-blue-color, 40%);
-}
-.statistics .info-box TextFlow.gray {
-	-fx-border-color:-fx-snail-gray-color;
-	-fx-background-color:derive(-fx-snail-gray-color, 40%);
-}
-.statistics .info-box TextFlow.green {
-	-fx-border-color:-fx-snail-green-color;
-	-fx-background-color:derive(-fx-snail-green-color, 40%);
-}
-.statistics .info-box TextFlow.orange {
-	-fx-border-color:-fx-snail-orange-color;
-	-fx-background-color:derive(-fx-snail-orange-color, 40%);
-}
-.statistics .info-box TextFlow.violet {
-	-fx-border-color:-fx-snail-violet-color;
-	-fx-background-color:derive(-fx-snail-violet-color, 40%);
-}
-.statistics .system-traffic TextFlow {
-	-fx-padding:10px;
-	-fx-pref-width:260px;
-}
-.statistics .system-traffic TextFlow Text {
-	-fx-font-size:24px;
-}
-.statistics .system-traffic TextFlow Label {
-	-fx-padding:0 10px 0 0;
-}
-.statistics .system-info {
-	-fx-padding:10px 80px;
-}
-.statistics .system-info TextFlow Text {
-	-fx-pref-width:255px;
-}
-.statistics .system-info TextFlow Label {
-	-fx-pref-width:255px;
-	-fx-padding:0 10px 0 0;
-	-fx-alignment:center_right;
-}
 .statistics .statistics-box .health {
 	-fx-padding:5px 0;
 	-fx-alignment:center;
+}
+.statistics .statistics-box .system-info TextFlow {
+	-fx-padding:1px 0;
+	-fx-text-alignment:center;
 }
 .statistics .statistics-box .default-color0.chart-bar {
 	-fx-bar-fill:-fx-snail-red-color;
