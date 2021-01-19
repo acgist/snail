@@ -82,6 +82,7 @@ public abstract class SingleFileDownloader extends Downloader {
 				}
 			}
 		} catch (Exception e) {
+			// 防止偶然下载失败：通过验证下载时间、下载数据大小进行重试下载
 			throw new DownloadException("数据流操作失败", e);
 		}
 	}

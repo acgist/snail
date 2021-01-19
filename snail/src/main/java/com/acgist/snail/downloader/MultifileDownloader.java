@@ -43,6 +43,7 @@ public abstract class MultifileDownloader extends Downloader {
 			// 添加下载锁
 			synchronized (this.downloadLock) {
 				try {
+					// 防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
 					this.downloadLock.wait(Long.MAX_VALUE);
 				} catch (InterruptedException e) {
 					LOGGER.debug("线程等待异常", e);
