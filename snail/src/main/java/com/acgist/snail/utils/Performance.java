@@ -21,15 +21,15 @@ public abstract class Performance {
 	/**
 	 * <p>跳过执行方法属性：{@value}</p>
 	 */
-	private static final String SKIP_SKIP_COSTED = "skipCosted";
+	private static final String SKIP_COSTED_NAME = "skipCosted";
 	/**
 	 * <p>是否跳过执行方法：{@value}</p>
 	 */
-	private static final String SKIP_SKIP = "skip";
+	private static final String SKIP_COSTED_SKIP = "skip";
 	/**
 	 * <p>是否跳过执行方法：{@value}</p>
 	 */
-	private static final String SKIP_TRUE = "true";
+	private static final String SKIP_COSTED_TRUE = "true";
 	/**
 	 * <p>是否跳过执行方法</p>
 	 * <p>跳过执行方法：性能测试、测试时间过长</p>
@@ -37,8 +37,8 @@ public abstract class Performance {
 	protected static final boolean SKIP_COSTED;
 	
 	static {
-		final String skipCosted = System.getProperty(SKIP_SKIP_COSTED);
-		SKIP_COSTED = SKIP_SKIP.equalsIgnoreCase(skipCosted) || SKIP_TRUE.equalsIgnoreCase(skipCosted);
+		final String skipCosted = System.getProperty(SKIP_COSTED_NAME);
+		SKIP_COSTED = SKIP_COSTED_SKIP.equalsIgnoreCase(skipCosted) || SKIP_COSTED_TRUE.equalsIgnoreCase(skipCosted);
 	}
 	
 	/**
