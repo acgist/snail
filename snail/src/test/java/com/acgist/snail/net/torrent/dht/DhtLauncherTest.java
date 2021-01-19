@@ -17,7 +17,7 @@ public class DhtLauncherTest extends Performance {
 
 	@Test
 	public void testDhtLauncher() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testDhtLauncher测试");
 			return;
 		}

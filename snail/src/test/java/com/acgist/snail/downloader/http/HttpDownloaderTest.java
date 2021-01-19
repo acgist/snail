@@ -28,7 +28,7 @@ public class HttpDownloaderTest extends Performance {
 
 	@Test
 	public void testHttpDownloader() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testHttpDownloader测试");
 			return;
 		}

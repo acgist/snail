@@ -22,7 +22,7 @@ public class LocalServiceDiscoveryTest extends Performance {
 	
 	@Test
 	public void testServer() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testServer测试");
 			return;
 		}

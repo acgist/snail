@@ -36,7 +36,7 @@ public class SnailTest extends Performance {
 	
 	@Test
 	public void testLockDownload() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testLockDownload测试");
 			return;
 		}
@@ -54,7 +54,7 @@ public class SnailTest extends Performance {
 
 	@Test
 	public void testMagnet() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testMagnet测试");
 			return;
 		}

@@ -45,7 +45,7 @@ public class TorrentDownloaderTest extends Performance {
 
 	@Test
 	public void testTorrentDownloader() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testTorrentDownloader测试");
 			return;
 		}
