@@ -19,7 +19,7 @@ public class TsLinkerTest extends Performance {
 
 	@Test
 	public void testLink() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testLink测试");
 			return;
 		}

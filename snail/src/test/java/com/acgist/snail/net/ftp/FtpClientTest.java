@@ -17,7 +17,7 @@ public class FtpClientTest extends Performance {
 
 	@Test
 	public void testDownload() throws FileNotFoundException, IOException, NetException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testDownload测试");
 			return;
 		}

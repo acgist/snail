@@ -14,7 +14,7 @@ public class StatisticsContextTest extends Performance {
 
 	@Test
 	public void testStatisticsContext() {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testStatisticsContext测试");
 			return;
 		}

@@ -19,6 +19,10 @@ public abstract class Performance {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Performance.class);
 	
 	/**
+	 * <p>跳过执行方法属性：{@value}</p>
+	 */
+	private static final String SKIP_SKIP_COSTED = "skipCosted";
+	/**
 	 * <p>是否跳过执行方法：{@value}</p>
 	 */
 	private static final String SKIP_SKIP = "skip";
@@ -30,11 +34,11 @@ public abstract class Performance {
 	 * <p>是否跳过执行方法</p>
 	 * <p>跳过执行方法：性能测试、测试时间过长</p>
 	 */
-	protected static final boolean SKIP;
+	protected static final boolean SKIP_COSTED;
 	
 	static {
-		final String skip = System.getProperty(SKIP_SKIP);
-		SKIP = SKIP_SKIP.equalsIgnoreCase(skip) || SKIP_TRUE.equalsIgnoreCase(skip);
+		final String skipCosted = System.getProperty(SKIP_SKIP_COSTED);
+		SKIP_COSTED = SKIP_SKIP.equalsIgnoreCase(skipCosted) || SKIP_TRUE.equalsIgnoreCase(skipCosted);
 	}
 	
 	/**
@@ -95,7 +99,7 @@ public abstract class Performance {
 	 * @return 消耗时间
 	 */
 	protected final long costed(int count, Coster coster) {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过消耗测试");
 			return 0L;
 		}
@@ -116,7 +120,7 @@ public abstract class Performance {
 	 * @return 消耗时间
 	 */
 	protected final long costed(int count, int thread, Coster coster) {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过消耗测试");
 			return 0L;
 		}

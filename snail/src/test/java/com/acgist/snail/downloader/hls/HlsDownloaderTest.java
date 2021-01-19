@@ -34,7 +34,7 @@ public class HlsDownloaderTest extends Performance {
 	
 	@Test
 	public void testHlsDownloader() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testHlsDownloader测试");
 			return;
 		}

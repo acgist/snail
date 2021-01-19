@@ -29,7 +29,7 @@ public class FtpDownloaderTest extends Performance {
 
 	@Test
 	public void testFtpDownloader() throws DownloadException {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testFtpDownloader测试");
 			return;
 		}

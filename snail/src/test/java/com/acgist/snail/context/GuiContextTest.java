@@ -66,7 +66,7 @@ public class GuiContextTest extends Performance {
 	
 	@Test
 	public void testExtend() {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testExtend测试");
 			return;
 		}
@@ -85,7 +85,7 @@ public class GuiContextTest extends Performance {
 	
 	@Test
 	public void testSocket() {
-		if(SKIP) {
+		if(SKIP_COSTED) {
 			this.log("跳过testSocket测试");
 			return;
 		}
