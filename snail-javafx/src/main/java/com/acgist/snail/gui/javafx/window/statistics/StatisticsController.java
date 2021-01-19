@@ -591,27 +591,28 @@ public final class StatisticsController extends Controller implements Initializa
 		PeerSession peer;
 		long uploadSize = 0L;
 		long downloadSize = 0L;
-		final BitSet connectPeers = new BitSet();
 		final BitSet uploadPeers = new BitSet();
 		final BitSet downloadPeers = new BitSet();
+		final BitSet exchangePeers = new BitSet();
+		final BitSet indifferencePeers = new BitSet();
 		for (int index = 0; index < length; index++) {
 			peer = peers.get(index);
 			uploadSize = peer.uploadSize();
 			downloadSize = peer.downloadSize();
 			if(uploadSize != 0L && downloadSize != 0L) {
-				connectPeers.set(index);
-			} else if(uploadSize > 0) {
+				exchangePeers.set(index);
+			} else if(uploadSize > 0L) {
 				uploadPeers.set(index);
-			} else if(downloadSize > 0) {
+			} else if(downloadSize > 0L) {
 				downloadPeers.set(index);
 			} else {
-				connectPeers.set(index);
+				indifferencePeers.set(index);
 			}
 		}
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			WH, COL, length,
-			new BitSet[] { connectPeers, uploadPeers, downloadPeers },
-			new Color[] { ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW }
+			new BitSet[] { exchangePeers, uploadPeers, downloadPeers, indifferencePeers },
+			new Color[] { ITheme.COLOR_YELLOW, ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_GRAY }
 		)
 			.build()
 			.draw();
