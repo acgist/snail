@@ -94,8 +94,10 @@ public final class LoggerContext implements ILoggerFactory {
 	 * @param t 异常
 	 */
 	public static final void error(Throwable t) {
-		try(FileOutputStream outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true)) {
-			final PrintWriter printWriter = new PrintWriter(outputStream);
+		try(
+			final var outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true);
+			final var printWriter = new PrintWriter(outputStream);
+		) {
 			t.printStackTrace(printWriter);
 			printWriter.flush();
 		} catch (Exception e) {
