@@ -31,7 +31,7 @@
 |项目|描述|
 |:--|:--|
 |snail|下载核心|
-|snail-javafx|电脑GUI|
+|snail-javafx|电脑界面|
 
 ## 使用
 
@@ -108,12 +108,12 @@ GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
 
 GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
-#### GUI
+#### 界面
 
 ![蜗牛](./docs/gui/main.png "蜗牛")
 ![统计](./docs/gui/statistics-piece.png "统计")
 
-[更多GUI](./docs/GUI.md)
+[界面操作](./docs/GUI.md)
 
 #### 更多
 
