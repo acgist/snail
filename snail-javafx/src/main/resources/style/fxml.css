@@ -35,8 +35,7 @@
 	-fx-font-family:"SnailIcon";
 }
 /**
- * <p>提示样式</p>
- * <p>Tooltip->.tooltip</p>
+ * <p>提示样式：Tooltip</p>
  */
 .root .tooltip {
 	-fx-opacity:-fx-snail-opacity;
@@ -47,8 +46,7 @@
 	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
 /**
- * <p>按钮样式</p>
- * <p>Button->.button</p>
+ * <p>按钮样式：Button</p>
  */
 .root .button {
 	-fx-border-width:1px;
@@ -63,8 +61,7 @@
 	-fx-background-color:-fx-snail-main-color;
 }
 /**
- * <p>文本框样式</p>
- * <p>TextField->.text-field</p>
+ * <p>文本框样式：TextField</p>
  */
 .root .text-field {
 	-fx-border-width:1px;
@@ -77,8 +74,7 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
- * <p>下拉框样式</p>
- * <p>ChoiceBox->.choice-box</p>
+ * <p>下拉框样式：ChoiceBox</p>
  */
 .root .choice-box {
 	-fx-border-width:1px;
@@ -107,8 +103,7 @@
 	-fx-background-radius:0;
 }
 /**
- * <p>菜单样式</p>
- * <p>ContextMenu->.context-menu</p>
+ * <p>菜单样式：ContextMenu</p>
  */
 .root .context-menu {
 	-fx-padding:1px;
@@ -132,8 +127,6 @@
 /**
  * <p>关于窗口：about.fxml</p>
  */
-.about {
-}
 .about .sponsor {
 	-fx-padding:10px 0;
 	-fx-alignment:center;
@@ -189,8 +182,7 @@
 	-fx-padding:0 2px;
 }
 /*
- * <p>表格样式</p>
- * <p>TableView->.table-view</p>
+ * <p>表格样式：TableView</p>
  */
 .main .table-view {
 	-fx-padding:0;
@@ -206,9 +198,13 @@
 .main .placeholder .snail-icon {
 	-fx-font-size:64px;
 }
-/** 表头样式 */
+/**
+ * <p>表头样式</p>
+ */
 .main .table-view .column-header,
-/** 空闲表头样式 */
+/**
+ * <p>空闲表头样式</p>
+ */
 .main .table-view .filler {
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
@@ -219,7 +215,9 @@
  * <p>表格单元样式</p>
  */
 .main .table-view .table-cell {
-	/** 设置padding（垂直居中） */
+	/**
+	 * <p>设置padding（垂直居中）</p>
+	 */
 	-fx-padding:0 2px;
 	-fx-pref-height:48px;
 }
@@ -227,26 +225,28 @@
  * <p>表格行样式</p>
  */
 .main .table-view .table-row-cell {
-	/** 去掉表格行横线 */
-	/*
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	*/
+	/**
+	 * <p>去掉表格行横线</p>
+	 * -fx-background-insets:0;
+	 * -fx-background-radius:0;
+	 */
 }
 /*
  * <p>没有数据表格单元样式</p>
  */
 .main .table-view .table-row-cell:empty .table-cell {
-	/** 去掉没有数据表格单元竖线 */
-	/*
-	-fx-border-width:0px;
-	*/
+	/**
+	 * <p>去掉没有数据表格单元竖线</p>
+	 * -fx-border-width:0px;
+	 */
 }
 /*
  * <p>获得焦点表格行样式</p>
  */
 .main .table-view:focused .table-row-cell:focused {
-	/** 去掉获得焦点但是没有选中时的边框 */
+	/**
+	 * <p>去掉获得焦点但是没有选中时的边框</p>
+	 */
 	-fx-background-insets:0, 0 0 1 0;
 	-fx-background-radius:0;
 	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
@@ -270,30 +270,32 @@
 	-fx-background-color:-fx-snail-element-color;
 }
 /*
- * <p>垂直滚动条</p>
+ * <p>去掉垂直滚动条</p>
+ * .main .table-view .virtual-flow .scroll-bar:vertical {
+ * 	-fx-pref-width:0;
+ * }
  */
 /*
-.main .table-view .virtual-flow .scroll-bar:vertical {
-	-fx-pref-width:0;
-}
-*/
-/*
- * <p>水平滚动条</p>
+ * <p>去掉水平滚动条</p>
  */
 .main .table-view .virtual-flow .scroll-bar:horizontal {
 	-fx-pref-height:0;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
-	/** 影藏箭头 */
+	/**
+	 * <p>影藏箭头</p>
+	 */
 	-fx-background-color:transparent;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
-	/** 影藏箭头 */
+	/**
+	 * <p>影藏箭头</p>
+	 */
 	-fx-background-color:transparent;
 }
 /**
  * <p>设置窗口：setting.fxml</p>
- * <p>ScrollPane->.scroll-pane</p>
+ * <p>滚动面板样式：ScrollPane</p>
  */
 .setting .scroll-pane {
 	-fx-padding:20px 0 0 0;
@@ -369,13 +371,24 @@
 	-fx-pref-width:800px;
 	-fx-pref-height:400px;
 }
-.statistics .statistics-box .health {
-	-fx-padding:5px 0;
-	-fx-alignment:center;
-}
 .statistics .statistics-box .system-info TextFlow {
 	-fx-padding:1px 0;
 	-fx-text-alignment:center;
+}
+.statistics .statistics-box .statistics-info {
+	-fx-padding:5px 0;
+	-fx-alignment:center;
+}
+.statistics .statistics-box .painter-info {
+	-fx-padding:5px 0;
+	-fx-alignment:center;
+}
+.statistics .statistics-box .painter-info TextFlow {
+	-fx-padding:4px;
+	-fx-text-fill:#FFFFFF;
+}
+.statistics .statistics-box .painter-info Label {
+	-fx-padding:2px;
 }
 .statistics .statistics-box .default-color0.chart-bar {
 	-fx-bar-fill:-fx-snail-red-color;

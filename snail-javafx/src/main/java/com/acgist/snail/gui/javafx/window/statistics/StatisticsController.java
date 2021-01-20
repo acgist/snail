@@ -45,6 +45,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -316,39 +318,20 @@ public final class StatisticsController extends Controller implements Initializa
 	 */
 	private void buildSelectSystemStatistics() {
 		final VBox systemInfo = new VBox(
-			this.buildSelectSystemStatistics("本机IP", NetUtils.LOCAL_HOST_ADDRESS),
-			this.buildSelectSystemStatistics("外网IP", SystemConfig.getExternalIpAddress()),
-			this.buildSelectSystemStatistics("外网端口", SystemConfig.getTorrentPortExt()),
-			this.buildSelectSystemStatistics("内网穿透", NatContext.getInstance().type()),
-			this.buildSelectSystemStatistics("软件版本", SystemConfig.getVersion()),
-			this.buildSelectSystemStatistics("系统名称", System.getProperty("os.name")),
-			this.buildSelectSystemStatistics("系统版本", System.getProperty("os.version")),
-			this.buildSelectSystemStatistics("Java版本", System.getProperty("java.version")),
-			this.buildSelectSystemStatistics("虚拟机名称", System.getProperty("java.vm.name"))
+			this.buildTextFlow("本机IP：", NetUtils.LOCAL_HOST_ADDRESS),
+			this.buildTextFlow("外网IP：", SystemConfig.getExternalIpAddress()),
+			this.buildTextFlow("外网端口：", SystemConfig.getTorrentPortExt()),
+			this.buildTextFlow("内网穿透：", NatContext.getInstance().type()),
+			this.buildTextFlow("软件版本：", SystemConfig.getVersion()),
+			this.buildTextFlow("系统名称：", System.getProperty("os.name")),
+			this.buildTextFlow("系统版本：", System.getProperty("os.version")),
+			this.buildTextFlow("Java版本：", System.getProperty("java.version")),
+			this.buildTextFlow("虚拟机名称：", System.getProperty("java.vm.name"))
 		);
-		systemInfo.getStyleClass().add("system-info");
+		systemInfo.getStyleClass().add(ITheme.CLASS_SYSTEM_INFO);
 		final var nodes = this.statisticsBox.getChildren();
 		nodes.clear();
 		nodes.add(systemInfo);
-	}
-	
-	/**
-	 * <p>创建系统信息节点</p>
-	 * 
-	 * @param name 名称
-	 * @param info 信息
-	 * 
-	 * @return 节点
-	 */
-	private TextFlow buildSelectSystemStatistics(String name, Object info) {
-		final Label label = new Label(name + "：");
-		Text text;
-		if(info == null) {
-			text = new Text("获取失败");
-		} else {
-			text = new Text(info.toString());
-		}
-		return new TextFlow(label, text);
 	}
 	
 	/**
@@ -456,7 +439,7 @@ public final class StatisticsController extends Controller implements Initializa
 					holepunchCount.incrementAndGet();
 					break;
 				default:
-					LOGGER.warn("未知Peer来源：{}", source);
+					LOGGER.warn("未知来源：{}", source);
 					break;
 				}
 			});
@@ -506,15 +489,17 @@ public final class StatisticsController extends Controller implements Initializa
 			return;
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
-		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		// 分类：上传、下载
 		final List<String> categoriesPeer = new ArrayList<>();
+		final var uploadCount = new AtomicInteger(0);
+		final var downloadCount = new AtomicInteger(0);
 		// 上传流量
 		final List<XYChart.Data<String, Number>> uploadPeer = new ArrayList<>();
 		// 下载流量
 		final List<XYChart.Data<String, Number>> downloadPeer = new ArrayList<>();
 		peers.forEach(peer -> {
 			if(peer.uploading()) {
+				uploadCount.incrementAndGet();
 				if(!categoriesPeer.contains(peer.host())) {
 					categoriesPeer.add(peer.host());
 				}
@@ -526,6 +511,7 @@ public final class StatisticsController extends Controller implements Initializa
 				downloadPeer.add(downloadData);
 			}
 			if(peer.downloading()) {
+				downloadCount.incrementAndGet();
 				if(!categoriesPeer.contains(peer.host())) {
 					categoriesPeer.add(peer.host());
 				}
@@ -539,13 +525,7 @@ public final class StatisticsController extends Controller implements Initializa
 		});
 		// X轴
 		final CategoryAxis xAxis = new CategoryAxis();
-		xAxis.setLabel(
-			String.format(
-				"累计上传：%s 累计下载：%s",
-				FileUtils.formatSize(torrentSession.statistics().uploadSize()),
-				FileUtils.formatSize(torrentSession.statistics().downloadSize())
-			)
-		);
+		xAxis.setLabel(String.format("上传数量：%d 下载数量：%d", uploadCount.get(), downloadCount.get()));
 		xAxis.setCategories(FXCollections.observableArrayList(categoriesPeer));
 		// Y轴
 		final NumberAxis yAxis = new NumberAxis();
@@ -587,6 +567,7 @@ public final class StatisticsController extends Controller implements Initializa
 			return;
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
+		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		final int length = peers.size();
 		PeerSession peer;
 		long uploadSize = 0L;
@@ -609,16 +590,29 @@ public final class StatisticsController extends Controller implements Initializa
 				indifferencePeers.set(index);
 			}
 		}
+		final Color[] colors = new Color[] { ITheme.COLOR_YELLOW, ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_GRAY };
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			WH, COL, length,
 			new BitSet[] { exchangePeers, uploadPeers, downloadPeers, indifferencePeers },
-			new Color[] { ITheme.COLOR_YELLOW, ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_GRAY }
+			colors
 		)
 			.build()
 			.draw();
+		// 流量统计
+		final String traffic = String.format(
+			"累计上传：%s 累计下载：%s",
+			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
+			FileUtils.formatSize(torrentSession.statistics().downloadSize())
+		);
+		final HBox trafficHBox = this.buildStatisticsInfo(traffic);
+		// 颜色描述
+		final String[] tabs = new String[] { "交战", "上传", "下载", "无情" };
+		final HBox painterHBox = this.buildPainterInfo(tabs, colors);
 		final var nodes = this.statisticsBox.getChildren();
 		nodes.clear();
+		nodes.add(trafficHBox);
 		nodes.add(painter.canvas());
+		nodes.add(painterHBox);
 	}
 	
 	/**
@@ -643,24 +637,27 @@ public final class StatisticsController extends Controller implements Initializa
 		final BitSet mousePieces = new BitSet(); // 鼠标可选Pieces
 		mousePieces.or(selectPieces);
 		mousePieces.andNot(pieces);
+		final Color[] colors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW };
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			WH, COL, pieceSize,
 			new BitSet[] { pieces, selectPieces },
-			new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW },
+			colors,
 			mousePieces, this::piecePos
 		)
 			.build()
 			.draw();
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
 		// 健康度
-		final Text healthText = new Text("健康度：" + torrentSession.health() + "%");
-		final TextFlow healthTextFlow = new TextFlow(healthText);
-		final HBox healthHBox = new HBox(healthTextFlow);
-		healthHBox.getStyleClass().add("health");
+		final HBox healthHBox = this.buildStatisticsInfo("健康度：" + torrentSession.health() + "%");
+		final var nodes = this.statisticsBox.getChildren();
+		// 颜色描述
+		final String[] tabs = new String[] { "已下载", "未下载", "不下载" };
+		final Color[] tabColors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW, ITheme.COLOR_GRAY };
+		final HBox painterHBox = this.buildPainterInfo(tabs, tabColors);
+		nodes.clear();
 		// 添加节点
 		nodes.add(healthHBox);
 		nodes.add(painter.canvas());
+		nodes.add(painterHBox);
 	}
 	
 	/**
@@ -674,6 +671,60 @@ public final class StatisticsController extends Controller implements Initializa
 			return null;
 		}
 		return value.getHash();
+	}
+	
+	/**
+	 * <p>创建系统信息节点</p>
+	 * 
+	 * @param name 名称
+	 * @param info 信息
+	 * 
+	 * @return 节点
+	 */
+	private TextFlow buildTextFlow(String name, Object info) {
+		final Label label = new Label(name);
+		Text text;
+		if(info == null) {
+			text = new Text("获取失败");
+		} else {
+			text = new Text(info.toString());
+		}
+		return new TextFlow(label, text);
+	}
+	
+	/**
+	 * <p>创建统计信息节点</p>
+	 * 
+	 * @param message 统计信息
+	 * 
+	 * @return 节点
+	 */
+	private HBox buildStatisticsInfo(String message) {
+		final Text text = new Text(message);
+		final TextFlow textFlow = new TextFlow(text);
+		final HBox hBox = new HBox(textFlow);
+		hBox.getStyleClass().add(ITheme.CLASS_STATISTICS_INFO);
+		return hBox;
+	}
+	
+	/**
+	 * <p>创建画图信息节点</p>
+	 * 
+	 * @param tabs 颜色描述
+	 * @param colors 颜色
+	 * 
+	 * @return 节点
+	 */
+	private HBox buildPainterInfo(String [] tabs, Color [] colors) {
+		final HBox hBox = new HBox();
+		for (int index = 0; index < tabs.length; index++) {
+			final Label label = new Label(tabs[index]);
+			final TextFlow textFlow = new TextFlow(label);
+			textFlow.setBackground(new Background(new BackgroundFill(colors[index], null, null)));
+			hBox.getChildren().add(textFlow);
+		}
+		hBox.getStyleClass().add(ITheme.CLASS_PAINTER_INFO);
+		return hBox;
 	}
 	
 	/**
