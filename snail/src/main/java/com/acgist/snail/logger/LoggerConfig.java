@@ -71,9 +71,6 @@ public final class LoggerConfig {
 		} catch (IOException e) {
 			LoggerContext.error(e);
 		}
-		if(properties == null) {
-			return;
-		}
 		final Level level = this.of(properties.getProperty("logger.level"));
 		this.levelInt = level.toInt();
 		this.system = properties.getProperty("logger.system");
