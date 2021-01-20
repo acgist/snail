@@ -119,7 +119,7 @@ public final class PeerDownloaderGroup {
 	
 	/**
 	 * <p>自旋等待</p>
-	 * <p>下载器检查是否找到Peer，如果没有找到进行自旋等待。</p>
+	 * <p>下载器检测是否找到Peer，如果没有找到进行自旋等待。</p>
 	 */
 	private void spinLock() {
 		final PeerContext peerContext = PeerContext.getInstance();

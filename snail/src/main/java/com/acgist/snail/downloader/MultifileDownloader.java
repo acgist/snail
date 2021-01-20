@@ -49,7 +49,7 @@ public abstract class MultifileDownloader extends Downloader {
 					LOGGER.debug("线程等待异常", e);
 					Thread.currentThread().interrupt();
 				}
-				// 完成状态必须在同步块中检查
+				// 完成状态必须在同步块中检测
 				this.completed = this.checkCompleted();
 			}
 		}

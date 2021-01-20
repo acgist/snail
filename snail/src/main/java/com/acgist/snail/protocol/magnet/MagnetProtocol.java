@@ -88,7 +88,7 @@ public final class MagnetProtocol extends Protocol {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>注意：一定要先检查磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
+	 * <p>注意：一定要先检测磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
 	protected void release(boolean success) {

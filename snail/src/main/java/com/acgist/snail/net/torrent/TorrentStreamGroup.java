@@ -169,7 +169,7 @@ public final class TorrentStreamGroup {
 			LOGGER.error("任务文件列表为空：{}", files);
 			return loadFileCount;
 		}
-		this.full = false; // 健康度重新检查
+		this.full = false; // 健康度重新检测
 		this.selectPieces.clear(); // 清除所有已选择Piece
 		this.writeLock.lock();
 		try {

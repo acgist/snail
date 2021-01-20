@@ -1,6 +1,6 @@
 # 代码规范
 
-总则：让代码规范、可读、优美
+总则：规范、可读、优美
 
 新增代码必须遵循以下规范
 
@@ -21,9 +21,9 @@
 	* [变量命名](#变量命名)
 * [代码](#代码)
 * [顺序](#顺序)
-* [检查工具](#检查工具)
-	* [规范检查](#规范检查)
-	* [质量检查](#质量检查)
+* [检测工具](#检测工具)
+	* [规范检测](#规范检测)
+	* [质量检测](#质量检测)
 
 ## 缩进
 
@@ -31,18 +31,27 @@
 
 ## 括号
 
+* 条件禁止判断省略括号
+* 单句函数推荐省略括号
+
 ```
-if(条件) {
+if(条件)  {
 }
 
 do {
 } while(条件);
 
-Function function = (event) -> {
+Function function = event -> {
+...
 };
+
+Function function = event -> sentence;
 ```
 
 ## 换行
+
+* 复杂条件建议换行
+* 语句过长建议换行
 
 ```
 if(
@@ -66,24 +75,28 @@ list.stream()
 
 ## 注释
 
-* 允许同行注释
+* 建议不要使用行尾注释
 * javadoc注解必须正确使用
-* 重要功能和代码必须添加注释
+* 重要功能代码必须添加注释
+* 协议实现尽量注释协议链接
+
+### 方法注解
+
+* 直接引用方法添加注解`@see`
 
 ## 日志
 
 * 合理使用日志级别
 * 必须使用日志门面
 * 重要操作必须添加日志
-* 异常没有抛出必须添加日志记录
+* 异常没有抛出必须添加日志
 
 ## 命名
 
 * 必须使用英文
-* 必须具有可读性
-* 必须遵从驼峰命名
-* 常量、枚举必须大写
-* 不使用不规范的缩写
+* 必须使用驼峰命名
+* 必须大写常量、枚举
+* 名称具有可读性（不使用不规范缩写）
 
 ### 版本号
 
@@ -97,15 +110,15 @@ list.stream()
 
 ### 包命名
 
-不同功能的类和接口必须放到对应功能的包目录下
+包功能描述
 
 |包名|描述|
 |:--|:--|
 |config|配置|
 |context|上下文|
 |downloader|下载器|
-|format|格式化|
-|gui|GUI|
+|format|格式|
+|gui|Gui|
 |logger|日志|
 |net|网络|
 |pojo|POJO|
@@ -114,31 +127,68 @@ list.stream()
 
 ### 类命名
 
-* 接口必须以`I`开头
-* 测试类必须以`Test`结尾
-* 抽象类不使用`Abstract`或`Base`开头（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
-* 继承时子类命名必须以父类后缀结尾（例：`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]）
+#### 接口
+
+接口必须使用`I`开头
+
+#### 抽象类
+
+* 抽象类不要使用`A`、`Base`、`Abstract`开头
+* 子类必须使用父类后缀结尾
+
+###### 示例
+
+`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]
+
+#### 工具助手
+
+* 助手类使用`s`结尾
+* 工具类使用`Utils`结尾
+
+###### 实例
+
+```java
+# 字体助手
+Fonts
+# 时间工具
+DateUtils
+```
+
+#### 测试类
+
+测试类必须使用`Test`结尾
 
 ### 方法命名
 
-* 测试方法必须以`test`开头
+#### Getter
+
+* 纯数据类自动生成
+* 其他类建议直接使用变量名称作为Getter
+
+#### Setter
+
+* 纯数据类自动生成
+* 其他类建议直接使用变量名称作为Setter
+
+#### 测试方法
+
+测试方法必须使用`test`开头
 
 ### 变量命名
 
 * 基本类型根据用途命名
-* 其他类型使用`Eclipse`自动提示
+* 其他类型建议根据功能命名或使用`Eclipse`自动提示
 
 ## 代码
 
+* 尽量使用单例
 * 禁止使用魔法值
 * 禁止使用过时的方法
-* 可以使用单例必须使用单例
-* 类、变量尽量使用`final`修饰
-* `switch`语句必须包含`default`
-* 方法重写时必须添加注解`@Override`
-* 必须处理所有警告（禁止通过注解`@SuppressWarnings`忽略）
+* 尽量使用`final`修饰类、变量
+* 重写方法必须添加注解`@Override`
+* 使用`switch`语句必须包含`default`
 * 声明`long`类型数值后面添加`L`标记（`float`、`double`类似）
-* 新增代码不能使用除了Java内置模块和已经添加依赖外的其他依赖
+* 所有警告必须处理（禁止通过注解`@SuppressWarnings`忽略）
 
 ## 顺序
 
@@ -153,13 +203,13 @@ list.stream()
 * 公开函数
 * 私有函数
 
-## 检查工具
+## 检测工具
 
-### 规范检查
+### 规范检测
 
-使用阿里[P3C](https://github.com/alibaba/p3c)对代码进行规范检查（[Eclipse插件](https://p3c.alibaba.com/plugin/eclipse/update)）
+使用阿里[P3C](https://github.com/alibaba/p3c)对代码进行规范检测（[Eclipse插件](https://p3c.alibaba.com/plugin/eclipse/update)）
 
-### 质量检查
+### 质量检测
 
-* 使用Sonar对代码进行质量检查
+* 使用Sonar对代码进行质量检测
 * 使用JaCoCo对代码进行覆盖率检测
