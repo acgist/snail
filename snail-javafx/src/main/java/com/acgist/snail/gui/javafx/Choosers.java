@@ -10,16 +10,13 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
 /**
- * <p>文件、目录选择工具</p>
- * <p>打开选择框时默认设置为上次选择目录，选择后会修改上次选择目录为当前选择目录。</p>
+ * <p>文件、目录选择助手</p>
+ * <p>文件选择默认打开上次选择目录，选择成功更新上次选择目录（当前选择目录）。</p>
  * 
  * @author acgist
  */
 public final class Choosers {
 
-	/**
-	 * <p>不允许实例化</p>
-	 */
 	private Choosers() {
 	}
 	
@@ -36,7 +33,8 @@ public final class Choosers {
 	public static final File chooseFile(Window window, String title, String description, String ... filters) {
 		final FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
-		lastPath(chooser); // 设置上次选择目录
+		// 设置上次选择目录
+		lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
 		if (file != null) {
@@ -57,7 +55,8 @@ public final class Choosers {
 	public static final File chooseDirectory(Window window, String title) {
 		final DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(title);
-		lastPath(chooser); // 设置上次选择目录
+		// 设置上次选择目录
+		lastPath(chooser);
 		final File file = chooser.showDialog(window);
 		if (file != null) {
 			// 更新上次选择目录

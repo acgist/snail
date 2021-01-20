@@ -16,18 +16,6 @@ public abstract class Controller {
 	 * <p>双击次数：{@value}</p>
 	 */
 	protected static final int DOUBLE_CLICK_COUNT = 2;
-	/**
-	 * <p>FXML样式路径：{@value}</p>
-	 */
-	public static final String FXML_STYLE = "/style/fxml.css";
-	/**
-	 * <p>图标文件路径（16PX）：{@value}</p>
-	 */
-	public static final String LOGO_ICON_16 = "/image/16/logo.png";
-	/**
-	 * <p>图标文件路径（200PX）：{@value}</p>
-	 */
-	public static final String LOGO_ICON_200 = "/image/logo.png";
 	
 	/**
 	 * <p>获取拖入面板的数据</p>

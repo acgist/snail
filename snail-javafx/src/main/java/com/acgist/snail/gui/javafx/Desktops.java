@@ -13,13 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>桌面工具</p>
- * <pre>
- * // 不能直接在JavaFX线程中调用AWT线程，需要转换：
- * SwingUtilities.invokeLater(() -&gt; {});
- * // 直接使用JavaFX自带方法打开文件和浏览网页：
- * Application.getHostServices().showDocument(uri);
- * </pre>
+ * <p>桌面助手</p>
  * 
  * @author acgist
  */
@@ -27,9 +21,6 @@ public final class Desktops {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Desktops.class);
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private Desktops() {
 	}
 	
@@ -40,11 +31,8 @@ public final class Desktops {
 	 * @param file 文件
 	 */
 	public static final void open(final File file) {
-		if(file == null) {
-			LOGGER.debug("文件打开失败：{}", file);
-			return;
-		}
 		if(
+			file != null &&
 			file.exists() &&
 			support(Action.OPEN)
 		) {
@@ -52,11 +40,11 @@ public final class Desktops {
 				try {
 					Desktop.getDesktop().open(file);
 				} catch (Exception e) {
-					LOGGER.error("资源管理器打开文件异常", e);
+					LOGGER.error("打开文件异常", e);
 				}
 			});
 		} else {
-			LOGGER.warn("系统打开文件失败：{}", file.getAbsolutePath());
+			LOGGER.warn("打开文件失败：{}", file);
 		}
 	}
 	
@@ -75,11 +63,11 @@ public final class Desktops {
 				try {
 					Desktop.getDesktop().browse(URI.create(url));
 				} catch (Exception e) {
-					LOGGER.error("浏览器打开网页异常：{}", url, e);
+					LOGGER.error("打开网页链接异常：{}", url, e);
 				}
 			});
 		} else {
-			LOGGER.warn("系统打开网页链接失败：{}", url);
+			LOGGER.warn("打开网页链接失败：{}", url);
 		}
 	}
 	

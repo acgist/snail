@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 
 /**
- * <p>字体工具</p>
+ * <p>字体助手</p>
  * 
  * @author acgist
  */
@@ -29,23 +29,13 @@ public final class Fonts {
 	 * <p>字体路径：{@value}</p>
 	 */
 	private static final String FONT_PATH = "/font/SnailIcon.ttf";
-	/**
-	 * <p>图标样式：{@value}</p>
-	 */
-	private static final String FONT_ICON_CLASS = "snail-icon";
 	
-	static {
-		LOGGER.debug("加载字体：{}-{}", FONT_NAME, FONT_PATH);
-		try(final var input = Fonts.class.getResourceAsStream(FONT_PATH)) {
-			Font.loadFont(input, FONT_SIZE);
-		} catch (Exception e) {
-			LOGGER.error("字体加载失败", e);
-		}
-	}
-
 	/**
-	 * <p>图标字体</p>
+	 * <p>字体图标</p>
 	 * <p>制作工具：https://icomoon.io/app/#/select</p>
+	 * <p>注意：不要改变枚举顺序</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum SnailIcon {
 		
@@ -196,12 +186,22 @@ public final class Fonts {
 		 */
 		private static final char ICON_CHAR_CODE = 0xE900;
 		
+		static {
+			// 注意：必须在枚举内加载字体（否者不能正常加载）
+			LOGGER.debug("加载字体：{}-{}", FONT_NAME, FONT_PATH);
+			try(final var input = Fonts.class.getResourceAsStream(FONT_PATH)) {
+				Font.loadFont(input, FONT_SIZE);
+			} catch (Exception e) {
+				LOGGER.error("加载字体异常", e);
+			}
+		}
+		
 		private SnailIcon() {
 		}
 
 		/**
 		 * <p>获取图标字符</p>
-		 * <p>字符：{@link #ICON_CHAR_CODE} + 枚举索引</p>
+		 * <p>图标字符：{@link #ICON_CHAR_CODE} + 枚举索引</p>
 		 * 
 		 * @return 图标字符
 		 */
@@ -215,7 +215,12 @@ public final class Fonts {
 		 * @return 图标标签
 		 */
 		public final Label iconLabel() {
-			return Fonts.iconLabel(this);
+			final Label iconLabel = new Label(this.toString());
+			// 设置字体
+			iconLabel.setFont(Font.font(FONT_NAME));
+			// 添加样式
+			iconLabel.getStyleClass().add(Themes.CLASS_SNAIL_ICON);
+			return iconLabel;
 		}
 		
 		@Override
@@ -225,24 +230,7 @@ public final class Fonts {
 		
 	}
 	
-	/**
-	 * <p>不允许实例化</p>
-	 */
 	private Fonts() {
-	}
-	
-	/**
-	 * <p>获取图标标签</p>
-	 * 
-	 * @param icon 图标
-	 * 
-	 * @return 图标标签
-	 */
-	public static final Label iconLabel(SnailIcon icon) {
-		final Label iconLabel = new Label(icon.toString());
-		iconLabel.getStyleClass().add(FONT_ICON_CLASS); // 添加样式
-		iconLabel.setFont(Font.font(FONT_NAME)); // 设置字体
-		return iconLabel;
 	}
 	
 	/**

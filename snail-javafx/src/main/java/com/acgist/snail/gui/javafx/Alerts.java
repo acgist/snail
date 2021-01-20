@@ -3,7 +3,6 @@ package com.acgist.snail.gui.javafx;
 import java.util.Optional;
 
 import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -13,15 +12,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- * <p>提示窗口工具</p>
+ * <p>窗口助手</p>
  * 
  * @author acgist
  */
 public final class Alerts {
 	
-	/**
-	 * <p>不允许实例化</p>
-	 */
 	private Alerts() {
 	}
 	
@@ -63,18 +59,21 @@ public final class Alerts {
 		final Scene scene = alert.getDialogPane().getScene();
 		Themes.applyTheme(scene);
 		final Stage stage = (Stage) scene.getWindow();
-		stage.getIcons().add(new Image(Controller.LOGO_ICON_200)); // 设置图标
+		// 设置图标
+		stage.getIcons().add(new Image(Themes.LOGO_ICON_200));
 		alert.setTitle(title);
-//		alert.setGraphic(null); // 去掉图标
-		alert.setHeaderText(null); // 去掉头部
+		// 去掉头部
+		alert.setHeaderText(null);
 		alert.setContentText(message);
 		return alert.showAndWait();
 	}
 	
 	/**
-	 * <p>获取JavaFX窗口类型</p>
+	 * <p>通过Gui消息类型获取窗口消息类型</p>
 	 * 
-	 * @return JavaFX窗口类型
+	 * @param type Gui消息类型
+	 * 
+	 * @return 窗口消息类型
 	 */
 	private static final AlertType getAlertType(GuiContext.MessageType type) {
 		switch (type) {
