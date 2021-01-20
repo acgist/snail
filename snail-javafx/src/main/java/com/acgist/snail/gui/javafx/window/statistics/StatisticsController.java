@@ -37,6 +37,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
@@ -258,7 +259,7 @@ public final class StatisticsController extends Controller implements Initializa
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		this.statisticsBox.getChildren().clear();
+		this.statisticsBoxClear();
 	}
 
 	/**
@@ -268,7 +269,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentContext.getInstance().allTorrentSession().stream()
-			.filter(session -> session.useable()) // 准备完成
+			.filter(TorrentSession::useable) // 准备完成
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
 		if(defaultValue == null) {
@@ -329,9 +330,9 @@ public final class StatisticsController extends Controller implements Initializa
 			this.buildTextFlow("虚拟机名称：", System.getProperty("java.vm.name"))
 		);
 		systemInfo.getStyleClass().add(ITheme.CLASS_SYSTEM_INFO);
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(systemInfo);
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(systemInfo);
 	}
 	
 	/**
@@ -350,17 +351,11 @@ public final class StatisticsController extends Controller implements Initializa
 			new PieChart.Data("可用", available),
 			new PieChart.Data("未知", unuse)
 		);
-		final PieChart pieChart = new PieChart(pieChartData);
-		pieChart.setTitle(String.format("总量：%d", total));
-		pieChartData.forEach(data -> {
-			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
-		});
-		pieChart.setPrefWidth(CHART_WIDTH);
-		pieChart.setPrefHeight(CHART_HEIGHT);
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(pieChart);
-		LOGGER.debug("节点统计，总量：{}、验证：{}、可用：{}、未知：{}", total, verify, available, unuse);
+		final String title = String.format("总量：%d", total);
+		final PieChart pieChart = this.buildPieChart(title, pieChartData);
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(pieChart);
 	}
 	
 	/**
@@ -377,17 +372,11 @@ public final class StatisticsController extends Controller implements Initializa
 			new PieChart.Data("禁用", disable),
 			new PieChart.Data("可用", available)
 		);
-		final PieChart pieChart = new PieChart(pieChartData);
-		pieChart.setTitle(String.format("总量：%d", total));
-		pieChartData.forEach(data -> {
-			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
-		});
-		pieChart.setPrefWidth(CHART_WIDTH);
-		pieChart.setPrefHeight(CHART_HEIGHT);
-		final var nodes= this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(pieChart);
-		LOGGER.debug("Tracker统计，总量：{}、禁用：{}、可用：{}", total, disable, available);
+		final String title = String.format("总量：%d", total);
+		final PieChart pieChart = this.buildPieChart(title, pieChartData);
+		// 添加节点
+		final var statisticsBoxNode= this.statisticsBoxClear();
+		statisticsBoxNode.add(pieChart);
 	}
 	
 	/**
@@ -452,32 +441,17 @@ public final class StatisticsController extends Controller implements Initializa
 			new PieChart.Data("Connect", connectCount.get()),
 			new PieChart.Data("Holepunch", holepunchCount.get())
 		);
-		final PieChart pieChart = new PieChart(pieChartData);
-		pieChart.setTitle(
-			String.format(
+		final String title = String.format(
 				"总量：%d 可用：%d 下载：%d 上传：%d",
 				peers.size(),
 				availableCount.get(),
 				downloadCount.get(),
 				uploadCount.get()
-			)
-		);
-		pieChartData.forEach(data -> {
-			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue())));
-		});
-		pieChart.setPrefWidth(CHART_WIDTH);
-		pieChart.setPrefHeight(CHART_HEIGHT);
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(pieChart);
-		LOGGER.debug(
-			"Peer统计，总量：{}、可用：{}、下载：{}、上传：{}",
-			peers.size(), availableCount.get(), downloadCount.get(), uploadCount.get()
-		);
-		LOGGER.debug(
-			"Peer来源，DHT：{}、PEX：{}、LSD：{}、Tracker：{}、Connect：{}、Holepunch：{}",
-			dhtCount.get(), pexCount.get(), lsdCount.get(), trackerCount.get(), connectCount.get(), holepunchCount.get()
-		);
+			);
+		final PieChart pieChart = this.buildPieChart(title, pieChartData);
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(pieChart);
 	}
 	
 	/**
@@ -532,9 +506,9 @@ public final class StatisticsController extends Controller implements Initializa
 		yAxis.setLabel("流量（MB）");
 		// 流量图表
 		final StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
+		stackedBarChart.setTitle("连接统计");
 		stackedBarChart.setPrefWidth(CHART_WIDTH);
 		stackedBarChart.setPrefHeight(CHART_HEIGHT);
-		stackedBarChart.setTitle("连接统计");
 		// 上传流量
 		final XYChart.Series<String, Number> uploadSeries = new XYChart.Series<>();
 		uploadSeries.setName("上传");
@@ -547,15 +521,11 @@ public final class StatisticsController extends Controller implements Initializa
 		stackedBarChart.getData().add(uploadSeries);
 		stackedBarChart.getData().add(downloadSeries);
 		// 设置提示消息
-		uploadPeer.forEach(data -> {
-			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 上传：%.2fMB", data.getXValue(), data.getYValue())));
-		});
-		downloadPeer.forEach(data -> {
-			Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue())));
-		});
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(stackedBarChart);
+		uploadPeer.forEach(data -> Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 上传：%.2fMB", data.getXValue(), data.getYValue()))));
+		downloadPeer.forEach(data -> Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue()))));
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(stackedBarChart);
 	}
 	
 	/**
@@ -570,16 +540,14 @@ public final class StatisticsController extends Controller implements Initializa
 		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		final int length = peers.size();
 		PeerSession peer;
-		long uploadSize = 0L;
-		long downloadSize = 0L;
 		final BitSet uploadPeers = new BitSet();
 		final BitSet downloadPeers = new BitSet();
 		final BitSet exchangePeers = new BitSet();
 		final BitSet indifferencePeers = new BitSet();
 		for (int index = 0; index < length; index++) {
 			peer = peers.get(index);
-			uploadSize = peer.uploadSize();
-			downloadSize = peer.downloadSize();
+			final long uploadSize = peer.uploadSize();
+			final long downloadSize = peer.downloadSize();
 			if(uploadSize != 0L && downloadSize != 0L) {
 				exchangePeers.set(index);
 			} else if(uploadSize > 0L) {
@@ -599,20 +567,20 @@ public final class StatisticsController extends Controller implements Initializa
 			.build()
 			.draw();
 		// 流量统计
-		final String traffic = String.format(
+		final String message = String.format(
 			"累计上传：%s 累计下载：%s",
 			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
 			FileUtils.formatSize(torrentSession.statistics().downloadSize())
 		);
-		final HBox trafficHBox = this.buildStatisticsInfo(traffic);
+		final HBox trafficHBox = this.buildStatisticsInfo(message);
 		// 颜色描述
 		final String[] tabs = new String[] { "交战", "上传", "下载", "无情" };
 		final HBox painterHBox = this.buildPainterInfo(tabs, colors);
-		final var nodes = this.statisticsBox.getChildren();
-		nodes.clear();
-		nodes.add(trafficHBox);
-		nodes.add(painter.canvas());
-		nodes.add(painterHBox);
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(trafficHBox);
+		statisticsBoxNode.add(painter.canvas());
+		statisticsBoxNode.add(painterHBox);
 	}
 	
 	/**
@@ -632,9 +600,12 @@ public final class StatisticsController extends Controller implements Initializa
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
-		final BitSet pieces = torrentSession.pieces(); // 已经下载Pieces
-		final BitSet selectPieces = torrentSession.selectPieces(); // 选择下载Pieces
-		final BitSet mousePieces = new BitSet(); // 鼠标可选Pieces
+		// 已经下载Pieces
+		final BitSet pieces = torrentSession.pieces();
+		// 选择下载Pieces
+		final BitSet selectPieces = torrentSession.selectPieces();
+		// 鼠标可选Pieces
+		final BitSet mousePieces = new BitSet();
 		mousePieces.or(selectPieces);
 		mousePieces.andNot(pieces);
 		final Color[] colors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW };
@@ -648,16 +619,15 @@ public final class StatisticsController extends Controller implements Initializa
 			.draw();
 		// 健康度
 		final HBox healthHBox = this.buildStatisticsInfo("健康度：" + torrentSession.health() + "%");
-		final var nodes = this.statisticsBox.getChildren();
 		// 颜色描述
 		final String[] tabs = new String[] { "已下载", "未下载", "不下载" };
 		final Color[] tabColors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW, ITheme.COLOR_GRAY };
 		final HBox painterHBox = this.buildPainterInfo(tabs, tabColors);
-		nodes.clear();
 		// 添加节点
-		nodes.add(healthHBox);
-		nodes.add(painter.canvas());
-		nodes.add(painterHBox);
+		final var statisticsBoxNode = this.statisticsBoxClear();
+		statisticsBoxNode.add(healthHBox);
+		statisticsBoxNode.add(painter.canvas());
+		statisticsBoxNode.add(painterHBox);
 	}
 	
 	/**
@@ -728,11 +698,37 @@ public final class StatisticsController extends Controller implements Initializa
 	}
 	
 	/**
+	 * <p>创建饼状图</p>
+	 * 
+	 * @param title 标题
+	 * @param pieChartData 饼状图数据
+	 * 
+	 * @return 饼状图
+	 */
+	private PieChart buildPieChart(String title, ObservableList<PieChart.Data> pieChartData) {
+		final PieChart pieChart = new PieChart(pieChartData);
+		pieChart.setTitle(title);
+		pieChart.setPrefWidth(CHART_WIDTH);
+		pieChart.setPrefHeight(CHART_HEIGHT);
+		pieChartData.forEach(data -> Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("%s：%.0f", data.getName(), data.getPieValue()))));
+		return pieChart;
+	}
+	
+	/**
+	 * <p>获取统计节点</p>
+	 * 
+	 * @return 统计节点
+	 */
+	private ObservableList<Node> statisticsBoxClear() {
+		final var nodes = this.statisticsBox.getChildren();
+		nodes.clear();
+		return nodes;
+	}
+	
+	/**
 	 * <p>选择BT任务事件</p>
 	 */
-	private EventHandler<ActionEvent> selectInfoHashsEvent = event -> {
-		this.buildSelectStatistics();
-	};
+	private EventHandler<ActionEvent> selectInfoHashsEvent = event -> this.buildSelectStatistics();
 	
 	/**
 	 * <p>下载任务</p>
