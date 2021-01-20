@@ -124,7 +124,7 @@ public final class MainController extends Controller implements Initializable {
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// 设置无数据时提示内容
-		final var placeholder = buildPlaceholder();
+		final var placeholder = this.buildPlaceholder();
 		this.taskTable.setPlaceholder(placeholder);
 		// 设置列
 		this.taskCell(this.name, Pos.CENTER_LEFT, true, true, this.taskTable.widthProperty().multiply(3D).divide(10D));
@@ -156,7 +156,7 @@ public final class MainController extends Controller implements Initializable {
 		final var color = ITheme.COLOR_GRAY;
 		// 图标
 		final var icon = SnailIcon.AS_DOWNLOAD3.iconLabel();
-		icon.getStyleClass().add("placeholder"); // 特殊样式
+		icon.getStyleClass().add(ITheme.CLASS_TASK_EMPTY); // 特殊样式
 		icon.setTextFill(color);
 		// 文本
 		final var text = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");

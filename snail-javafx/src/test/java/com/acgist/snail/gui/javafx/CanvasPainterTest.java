@@ -12,7 +12,13 @@ import com.acgist.snail.utils.ThreadUtils;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class CanvasPainterTest extends Application {
@@ -22,33 +28,48 @@ public class CanvasPainterTest extends Application {
 		final int size = 990;
 		final int begin = 250;
 		final int end = 520;
-		BitSet bitSet = new BitSet();
-		BitSet selectBitSet = new BitSet();
-//		bitSet.set(0);
-//		bitSet.set(49);
-//		bitSet.set(50);
-		Random random = new Random();
-		for (int i = begin; i < end; i++) {
-			int index = random.nextInt(size);
+		final BitSet bitSet = new BitSet();
+		final BitSet selectBitSet = new BitSet();
+		final Random random = new Random();
+		for (int jndex = begin; jndex < end; jndex++) {
+			final int index = random.nextInt(size);
 			if(begin <= index && index <= end) {
 				bitSet.set(index);
 			}
-			selectBitSet.set(i);
+			selectBitSet.set(jndex);
 		}
-		CanvasPainter painter = CanvasPainter.newInstance(12, 50, size, new BitSet[] { bitSet, selectBitSet }, new Color[] { Color.rgb(0x22, 0xAA, 0x22), Color.rgb(0xFF, 0xEE, 0x99) });
-		primaryStage.setTitle("画布");
-		Group root = new Group();
+		final Color[] colors = new Color[] { Color.rgb(0x22, 0xAA, 0x22), Color.rgb(0xFF, 0xEE, 0x99) };
+		final CanvasPainter painter = CanvasPainter.newInstance(
+			12, 50, size,
+			new BitSet[] { bitSet, selectBitSet },
+			colors
+		);
+		final Group root = new Group();
 		root.getChildren().add(painter.build().draw().canvas());
+		final HBox hBox = new HBox();
+		final String[] tabs = new String[] { "有效数据", "无效数据" };
+		for (int index = 0; index < tabs.length; index++) {
+			final Text text = new Text(tabs[index]);
+			final Label label = new Label();
+			label.setPrefSize(10, 10);
+			label.setBackground(new Background(new BackgroundFill(colors[index], null, null)));
+			final TextFlow textFlow = new TextFlow(label, text);
+			hBox.getChildren().add(textFlow);
+		}
+		root.getChildren().add(hBox);
 		SystemThreadContext.submit(() -> {
 			while(true) {
-				int index = random.nextInt(size);
+				final int index = random.nextInt(size);
 				if(begin <= index && index <= end) {
-					painter.draw(0, index);
+					bitSet.set(index);
+					painter.draw();
 				}
 				ThreadUtils.sleep(100);
 			}
 		});
-		primaryStage.setScene(new Scene(root));
+		final Scene scene = new Scene(root);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("画布");
 		primaryStage.show();
 	}
 	

@@ -306,52 +306,6 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>开始画图</p>
-	 * 
-	 * @param index 数据数组索引
-	 * @param data 数据
-	 * 
-	 * @return CanvasPainter
-	 */
-	public CanvasPainter draw(int index, BitSet data) {
-		if(index < 0 || this.bitSets.length <= index || data == null) {
-			return this;
-		}
-		final BitSet oldBitSet = this.bitSets[index];
-		oldBitSet.or(data);
-		// 没有数据增加
-		if(oldBitSet.cardinality() == data.cardinality()) {
-			return this;
-		}
-		this.drawFill();
-		return this;
-	}
-	
-	/**
-	 * <p>开始画图</p>
-	 * 
-	 * @param dataIndex 数据数组索引
-	 * @param dataIndex 数据索引
-	 * 
-	 * @return CanvasPainter
-	 */
-	public CanvasPainter draw(int index, int dataIndex) {
-		if(index < 0 || this.bitSets.length <= index || dataIndex < 0) {
-			return this;
-		}
-		final BitSet oldBitSet = this.bitSets[index];
-		// 已经包含数据
-		if(oldBitSet.get(dataIndex)) {
-			return this;
-		}
-		oldBitSet.set(dataIndex);
-		this.graphics.save();
-		this.drawFill(dataIndex);
-		this.graphics.restore();
-		return this;
-	}
-	
-	/**
 	 * <p>创建画布、画笔，画出背景和边框。</p>
 	 * 
 	 * @return CanvasPainter

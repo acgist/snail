@@ -110,8 +110,10 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 #### GUI
 
-![蜗牛](https://static.acgist.com/demo/snail/snail.png "蜗牛")
-![统计](https://static.acgist.com/demo/snail/statistics03.png "统计")
+![蜗牛](./docs/gui/main.png "蜗牛")
+![统计](./docs/gui/statistics-piece.png "统计")
+
+[更多GUI](./docs/GUI.md)
 
 #### 更多
 

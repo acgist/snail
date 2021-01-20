@@ -29,6 +29,26 @@ public interface ITheme {
 	 * <p>黄色：警告</p>
 	 */
 	public static final Color COLOR_YELLOW = Color.rgb(0xFF, 0xEE, 0x99);
+	/**
+	 * <p>托盘样式</p>
+	 */
+	public static final String CLASS_TRAY = "tray";
+	/**
+	 * <p>没有任务样式</p>
+	 */
+	public static final String CLASS_TASK_EMPTY = "placeholder";
+	/**
+	 * <p>系统信息样式</p>
+	 */
+	public static final String CLASS_SYSTEM_INFO = "system-info";
+	/**
+	 * <p>画图信息样式</p>
+	 */
+	public static final String CLASS_PAINTER_INFO = "painter-info";
+	/**
+	 * <p>统计信息样式</p>
+	 */
+	public static final String CLASS_STATISTICS_INFO = "statistics-info";
 	
 	/**
 	 * <p>获取系统主题颜色</p>

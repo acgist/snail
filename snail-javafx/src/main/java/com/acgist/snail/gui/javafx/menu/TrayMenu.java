@@ -20,6 +20,7 @@ import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
+import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.window.Controller;
@@ -234,7 +235,7 @@ public final class TrayMenu extends Menu {
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();
 		trayPane.setBackground(Background.EMPTY);
-		trayPane.getStyleClass().add("tray"); // 添加托盘样式
+		trayPane.getStyleClass().add(ITheme.CLASS_TRAY);
 		final Scene trayScene = new Scene(trayPane);
 		Themes.applyTheme(trayScene);
 		trayScene.setFill(Color.TRANSPARENT); // 隐藏托盘容器
