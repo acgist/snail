@@ -160,10 +160,14 @@ public abstract class Window<T extends Controller> extends Application {
 	/**
 	 * <p>判断窗口是否显示</p>
 	 * 
-	 * @return true-显示；false-隐藏；
+	 * @return 是否显示
 	 */
 	public boolean isShowing() {
-		return this.stage.isShowing();
+		return
+			// 显示
+			this.stage.isShowing() &&
+			// 图标显示
+			!this.stage.isIconified();
 	}
 	
 	/**
