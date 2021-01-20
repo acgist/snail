@@ -117,7 +117,7 @@ public final class TorrentProtocol extends Protocol {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>注意：一定先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
+	 * <p>注意：一定先检测BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
 	 */
 	@Override
 	protected void release(boolean success) {
