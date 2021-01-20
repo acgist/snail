@@ -7,7 +7,6 @@
  */
 open module com.acgist.snail {
 
-	//================导出================//
 	exports com.acgist.snail;
 	exports com.acgist.snail.config;
 	exports com.acgist.snail.context;
