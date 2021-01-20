@@ -22,7 +22,6 @@ import com.acgist.snail.gui.javafx.AbstractMenu;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Themes;
-import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 
@@ -174,7 +173,7 @@ public final class TrayMenu extends AbstractMenu {
 			}
 		};
 		// 添加系统托盘
-		try(final var input = MainWindow.class.getResourceAsStream(Controller.LOGO_ICON_16)) {
+		try(final var input = MainWindow.class.getResourceAsStream(Themes.LOGO_ICON_16)) {
 			final BufferedImage image = ImageIO.read(input);
 			this.trayIcon = new TrayIcon(image, SystemConfig.getName());
 			this.trayIcon.addMouseListener(mouseListener);
@@ -311,11 +310,11 @@ public final class TrayMenu extends AbstractMenu {
 	
 	
 	/**
-	 * <p>获取JavaFX消息类型</p>
+	 * <p>通过Gui消息类型获取托盘消息类型</p>
 	 * 
-	 * @param type 消息类型
+	 * @param type Gui消息类型
 	 * 
-	 * @return JavaFX消息类型
+	 * @return 托盘消息类型
 	 */
 	public MessageType getMessageType(GuiContext.MessageType type) {
 		switch (type) {

@@ -4,15 +4,12 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
 /**
- * <p>剪切板工具</p>
+ * <p>剪切板助手</p>
  * 
  * @author acgist
  */
 public final class Clipboards {
 
-	/**
-	 * <p>不允许实例化</p>
-	 */
 	private Clipboards() {
 	}
 	
@@ -22,10 +19,19 @@ public final class Clipboards {
 	 * @param value 文本内容
 	 */
 	public static final void copy(final String value) {
+		final Clipboard clipboard = Clipboard.getSystemClipboard();
 		final ClipboardContent content = new ClipboardContent();
 		content.putString(value);
-		final Clipboard clipboard = Clipboard.getSystemClipboard();
 		clipboard.setContent(content);
+	}
+	
+	/**
+	 * <p>获取剪切板文本内容</p>
+	 * 
+	 * @return 文本内容
+	 */
+	public static final String get() {
+		return Clipboard.getSystemClipboard().getString();
 	}
 	
 }

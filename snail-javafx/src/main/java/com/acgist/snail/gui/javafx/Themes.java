@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
-import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +20,18 @@ public final class Themes {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Themes.class);
 
+	/**
+	 * <p>FXML样式路径：{@value}</p>
+	 */
+	public static final String FXML_STYLE = "/style/fxml.css";
+	/**
+	 * <p>图标文件路径（16PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_16 = "/image/16/logo.png";
+	/**
+	 * <p>图标文件路径（200PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_200 = "/image/logo.png";
 	/**
 	 * <p>红色：禁用</p>
 	 */
@@ -45,6 +56,10 @@ public final class Themes {
 	 * <p>托盘样式</p>
 	 */
 	public static final String CLASS_TRAY = "tray";
+	/**
+	 * <p>图标样式：{@value}</p>
+	 */
+	public static final String CLASS_SNAIL_ICON = "snail-icon";
 	/**
 	 * <p>没有任务样式</p>
 	 */
@@ -124,7 +139,7 @@ public final class Themes {
 		// 设置主题样式
 		root.setStyle(Themes.getThemeStyle());
 		// 设置样式文件
-		root.getStylesheets().add(Controller.FXML_STYLE);
+		root.getStylesheets().add(Themes.FXML_STYLE);
 	}
 	
 }
