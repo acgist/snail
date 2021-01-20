@@ -297,7 +297,7 @@ public final class StatisticsController extends Controller implements Initializa
 			this.buildSelectTrafficStatistics();
 		} else if(this.filter == Filter.PIECE) {
 			this.buildSelectPieceStatistics();
-		} else  {
+		} else {
 			this.buildSelectSystemStatistics();
 		}
 	}

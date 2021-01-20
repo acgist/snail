@@ -20,12 +20,12 @@
 	
 	<groupId>com.acgist</groupId>
 	<artifactId>snail.parent</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.11</version>
 	<packaging>pom</packaging>
 	
 	<properties>
 		<!-- 版本 -->
-		<acgist.version>1.6.0</acgist.version>
+		<acgist.version>1.7.11</acgist.version>
 		<!-- 作者 -->
 		<vendor>acgist</vendor>
 		<!-- 模块 -->
