@@ -18,9 +18,11 @@ import com.acgist.snail.utils.Performance;
 
 public class VerifyTest extends Performance {
 
+	private static final String PROJECT_BASE_PATH = "E:/gitee/snail/";
+	
 	@Test
 	public void testVersionVerify() throws IOException {
-		final String basePath = "E:/gitee/snail/";
+		final String basePath = PROJECT_BASE_PATH;
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
 		final String snailJavaFXPomPath = basePath + "snail-javafx/pom.xml";
@@ -66,7 +68,7 @@ public class VerifyTest extends Performance {
 	
 	@Test
 	public void testFormat() throws IOException {
-		format(new File("E:\\gitee\\snail"));
+		format(new File(PROJECT_BASE_PATH));
 	}
 	
 	public void format(File file) throws IOException {
@@ -80,10 +82,10 @@ public class VerifyTest extends Performance {
 			) {
 				Files.readAllLines(file.toPath()).forEach(line -> {
 					if(line.endsWith(" ") && !line.endsWith("* ")) {
-						this.log("文件格式错误：{}-{}", file.getAbsolutePath(), line);
+						this.log("文件格式错误（空格）：{}-{}", file.getAbsolutePath(), line);
 					}
 					if(line.endsWith("	") && !line.trim().isEmpty()) {
-						this.log("文件格式错误：{}-{}", file.getAbsolutePath(), line);
+						this.log("文件格式错误（制表）：{}-{}", file.getAbsolutePath(), line);
 					}
 				});
 			}

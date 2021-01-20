@@ -431,7 +431,7 @@ public final class CanvasPainter {
 	 * <p>鼠标移动</p>
 	 * 
 	 * @param x x
-	 * @param y y 
+	 * @param y y
 	 */
 	private void moved(double x, double y) {
 		final int wh = this.wh + BORDER_WH;
@@ -489,7 +489,7 @@ public final class CanvasPainter {
 	 */
 	private boolean mouseSelect(int index) {
 		return
-			index >= 0  &&
+			index >= 0 &&
 			index < this.length &&
 			(this.mouseBitSet == null || this.mouseBitSet.get(index));
 	}

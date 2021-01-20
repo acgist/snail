@@ -549,7 +549,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>校验文件</p>
 	 * 
-	 * @throws IOException IO异常 
+	 * @throws IOException IO异常
 	 */
 	public boolean verify() throws IOException {
 		int verifyFailCount = 0;
