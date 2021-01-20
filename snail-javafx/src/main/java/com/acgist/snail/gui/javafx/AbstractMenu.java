@@ -11,7 +11,7 @@ import javafx.scene.control.SeparatorMenuItem;
  * 
  * @author acgist
  */
-public abstract class Menu extends ContextMenu {
+public abstract class AbstractMenu extends ContextMenu {
 
 	/**
 	 * <p>添加菜单</p>
@@ -23,7 +23,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * <p>添加菜单分隔</p>
+	 * <p>添加分隔</p>
 	 */
 	protected void addSeparator() {
 		this.addMenu(new SeparatorMenuItem());
@@ -57,8 +57,8 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * <p>初始化所有菜单</p>
+	 * <p>创建所有菜单</p>
 	 */
-	protected abstract void initMenu();
+	protected abstract void buildMenus();
 	
 }

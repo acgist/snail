@@ -1,5 +1,7 @@
 package com.acgist.snail.gui.javafx;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -12,22 +14,27 @@ import com.acgist.snail.utils.ThreadUtils;
 public class TaskbarsTest extends Performance {
 
 	@Test
-	public void testProgress() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	public void testTaskbars() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+		if(SKIP_COSTED) {
+			this.log("跳过testTaskbars测试");
+			return;
+		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		final JFrame frame = new JFrame("进度测试");
 		JFrame.setDefaultLookAndFeelDecorated(true);
-		frame.setSize(200, 100);
+		final JFrame frame = new JFrame("进度测试");
+		frame.setSize(200, 200);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		Taskbars taskbars = Taskbars.newInstance(frame);
+		final Taskbars taskbars = Taskbars.newInstance(frame);
 		int index = 0;
 		while(++index < 100) {
 			if(index == 50) {
 				taskbars.paused();
-				ThreadUtils.sleep(2000);
+				ThreadUtils.sleep(1000);
 			} else if(index == 60) {
 				taskbars.error();
-				ThreadUtils.sleep(2000);
+				ThreadUtils.sleep(1000);
 			} else {
 				taskbars.progress(index);
 				ThreadUtils.sleep(20);
@@ -35,6 +42,7 @@ public class TaskbarsTest extends Performance {
 		}
 		taskbars.stop();
 		ThreadUtils.sleep(2000);
+		assertNotNull(frame);
 	}
 	
 }

@@ -4,7 +4,7 @@ import java.awt.Taskbar;
 import java.awt.Window;
 
 /**
- * <p>任务状态栏工具</p>
+ * <p>状态栏助手</p>
  * 
  * @author acgist
  */
@@ -15,7 +15,7 @@ public final class Taskbars {
 	 */
 	private final Window window;
 	/**
-	 * <p>任务状态栏</p>
+	 * <p>状态栏</p>
 	 */
 	private final Taskbar taskbar;
 
@@ -24,7 +24,7 @@ public final class Taskbars {
 	}
 
 	/**
-	 * @param taskbar 任务状态栏
+	 * @param taskbar 状态栏
 	 */
 	private Taskbars(Window window, Taskbar taskbar) {
 		this.window = window;
@@ -32,7 +32,7 @@ public final class Taskbars {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>创建助手</p>
 	 * 
 	 * @param window 窗口
 	 * 
@@ -55,12 +55,12 @@ public final class Taskbars {
 			if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
 				this.taskbar.setProgressValue(value);
 			} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
-				this.taskbar.setWindowProgressValue(this.window, value);
 				// OFF：关闭
 				// ERROR：失败（红色）
-				// NORMAL：正常
+				// NORMAL：正常（绿色）
 				// PAUSED：暂停（黄色）
 				// INDETERMINATE：未知（未知进度）
+				this.taskbar.setWindowProgressValue(this.window, value);
 				this.taskbar.setWindowProgressState(this.window, Taskbar.State.NORMAL);
 			}
 		}

@@ -4,7 +4,7 @@ import java.util.BitSet;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import com.acgist.snail.gui.javafx.ITheme;
+import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.utils.NumberUtils;
 
 import javafx.scene.canvas.Canvas;
@@ -105,7 +105,7 @@ public final class CanvasPainter {
 	 * @param bitSet 数据
 	 */
 	private CanvasPainter(BitSet bitSet) {
-		this(bitSet.size(), new BitSet[] { bitSet }, new Color[] { ITheme.COLOR_GREEN });
+		this(bitSet.size(), new BitSet[] { bitSet }, new Color[] { Themes.COLOR_GREEN });
 	}
 
 	/**
@@ -152,10 +152,10 @@ public final class CanvasPainter {
 	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, Consumer<Integer> mouseSelect) {
 		this(
 			wh, col, length, bitSets, colors,
-			ITheme.COLOR_GRAY,
+			Themes.COLOR_GRAY,
 			Color.BLACK,
 			Color.WHITE,
-			ITheme.COLOR_RED,
+			Themes.COLOR_RED,
 			mouseBitSet,
 			mouseSelect
 		);

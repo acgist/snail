@@ -17,7 +17,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
-import com.acgist.snail.gui.javafx.ITheme;
+import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.menu.TaskMenu;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
@@ -153,10 +153,10 @@ public final class MainController extends Controller implements Initializable {
 	 */
 	private Node buildPlaceholder() {
 		// 颜色
-		final var color = ITheme.COLOR_GRAY;
+		final var color = Themes.COLOR_GRAY;
 		// 图标
 		final var icon = SnailIcon.AS_DOWNLOAD3.iconLabel();
-		icon.getStyleClass().add(ITheme.CLASS_TASK_EMPTY); // 特殊样式
+		icon.getStyleClass().add(Themes.CLASS_TASK_EMPTY); // 特殊样式
 		icon.setTextFill(color);
 		// 文本
 		final var text = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");

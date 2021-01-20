@@ -131,14 +131,18 @@ list.stream()
 
 接口必须使用`I`开头
 
+###### 实例
+
+`ITaskSession` -> `TaskSession`
+
 #### 抽象类
 
-* 抽象类不要使用`A`、`Base`、`Abstract`开头
+* 抽象类使用`Abstract`开头
 * 子类必须使用父类后缀结尾
 
 ###### 示例
 
-`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]
+`AbstractTrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]
 
 #### 工具助手
 

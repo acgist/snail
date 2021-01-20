@@ -20,7 +20,7 @@ import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.TrackerContext;
-import com.acgist.snail.gui.javafx.ITheme;
+import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.pojo.session.NodeSession;
@@ -329,7 +329,7 @@ public final class StatisticsController extends Controller implements Initializa
 			this.buildTextFlow("Java版本：", System.getProperty("java.version")),
 			this.buildTextFlow("虚拟机名称：", System.getProperty("java.vm.name"))
 		);
-		systemInfo.getStyleClass().add(ITheme.CLASS_SYSTEM_INFO);
+		systemInfo.getStyleClass().add(Themes.CLASS_SYSTEM_INFO);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
 		statisticsBoxNode.add(systemInfo);
@@ -558,7 +558,7 @@ public final class StatisticsController extends Controller implements Initializa
 				indifferencePeers.set(index);
 			}
 		}
-		final Color[] colors = new Color[] { ITheme.COLOR_YELLOW, ITheme.COLOR_RED, ITheme.COLOR_GREEN, ITheme.COLOR_GRAY };
+		final Color[] colors = new Color[] { Themes.COLOR_YELLOW, Themes.COLOR_RED, Themes.COLOR_GREEN, Themes.COLOR_GRAY };
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			WH, COL, length,
 			new BitSet[] { exchangePeers, uploadPeers, downloadPeers, indifferencePeers },
@@ -608,7 +608,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final BitSet mousePieces = new BitSet();
 		mousePieces.or(selectPieces);
 		mousePieces.andNot(pieces);
-		final Color[] colors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW };
+		final Color[] colors = new Color[] { Themes.COLOR_GREEN, Themes.COLOR_YELLOW };
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			WH, COL, pieceSize,
 			new BitSet[] { pieces, selectPieces },
@@ -621,7 +621,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final HBox healthHBox = this.buildStatisticsInfo("健康度：" + torrentSession.health() + "%");
 		// 颜色描述
 		final String[] tabs = new String[] { "已下载", "未下载", "不下载" };
-		final Color[] tabColors = new Color[] { ITheme.COLOR_GREEN, ITheme.COLOR_YELLOW, ITheme.COLOR_GRAY };
+		final Color[] tabColors = new Color[] { Themes.COLOR_GREEN, Themes.COLOR_YELLOW, Themes.COLOR_GRAY };
 		final HBox painterHBox = this.buildPainterInfo(tabs, tabColors);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
@@ -673,7 +673,7 @@ public final class StatisticsController extends Controller implements Initializa
 		final Text text = new Text(message);
 		final TextFlow textFlow = new TextFlow(text);
 		final HBox hBox = new HBox(textFlow);
-		hBox.getStyleClass().add(ITheme.CLASS_STATISTICS_INFO);
+		hBox.getStyleClass().add(Themes.CLASS_STATISTICS_INFO);
 		return hBox;
 	}
 	
@@ -693,7 +693,7 @@ public final class StatisticsController extends Controller implements Initializa
 			textFlow.setBackground(new Background(new BackgroundFill(colors[index], null, null)));
 			hBox.getChildren().add(textFlow);
 		}
-		hBox.getStyleClass().add(ITheme.CLASS_PAINTER_INFO);
+		hBox.getStyleClass().add(Themes.CLASS_PAINTER_INFO);
 		return hBox;
 	}
 	

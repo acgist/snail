@@ -18,10 +18,9 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.javafx.AbstractMenu;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
-import com.acgist.snail.gui.javafx.ITheme;
-import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
@@ -49,7 +48,7 @@ import javafx.stage.WindowEvent;
  * 
  * @author acgist
  */
-public final class TrayMenu extends Menu {
+public final class TrayMenu extends AbstractMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 	
@@ -111,13 +110,13 @@ public final class TrayMenu extends Menu {
 	private TrayMenu() {
 		this.support = SystemTray.isSupported();
 		if(this.support) {
-			this.initMenu();
+			this.buildMenus();
 			this.enableTray();
 		}
 	}
 	
 	@Override
-	protected void initMenu() {
+	protected void buildMenus() {
 		// 创建按钮
 		this.showMenu = buildMenuItem("显示", SnailIcon.AS_ENLARGE);
 		this.hideMenu = buildMenuItem("隐藏", SnailIcon.AS_SHRINK);
@@ -156,6 +155,7 @@ public final class TrayMenu extends Menu {
 					// 左键：显示隐藏
 					if (MainWindow.getInstance().isShowing()) {
 						Platform.runLater(() -> {
+							// TODO：隐藏所有窗口
 							MainWindow.getInstance().hide();
 						});
 					} else {
@@ -235,7 +235,7 @@ public final class TrayMenu extends Menu {
 	private Stage createTrayStage() {
 		final FlowPane trayPane = new FlowPane();
 		trayPane.setBackground(Background.EMPTY);
-		trayPane.getStyleClass().add(ITheme.CLASS_TRAY);
+		trayPane.getStyleClass().add(Themes.CLASS_TRAY);
 		final Scene trayScene = new Scene(trayPane);
 		Themes.applyTheme(trayScene);
 		trayScene.setFill(Color.TRANSPARENT); // 隐藏托盘容器

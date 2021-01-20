@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.gui.javafx.AbstractMenu;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
-import com.acgist.snail.gui.javafx.Menu;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -31,7 +31,7 @@ import javafx.stage.WindowEvent;
  * 
  * @author acgist
  */
-public final class TaskMenu extends Menu {
+public final class TaskMenu extends AbstractMenu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	
@@ -80,11 +80,11 @@ public final class TaskMenu extends Menu {
 	private MenuItem openFolderMenu;
 	
 	private TaskMenu() {
-		this.initMenu();
+		this.buildMenus();
 	}
 	
 	@Override
-	protected void initMenu() {
+	protected void buildMenus() {
 		// 创建按钮
 		this.startMenu = buildMenuItem("开始", SnailIcon.AS_PLAY3);
 		this.pauseMenu = buildMenuItem("暂停", SnailIcon.AS_PAUSE2);
