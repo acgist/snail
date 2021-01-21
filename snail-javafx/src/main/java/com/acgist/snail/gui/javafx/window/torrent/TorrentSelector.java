@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.pojo.ITaskSession;
@@ -23,7 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- * <p>BT文件选择器</p>
+ * <p>BT任务下载文件选择器</p>
  * 
  * @author acgist
  */
@@ -38,10 +38,10 @@ public final class TorrentSelector {
 	 */
 	private final TreeItem<HBox> root;
 	/**
-	 * <p>选择器Map</p>
-	 * <p>文件路径=选择文件</p>
+	 * <p>文件选择器Map</p>
+	 * <p>文件路径=文件选择器</p>
 	 */
-	private final Map<String, Selector> selector = new HashMap<>();
+	private final Map<String, Selector> selectors = new HashMap<>();
 
 	/**
 	 * @param name 任务名称
@@ -49,21 +49,20 @@ public final class TorrentSelector {
 	 * @param tree 树形菜单
 	 */
 	private TorrentSelector(String name, Button download, TreeView<HBox> tree) {
-		final TreeItem<HBox> root = this.buildTreeItem(null, "", name, null);
-		root.setExpanded(true);
-		tree.setRoot(root);
-		this.root = root;
+		this.root = this.buildTreeItem(null, "", name, null);
+		this.root.setExpanded(true);
+		tree.setRoot(this.root);
 		this.download = download;
 	}
 	
 	/**
-	 * <p>创建BT文件选择器</p>
+	 * <p>创建BT任务下载文件选择器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
 	 * @param tree 树形菜单
 	 * 
-	 * @return TorrentSelector
+	 * @return {@link TorrentSelector}
 	 */
 	public static final TorrentSelector newInstance(String name, Button download, TreeView<HBox> tree) {
 		return new TorrentSelector(name, download, tree);
@@ -78,18 +77,15 @@ public final class TorrentSelector {
 	public void build(String path, Long size) {
 		String name = path;
 		TreeItem<HBox> parent = this.root;
-		// 包含路径时创建路径菜单
 		if(path.contains(TorrentFile.SEPARATOR)) {
-			TreeItem<HBox> treeItem = null;
+			// 包含路径
 			final StringBuilder parentPath = new StringBuilder("");
 			final String[] paths = path.split(TorrentFile.SEPARATOR);
-			// 创建路径菜单
+			// 创建路径菜单：数量大时forEach效率很低
 			for (int index = 0; index < paths.length - 1; index++) {
-				// 数量大时forEach效率很低
 				final String value = paths[index];
 				parentPath.append(value).append(TorrentFile.SEPARATOR);
-				treeItem = this.buildTreeItem(parent, parentPath.toString(), value, null);
-				parent = treeItem;
+				parent = this.buildTreeItem(parent, parentPath.toString(), value, null);
 			}
 			name = paths[paths.length - 1];
 		}
@@ -106,22 +102,23 @@ public final class TorrentSelector {
 	 * @param size 文件大小
 	 */
 	private TreeItem<HBox> buildTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
-		final Selector oldSelector = this.selector.get(path);
-		if(oldSelector != null) { // 如果已经创建跳过：路径菜单
+		final Selector oldSelector = this.selectors.get(path);
+		if(oldSelector != null) {
+			// 如果已经创建跳过（路径菜单可能重复）
 			return oldSelector.getTreeItem();
 		}
-		final CheckBox checkBox = new CheckBox(name);
-		checkBox.setPrefWidth(500);
-		checkBox.setTooltip(Tooltips.newTooltip(name));
-		checkBox.setOnAction(this.selectAction);
-		final HBox box = new HBox(checkBox);
+		final CheckBox nameCheckBox = new CheckBox(name);
+		nameCheckBox.setPrefWidth(500);
+		nameCheckBox.setTooltip(Tooltips.newTooltip(name));
+		nameCheckBox.setOnAction(this.selectAction);
+		final HBox box = new HBox(nameCheckBox);
 		// 设置文件大小
 		if(size != null) {
-			final Text text = new Text(FileUtils.formatSize(size));
-			box.getChildren().add(text);
+			final Text sizeText = new Text(FileUtils.formatSize(size));
+			box.getChildren().add(sizeText);
 		}
 		final TreeItem<HBox> treeItem = new TreeItem<>(box);
-		this.selector.put(path, new Selector(path, size, checkBox, treeItem));
+		this.selectors.put(path, new Selector(path, size, nameCheckBox, treeItem));
 		if(parent != null) {
 			// 根节点没有上级节点
 			parent.getChildren().add(treeItem);
@@ -130,15 +127,24 @@ public final class TorrentSelector {
 	}
 	
 	/**
+	 * <p>获取选择文件流</p>
+	 * 
+	 * @return 选择文件流
+	 */
+	private Stream<Selector> selectSelectors() {
+		return this.selectors.values().stream()
+			.filter(Selector::isSelected)
+			.filter(Selector::isFile);
+	}
+	
+	/**
 	 * <p>获取选择文件大小</p>
 	 * 
 	 * @return 选择文件大小
 	 */
 	public Long size() {
-		return this.selector.values().stream()
-			.filter(value -> value.isSelected()) // 选中
-			.filter(value -> value.isFile()) // 文件
-			.collect(Collectors.summingLong(value -> value.getSize()));
+		return this.selectSelectors()
+			.collect(Collectors.summingLong(Selector::getSize));
 	}
 	
 	/**
@@ -147,41 +153,37 @@ public final class TorrentSelector {
 	 * @return 选择文件列表
 	 */
 	public List<String> description() {
-		return this.selector.entrySet().stream()
-			.filter(entry -> entry.getValue().isSelected()) // 选中
-			.filter(entry -> entry.getValue().isFile()) // 文件
-			.map(Entry::getKey)
+		return this.selectSelectors()
+			.map(Selector::getPath)
 			.collect(Collectors.toList());
 	}
 
 	/**
 	 * <p>设置选择文件</p>
-	 * <p>如果没有选中文件使用自动选择：选择大于平均值的文件</p>
+	 * <p>如果没有选择文件使用自动选择（选择大于平均值的文件）</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
 	public void select(ITaskSession taskSession) {
-		final var list = taskSession.multifileSelected();
-		if(CollectionUtils.isNotEmpty(list)) {
+		final var selectedFileList = taskSession.multifileSelected();
+		if(CollectionUtils.isNotEmpty(selectedFileList)) {
 			// 已选择文件
-			this.selector.entrySet().stream()
-				.filter(entry -> list.contains(entry.getKey()))
-				.forEach(entry -> entry.getValue().setSelected(true));
+			this.selectors.values().stream()
+				.filter(selector -> selectedFileList.contains(selector.getPath()))
+				.forEach(Selector::setSelected);
 		} else {
-			// 未选择文件：自动选择
+			// 未选择文件
 			// 计算平均值
-			final var avgSize = this.selector.values().stream()
+			final var avgSize = this.selectors.values().stream()
 				.collect(Collectors.averagingLong(Selector::getSize));
-			this.selector.entrySet().stream()
-				.filter(entry -> {
-					return
-						entry.getValue().isFile() && // 文件
-						entry.getValue().getSize() >= avgSize; // 大于平均值
-				})
-				.forEach(entry -> entry.getValue().setSelected(true));
+			this.selectors.values().stream()
+				.filter(Selector::isFile)
+				// 大于平均值
+				.filter(selector -> selector.getSize() >= avgSize)
+				.forEach(Selector::setSelected);
 		}
 		this.selectParentFolder();
-		this.buttonSize();
+		this.buildButtonSize();
 	}
 	
 	/**
@@ -191,26 +193,23 @@ public final class TorrentSelector {
 	private void selectParentFolder() {
 		final List<TreeItem<HBox>> parents = new ArrayList<>();
 		// 所有上级目录
-		this.selector.values().stream()
-			.filter(value -> value.isFile())
-			.filter(value -> value.isSelected())
-			.forEach(value -> {
-				var parent = value.getTreeItem();
-				while(parent.getParent() != null) {
-					parent = parent.getParent();
-					parents.add(parent);
-				}
-			});
+		this.selectSelectors().forEach(selector -> {
+			var parent = selector.getTreeItem();
+			while(parent.getParent() != null) {
+				parent = parent.getParent();
+				parents.add(parent);
+			}
+		});
 		// 选择上级目录
-		this.selector.values().stream()
-			.filter(value -> parents.contains(value.getTreeItem()))
-			.forEach(value -> value.setSelected(true));
+		this.selectors.values().stream()
+			.filter(selector -> parents.contains(selector.getTreeItem()))
+			.forEach(Selector::setSelected);
 	}
 	
 	/**
 	 * <p>设置按钮文本</p>
 	 */
-	private void buttonSize() {
+	private void buildButtonSize() {
 		this.download.setText("下载（" + FileUtils.formatSize(this.size()) + "）");
 	}
 	
@@ -221,23 +220,22 @@ public final class TorrentSelector {
 	private EventHandler<ActionEvent> selectAction = event -> {
 		final CheckBox checkBox = (CheckBox) event.getSource();
 		final boolean selected = checkBox.isSelected();
-		// 前缀
-		final String prefix = this.selector.entrySet().stream()
-			.filter(entry -> entry.getValue().getCheckBox() == checkBox)
-			.map(entry -> entry.getKey())
-//			.filter(Objects::nonNull) // 绝对有值
+		// 获取选择文件前缀
+		final String prefix = this.selectors.values().stream()
+			.filter(selector -> selector.getCheckBox() == checkBox)
+			.map(selector -> selector.getPath())
 			.findFirst()
 			.orElse("");
 		// 选择下级目录
-		this.selector.entrySet().stream()
-			.filter(entry -> entry.getKey().startsWith(prefix))
-			.forEach(entry -> entry.getValue().setSelected(selected));
+		this.selectors.values().stream()
+			.filter(selector -> selector.getPath().startsWith(prefix))
+			.forEach(selector -> selector.setSelected(selected));
 		this.selectParentFolder();
-		this.buttonSize();
+		this.buildButtonSize();
 	};
 	
 	/**
-	 * <p>选择文件</p>
+	 * <p>文件选择器</p>
 	 * 
 	 * @author acgist
 	 */
@@ -249,12 +247,11 @@ public final class TorrentSelector {
 		private final String path;
 		/**
 		 * <p>文件大小</p>
-		 * <p>目录等于{@code 0}</p>
+		 * <p>目录为零</p>
 		 */
 		private final long size;
 		/**
 		 * <p>是否是文件</p>
-		 * <p>true-文件；false-目录；</p>
 		 */
 		private final boolean file;
 		/**
@@ -272,10 +269,10 @@ public final class TorrentSelector {
 		 * @param checkBox 选择框
 		 * @param treeItem 文件菜单节点
 		 */
-		public Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
+		protected Selector(String path, Long size, CheckBox checkBox, TreeItem<HBox> treeItem) {
 			this.path = path;
-			this.size = (size == null || size == 0L) ? 0 : size;
-			this.file = (size == null || size == 0L) ? false : true;
+			this.size = size == null ? 0L : size;
+			this.file = this.size != 0L;
 			this.checkBox = checkBox;
 			this.treeItem = treeItem;
 		}
@@ -287,6 +284,13 @@ public final class TorrentSelector {
 		 */
 		public boolean isSelected() {
 			return this.checkBox.isSelected();
+		}
+
+		/**
+		 * <p>设置选中</p>
+		 */
+		public void setSelected() {
+			this.setSelected(true);
 		}
 		
 		/**
@@ -304,7 +308,7 @@ public final class TorrentSelector {
 		 * @return 文件路径
 		 */
 		public String getPath() {
-			return path;
+			return this.path;
 		}
 		
 		/**
@@ -313,7 +317,7 @@ public final class TorrentSelector {
 		 * @return 文件大小
 		 */
 		public long getSize() {
-			return size;
+			return this.size;
 		}
 		
 		/**
@@ -322,7 +326,7 @@ public final class TorrentSelector {
 		 * @return 是否是文件
 		 */
 		public boolean isFile() {
-			return file;
+			return this.file;
 		}
 		
 		/**
@@ -331,7 +335,7 @@ public final class TorrentSelector {
 		 * @return 选择框
 		 */
 		public CheckBox getCheckBox() {
-			return checkBox;
+			return this.checkBox;
 		}
 		
 		/**
@@ -340,7 +344,7 @@ public final class TorrentSelector {
 		 * @return 文件菜单节点
 		 */
 		public TreeItem<HBox> getTreeItem() {
-			return treeItem;
+			return this.treeItem;
 		}
 		
 	}
