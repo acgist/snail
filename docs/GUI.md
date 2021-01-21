@@ -47,6 +47,14 @@
 
 ![统计-Tracker统计](.//gui/statistics-tracker.png "统计-Tracker统计")
 
+### 统计-客户端统计
+
+当前所选BT任务客户端统计
+
+> 未知类型客户端：没有连接、连接失败
+
+![统计-客户度统计](.//gui/statistics-client.png "统计-客户端统计")
+
 ### 统计-来源统计
 
 当前所选BT任务Peer来源统计
