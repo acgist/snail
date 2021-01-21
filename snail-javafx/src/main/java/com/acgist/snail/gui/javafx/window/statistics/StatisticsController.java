@@ -408,6 +408,8 @@ public final class StatisticsController extends Controller implements Initializa
 		final var pieCharts = peers.stream()
 			.collect(Collectors.groupingBy(PeerSession::clientName, Collectors.counting()))
 			.entrySet().stream()
+			// 排序：数量倒序
+			.sorted((source, target) -> Long.compare(target.getValue(), source.getValue()))
 			.map(entity -> new PieChart.Data(entity.getKey(), entity.getValue()))
 			.collect(Collectors.toList());
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieCharts);
