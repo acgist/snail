@@ -131,7 +131,7 @@ public final class TorrentController extends AbstractController {
 			try {
 				this.updateTaskSession();
 			} catch (DownloadException e) {
-				LOGGER.error("编辑下载任务异常", e);
+				LOGGER.error("更新下载任务异常", e);
 				Alerts.warn("下载失败", e.getMessage());
 			}
 		}
