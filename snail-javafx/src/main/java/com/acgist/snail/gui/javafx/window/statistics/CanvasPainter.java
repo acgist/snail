@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx.window.statistics;
 
 import java.util.BitSet;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.utils.NumberUtils;
@@ -79,7 +79,7 @@ public final class CanvasPainter {
 	/**
 	 * <p>鼠标选择事件</p>
 	 */
-	private final Consumer<Integer> mouseSelect;
+	private final IntConsumer mouseSelect;
 	/**
 	 * <p>鼠标位置</p>
 	 */
@@ -136,7 +136,7 @@ public final class CanvasPainter {
 	 * @param colors 颜色数组
 	 * @param mouseSelect 鼠标选择事件
 	 */
-	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, Consumer<Integer> mouseSelect) {
+	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, IntConsumer mouseSelect) {
 		this(wh, col, length, bitSets, colors, null, mouseSelect);
 	}
 	
@@ -149,7 +149,7 @@ public final class CanvasPainter {
 	 * @param mouseBitSet 鼠标选择范围
 	 * @param mouseSelect 鼠标选择事件
 	 */
-	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, Consumer<Integer> mouseSelect) {
+	private CanvasPainter(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, IntConsumer mouseSelect) {
 		this(
 			wh, col, length, bitSets, colors,
 			Themes.COLOR_GRAY,
@@ -178,7 +178,7 @@ public final class CanvasPainter {
 		int wh, int col, int length,
 		BitSet[] bitSets, Color[] colors,
 		Color noneColor, Color borderColor, Color backgroundColor,
-		Color mouseColor, BitSet mouseBitSet, Consumer<Integer> mouseSelect
+		Color mouseColor, BitSet mouseBitSet, IntConsumer mouseSelect
 	) {
 		if(bitSets.length != colors.length) {
 			throw new IllegalArgumentException("参数长度错误");
@@ -248,7 +248,7 @@ public final class CanvasPainter {
 	 * 
 	 * @return CanvasPainter
 	 */
-	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, Consumer<Integer> mouseSelect) {
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, IntConsumer mouseSelect) {
 		return new CanvasPainter(wh, col, length, bitSets, colors, mouseSelect);
 	}
 	
@@ -265,7 +265,7 @@ public final class CanvasPainter {
 	 * 
 	 * @return CanvasPainter
 	 */
-	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, Consumer<Integer> mouseSelect) {
+	public static final CanvasPainter newInstance(int wh, int col, int length, BitSet[] bitSets, Color[] colors, BitSet mouseBitSet, IntConsumer mouseSelect) {
 		return new CanvasPainter(wh, col, length, bitSets, colors, mouseBitSet, mouseSelect);
 	}
 	
@@ -290,7 +290,7 @@ public final class CanvasPainter {
 		int wh, int col, int length,
 		BitSet[] bitSets, Color[] colors,
 		Color noneColor, Color borderColor, Color backgroundColor,
-		Color mouseColor, BitSet mouseBitSet, Consumer<Integer> mouseSelect
+		Color mouseColor, BitSet mouseBitSet, IntConsumer mouseSelect
 	) {
 		return new CanvasPainter(wh, col, length, bitSets, colors, noneColor, borderColor, backgroundColor, mouseColor, mouseBitSet, mouseSelect);
 	}
@@ -323,9 +323,10 @@ public final class CanvasPainter {
 	 */
 	public CanvasPainter build(Canvas canvas) {
 		if(canvas == null) {
-			// 计算高宽
-			this.width = this.col * (this.wh + BORDER_WH) + BORDER_WH; // 列数 * (宽度 + 边框) + 右边框
-			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH; // 行数 * (高度 + 边框) + 底边框
+			// 宽度：列数 * (宽度 + 边框) + 右边框
+			this.width = this.col * (this.wh + BORDER_WH) + BORDER_WH;
+			// 高度：行数 * (高度 + 边框) + 底边框
+			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH;
 			// 创建画布
 			this.canvas = new Canvas(this.width, this.height);
 			if(this.mouseSelect != null) {
@@ -363,21 +364,20 @@ public final class CanvasPainter {
 		this.graphics.save();
 		this.graphics.setStroke(this.borderColor);
 		this.graphics.setLineWidth(BORDER_WH);
+		final int colRowWh = this.wh + BORDER_WH;
 		// 列
-		final int width = this.wh + BORDER_WH;
 		int x = 0;
 		for (int index = 0; index < this.col; index++) {
-			x = index * width;
+			x = index * colRowWh;
 			this.graphics.strokeLine(x, 0, x, this.height);
 		}
 		// 右边框
 		final int right = this.width - BORDER_WH;
 		this.graphics.strokeLine(right, 0, right, this.height);
 		// 行
-		final int height = this.wh + BORDER_WH;
 		int y = 0;
 		for (int index = 0; index < this.row; index++) {
-			y = index * height;
+			y = index * colRowWh;
 			this.graphics.strokeLine(0, y, this.width, y);
 		}
 		// 底边框
@@ -419,25 +419,25 @@ public final class CanvasPainter {
 		if(none) {
 			this.graphics.setFill(this.noneColor);
 		}
-		final int row = index / this.col;
-		final int col = index % this.col;
-		final int wh = this.wh + BORDER_WH;
-		final int width = col * wh + BORDER_WH;
-		final int height = row * wh + BORDER_WH;
-		this.graphics.fillRect(width, height, this.wh, this.wh);
+		final int rowCount = index / this.col;
+		final int colCount = index % this.col;
+		final int colRowWh = this.wh + BORDER_WH;
+		final int x = colCount * colRowWh + BORDER_WH;
+		final int y = rowCount * colRowWh + BORDER_WH;
+		this.graphics.fillRect(x, y, this.wh, this.wh);
 	}
 
 	/**
 	 * <p>鼠标移动</p>
 	 * 
-	 * @param x x
-	 * @param y y
+	 * @param mouseX 鼠标点击x
+	 * @param mouseY 鼠标点击y
 	 */
-	private void moved(double x, double y) {
-		final int wh = this.wh + BORDER_WH;
-		final int col = (int) (x / wh);
-		final int row = (int) (y / wh);
-		final int index = row * this.col + col;
+	private void moved(double mouseX, double mouseY) {
+		final int colRowWh = this.wh + BORDER_WH;
+		final int colCount = (int) (mouseX / colRowWh);
+		final int rowCount = (int) (mouseY / colRowWh);
+		final int index = rowCount * this.col + colCount;
 		if(this.mouseIndex == index) {
 			// 没有变化
 			return;
@@ -447,15 +447,15 @@ public final class CanvasPainter {
 		this.drawFill(oldIndex);
 		if(this.mouseSelect(index)) {
 			this.mouseIndex = index;
-			final int width = col * wh + BORDER_WH;
-			final int height = row * wh + BORDER_WH;
+			final int x = colCount * colRowWh + BORDER_WH;
+			final int y = rowCount * colRowWh + BORDER_WH;
 			this.graphics.setFill(this.mouseColor);
-			this.graphics.fillRect(width, height, this.wh, this.wh);
+			this.graphics.fillRect(x, y, this.wh, this.wh);
 		} else {
 			this.mouseIndex = -1;
 		}
 		this.graphics.restore();
-	};
+	}
 	
 	/**
 	 * <p>鼠标退出</p>
@@ -478,7 +478,7 @@ public final class CanvasPainter {
 		) {
 			this.mouseSelect.accept(this.mouseIndex);
 		}
-	};
+	}
 	
 	/**
 	 * <p>判断当前位置是否可以选择</p>
