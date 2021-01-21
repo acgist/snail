@@ -82,7 +82,7 @@ public final class StatisticsController extends AbstractController {
 	private static final int COL = 50;
 	
 	/**
-	 * <p>统计信息筛选</p>
+	 * <p>统计筛选</p>
 	 * 
 	 * @author acgist
 	 */
@@ -125,7 +125,6 @@ public final class StatisticsController extends AbstractController {
 	
 	@FXML
 	private FlowPane root;
-	
 	@FXML
 	private Text upload;
 	@FXML
@@ -134,7 +133,9 @@ public final class StatisticsController extends AbstractController {
 	private ChoiceBox<SelectInfoHash> selectInfoHashs;
 	@FXML
 	private VBox statisticsBox;
-	
+	/**
+	 * <p>统计筛选</p>
+	 */
 	private Filter filter = Filter.SYSTEM;
 	
 	@Override
@@ -257,7 +258,7 @@ public final class StatisticsController extends AbstractController {
 	}
 
 	/**
-	 * @param piecePos 指定下载Piece索引
+	 * @param index 指定下载Piece索引
 	 * 
 	 * @see TorrentSession#piecePos(int)
 	 */
@@ -293,21 +294,21 @@ public final class StatisticsController extends AbstractController {
 		final var defaultValue = this.selectInfoHashs.getValue();
 		final ObservableList<SelectInfoHash> obs = FXCollections.observableArrayList();
 		TorrentContext.getInstance().allTorrentSession().stream()
-			.filter(TorrentSession::useable) // 准备完成
+			// 准备完成：完成磁力链接不能查询
+			.filter(TorrentSession::useable)
 			.forEach(session -> obs.add(new SelectInfoHash(session.infoHashHex(), session.name())));
 		this.selectInfoHashs.setItems(obs);
-		if(defaultValue == null) {
-			// 没有选中任务：默认选择第一个任务
-			this.selectInfoHashs.getSelectionModel().select(0);
-		} else {
+		// 没有选中任务：默认选中第一个任务
+		int index = 0;
+		if(defaultValue != null) {
 			// 已经选中任务
-			final int index = obs.indexOf(defaultValue);
-			this.selectInfoHashs.getSelectionModel().select(index);
+			index = obs.indexOf(defaultValue);
 		}
+		this.selectInfoHashs.getSelectionModel().select(index);
 	}
 	
 	/**
-	 * <p>统计选择筛选条件</p>
+	 * <p>筛选统计页面</p>
 	 */
 	private void buildSelectStatistics() {
 		if(this.filter == Filter.NODE) {
@@ -365,10 +366,10 @@ public final class StatisticsController extends AbstractController {
 	 * <p>节点统计</p>
 	 */
 	private void buildSelectNodeStatistics() {
-		final List<NodeSession> dhtNodes = NodeContext.getInstance().nodes();
-		final Map<NodeSession.Status, Long> nodeGroup = dhtNodes.stream()
+		final List<NodeSession> nodes = NodeContext.getInstance().nodes();
+		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
-		final int total = dhtNodes.size();
+		final int total = nodes.size();
 		final long unuse = nodeGroup.getOrDefault(NodeSession.Status.UNUSE, 0L);
 		final long verify = nodeGroup.getOrDefault(NodeSession.Status.VERIFY, 0L);
 		final long available = nodeGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L);
@@ -522,27 +523,29 @@ public final class StatisticsController extends AbstractController {
 		// 下载流量
 		final List<XYChart.Data<String, Number>> downloadPeer = new ArrayList<>();
 		peers.forEach(peer -> {
+			// 统计下载中和上传中的Peer
+			boolean active = false;
 			if(peer.uploading()) {
+				active = true;
 				uploadCount.incrementAndGet();
-				if(!categoriesPeer.contains(peer.host())) {
-					categoriesPeer.add(peer.host());
-				}
-				final double uploadSize = FileUtils.formatSizeMB(peer.statistics().uploadSize());
-				final double downloadSize = FileUtils.formatSizeMB(peer.statistics().downloadSize());
-				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(peer.host(), uploadSize);
-				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(peer.host(), downloadSize);
-				uploadPeer.add(uploadData);
-				downloadPeer.add(downloadData);
 			}
 			if(peer.downloading()) {
+				active = true;
 				downloadCount.incrementAndGet();
-				if(!categoriesPeer.contains(peer.host())) {
-					categoriesPeer.add(peer.host());
+			}
+			if(active) {
+				int index = 0;
+				String name = peer.host();
+				while(categoriesPeer.contains(name)) {
+					// 如果已经存在重新命名：由于双向连接可能出现重复
+					index++;
+					name = String.format("%s-%d", name, index);
 				}
+				categoriesPeer.add(name);
 				final double uploadSize = FileUtils.formatSizeMB(peer.statistics().uploadSize());
 				final double downloadSize = FileUtils.formatSizeMB(peer.statistics().downloadSize());
-				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(peer.host(), uploadSize);
-				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(peer.host(), downloadSize);
+				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(name, uploadSize);
+				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(name, downloadSize);
 				uploadPeer.add(uploadData);
 				downloadPeer.add(downloadData);
 			}
@@ -616,21 +619,19 @@ public final class StatisticsController extends AbstractController {
 		)
 			.build()
 			.draw();
-		// 流量统计
 		final String message = String.format(
 			"累计上传：%s 累计下载：%s",
 			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
 			FileUtils.formatSize(torrentSession.statistics().downloadSize())
 		);
-		final HBox trafficHBox = this.buildStatisticsInfo(message);
-		// 颜色描述
+		final HBox trafficBox = this.buildStatisticsInfo(message);
 		final String[] tabs = new String[] { "交战", "上传", "下载", "无情" };
-		final HBox painterHBox = this.buildPainterInfo(tabs, colors);
+		final HBox painterBox = this.buildPainterInfo(tabs, colors);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(trafficHBox);
+		statisticsBoxNode.add(trafficBox);
 		statisticsBoxNode.add(painter.canvas());
-		statisticsBoxNode.add(painterHBox);
+		statisticsBoxNode.add(painterBox);
 	}
 	
 	/**
@@ -667,17 +668,15 @@ public final class StatisticsController extends AbstractController {
 		)
 			.build()
 			.draw();
-		// 健康度
-		final HBox healthHBox = this.buildStatisticsInfo("健康度：" + torrentSession.health() + "%");
-		// 颜色描述
+		final HBox healthBox = this.buildStatisticsInfo("健康度：" + torrentSession.health() + "%");
 		final String[] tabs = new String[] { "已下载", "未下载", "不下载" };
 		final Color[] tabColors = new Color[] { Themes.COLOR_GREEN, Themes.COLOR_YELLOW, Themes.COLOR_GRAY };
-		final HBox painterHBox = this.buildPainterInfo(tabs, tabColors);
+		final HBox painterBox = this.buildPainterInfo(tabs, tabColors);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(healthHBox);
+		statisticsBoxNode.add(healthBox);
 		statisticsBoxNode.add(painter.canvas());
-		statisticsBoxNode.add(painterHBox);
+		statisticsBoxNode.add(painterBox);
 	}
 	
 	/**
@@ -722,13 +721,13 @@ public final class StatisticsController extends AbstractController {
 	private HBox buildStatisticsInfo(String message) {
 		final Text text = new Text(message);
 		final TextFlow textFlow = new TextFlow(text);
-		final HBox hBox = new HBox(textFlow);
-		hBox.getStyleClass().add(Themes.CLASS_STATISTICS_INFO);
-		return hBox;
+		final HBox box = new HBox(textFlow);
+		box.getStyleClass().add(Themes.CLASS_STATISTICS_INFO);
+		return box;
 	}
 	
 	/**
-	 * <p>创建画图信息节点</p>
+	 * <p>创建画图颜色描述节点</p>
 	 * 
 	 * @param tabs 颜色描述
 	 * @param colors 颜色
@@ -736,15 +735,15 @@ public final class StatisticsController extends AbstractController {
 	 * @return 节点
 	 */
 	private HBox buildPainterInfo(String [] tabs, Color [] colors) {
-		final HBox hBox = new HBox();
+		final HBox box = new HBox();
 		for (int index = 0; index < tabs.length; index++) {
 			final Label label = new Label(tabs[index]);
 			final TextFlow textFlow = new TextFlow(label);
 			textFlow.setBackground(new Background(new BackgroundFill(colors[index], null, null)));
-			hBox.getChildren().add(textFlow);
+			box.getChildren().add(textFlow);
 		}
-		hBox.getStyleClass().add(Themes.CLASS_PAINTER_INFO);
-		return hBox;
+		box.getStyleClass().add(Themes.CLASS_PAINTER_INFO);
+		return box;
 	}
 	
 	/**
@@ -765,7 +764,7 @@ public final class StatisticsController extends AbstractController {
 	}
 	
 	/**
-	 * <p>获取统计节点</p>
+	 * <p>获取统计节点并清空</p>
 	 * 
 	 * @return 统计节点
 	 */
@@ -781,7 +780,7 @@ public final class StatisticsController extends AbstractController {
 	private EventHandler<ActionEvent> selectInfoHashsEvent = event -> this.buildSelectStatistics();
 	
 	/**
-	 * <p>下载任务</p>
+	 * <p>BT任务InfoHash</p>
 	 * 
 	 * @author acgist
 	 */
@@ -841,7 +840,8 @@ public final class StatisticsController extends AbstractController {
 		}
 		
 		/**
-		 * <p>重写toString设置下拉框显示名称或者使用{@code this.selectInfoHashs.converterProperty().set}来设置</p>
+		 * <p>重写toString设置下拉框显示名称</p>
+		 * <p>使用{@code this.selectInfoHashs.converterProperty().set}一样效果</p>
 		 */
 		@Override
 		public String toString() {

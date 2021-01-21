@@ -13,7 +13,7 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  */
 public class ResponseEventAdapter extends GuiEventArgs {
 
-	protected ResponseEventAdapter() {
+	public ResponseEventAdapter() {
 		super(GuiEvent.Type.RESPONSE, "响应消息事件");
 	}
 

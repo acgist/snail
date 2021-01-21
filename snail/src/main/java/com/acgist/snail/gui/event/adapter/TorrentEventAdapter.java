@@ -25,7 +25,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEventAdapter.class);
 	
-	protected TorrentEventAdapter() {
+	public TorrentEventAdapter() {
 		super(Type.TORRENT, "种子文件选择事件");
 	}
 

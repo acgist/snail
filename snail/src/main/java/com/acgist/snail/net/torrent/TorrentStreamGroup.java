@@ -267,18 +267,18 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>指定下载Piece索引</p>
 	 * 
-	 * @param piecePos 指定下载Piece索引
+	 * @param index 指定下载Piece索引
 	 */
-	public void piecePos(int piecePos) {
+	public void piecePos(int index) {
 		if(
-			piecePos >= 0 &&
+			index >= 0 &&
 			// 没有下载
-			!this.pieces.get(piecePos) &&
+			!this.pieces.get(index) &&
 			// 选择下载
-			this.selectPieces.get(piecePos)
+			this.selectPieces.get(index)
 		) {
-			LOGGER.debug("指定下载Piece索引：{}", piecePos);
-			this.piecePos = piecePos;
+			LOGGER.debug("指定下载Piece索引：{}", index);
+			this.piecePos = index;
 		}
 	}
 	
