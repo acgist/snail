@@ -2,9 +2,10 @@
 
 ## 目录
 
+* [使用](#使用)
 * [协议](#协议)
-	* [注册协议](#注册协议)
 	* [添加协议](#添加协议)
+	* [注册协议](#注册协议)
 * [任务管理](#任务管理)
 	* [添加任务](#添加任务)
 	* [开始任务](#开始任务)
@@ -22,13 +23,25 @@
 	* [后台模式](#后台模式)
 	* [启动参数](#启动参数)
 
-## 协议
-
-### 注册协议
+## 使用
 
 ```java
-ProtocolContext.getInstance().register(protocol);
+final Snail snail = SnailBuilder.newBuilder()
+// 启用HTTP下载协议
+//	.enableHttp()
+// 启用BT下载协议
+//	.enableTorrent()
+// 启用所有下载协议
+	.enableAllProtocol()
+// 同步创建
+	.buildSync();
+// 添加下载
+snail.download("下载链接");
+// 等待下载完成
+snail.lockDownload();
 ```
+
+## 协议
 
 ### 添加协议
 
@@ -49,6 +62,12 @@ ProtocolContext.getInstance().register(protocol);
 `com.acgist.snail.downloader.MultifileDownloader`
 
 > 多文件下载完成调用`unlockDownload`方法结束下载
+
+### 注册协议
+
+```java
+ProtocolContext.getInstance().register(protocol);
+```
 
 ## 任务管理
 
@@ -71,19 +90,19 @@ ITaskSession taskSession = TaskContext.getInstance().download(url)
 ### 开始任务
 
 ```java
-ITaskSession#.start();
+ITaskSession.start();
 ```
 
 ### 暂停任务
 
 ```java
-ITaskSession#.pause();
+ITaskSession.pause();
 ```
 
 ### 删除任务
 
 ```java
-ITaskSession#.delete();
+ITaskSession.delete();
 ```
 
 ## BT管理
