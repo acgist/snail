@@ -101,6 +101,10 @@ public final class StatisticsController extends Controller implements Initializa
 		 */
 		TRACKER,
 		/**
+		 * <p>客户端统计</p>
+		 */
+		CLIENT,
+		/**
 		 * <p>来源统计</p>
 		 */
 		SOURCE,
@@ -169,6 +173,17 @@ public final class StatisticsController extends Controller implements Initializa
 	public void handleTrackerAction(ActionEvent event) {
 		this.filter = Filter.TRACKER;
 		this.buildSelectTrackerStatistics();
+	}
+	
+	/**
+	 * <p>客户端统计</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleClientAction(ActionEvent event) {
+		this.filter = Filter.CLIENT;
+		this.buildSelectClientStatistics();
 	}
 	
 	/**
@@ -290,6 +305,8 @@ public final class StatisticsController extends Controller implements Initializa
 			this.buildSelectNodeStatistics();
 		} else if(this.filter == Filter.TRACKER) {
 			this.buildSelectTrackerStatistics();
+		} else if(this.filter == Filter.CLIENT) {
+			this.buildSelectClientStatistics();
 		} else if(this.filter == Filter.SOURCE) {
 			this.buildSelectSourceStatistics();
 		} else if(this.filter == Filter.CONNECT) {
@@ -376,6 +393,28 @@ public final class StatisticsController extends Controller implements Initializa
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
 		final var statisticsBoxNode= this.statisticsBoxClear();
+		statisticsBoxNode.add(pieChart);
+	}
+
+	/**
+	 * <p>客户端统计</p>
+	 */
+	private void buildSelectClientStatistics() {
+		final String infoHashHex = this.selectInfoHashHex();
+		if(infoHashHex == null) {
+			return;
+		}
+		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
+		final var pieCharts = peers.stream()
+			.collect(Collectors.groupingBy(PeerSession::clientName, Collectors.counting()))
+			.entrySet().stream()
+			.map(entity -> new PieChart.Data(entity.getKey(), entity.getValue()))
+			.collect(Collectors.toList());
+		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieCharts);
+		final String title = String.format("总量：%d", peers.size());
+		final PieChart pieChart = this.buildPieChart(title, pieChartData);
+		// 添加节点
+		final var statisticsBoxNode = this.statisticsBoxClear();
 		statisticsBoxNode.add(pieChart);
 	}
 	
