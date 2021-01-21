@@ -31,19 +31,15 @@ import javafx.util.StringConverter;
  */
 public final class SettingController extends AbstractController {
 	
-//	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
-
 	/**
 	 * <p>下载速度滑块滑动大小：{@value}</p>
-	 * <p>超过这个值时滑动必须是该值的整数倍</p>
 	 */
-	private static final int STEP_WIDTH = 512;
+	private static final int MIN_STEP_SIZE = 512;
 	
 	@FXML
 	private FlowPane root;
 	@FXML
 	private ScrollPane scrollPane;
-	
 	@FXML
 	private Label pathValue;
 	@FXML
@@ -135,19 +131,18 @@ public final class SettingController extends AbstractController {
 	}
 	
 	/**
-	 * <p>下载目录事件</p>
+	 * <p>下载目录点击事件</p>
 	 */
-	private EventHandler<MouseEvent> pathClickedAction = event -> {
-		final File file = new File(DownloadConfig.getPath());
-		Desktops.open(file);
-	};
+	private EventHandler<MouseEvent> pathClickedAction = event -> Desktops.open(new File(DownloadConfig.getPath()));
 
 	/**
 	 * <p>下载任务数量监听</p>
 	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
-		int value = newVal.intValue(); // 设置整数任务
-		if(value <= 0) { // 不能设置：0
+		// 设置整数任务
+		int value = newVal.intValue();
+		if(value <= 0) {
+			// 至少下载一个任务
 			value = 1;
 		}
 		this.size.setValue(value);
@@ -169,9 +164,9 @@ public final class SettingController extends AbstractController {
 		if(value < SystemConfig.MIN_DOWNLOAD_BUFFER_KB) {
 			// 最小下载速度
 			value = SystemConfig.MIN_DOWNLOAD_BUFFER_KB;
-		} else if(value > STEP_WIDTH) {
+		} else if(value > MIN_STEP_SIZE) {
 			// 超过滑块大小时设置为滑块大小的整数倍
-			value = value / STEP_WIDTH * STEP_WIDTH;
+			value = value / MIN_STEP_SIZE * MIN_STEP_SIZE;
 		}
 		this.buffer.setValue(value);
 	};
@@ -188,14 +183,17 @@ public final class SettingController extends AbstractController {
 	 * <p>下载速度格式</p>
 	 */
 	private StringConverter<Double> bufferFormatter = new StringConverter<Double>() {
+		
 		@Override
 		public String toString(Double value) {
 			return (value.intValue() / SystemConfig.DATA_SCALE) + "M";
 		}
+		
 		@Override
 		public Double fromString(String label) {
 			return Double.valueOf(label.substring(0, label.length() - 1)) * SystemConfig.DATA_SCALE;
 		}
+		
 	};
 	
 	/**
@@ -218,14 +216,17 @@ public final class SettingController extends AbstractController {
 	 * <p>磁盘缓存格式</p>
 	 */
 	private StringConverter<Double> memoryBufferFormatter = new StringConverter<Double>() {
+		
 		@Override
 		public String toString(Double value) {
 			return value.intValue() + "M";
 		}
+		
 		@Override
 		public Double fromString(String label) {
 			return Double.valueOf(label.substring(0, label.length() - 1));
 		}
+		
 	};
 	
 	/**

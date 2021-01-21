@@ -104,7 +104,6 @@ public final class SystemContext implements IContext {
 	 */
 	public static final void gc() {
 		LOGGER.info("整理系统内存");
-		LOGGER.info("垃圾回收（GC）");
 		System.gc();
 	}
 	

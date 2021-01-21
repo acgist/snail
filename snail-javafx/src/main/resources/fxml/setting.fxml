@@ -25,21 +25,42 @@
 				<TextFlow>
 					<Label>下载数量：</Label>
 				</TextFlow>
-				<Slider fx:id="size" styleClass="slider" min="0" max="8" value="4" blockIncrement="1" majorTickUnit="1" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+				<Slider fx:id="size" styleClass="slider"
+					min="0" max="8" value="4"
+					majorTickUnit="1"
+					minorTickCount="1"
+					blockIncrement="1"
+					showTickMarks="true"
+					showTickLabels="true"
+				/>
 			</HBox>
 			
 			<HBox>
 				<TextFlow>
 					<Label>下载速度：</Label>
 				</TextFlow>
-				<Slider fx:id="buffer" styleClass="slider" min="0" max="10240" value="1024" blockIncrement="1024" majorTickUnit="1024" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+				<Slider fx:id="buffer" styleClass="slider"
+					min="0" max="10240" value="1024"
+					majorTickUnit="1024"
+					minorTickCount="1"
+					blockIncrement="1024"
+					showTickMarks="true"
+					showTickLabels="true"
+				/>
 			</HBox>
 			
 			<HBox>
 				<TextFlow>
 					<Label>磁盘缓存：</Label>
 				</TextFlow>
-				<Slider fx:id="memoryBuffer" styleClass="slider" min="4" max="16" value="8" blockIncrement="1" majorTickUnit="2" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+				<Slider fx:id="memoryBuffer" styleClass="slider"
+					min="4" max="16" value="8"
+					majorTickUnit="2"
+					minorTickCount="1"
+					blockIncrement="1"
+					showTickMarks="true"
+					showTickLabels="true"
+				/>
 			</HBox>
 				
 			<HBox>
