@@ -27,17 +27,27 @@
 
 ```java
 final Snail snail = SnailBuilder.newBuilder()
+// 启用FTP下载协议
+//	.enableFtp()
+// 启用HLS下载协议
+//	.enableHls()
 // 启用HTTP下载协议
 //	.enableHttp()
+// 启用磁力链接下载协议
+//	.enableMagnet()
 // 启用BT下载协议
 //	.enableTorrent()
 // 启用所有下载协议
 	.enableAllProtocol()
+// 加载下载任务
+//	.loadTask()
+// 启动系统监听
+//	.application()
 // 同步创建
 	.buildSync();
 // 添加下载
 snail.download("下载链接");
-// 等待下载完成
+// 等待下载完成：可以自行实现阻塞替换
 snail.lockDownload();
 ```
 
