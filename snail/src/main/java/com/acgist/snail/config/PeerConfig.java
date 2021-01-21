@@ -43,7 +43,7 @@ public final class PeerConfig extends PropertiesConfig {
 	/**
 	 * <p>未知终端：{@value}</p>
 	 */
-	private static final String UNKNOWN = "unknown";
+	public static final String UNKNOWN = "unknown";
 	/**
 	 * <p>Peer最大连接失败次数：{@value}</p>
 	 */

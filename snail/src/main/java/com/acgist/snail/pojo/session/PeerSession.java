@@ -211,6 +211,9 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	 * @return 客户端名称
 	 */
 	public String clientName() {
+		if(this.clientName == null) {
+			return PeerConfig.UNKNOWN;
+		}
 		return this.clientName;
 	}
 	
