@@ -9,11 +9,10 @@ import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
-import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.gui.javafx.window.AbstractController;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -23,7 +22,7 @@ import javafx.scene.text.Text;
  * 
  * @author acgist
  */
-public final class AboutController extends Controller implements Initializable {
+public final class AboutController extends AbstractController {
 	
 	@FXML
 	private BorderPane root;

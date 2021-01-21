@@ -9,13 +9,12 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.gui.javafx.window.AbstractController;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -30,7 +29,7 @@ import javafx.util.StringConverter;
  * 
  * @author acgist
  */
-public final class SettingController extends Controller implements Initializable {
+public final class SettingController extends AbstractController {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class);
 

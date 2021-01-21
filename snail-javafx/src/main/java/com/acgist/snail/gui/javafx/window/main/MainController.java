@@ -19,7 +19,7 @@ import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.menu.TaskMenu;
-import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.gui.javafx.window.AbstractController;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.build.BuildWindow;
 import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
@@ -36,7 +36,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -59,7 +58,7 @@ import javafx.util.Callback;
  * 
  * @author acgist
  */
-public final class MainController extends Controller implements Initializable {
+public final class MainController extends AbstractController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	

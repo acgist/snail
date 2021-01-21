@@ -6,8 +6,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -118,6 +120,24 @@ public final class Themes {
 	}
 	
 	private Themes() {
+	}
+
+	/**
+	 * <p>创建Logo图标</p>
+	 * 
+	 * @return Logo图标
+	 */
+	public static final Image buildLogo() {
+		return new Image(Themes.LOGO_ICON_200);
+	}
+	
+	/**
+	 * <p>设置Logo图标</p>
+	 * 
+	 * @param icons 图标列表
+	 */
+	public static final void applyLogo(ObservableList<Image> icons) {
+		icons.add(buildLogo());
 	}
 	
 	/**

@@ -3,7 +3,7 @@ package com.acgist.snail.gui.javafx.window.build;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.javafx.window.Window;
+import com.acgist.snail.gui.javafx.window.AbstractWindow;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * 
  * @author acgist
  */
-public final class BuildWindow extends Window<BuildController> {
+public final class BuildWindow extends AbstractWindow<BuildController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildWindow.class);
 	
