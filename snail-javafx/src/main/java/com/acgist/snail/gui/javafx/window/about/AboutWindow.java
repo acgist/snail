@@ -1,8 +1,5 @@
 package com.acgist.snail.gui.javafx.window.about;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.gui.javafx.window.AbstractWindow;
 
 import javafx.stage.Modality;
@@ -15,8 +12,6 @@ import javafx.stage.Stage;
  */
 public final class AboutWindow extends AbstractWindow<AboutController> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AboutWindow.class);
-	
 	private static final AboutWindow INSTANCE;
 	
 	public static final AboutWindow getInstance() {
@@ -24,16 +19,16 @@ public final class AboutWindow extends AbstractWindow<AboutController> {
 	}
 	
 	static {
-		LOGGER.debug("初始化关于窗口");
 		INSTANCE = new AboutWindow();
 	}
 	
 	private AboutWindow() {
+		super("关于", 600, 500, "/fxml/about.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "关于", 600, 500, "/fxml/about.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 	}
 	

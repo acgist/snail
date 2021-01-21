@@ -29,6 +29,22 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWindow.class);
 	
 	/**
+	 * <p>窗口标题</p>
+	 */
+	private final String title;
+	/**
+	 * <p>窗口宽度</p>
+	 */
+	private final int width;
+	/**
+	 * <p>窗口高度</p>
+	 */
+	private final int height;
+	/**
+	 * <p>窗口FXML路径</p>
+	 */
+	private final String fxml;
+	/**
 	 * <p>容器</p>
 	 */
 	protected Stage stage;
@@ -37,7 +53,18 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 */
 	protected T controller;
 	
-	protected AbstractWindow() {
+	/**
+	 * @param title 窗口标题
+	 * @param width 窗口宽度
+	 * @param height 窗口高度
+	 * @param fxml 窗口FXML路径
+	 */
+	protected AbstractWindow(String title, int width, int height, String fxml) {
+		LOGGER.debug("初始化窗口：{}", title);
+		this.title = title;
+		this.width = width;
+		this.height = height;
+		this.fxml = fxml;
 		this.stage = new Stage();
 		try {
 			this.start(this.stage);
@@ -96,14 +123,12 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 * 
 	 * @param <X> 面板
 	 * 
-	 * @param fxml fxml路径
-	 * 
 	 * @return 面板
 	 * 
 	 * @throws IOException IO异常
 	 */
-	protected <X> X loadFxml(String fxml) throws IOException {
-		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(fxml));
+	protected <X> X loadFxml() throws IOException {
+		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxml));
 		final X root = loader.load();
 		this.controller = loader.getController();
 		return root;
@@ -113,21 +138,17 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 * <p>创建窗口</p>
 	 * 
 	 * @param stage 容器
-	 * @param title 标题
-	 * @param width 宽度
-	 * @param height 高度
-	 * @param fxml fxml路径
 	 * @param modality 模态
 	 * 
 	 * @throws IOException IO异常
 	 */
-	protected void buildWindow(Stage stage, String title, int width, int height, String fxml, Modality modality) throws IOException {
-		final Parent root = this.loadFxml(fxml);
-		final Scene scene = new Scene(root, width, height);
+	protected void buildWindow(Stage stage, Modality modality) throws IOException {
+		final Parent root = this.loadFxml();
+		final Scene scene = new Scene(root, this.width, this.height);
 		root.setStyle(Themes.getThemeStyle());
 		stage.initModality(modality);
 		stage.setScene(scene);
-		stage.setTitle(title);
+		stage.setTitle(this.title);
 	}
 	
 	/**
