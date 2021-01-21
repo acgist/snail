@@ -2,6 +2,9 @@ package com.acgist.snail.gui.javafx.window;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.utils.CollectionUtils;
 
 import javafx.fxml.Initializable;
@@ -14,6 +17,8 @@ import javafx.scene.input.Dragboard;
  * @author acgist
  */
 public abstract class AbstractController implements Initializable {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractController.class);
 
 	/**
 	 * <p>双击次数：{@value}</p>
@@ -45,6 +50,13 @@ public abstract class AbstractController implements Initializable {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * <p>释放资源</p>
+	 */
+	public void release() {
+		LOGGER.debug("释放控制器资源");
 	}
 	
 }

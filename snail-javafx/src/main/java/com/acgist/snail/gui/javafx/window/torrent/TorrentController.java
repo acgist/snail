@@ -90,10 +90,9 @@ public final class TorrentController extends AbstractController {
 		}
 	}
 	
-	/**
-	 * <p>释放资源</p>
-	 */
+	@Override
 	public void release() {
+		super.release();
 		this.torrentSelector = null;
 		this.treeBox.getChildren().clear();
 	}

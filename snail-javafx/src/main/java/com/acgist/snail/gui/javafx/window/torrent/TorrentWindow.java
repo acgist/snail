@@ -5,7 +5,6 @@ import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 /**
  * <p>编辑任务窗口</p>
@@ -32,7 +31,7 @@ public final class TorrentWindow extends AbstractWindow<TorrentController> {
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
-		this.windowHidden();
+		this.hiddenRelease();
 	}
 	
 	/**
@@ -43,15 +42,6 @@ public final class TorrentWindow extends AbstractWindow<TorrentController> {
 	public void show(ITaskSession taskSession) {
 		this.controller.buildTree(taskSession);
 		super.showAndWait();
-	}
-	
-	/**
-	 * <p>窗口隐藏：释放资源</p>
-	 */
-	private void windowHidden() {
-		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, event -> {
-			this.controller.release();
-		});
 	}
 	
 }
