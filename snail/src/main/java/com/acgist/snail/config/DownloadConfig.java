@@ -63,6 +63,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	/**
+	 * <p>删除文件配置名称：{@value}</p>
+	 * 
+	 * @see #delete
+	 */
+	private static final String DOWNLOAD_DELETE = "acgist.download.delete";
+	/**
 	 * <p>下载速度（单个）（KB）配置名称：{@value}</p>
 	 * 
 	 * @see #buffer
@@ -111,6 +117,10 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private boolean notice;
 	/**
+	 * <p>删除文件</p>
+	 */
+	private boolean delete;
+	/**
 	 * <p>下载速度（单个）（KB）</p>
 	 */
 	private int buffer;
@@ -146,6 +156,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		this.size = this.getInteger(DOWNLOAD_SIZE, 4);
 		this.buffer = this.getInteger(DOWNLOAD_BUFFER, 1024);
 		this.notice = this.getBoolean(DOWNLOAD_NOTICE, true);
+		this.delete = this.getBoolean(DOWNLOAD_DELETE, false);
 		this.lastPath = this.getString(DOWNLOAD_LAST_PATH);
 		this.memoryBuffer = this.getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
 	}
@@ -162,6 +173,8 @@ public final class DownloadConfig extends PropertiesConfig {
 		this.size = this.getInteger(entity, this.size);
 		entity = entityContext.findConfigByName(DOWNLOAD_NOTICE);
 		this.notice = this.getBoolean(entity, this.notice);
+		entity = entityContext.findConfigByName(DOWNLOAD_DELETE);
+		this.delete = this.getBoolean(entity, this.delete);
 		entity = entityContext.findConfigByName(DOWNLOAD_BUFFER);
 		this.buffer = this.getInteger(entity, this.buffer);
 		entity = entityContext.findConfigByName(DOWNLOAD_LAST_PATH);
@@ -177,6 +190,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		LOGGER.debug("下载目录：{}", this.path);
 		LOGGER.debug("下载数量：{}", this.size);
 		LOGGER.debug("消息提示：{}", this.notice);
+		LOGGER.debug("删除文件：{}", this.delete);
 		LOGGER.debug("下载速度（单个）（KB）：{}", this.buffer);
 		LOGGER.debug("最后一次选择目录：{}", this.lastPath);
 		LOGGER.debug("磁盘缓存（单个）（MB）：{}", this.memoryBuffer);
@@ -274,6 +288,29 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final boolean getNotice() {
 		return INSTANCE.notice;
+	}
+	
+	/**
+	 * <p>设置删除文件</p>
+	 * 
+	 * @param delete 是否删除文件
+	 */
+	public static final void setDelete(boolean delete) {
+		if(INSTANCE.delete == delete) {
+			// 忽略没有修改
+			return;
+		}
+		INSTANCE.delete = delete;
+		EntityContext.getInstance().mergeConfig(DOWNLOAD_DELETE, String.valueOf(delete));
+	}
+	
+	/**
+	 * <p>获取删除文件</p>
+	 * 
+	 * @return 是否删除文件
+	 */
+	public static final boolean getDelete() {
+		return INSTANCE.delete;
 	}
 	
 	/**

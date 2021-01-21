@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
-import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.exception.EntityException;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.pojo.entity.Entity;
@@ -140,7 +140,7 @@ public final class EntityContext implements IContext {
 		EntityException.requireNotNull(entity);
 		LOGGER.debug("删除任务：{}", entity.getName());
 		// 删除文件
-		if(SystemConfig.getTaskFileDelete()) {
+		if(DownloadConfig.getDelete()) {
 			final var file = entity.getFile();
 			final boolean success = RecycleContext.recycle(file);
 			if(!success) {
