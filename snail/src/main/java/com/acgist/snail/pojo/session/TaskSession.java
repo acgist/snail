@@ -111,8 +111,7 @@ public final class TaskSession implements ITaskSession {
 		if(StringUtils.isEmpty(description)) {
 			return List.of();
 		} else {
-			final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newDecoder(description);
-			return wrapper.deserialize();
+			return MultifileSelectorWrapper.newDecoder(description).deserialize();
 		}
 	}
 	

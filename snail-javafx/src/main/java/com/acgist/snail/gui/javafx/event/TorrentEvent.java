@@ -24,9 +24,11 @@ public final class TorrentEvent extends TorrentEventAdapter {
 
 	@Override
 	protected void executeNativeExtend(ITaskSession taskSession) {
-		if(Platform.isFxApplicationThread()) { // JavaFX线程：本地GUI
+		if(Platform.isFxApplicationThread()) {
+			// JavaFX线程：本地GUI
 			TorrentWindow.getInstance().show(taskSession);
-		} else { // 非JavaFX线程：扩展GUI
+		} else {
+			// 非JavaFX线程：扩展GUI
 			this.executeExtendExtend(taskSession);
 		}
 	}

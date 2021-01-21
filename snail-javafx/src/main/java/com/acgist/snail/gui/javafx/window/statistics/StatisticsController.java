@@ -142,6 +142,12 @@ public final class StatisticsController extends AbstractController {
 		this.selectInfoHashs.setOnAction(this.selectInfoHashsEvent);
 	}
 	
+	@Override
+	public void release() {
+		super.release();
+		this.statisticsBoxClear();
+	}
+	
 	/**
 	 * <p>系统信息</p>
 	 * 
@@ -278,12 +284,6 @@ public final class StatisticsController extends AbstractController {
 		this.buildSelectInfoHashs();
 		this.buildSelectStatistics();
 		this.buildSystemTrafficStatistics();
-	}
-	
-	@Override
-	public void release() {
-		super.release();
-		this.statisticsBoxClear();
 	}
 
 	/**

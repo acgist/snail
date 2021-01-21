@@ -494,6 +494,7 @@ public final class TorrentSession {
 	 * @return 选择下载文件列表
 	 */
 	private List<TorrentFile> buildSelectedFiles() {
+		// 切记不可排除填充文件
 		final List<TorrentFile> torrentFiles = this.torrent.getInfo().files();
 		final List<String> selectedFiles = this.taskSession.multifileSelected();
 		for (TorrentFile torrentFile : torrentFiles) {

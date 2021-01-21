@@ -110,7 +110,7 @@ public class FileUtilsTest extends Performance {
 	
 	@Test
 	public void testSystemSeparator() {
-		final String path = FileUtils.systemSeparator("c://temp\\temp//temp\\\\temp");
+		final String path = FileUtils.systemSeparator("c://tmp\\tmp//tmp\\\\tmp");
 		this.log(path);
 	}
 	

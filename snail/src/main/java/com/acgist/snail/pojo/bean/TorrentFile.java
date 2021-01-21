@@ -26,6 +26,12 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 */
 	public static final String SEPARATOR = "/";
 	/**
+	 * <p>填充文件前缀：{@value}</p>
+	 * <p>不用显示和下载</p>
+	 * <p>注意：初始化时不能直接排除填充文件（文件位置计算出错）</p>
+	 */
+	public static final String PADDING_FILE_PREFIX = "_____padding_file";
+	/**
 	 * <p>文件大小：{@value}</p>
 	 */
 	public static final String ATTR_LENGTH = "length";
@@ -63,6 +69,10 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 * <p>是否选择下载</p>
 	 */
 	private transient boolean selected = false;
+	/**
+	 * <p>是否是填充文件</p>
+	 */
+	private transient boolean paddingFile = false;
 
 	protected TorrentFile() {
 	}
@@ -82,9 +92,16 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		file.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
 		file.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
 		final List<Object> path = BEncodeDecoder.getList(map, ATTR_PATH);
-		file.setPath(readPath(path, encoding));
+		final List<String> pathList = readPath(path, encoding);
+		file.setPath(pathList);
 		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, ATTR_PATH_UTF8);
-		file.setPathUtf8(readPath(pathUtf8, null)); // 默认编码：UTF-8
+		final List<String> pathUtf8List = readPath(pathUtf8, null);
+		file.setPathUtf8(pathUtf8List);
+		if(CollectionUtils.isNotEmpty(pathUtf8List)) {
+			file.paddingFile = pathUtf8List.get(pathUtf8List.size() - 1).startsWith(PADDING_FILE_PREFIX);
+		} else if(CollectionUtils.isNotEmpty(path)) {
+			file.paddingFile = pathList.get(pathList.size() - 1).startsWith(PADDING_FILE_PREFIX);
+		}
 		return file;
 	}
 
@@ -116,6 +133,24 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 			return String.join(TorrentFile.SEPARATOR, this.pathUtf8);
 		}
 		return String.join(TorrentFile.SEPARATOR, this.path);
+	}
+	
+	/**
+	 * <p>判断是否是填充文件</p>
+	 * 
+	 * @return 是否是填充文件
+	 */
+	public boolean isPaddingFile() {
+		return this.paddingFile;
+	}
+	
+	/**
+	 * <p>判断是否不是填充文件</p>
+	 * 
+	 * @return 是否不是填充文件
+	 */
+	public boolean isNotPaddingFile() {
+		return !this.isPaddingFile();
 	}
 	
 	/**
