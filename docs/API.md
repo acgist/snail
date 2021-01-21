@@ -87,15 +87,11 @@ snail.lockDownload();
 ### 添加BT任务
 
 ```java
-// 实现种子选择事件
-private static final class TorrentEvent extends TorrentEventAdapter {
-}
-
 final var snail = SnailBuilder.newBuilder()
 	.enableTorrent()
 	.buildSync();
 // 注册种子选择事件
-GuiContext.register(new TorrentEvent());
+GuiContext.register(new TorrentEventAdapter());
 // 解析种子文件
 final var torrent = TorrentContext.loadTorrent("种子文件");
 // 自行过滤下载文件
@@ -110,7 +106,7 @@ snail.download("种子文件");
 snail.lockDownload();
 ```
 
-#### 任务信息
+### 任务信息
 
 ```java
 // 下载状态或者下载速度（下载中）
