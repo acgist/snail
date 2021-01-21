@@ -100,6 +100,15 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
+	 * <p>整理系统内存</p>
+	 */
+	public static final void gc() {
+		LOGGER.info("整理系统内存");
+		LOGGER.info("垃圾回收（GC）");
+		System.gc();
+	}
+	
+	/**
 	 * <p>系统信息</p>
 	 */
 	public static final void info() {

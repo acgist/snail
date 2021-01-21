@@ -18,6 +18,7 @@ import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.StatisticsContext;
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.gui.javafx.Themes;
@@ -194,6 +195,16 @@ public final class StatisticsController extends Controller implements Initializa
 	@FXML
 	public void handleRefreshAction(ActionEvent event) {
 		this.statistics();
+	}
+	
+	/**
+	 * <p>整理内存</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleMemoryAction(ActionEvent event) {
+		SystemContext.gc();
 	}
 	
 	/**

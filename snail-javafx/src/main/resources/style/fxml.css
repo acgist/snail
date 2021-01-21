@@ -358,7 +358,7 @@
 	-fx-pref-width:130px;
 }
 .statistics .info-box .tabs ChoiceBox {
-	-fx-pref-width:390px;
+	-fx-pref-width:260px;
 }
 .statistics .scroll-pane {
 	-fx-padding:0;
