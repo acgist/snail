@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
-import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.gui.javafx.window.AbstractController;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.Torrent;
@@ -20,7 +20,6 @@ import com.acgist.snail.protocol.Protocol.Type;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
@@ -32,7 +31,7 @@ import javafx.scene.layout.VBox;
  * 
  * @author acgist
  */
-public final class TorrentController extends Controller implements Initializable {
+public final class TorrentController extends AbstractController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentController.class);
 	

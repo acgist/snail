@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Desktops;
-import com.acgist.snail.gui.javafx.window.Window;
+import com.acgist.snail.gui.javafx.window.AbstractWindow;
 import com.acgist.snail.gui.javafx.window.statistics.StatisticsWindow;
 
 import javafx.scene.input.KeyCode;
@@ -18,7 +18,7 @@ import javafx.stage.Stage;
  * 
  * @author acgist
  */
-public final class MainWindow extends Window<MainController> {
+public final class MainWindow extends AbstractWindow<MainController> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	
@@ -46,7 +46,7 @@ public final class MainWindow extends Window<MainController> {
 	
 	@Override
 	public void show() {
-		super.maximize();
+		super.top();
 		super.show();
 	}
 

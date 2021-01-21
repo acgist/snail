@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -60,7 +59,7 @@ public final class Alerts {
 		Themes.applyTheme(scene);
 		final Stage stage = (Stage) scene.getWindow();
 		// 设置图标
-		stage.getIcons().add(new Image(Themes.LOGO_ICON_200));
+		Themes.applyLogo(stage.getIcons());
 		alert.setTitle(title);
 		// 去掉头部
 		alert.setHeaderText(null);

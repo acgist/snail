@@ -12,7 +12,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -21,13 +20,13 @@ import javafx.stage.Stage;
 /**
  * <p>窗口</p>
  * 
- * @param <T> 控制器泛型
+ * @param <T> 控制器
  * 
  * @author acgist
  */
-public abstract class Window<T extends Controller> extends Application {
+public abstract class AbstractWindow<T extends AbstractController> extends Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWindow.class);
 	
 	/**
 	 * <p>容器</p>
@@ -38,7 +37,7 @@ public abstract class Window<T extends Controller> extends Application {
 	 */
 	protected T controller;
 	
-	protected Window() {
+	protected AbstractWindow() {
 		this.stage = new Stage();
 		try {
 			this.start(this.stage);
@@ -48,29 +47,28 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
-	 * <p>设置ESC隐藏窗口</p>
+	 * <p>设置窗口置顶显示</p>
 	 */
-	protected void esc() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-			if(event.getCode() == KeyCode.ESCAPE) {
-				this.stage.hide();
-			}
-		});
+	protected void top() {
+		this.stage.setIconified(false);
 	}
 	
 	/**
 	 * <p>设置Icon</p>
 	 */
 	protected void icon() {
-		this.stage.getIcons().add(new Image(Themes.LOGO_ICON_200));
+		Themes.applyLogo(this.stage.getIcons());
 	}
 	
 	/**
-	 * <p>设置窗口最大化</p>
-	 * <p>窗口最小化隐藏到托盘后，需要设置此项才能正常显示窗口。</p>
+	 * <p>设置ESCAPE隐藏窗口</p>
 	 */
-	protected void maximize() {
-		this.stage.setIconified(false);
+	protected void escape() {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+			if(event.getCode() == KeyCode.ESCAPE) {
+				this.stage.hide();
+			}
+		});
 	}
 	
 	/**
@@ -83,20 +81,20 @@ public abstract class Window<T extends Controller> extends Application {
 	/**
 	 * <p>对话框通用设置</p>
 	 * 
-	 * @see #esc()
 	 * @see #icon()
+	 * @see #escape()
 	 * @see #disableResize()
 	 */
 	protected void dialogWindow() {
-		this.esc();
 		this.icon();
+		this.escape();
 		this.disableResize();
 	}
 	
 	/**
 	 * <p>加载fxml、controller</p>
 	 * 
-	 * @param <X> 面板泛型
+	 * @param <X> 面板
 	 * 
 	 * @param fxml fxml路径
 	 * 
@@ -106,9 +104,9 @@ public abstract class Window<T extends Controller> extends Application {
 	 */
 	protected <X> X loadFxml(String fxml) throws IOException {
 		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(fxml));
-		final X x = loader.load();
+		final X root = loader.load();
 		this.controller = loader.getController();
-		return x;
+		return root;
 	}
 	
 	/**
