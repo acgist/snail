@@ -16,6 +16,7 @@ public class TorrentTest extends Performance {
 		String path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
 //		String path = "e:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent"; // 没有编码：UTF-8
 //		String path = "e:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
+//		String path = "e:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent"; // 填充文件
 		TorrentSession session = TorrentContext.getInstance().newTorrentSession(path);
 		Torrent torrent = session.torrent();
 		this.log("注释：" + torrent.getComment());
@@ -47,6 +48,7 @@ public class TorrentTest extends Performance {
 		// 多文件
 		if (torrentInfo.getFiles().size() > 0) {
 			for (TorrentFile file : torrentInfo.getFiles()) {
+				this.log("填充文件：" + file.isPaddingFile());
 				this.log("文件大小：" + file.getLength());
 				this.log("文件ED2K：" + StringUtils.hex(file.getEd2k()));
 				this.log("文件Hash：" + StringUtils.hex(file.getFilehash()));

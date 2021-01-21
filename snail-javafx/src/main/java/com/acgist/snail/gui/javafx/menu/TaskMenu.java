@@ -16,7 +16,6 @@ import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
-import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 
 import javafx.application.Platform;
@@ -159,10 +158,8 @@ public final class TaskMenu extends AbstractMenu {
 		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
-		MainWindow.getInstance().controller().selected().forEach(session -> {
-			if(session.getType() == Type.TORRENT) {
-				TorrentWindow.getInstance().controller().buildTree(session);
-			}
+		MainWindow.getInstance().controller().selectedTorrent().forEach(session -> {
+			TorrentWindow.getInstance().controller().buildTree(session);
 		});
 		TorrentWindow.getInstance().show();
 	};
@@ -176,13 +173,11 @@ public final class TaskMenu extends AbstractMenu {
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
 		if (file != null) {
-			MainWindow.getInstance().controller().selected().forEach(session -> {
-				if(session.getType() == Type.TORRENT) {
-					final String torrent = session.getTorrent();
-					final String fileName = FileUtils.fileName(torrent);
-					final String newFile = FileUtils.file(file.getAbsolutePath(), fileName);
-					FileUtils.copy(torrent, newFile);
-				}
+			MainWindow.getInstance().controller().selectedTorrent().forEach(session -> {
+				final String torrent = session.getTorrent();
+				final String fileName = FileUtils.fileName(torrent);
+				final String newFile = FileUtils.file(file.getAbsolutePath(), fileName);
+				FileUtils.copy(torrent, newFile);
 			});
 		}
 	};

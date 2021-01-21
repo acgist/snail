@@ -25,6 +25,7 @@ import com.acgist.snail.gui.javafx.window.build.BuildWindow;
 import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -314,6 +315,17 @@ public final class MainController extends AbstractController {
 	public boolean hasSelected() {
 		return !this.selected().isEmpty();
 	}
+
+	/**
+	 * <p>获取选中BT任务列表</p>
+	 * 
+	 * @return 选中BT任务列表
+	 */
+	public List<ITaskSession> selectedTorrent() {
+		return this.taskTable.getSelectionModel().getSelectedItems().stream()
+			.filter(session -> session.getType() == Protocol.Type.TORRENT)
+			.collect(Collectors.toList());
+	}
 	
 	/**
 	 * <p>判断是否选中BT任务</p>
@@ -321,8 +333,7 @@ public final class MainController extends AbstractController {
 	 * @return 是否选中BT任务
 	 */
 	public boolean hasSelectedTorrent() {
-		return this.selected().stream()
-			.anyMatch(session -> session.getType() == Type.TORRENT);
+		return !this.selectedTorrent().isEmpty();
 	}
 
 	/**

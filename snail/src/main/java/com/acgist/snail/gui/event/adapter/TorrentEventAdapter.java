@@ -14,7 +14,6 @@ import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -72,8 +71,8 @@ public class TorrentEventAdapter extends GuiEventArgs {
 				.collect(Collectors.toList());
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
-				.filter(file -> !file.path().startsWith(TorrentInfo.PADDING_FILE_PREFIX)) // 去掉填充文件
-				.filter(file -> selectFiles.contains(file.path())) // 设置选择下载文件
+				// 设置选择下载文件
+				.filter(file -> selectFiles.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(files);

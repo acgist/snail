@@ -31,9 +31,9 @@ public class TorrentStreamTest extends Performance {
 		entity.setFile("E:/snail/tmp/");
 		entity.setType(Type.TORRENT);
 		entity.setStatus(Status.COMPLETED);
-		final var files = session.torrent().getInfo().files();
 		long pos = 0L;
 		TorrentFile torrentFile = null;
+		final var files = session.torrent().getInfo().files();
 		for (TorrentFile file : files) {
 			if(file.path().endsWith("Box_1.png")) {
 				torrentFile = file;
@@ -42,8 +42,7 @@ public class TorrentStreamTest extends Performance {
 			pos += file.getLength();
 		}
 		final List<String> list = new ArrayList<>();
-		final var wrapper = MultifileSelectorWrapper.newEncoder(list);
-		entity.setDescription(wrapper.serialize());
+		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		final long pieceLength = session.torrent().getInfo().getPieceLength();

@@ -21,11 +21,6 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>填充文件前缀：{@value}</p>
-	 * <p>不需要下载和显示</p>
-	 */
-	public static final String PADDING_FILE_PREFIX = "_____padding_file";
-	/**
 	 * <p>私有种子：{@value}</p>
 	 */
 	public static final byte PRIVATE_TORRENT = 1;
@@ -184,6 +179,7 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	/**
 	 * <p>获取下载文件列表（兼容单文件种子）</p>
 	 * <p>每个文件包含完整的路径</p>
+	 * <p>注意：不能直接排除填充文件（需要计算文件位置）</p>
 	 * 
 	 * @return 下载文件列表
 	 */

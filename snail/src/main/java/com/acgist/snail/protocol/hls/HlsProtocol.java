@@ -105,8 +105,7 @@ public final class HlsProtocol extends Protocol {
 	 * <p>保持下载文件列表</p>
 	 */
 	private void selectFiles() {
-		final MultifileSelectorWrapper wrapper = MultifileSelectorWrapper.newEncoder(this.m3u8.getLinks());
-		this.taskEntity.setDescription(wrapper.serialize());
+		this.taskEntity.setDescription(MultifileSelectorWrapper.newEncoder(this.m3u8.getLinks()).serialize());
 	}
 	
 	@Override
