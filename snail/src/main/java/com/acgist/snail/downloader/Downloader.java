@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
@@ -152,7 +153,7 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void release() {
-		this.gc();
+		SystemContext.gc();
 	}
 
 	@Override
@@ -215,14 +216,6 @@ public abstract class Downloader implements IDownloader {
 			this.taskSession.updateStatus(Status.COMPLETED);
 			GuiContext.getInstance().notice("下载完成", "任务下载完成：" + this.name());
 		}
-	}
-	
-	/**
-	 * <p>垃圾回收</p>
-	 */
-	private final void gc() {
-		LOGGER.debug("垃圾回收（GC）");
-		System.gc();
 	}
 	
 }

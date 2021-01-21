@@ -31,6 +31,7 @@
 		<HBox fx:id="infoHashTabs" styleClass="tabs">
 			<ChoiceBox fx:id="selectInfoHashs"></ChoiceBox>
 			<Button fx:id="refresh" text="刷新" onAction="#handleRefreshAction" />
+			<Button fx:id="memory" text="整理内存" onAction="#handleMemoryAction" />
 		</HBox>
 		<HBox fx:id="torrentTabs" styleClass="tabs">
 			<Button fx:id="source" text="来源统计" onAction="#handleSourceAction" />
