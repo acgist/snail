@@ -16,6 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * <p>窗口</p>
@@ -117,6 +118,13 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 		this.escape();
 		this.disableResize();
 	}
+
+	/**
+	 * <p>隐藏窗口释放资源</p>
+	 */
+	protected void hiddenRelease() {
+		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, event -> this.controller.release());
+	}
 	
 	/**
 	 * <p>加载fxml、controller</p>
@@ -188,7 +196,7 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 			// 图标显示
 			!this.stage.isIconified();
 	}
-	
+
 	/**
 	 * <p>获取容器</p>
 	 * 

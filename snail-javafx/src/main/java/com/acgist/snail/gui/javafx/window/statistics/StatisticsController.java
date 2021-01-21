@@ -280,10 +280,9 @@ public final class StatisticsController extends AbstractController {
 		this.buildSystemTrafficStatistics();
 	}
 	
-	/**
-	 * <p>释放资源</p>
-	 */
+	@Override
 	public void release() {
+		super.release();
 		this.statisticsBoxClear();
 	}
 

@@ -4,7 +4,6 @@ import com.acgist.snail.gui.javafx.window.AbstractWindow;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 /**
  * <p>统计窗口</p>
@@ -31,7 +30,7 @@ public final class StatisticsWindow extends AbstractWindow<StatisticsController>
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
-		this.windowHidden();
+		this.hiddenRelease();
 	}
 	
 	@Override
@@ -47,15 +46,6 @@ public final class StatisticsWindow extends AbstractWindow<StatisticsController>
 	 */
 	public void piecePos(int index) {
 		this.controller.piecePos(index);
-	}
-	
-	/**
-	 * <p>窗口隐藏：释放资源</p>
-	 */
-	private void windowHidden() {
-		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, event -> {
-			this.controller.release();
-		});
 	}
 	
 }
