@@ -114,13 +114,13 @@ public final class TorrentSelector {
 		nameCheckBox.setPrefWidth(500);
 		nameCheckBox.setTooltip(Tooltips.newTooltip(name));
 		nameCheckBox.setOnAction(this.selectAction);
-		final HBox hBox = new HBox(nameCheckBox);
+		final HBox box = new HBox(nameCheckBox);
 		// 设置文件大小
 		if(size != null) {
 			final Text sizeText = new Text(FileUtils.formatSize(size));
-			hBox.getChildren().add(sizeText);
+			box.getChildren().add(sizeText);
 		}
-		final TreeItem<HBox> treeItem = new TreeItem<>(hBox);
+		final TreeItem<HBox> treeItem = new TreeItem<>(box);
 		this.selectors.put(path, new Selector(path, size, nameCheckBox, treeItem));
 		if(parent != null) {
 			// 根节点没有上级节点

@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.GuiContext.MessageType;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.event.AlertEvent;
-import com.acgist.snail.gui.event.BuildEvent;
-import com.acgist.snail.gui.event.ExitEvent;
-import com.acgist.snail.gui.event.HideEvent;
-import com.acgist.snail.gui.event.NoticeEvent;
-import com.acgist.snail.gui.event.RefreshTaskListEvent;
-import com.acgist.snail.gui.event.RefreshTaskStatusEvent;
-import com.acgist.snail.gui.event.ResponseEvent;
-import com.acgist.snail.gui.event.ShowEvent;
-import com.acgist.snail.gui.event.TorrentEvent;
+import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
+import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
+import com.acgist.snail.gui.event.adapter.ExitEventAdapter;
+import com.acgist.snail.gui.event.adapter.HideEventAdapter;
+import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
+import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
+import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
+import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
+import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
+import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
@@ -36,16 +36,16 @@ public class GuiContextTest extends Performance {
 	 */
 	@BeforeAll
 	public static final void registerEvent() {
-		GuiContext.register(ShowEvent.getInstance());
-		GuiContext.register(HideEvent.getInstance());
-		GuiContext.register(ExitEvent.getInstance());
-		GuiContext.register(BuildEvent.getInstance());
-		GuiContext.register(AlertEvent.getInstance());
-		GuiContext.register(NoticeEvent.getInstance());
-		GuiContext.register(TorrentEvent.getInstance());
-		GuiContext.register(ResponseEvent.getInstance());
-		GuiContext.register(RefreshTaskListEvent.getInstance());
-		GuiContext.register(RefreshTaskStatusEvent.getInstance());
+		GuiContext.register(new ShowEventAdapter());
+		GuiContext.register(new HideEventAdapter());
+		GuiContext.register(new ExitEventAdapter());
+		GuiContext.register(new BuildEventAdapter());
+		GuiContext.register(new AlertEventAdapter());
+		GuiContext.register(new NoticeEventAdapter());
+		GuiContext.register(new TorrentEventAdapter());
+		GuiContext.register(new ResponseEventAdapter());
+		GuiContext.register(new RefreshTaskListEventAdapter());
+		GuiContext.register(new RefreshTaskStatusEventAdapter());
 	}
 
 	@Test

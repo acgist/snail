@@ -10,7 +10,7 @@ import com.acgist.snail.gui.event.GuiEvent;
  */
 public class BuildEventAdapter extends GuiEvent {
 	
-	protected BuildEventAdapter() {
+	public BuildEventAdapter() {
 		super(Type.BUILD, "创建窗口事件");
 	}
 	

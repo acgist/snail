@@ -10,7 +10,7 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
  */
 public class NoticeEventAdapter extends GuiEventMessage {
 
-	protected NoticeEventAdapter() {
+	public NoticeEventAdapter() {
 		super(Type.NOTICE, "提示消息事件", ApplicationMessage.Type.NOTICE);
 	}
 

@@ -2,12 +2,13 @@
 
 ## 目录
 
-* [使用](#使用)
 * [协议](#协议)
 	* [添加协议](#添加协议)
 	* [注册协议](#注册协议)
 * [任务管理](#任务管理)
 	* [添加任务](#添加任务)
+	* [添加BT任务](#添加bt任务)
+	* [任务信息](#任务信息)
 	* [开始任务](#开始任务)
 	* [暂停任务](#暂停任务)
 	* [删除任务](#删除任务)
@@ -22,34 +23,6 @@
 * [启动模式](#启动模式)
 	* [后台模式](#后台模式)
 	* [启动参数](#启动参数)
-
-## 使用
-
-```java
-final Snail snail = SnailBuilder.newBuilder()
-// 启用FTP下载协议
-//	.enableFtp()
-// 启用HLS下载协议
-//	.enableHls()
-// 启用HTTP下载协议
-//	.enableHttp()
-// 启用磁力链接下载协议
-//	.enableMagnet()
-// 启用BT下载协议
-//	.enableTorrent()
-// 启用所有下载协议
-	.enableAllProtocol()
-// 加载下载任务
-//	.loadTask()
-// 启动系统监听
-//	.application()
-// 同步创建
-	.buildSync();
-// 添加下载
-snail.download("下载链接");
-// 等待下载完成：可以自行实现阻塞替换
-snail.lockDownload();
-```
 
 ## 协议
 
@@ -83,19 +56,66 @@ ProtocolContext.getInstance().register(protocol);
 
 ### 添加任务
 
-#### Snail
-
 ```java
-ITaskSession taskSession = Snail.getInstance().download(url)
-```
-
-#### TaskContext
-
-```java
-ITaskSession taskSession = TaskContext.getInstance().download(url)
+final Snail snail = SnailBuilder.newBuilder()
+// 启用FTP下载协议
+//	.enableFtp()
+// 启用HLS下载协议
+//	.enableHls()
+// 启用HTTP下载协议
+//	.enableHttp()
+// 启用磁力链接下载协议
+//	.enableMagnet()
+// 启用BT下载协议
+//	.enableTorrent()
+// 启用所有下载协议
+	.enableAllProtocol()
+// 加载下载任务
+//	.loadTask()
+// 启动系统监听
+//	.application()
+// 同步创建
+	.buildSync();
+// 添加下载
+snail.download("下载链接");
+// 等待下载完成：可以自行实现阻塞替换
+snail.lockDownload();
 ```
 
 > 任务添加完成自动开始下载不用调用开始任务方法
+
+### 添加BT任务
+
+```java
+// 实现种子选择事件
+private static final class TorrentEvent extends TorrentEventAdapter {
+}
+
+final var snail = SnailBuilder.newBuilder()
+	.enableTorrent()
+	.buildSync();
+// 注册种子选择事件
+GuiContext.register(new TorrentEvent());
+// 解析种子文件
+final var torrent = TorrentContext.loadTorrent("种子文件");
+// 自行过滤下载文件
+final var list = torrent.getInfo().files().stream()
+	.filter(TorrentFile::isNotPaddingFile)
+	.map(TorrentFile::path)
+	.collect(Collectors.toList());
+// 设置需要下载文件
+GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+// 开始下载
+snail.download("种子文件");
+snail.lockDownload();
+```
+
+#### 任务信息
+
+```java
+// 下载状态或者下载速度（下载中）
+ITaskSession.getStatusValue();
+```
 
 ### 开始任务
 

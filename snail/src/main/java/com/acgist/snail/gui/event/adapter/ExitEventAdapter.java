@@ -10,7 +10,7 @@ import com.acgist.snail.gui.event.GuiEvent;
  */
 public class ExitEventAdapter extends GuiEvent {
 
-	protected ExitEventAdapter() {
+	public ExitEventAdapter() {
 		super(Type.EXIT, "退出窗口事件");
 	}
 
