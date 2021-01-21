@@ -55,6 +55,8 @@ public final class SettingController extends Controller implements Initializable
 	private Slider memoryBuffer;
 	@FXML
 	private CheckBox notice;
+	@FXML
+	private CheckBox delete;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -92,6 +94,16 @@ public final class SettingController extends Controller implements Initializable
 	}
 	
 	/**
+	 * <p>删除文件</p>
+	 * 
+	 * @param event 事件
+	 */
+	@FXML
+	public void handleDeleteAction(ActionEvent event) {
+		DownloadConfig.setDelete(this.delete.isSelected());
+	}
+	
+	/**
 	 * <p>初始化配置</p>
 	 */
 	private void initSetting() {
@@ -100,6 +112,7 @@ public final class SettingController extends Controller implements Initializable
 		this.buffer.setValue(DownloadConfig.getBuffer());
 		this.memoryBuffer.setValue(DownloadConfig.getMemoryBuffer());
 		this.notice.setSelected(DownloadConfig.getNotice());
+		this.delete.setSelected(DownloadConfig.getDelete());
 	}
 	
 	/**

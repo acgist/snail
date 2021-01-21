@@ -48,6 +48,13 @@
 				</TextFlow>
 				<CheckBox fx:id="notice" onAction="#handleNoticeAction" />
 			</HBox>
+				
+			<HBox>
+				<TextFlow>
+					<Label>删除文件：</Label>
+				</TextFlow>
+				<CheckBox fx:id="delete" onAction="#handleDeleteAction" />
+			</HBox>
 		</VBox>
 	</ScrollPane>
 	

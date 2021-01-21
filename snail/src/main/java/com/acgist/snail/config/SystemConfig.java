@@ -266,10 +266,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String stunServer;
 	/**
-	 * <p>删除任务是否删除文件</p>
-	 */
-	private boolean taskFileDelete;
-	/**
 	 * <p>系统服务端口（本地服务：启动检测）</p>
 	 */
 	private int servicePort;
@@ -354,7 +350,6 @@ public final class SystemConfig extends PropertiesConfig {
 		this.support = this.getString("acgist.system.support");
 		this.latestRelease = this.getString("acgist.system.latest.release");
 		this.stunServer = this.getString("acgist.system.stun.server");
-		this.taskFileDelete = this.getBoolean("acgist.task.file.delete", false);
 		this.servicePort = this.getInteger("acgist.service.port", 16888);
 		this.torrentPort = this.getInteger("acgist.torrent.port", 18888);
 		this.peerSize = this.getInteger("acgist.peer.size", 20);
@@ -385,7 +380,6 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("问题与建议：{}", this.support);
 		LOGGER.debug("最新稳定版本：{}", this.latestRelease);
 		LOGGER.debug("STUN服务器：{}", this.stunServer);
-		LOGGER.debug("删除任务是否删除文件：{}", this.taskFileDelete);
 		LOGGER.debug("系统服务端口（本地服务：启动检测）：{}", this.servicePort);
 		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN）：{}", this.torrentPort);
 		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
@@ -489,15 +483,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String getStunServer() {
 		return INSTANCE.stunServer;
-	}
-	
-	/**
-	 * <p>获取删除任务是否删除文件</p>
-	 * 
-	 * @return 删除任务是否删除文件
-	 */
-	public static final boolean getTaskFileDelete() {
-		return INSTANCE.taskFileDelete;
 	}
 	
 	/**
