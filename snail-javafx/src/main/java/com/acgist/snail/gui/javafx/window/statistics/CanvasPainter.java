@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 
 /**
  * <p>位图工具</p>
- * <p>使用画布实现</p>
  * 
  * @author acgist
  */

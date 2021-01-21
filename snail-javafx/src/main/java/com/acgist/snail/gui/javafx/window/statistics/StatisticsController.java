@@ -65,14 +65,6 @@ public final class StatisticsController extends AbstractController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	
 	/**
-	 * <p>图表宽度：{@value}</p>
-	 */
-	private static final int CHART_WIDTH = 800;
-	/**
-	 * <p>图表高度：{@value}</p>
-	 */
-	private static final int CHART_HEIGHT = 400;
-	/**
 	 * <p>位图宽度</p>
 	 */
 	private static final int WH = 12;
@@ -80,6 +72,14 @@ public final class StatisticsController extends AbstractController {
 	 * <p>位图列长</p>
 	 */
 	private static final int COL = 50;
+	/**
+	 * <p>图表宽度：{@value}</p>
+	 */
+	private static final int CHART_WIDTH = 800;
+	/**
+	 * <p>图表高度：{@value}</p>
+	 */
+	private static final int CHART_HEIGHT = 400;
 	
 	/**
 	 * <p>统计筛选</p>
@@ -839,12 +839,9 @@ public final class StatisticsController extends AbstractController {
 			return false;
 		}
 		
-		/**
-		 * <p>重写toString设置下拉框显示名称</p>
-		 * <p>使用{@code this.selectInfoHashs.converterProperty().set}一样效果</p>
-		 */
 		@Override
 		public String toString() {
+			// 设置下拉框显示名称
 			return this.name;
 		}
 		
