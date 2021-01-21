@@ -1,8 +1,5 @@
 package com.acgist.snail.gui.javafx.window.torrent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.gui.javafx.window.AbstractWindow;
 import com.acgist.snail.pojo.ITaskSession;
 
@@ -17,8 +14,6 @@ import javafx.stage.WindowEvent;
  */
 public final class TorrentWindow extends AbstractWindow<TorrentController> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentWindow.class);
-	
 	private static final TorrentWindow INSTANCE;
 	
 	public static final TorrentWindow getInstance() {
@@ -26,16 +21,16 @@ public final class TorrentWindow extends AbstractWindow<TorrentController> {
 	}
 	
 	static {
-		LOGGER.debug("初始化编辑任务窗口");
 		INSTANCE = new TorrentWindow();
 	}
 	
 	private TorrentWindow() {
+		super("编辑任务", 800, 600, "/fxml/torrent.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "编辑任务", 800, 600, "/fxml/torrent.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 		this.windowHidden();
 	}

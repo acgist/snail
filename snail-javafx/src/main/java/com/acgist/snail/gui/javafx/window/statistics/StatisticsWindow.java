@@ -1,8 +1,5 @@
 package com.acgist.snail.gui.javafx.window.statistics;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.gui.javafx.window.AbstractWindow;
 
 import javafx.stage.Modality;
@@ -16,8 +13,6 @@ import javafx.stage.WindowEvent;
  */
 public final class StatisticsWindow extends AbstractWindow<StatisticsController> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsWindow.class);
-	
 	private static final StatisticsWindow INSTANCE;
 	
 	public static final StatisticsWindow getInstance() {
@@ -25,16 +20,16 @@ public final class StatisticsWindow extends AbstractWindow<StatisticsController>
 	}
 	
 	static {
-		LOGGER.debug("初始化统计窗口");
 		INSTANCE = new StatisticsWindow();
 	}
 	
 	private StatisticsWindow() {
+		super("统计", 800, 640, "/fxml/statistics.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, "统计", 800, 640, "/fxml/statistics.fxml", Modality.APPLICATION_MODAL);
+		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 		this.windowHidden();
 	}

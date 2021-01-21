@@ -1,8 +1,5 @@
 package com.acgist.snail.gui.javafx.window.main;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.window.AbstractWindow;
@@ -20,8 +17,6 @@ import javafx.stage.Stage;
  */
 public final class MainWindow extends AbstractWindow<MainController> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
-	
 	private static final MainWindow INSTANCE;
 	
 	public static final MainWindow getInstance() {
@@ -29,16 +24,16 @@ public final class MainWindow extends AbstractWindow<MainController> {
 	}
 	
 	static {
-		LOGGER.debug("初始化主窗口");
 		INSTANCE = new MainWindow();
 	}
 	
 	private MainWindow() {
+		super(SystemConfig.getName(), 1000, 600, "/fxml/main.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, SystemConfig.getName(), 1000, 600, "/fxml/main.fxml", Modality.NONE);
+		this.buildWindow(stage, Modality.NONE);
 		this.icon();
 		this.help();
 		this.statistics();
