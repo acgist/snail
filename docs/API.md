@@ -257,7 +257,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出什么提示。
 
-后台模式直接使用`GuiContext.registerAdapter();`，本地GUI按需适配。
+后台模式直接使用`GuiContext.registerAdapter()`，本地GUI按需适配。
 
 #### GUI适配
 
