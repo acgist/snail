@@ -382,7 +382,7 @@ public final class MainController extends AbstractController {
 	private void taskCell(TableColumn<ITaskSession, String> column, Pos pos, boolean icon, boolean tooltip, DoubleBinding widthBinding) {
 		column.prefWidthProperty().bind(widthBinding);
 		column.setResizable(false); // 禁止修改大小
-		column.setCellFactory(tableColumn -> new TaskCell(pos, icon, tooltip));
+		column.setCellFactory(tableColumn -> new TaskTableCell(pos, icon, tooltip));
 	}
 	
 	/**

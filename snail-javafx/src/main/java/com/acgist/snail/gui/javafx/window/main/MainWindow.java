@@ -6,7 +6,6 @@ import com.acgist.snail.gui.javafx.window.AbstractWindow;
 import com.acgist.snail.gui.javafx.window.statistics.StatisticsWindow;
 
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -35,8 +34,10 @@ public final class MainWindow extends AbstractWindow<MainController> {
 	public void start(Stage stage) throws Exception {
 		this.buildWindow(stage, Modality.NONE);
 		this.icon();
-		this.help();
-		this.statistics();
+		// F1：帮助
+		this.keyReleased(KeyCode.F1, () -> Desktops.browse(SystemConfig.getSupport()));
+		// F12：统计
+		this.keyReleased(KeyCode.F12, () -> StatisticsWindow.getInstance().show());
 	}
 	
 	@Override
@@ -45,26 +46,4 @@ public final class MainWindow extends AbstractWindow<MainController> {
 		super.show();
 	}
 
-	/**
-	 * <p>F1：帮助</p>
-	 */
-	private void help() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-			if(event.getCode() == KeyCode.F1) {
-				Desktops.browse(SystemConfig.getSupport());
-			}
-		});
-	}
-	
-	/**
-	 * <p>F12：统计</p>
-	 */
-	private void statistics() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-			if(event.getCode() == KeyCode.F12) {
-				StatisticsWindow.getInstance().show();
-			}
-		});
-	}
-	
 }
