@@ -33,7 +33,6 @@ public final class BuildController extends AbstractController {
 	
 	@FXML
 	private FlowPane root;
-	
 	@FXML
 	private TextField urlValue;
 	
@@ -41,6 +40,7 @@ public final class BuildController extends AbstractController {
 	public void initialize(URL location, ResourceBundle resources) {
 		this.root.setOnDragOver(this.dragOverAction);
 		this.root.setOnDragDropped(this.dragDroppedAction);
+		this.urlValue.setPromptText("输入下载链接 、磁力链接或选择种子文件");
 	}
 	
 	/**
@@ -65,11 +65,11 @@ public final class BuildController extends AbstractController {
 	public void handleBuildAction(ActionEvent event) {
 		final String url = this.urlValue.getText();
 		if(StringUtils.isEmpty(url)) {
+			Alerts.warn("下载失败", "输入下载链接");
 			return;
 		}
 		boolean success = true;
 		try {
-			// TODO：优化卡死现象
 			TaskContext.getInstance().download(url);
 		} catch (Exception e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
@@ -77,7 +77,6 @@ public final class BuildController extends AbstractController {
 			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(success) {
-			this.cleanUrl();
 			BuildWindow.getInstance().hide();
 		}
 	}
@@ -89,15 +88,7 @@ public final class BuildController extends AbstractController {
 	 */
 	@FXML
 	public void handleCancelAction(ActionEvent event) {
-		this.cleanUrl();
 		BuildWindow.getInstance().hide();
-	}
-	
-	/**
-	 * <p>清空下载链接</p>
-	 */
-	public void cleanUrl() {
-		this.setUrl("");
 	}
 	
 	/**
@@ -110,6 +101,20 @@ public final class BuildController extends AbstractController {
 			url = "";
 		}
 		this.urlValue.setText(url.trim());
+	}
+	
+	/**
+	 * <p>清空下载链接</p>
+	 */
+	public void cleanUrl() {
+		this.setUrl(null);
+	}
+	
+	/**
+	 * <p>设置焦点</p>
+	 */
+	public void setFocus() {
+		this.urlValue.requestFocus();
 	}
 	
 	/**
@@ -133,7 +138,7 @@ public final class BuildController extends AbstractController {
 	private EventHandler<DragEvent> dragDroppedAction = event -> {
 		final String url = this.dragboard(event);
 		if(StringUtils.isNotEmpty(url)) {
-			setUrl(url);
+			this.setUrl(url);
 		}
 		event.setDropCompleted(true);
 		event.consume();

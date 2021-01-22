@@ -42,4 +42,16 @@ public final class BuildWindow extends AbstractWindow<BuildController> {
 		super.show();
 	}
 	
+	@Override
+	public void show() {
+		super.show();
+		this.controller.setFocus();
+	}
+	
+	@Override
+	public void hide() {
+		super.hide();
+		this.controller.cleanUrl();
+	}
+	
 }

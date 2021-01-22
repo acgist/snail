@@ -46,6 +46,13 @@
 	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
 /**
+ * <p>输入框样式：TextField</p>
+ */
+.root .text-input,
+.root .text-input:focused {
+	-fx-prompt-text-fill:-fx-snail-border-color;
+}
+/**
  * <p>按钮样式：Button</p>
  */
 .root .button {
