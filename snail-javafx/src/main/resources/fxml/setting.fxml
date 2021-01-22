@@ -31,8 +31,7 @@
 					minorTickCount="1"
 					blockIncrement="1"
 					showTickMarks="true"
-					showTickLabels="true"
-				/>
+					showTickLabels="true" />
 			</HBox>
 			
 			<HBox>
@@ -45,8 +44,7 @@
 					minorTickCount="1"
 					blockIncrement="1024"
 					showTickMarks="true"
-					showTickLabels="true"
-				/>
+					showTickLabels="true" />
 			</HBox>
 			
 			<HBox>
@@ -59,8 +57,7 @@
 					minorTickCount="1"
 					blockIncrement="1"
 					showTickMarks="true"
-					showTickLabels="true"
-				/>
+					showTickLabels="true" />
 			</HBox>
 				
 			<HBox>

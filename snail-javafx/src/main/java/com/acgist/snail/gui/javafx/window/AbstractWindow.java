@@ -30,6 +30,21 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWindow.class);
 	
 	/**
+	 * <p>按键任务</p>
+	 * 
+	 * @author acgist
+	 */
+	@FunctionalInterface
+	public interface KeyReleasedFunction {
+		
+		/**
+		 * <p>执行按键任务</p>
+		 */
+		void execute();
+		
+	}
+	
+	/**
 	 * <p>窗口标题</p>
 	 */
 	private final String title;
@@ -92,11 +107,7 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 * <p>设置ESCAPE隐藏窗口</p>
 	 */
 	protected void escape() {
-		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-			if(event.getCode() == KeyCode.ESCAPE) {
-				this.stage.hide();
-			}
-		});
+		this.keyReleased(KeyCode.ESCAPE, this::hide);
 	}
 	
 	/**
@@ -124,6 +135,20 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 */
 	protected void hiddenRelease() {
 		this.stage.addEventFilter(WindowEvent.WINDOW_HIDDEN, event -> this.controller.release());
+	}
+	
+	/**
+	 * <p>注册键盘事件</p>
+	 * 
+	 * @param keyCode 按键编号
+	 * @param function 按键任务
+	 */
+	protected void keyReleased(KeyCode keyCode, KeyReleasedFunction function) {
+		this.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+			if(event.getCode() == keyCode) {
+				function.execute();
+			}
+		});
 	}
 	
 	/**
