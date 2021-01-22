@@ -1,5 +1,7 @@
 package com.acgist.snail.gui.javafx;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ public class AlertsTest extends Performance {
 		synchronized (lock) {
 			lock.wait();
 		}
+		assertNotNull(lock);
 	}
 	
 }
