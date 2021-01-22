@@ -113,7 +113,9 @@ public final class TaskMenu extends AbstractMenu {
 	/**
 	 * <p>复制链接</p>
 	 */
-	private EventHandler<ActionEvent> copyUrlEvent = event -> MainWindow.getInstance().controller().selected().forEach(session -> Clipboards.copy(session.getUrl()));
+	private EventHandler<ActionEvent> copyUrlEvent = event -> MainWindow.getInstance().controller().selected().forEach(
+		session -> Clipboards.copy(session.getUrl())
+	);
 	
 	/**
 	 * <p>文件选择</p>
@@ -122,7 +124,9 @@ public final class TaskMenu extends AbstractMenu {
 		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
-		MainWindow.getInstance().controller().selectedTorrent().forEach(session -> TorrentWindow.getInstance().show(session));
+		MainWindow.getInstance().controller().selectedTorrent().forEach(
+			session -> TorrentWindow.getInstance().show(session)
+		);
 	};
 	
 	/**
@@ -146,42 +150,38 @@ public final class TaskMenu extends AbstractMenu {
 	/**
 	 * <p>文件校验</p>
 	 */
-	private EventHandler<ActionEvent> verifyEvent = event -> {
-		Platform.runLater(() -> {
-			MainWindow.getInstance().controller().selected().forEach(session -> {
-				try {
-					if(session.verify()) {
-						Alerts.info("校验成功", session.getName());
-					} else if(session.statusCompleted()) {
-						// 任务完成：判断是否需要重新下载
-						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
-						if(Alerts.ok(optional)) {
-							session.repause();
-						}
-					} else {
-						Alerts.warn("校验失败", "开始下载自动修复");
+	private EventHandler<ActionEvent> verifyEvent = event -> Platform.runLater(() -> {
+		MainWindow.getInstance().controller().selected().forEach(session -> {
+			try {
+				if(session.verify()) {
+					Alerts.info("校验成功", session.getName());
+				} else if(session.statusCompleted()) {
+					// 任务完成：判断是否需要重新下载
+					final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
+					if(Alerts.ok(optional)) {
+						session.repause();
 					}
-				} catch (DownloadException e) {
-					LOGGER.error("文件校验异常", e);
-					Alerts.warn("校验失败", e.getMessage());
+				} else {
+					Alerts.warn("校验失败", "开始下载自动修复");
 				}
-			});
+			} catch (DownloadException e) {
+				LOGGER.error("文件校验异常", e);
+				Alerts.warn("校验失败", e.getMessage());
+			}
 		});
-	};
+	});
 	
 	/**
 	 * <p>打开目录</p>
 	 */
-	private EventHandler<ActionEvent> openFolderEvent = event -> {
-		MainWindow.getInstance().controller().selected().forEach(session -> {
-			final File folder = session.downloadFolder();
-			if(folder.exists()) {
-				Desktops.open(folder);
-			} else {
-				Alerts.warn("打开失败", "下载文件已经删除");
-			}
-		});
-	};
+	private EventHandler<ActionEvent> openFolderEvent = event -> MainWindow.getInstance().controller().selected().forEach(session -> {
+		final File folder = session.downloadFolder();
+		if(folder.exists()) {
+			Desktops.open(folder);
+		} else {
+			Alerts.warn("打开失败", "下载文件已经删除");
+		}
+	});
 	
 	/**
 	 * <p>有选中BT任务时按钮可以操作：文件选择、导出种子</p>

@@ -48,12 +48,12 @@ public final class Application {
 	public static final void main(String[] args) {
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
-		SystemContext.build(); // 初始化系统上下文
+		SystemContext.build();
 		if(Snail.available()) {
 			registerGuiEvent();
 			GuiContext.getInstance().init(args).build();
 		} else {
-			LOGGER.debug("启动系统失败");
+			LOGGER.debug("系统启动失败");
 		}
 		LOGGER.info("系统启动完成");
 	}

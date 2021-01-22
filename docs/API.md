@@ -23,6 +23,7 @@
 * [启动模式](#启动模式)
 	* [后台模式](#后台模式)
 	* [启动参数](#启动参数)
+* [GUI事件](#gui事件)
 
 ## 协议
 
@@ -220,7 +221,8 @@ B编码List&lt;Map&gt;
 |隐藏窗口|HIDE|-|
 |窗口消息|ALERT|[窗口消息和提示消息主体](#窗口消息和提示消息主体)|
 |提示消息|NOTICE|[窗口消息和提示消息主体](#窗口消息和提示消息主体)|
-|刷新任务|REFRESH|-|
+|刷新任务列表|REFRESH_TASK_LIST|-|
+|刷新任务状态|REFRESH_TASK_STATUS|-|
 |响应消息|RESPONSE|文本|
 
 #### 窗口消息和提示消息主体
@@ -250,3 +252,22 @@ B编码Map
 ```bash
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|extend]
 ```
+
+## GUI事件
+
+GUI分为*本地GUI*和*扩展GUI*，GUI事件用来通知界面应该做出什么提示。
+
+> 后台模式直接使用`GuiContext.registerAdapter();`
+
+|名称|类型|系统通知|详细描述|
+|:--|:--|:--|:--|
+|显示窗口|SHOW|SHOW|显示窗口|
+|隐藏窗口|HIDE|HIDE|隐藏窗口|
+|退出窗口|EXIT|-|退出系统（静默处理）|
+|创建窗口|BUILD|-|阻塞系统（静默处理）|
+|窗口消息|ALERT|ALERT|窗口消息|
+|提示消息|NOTICE|NOTICE|提示消息|
+|种子文件选择|TORRENT|-|选择种子下载文件（静默处理）|
+|响应消息|RESPONSE|RESPONSE|操作响应消息|
+|刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|
+|刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|
