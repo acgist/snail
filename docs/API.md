@@ -255,19 +255,21 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ## GUI事件
 
-GUI分为*本地GUI*和*扩展GUI*，GUI事件用来通知界面应该做出什么提示。
+GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出什么提示。
 
-> 后台模式直接使用`GuiContext.registerAdapter();`
+后台模式直接使用`GuiContext.registerAdapter();`，本地GUI按需适配。
 
-|名称|类型|系统通知|详细描述|
-|:--|:--|:--|:--|
-|显示窗口|SHOW|SHOW|显示窗口|
-|隐藏窗口|HIDE|HIDE|隐藏窗口|
-|退出窗口|EXIT|-|退出系统（静默处理）|
-|创建窗口|BUILD|-|阻塞系统（静默处理）|
-|窗口消息|ALERT|ALERT|窗口消息|
-|提示消息|NOTICE|NOTICE|提示消息|
-|种子文件选择|TORRENT|-|选择种子下载文件（静默处理）|
-|响应消息|RESPONSE|RESPONSE|操作响应消息|
-|刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|
-|刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|
+#### GUI适配
+
+|名称|类型|系统通知|详细描述|适配器|
+|:--|:--|:--|:--|:--|
+|显示窗口|SHOW|SHOW|显示窗口|ShowEventAdapter|
+|隐藏窗口|HIDE|HIDE|隐藏窗口|HideEventAdapter|
+|退出窗口|EXIT|-|退出系统（静默处理）|ExitEventAdapter|
+|创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
+|窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
+|提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
+|种子文件选择|TORRENT|-|选择种子下载文件（静默处理）|TorrentEventAdapter|
+|响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
+|刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
+|刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
