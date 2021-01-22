@@ -21,6 +21,17 @@ public final class Alerts {
 	}
 	
 	/**
+	 * <p>判断是否点击OK按钮</p>
+	 * 
+	 * @param optional 按钮类型
+	 * 
+	 * @return 是否点击OK按钮
+	 */
+	public static final boolean ok(Optional<ButtonType> optional) {
+		return optional.isPresent() && optional.get() == ButtonType.OK;
+	}
+	
+	/**
 	 * <p>提示窗口</p>
 	 * 
 	 * @param title 标题

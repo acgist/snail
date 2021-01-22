@@ -38,7 +38,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -353,7 +352,7 @@ public final class MainController extends AbstractController {
 			return;
 		}
 		final var optional = Alerts.build("删除确认", "删除选中任务？", GuiContext.MessageType.CONFIRM);
-		if(optional.isPresent() && optional.get() == ButtonType.OK) {
+		if(Alerts.ok(optional)) {
 			this.selected().forEach(ITaskSession::delete);
 		}
 	}
