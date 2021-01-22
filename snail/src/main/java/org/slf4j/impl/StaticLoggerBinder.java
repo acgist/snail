@@ -19,17 +19,14 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
 	}
 	
 	/**
-	 * <p>获取单例对象</p>
+	 * <p>SL4J绑定方法</p>
 	 * 
-	 * @return 单例对象
+	 * @return {@link StaticLoggerBinder}
 	 */
 	public static final StaticLoggerBinder getSingleton() {
 		return INSTANCE;
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private StaticLoggerBinder() {
 	}
 	
