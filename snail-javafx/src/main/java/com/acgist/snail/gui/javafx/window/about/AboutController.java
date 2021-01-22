@@ -26,7 +26,6 @@ public final class AboutController extends AbstractController {
 	
 	@FXML
 	private BorderPane root;
-	
 	@FXML
 	private Text name;
 	@FXML
@@ -59,7 +58,7 @@ public final class AboutController extends AbstractController {
 			Alerts.info("检测更新", "当前已是最新版本");
 		} else {
 			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiContext.MessageType.CONFIRM);
-			if(optional.isPresent() && optional.get() == ButtonType.OK) {
+			if(Alerts.ok(optional)) {
 				Desktops.browse(SystemConfig.getSource());
 			}
 		}

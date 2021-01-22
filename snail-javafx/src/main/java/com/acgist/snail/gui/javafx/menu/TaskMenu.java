@@ -194,7 +194,7 @@ public final class TaskMenu extends AbstractMenu {
 					} else if(session.statusCompleted()) {
 						// 任务完成：判断是否需要重新下载
 						final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
-						if(optional.isPresent() && optional.get() == ButtonType.OK) {
+						if(Alerts.ok(optional)) {
 							session.repause();
 						}
 					} else {
