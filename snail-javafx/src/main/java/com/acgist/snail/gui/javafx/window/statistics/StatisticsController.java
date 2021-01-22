@@ -356,7 +356,7 @@ public final class StatisticsController extends AbstractController {
 			this.buildTextFlow("Java版本：", System.getProperty("java.version")),
 			this.buildTextFlow("虚拟机名称：", System.getProperty("java.vm.name"))
 		);
-		systemInfo.getStyleClass().add(Themes.CLASS_SYSTEM_INFO);
+		Themes.applyClass(systemInfo, Themes.CLASS_SYSTEM_INFO);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
 		statisticsBoxNode.add(systemInfo);
@@ -720,7 +720,7 @@ public final class StatisticsController extends AbstractController {
 		final Text text = new Text(message);
 		final TextFlow textFlow = new TextFlow(text);
 		final HBox box = new HBox(textFlow);
-		box.getStyleClass().add(Themes.CLASS_STATISTICS_INFO);
+		Themes.applyClass(box, Themes.CLASS_STATISTICS_INFO);
 		return box;
 	}
 	
@@ -740,7 +740,7 @@ public final class StatisticsController extends AbstractController {
 			textFlow.setBackground(new Background(new BackgroundFill(colors[index], null, null)));
 			box.getChildren().add(textFlow);
 		}
-		box.getStyleClass().add(Themes.CLASS_PAINTER_INFO);
+		Themes.applyClass(box, Themes.CLASS_PAINTER_INFO);
 		return box;
 	}
 	

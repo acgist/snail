@@ -153,7 +153,7 @@ public final class MainController extends AbstractController {
 		final var text = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
 		text.setFill(color);
 		icon.setTextFill(color);
-		icon.getStyleClass().add(Themes.CLASS_TASK_EMPTY);
+		Themes.applyClass(icon, Themes.CLASS_TASK_EMPTY);
 		final var placeholder = new VBox(icon, text);
 		placeholder.setAlignment(Pos.CENTER);
 		return placeholder;

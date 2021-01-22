@@ -219,7 +219,7 @@ public final class Fonts {
 			// 设置字体
 			iconLabel.setFont(Font.font(FONT_NAME));
 			// 添加样式
-			iconLabel.getStyleClass().add(Themes.CLASS_SNAIL_ICON);
+			Themes.applyClass(iconLabel, Themes.CLASS_SNAIL_ICON);
 			return iconLabel;
 		}
 		
