@@ -42,18 +42,16 @@ public final class TaskDisplay {
 	 */
 	public void newTimer(MainController controller) {
 		LOGGER.debug("启动任务列表刷新定时器");
-		if(this.controller == null) {
-			synchronized (this.lock) {
-				if(this.controller == null) {
-					this.controller = controller;
-					SystemThreadContext.timerAtFixedRate(
-						0,
-						SystemConfig.TASK_REFRESH_INTERVAL,
-						TimeUnit.SECONDS,
-						this::refreshTaskStatus
-					);
-					this.lock.notifyAll();
-				}
+		synchronized (this.lock) {
+			if(this.controller == null) {
+				this.controller = controller;
+				SystemThreadContext.timerAtFixedRate(
+					0,
+					SystemConfig.TASK_REFRESH_INTERVAL,
+					TimeUnit.SECONDS,
+					this::refreshTaskStatus
+				);
+				this.lock.notifyAll();
 			}
 		}
 	}
