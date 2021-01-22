@@ -48,8 +48,8 @@
 				</TableColumn>
 				<!--
 				下载进度：
-					下载：20%（2G/4G）
-					完成：100%（4G）
+					下载：200MB/4G
+					完成：4G
 				-->
 				<TableColumn fx:id="progress" text="进度" styleClass="progress">
 					<cellValueFactory>
