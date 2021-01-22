@@ -40,7 +40,6 @@ import com.acgist.snail.protocol.torrent.TorrentProtocol;
 
 /**
  * <p>Snail下载工具</p>
- * <p>快速创建下载任务</p>
  * 
  * @author acgist
  */
@@ -55,7 +54,7 @@ public final class Snail {
 	}
 	
 	/**
-	 * <p>是否加下载锁</p>
+	 * <p>是否添加下载完成等待锁</p>
 	 */
 	private boolean lock = false;
 	/**
@@ -63,22 +62,19 @@ public final class Snail {
 	 */
 	private boolean buildTask = false;
 	/**
-	 * <p>是否创建Torrent任务</p>
+	 * <p>是否加载Torrent协议</p>
 	 */
 	private boolean buildTorrent = false;
 	/**
 	 * <p>是否启动系统监听</p>
-	 * <p>启动检测：开启监听失败表示已经存在系统实例，发送消息唤醒已有实例窗口。</p>
+	 * <p>启动检测：开启监听失败表示已经存在系统实例（发送消息唤醒已有实例窗口）</p>
 	 */
 	private boolean buildApplication = false;
 	/**
-	 * <p>系统状态</p>
+	 * <p>系统是否可用</p>
 	 */
 	private volatile boolean available = false;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private Snail() {
 		// 实体优先同步加载
 		EntityInitializer.newInstance().sync();
@@ -86,7 +82,7 @@ public final class Snail {
 	}
 	
 	/**
-	 * <p>开始下载</p>
+	 * <p>新建下载任务</p>
 	 * 
 	 * @param url 下载链接
 	 * 
@@ -101,8 +97,7 @@ public final class Snail {
 	}
 	
 	/**
-	 * <p>添加下载锁</p>
-	 * <p>任务下载完成解除</p>
+	 * <p>添加下载完成等待锁</p>
 	 */
 	public void lockDownload() {
 		synchronized (this) {
@@ -119,7 +114,7 @@ public final class Snail {
 	}
 
 	/**
-	 * <p>解除下载锁</p>
+	 * <p>解除下载完成等待锁</p>
 	 */
 	public void unlockDownload() {
 		if(this.lock) {
@@ -150,13 +145,14 @@ public final class Snail {
 			// 优先关闭任务
 			TaskContext.getInstance().shutdown();
 			if(INSTANCE.buildTorrent) {
+				// 加载Torrent协议
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				TrackerServer.getInstance().close();
 				LocalServiceDiscoveryServer.getInstance().close();
 				NatContext.getInstance().shutdown();
 				UtpRequestQueue.getInstance().shutdown();
-				// 启用BT任务：保存DHT和Tracker配置
+				// 保存DHT和Tracker配置
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
 			}
@@ -172,24 +168,21 @@ public final class Snail {
 	public static final class SnailBuilder {
 		
 		/**
-		 * <p>获取SnailBuilder</p>
+		 * <p>创建SnailBuilder</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public static final SnailBuilder newBuilder() {
 			return new SnailBuilder();
 		}
 		
-		/**
-		 * <p>禁止创建实例</p>
-		 */
 		private SnailBuilder() {
 		}
 
 		/**
 		 * <p>同步创建Snail</p>
 		 * 
-		 * @return Snail
+		 * @return {@link Snail}
 		 */
 		public Snail buildSync() {
 			return this.build(true);
@@ -198,7 +191,7 @@ public final class Snail {
 		/**
 		 * <p>异步创建Snail</p>
 		 * 
-		 * @return Snail
+		 * @return {@link Snail}
 		 */
 		public Snail buildAsyn() {
 			return this.build(false);
@@ -207,9 +200,9 @@ public final class Snail {
 		/**
 		 * <p>创建Snail</p>
 		 * 
-		 * @param sync 是否同步初始化
+		 * @param sync 是否同步创建
 		 * 
-		 * @return Snail
+		 * @return {@link Snail}
 		 * 
 		 * @throws DownloadException 下载异常
 		 */
@@ -260,7 +253,7 @@ public final class Snail {
 		/**
 		 * <p>加载已有任务</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder loadTask() {
 			INSTANCE.buildTask = true;
@@ -270,7 +263,7 @@ public final class Snail {
 		/**
 		 * <p>启动系统监听</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder application() {
 			INSTANCE.buildApplication = true;
@@ -282,7 +275,7 @@ public final class Snail {
 		 * 
 		 * @param protocol 下载协议
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder register(Protocol protocol) {
 			ProtocolContext.getInstance().register(protocol);
@@ -292,7 +285,7 @@ public final class Snail {
 		/**
 		 * <p>注册FTP下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableFtp() {
 			return this.register(FtpProtocol.getInstance());
@@ -301,7 +294,7 @@ public final class Snail {
 		/**
 		 * <p>注册HLS下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableHls() {
 			return this.register(HlsProtocol.getInstance());
@@ -310,7 +303,7 @@ public final class Snail {
 		/**
 		 * <p>注册HTTP下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableHttp() {
 			return this.register(HttpProtocol.getInstance());
@@ -319,7 +312,7 @@ public final class Snail {
 		/**
 		 * <p>注册Magnet下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableMagnet() {
 			INSTANCE.buildTorrent = true;
@@ -329,7 +322,7 @@ public final class Snail {
 		/**
 		 * <p>注册Thunder下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableThunder() {
 			return this.register(ThunderProtocol.getInstance());
@@ -338,7 +331,7 @@ public final class Snail {
 		/**
 		 * <p>注册Torrent下载协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableTorrent() {
 			INSTANCE.buildTorrent = true;
@@ -348,7 +341,7 @@ public final class Snail {
 		/**
 		 * <p>注册所有协议</p>
 		 * 
-		 * @return SnailBuilder
+		 * @return {@link SnailBuilder}
 		 */
 		public SnailBuilder enableAllProtocol() {
 			return this
@@ -359,7 +352,7 @@ public final class Snail {
 				.enableThunder()
 				.enableTorrent();
 		}
-
+		
 	}
 	
 }
