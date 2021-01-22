@@ -12,12 +12,6 @@
 	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
 	<VBox>
-		<HBox>
-			<TextFlow>
-				<Label>请输入下载链接 、磁力链接或选择种子文件：</Label>
-			</TextFlow>
-		</HBox>
-		
 		<HBox styleClass="url">
 			<TextFlow>
 				<TextField fx:id="urlValue" />
