@@ -62,12 +62,14 @@ public class ApplicationMessage {
 		SHOW,
 		/** 隐藏窗口 */
 		HIDE,
-		/** 提示窗口 */
+		/** 窗口消息 */
 		ALERT,
 		/** 提示消息 */
 		NOTICE,
-		/** 刷新任务 */
-		REFRESH,
+		/** 刷新任务列表 */
+		REFRESH_TASK_LIST,
+		/** 刷新任务状态 */
+		REFRESH_TASK_STATUS,
 		/** 响应消息 */
 		RESPONSE;
 

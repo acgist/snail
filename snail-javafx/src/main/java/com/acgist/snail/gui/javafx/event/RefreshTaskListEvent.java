@@ -22,6 +22,7 @@ public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 	
 	@Override
 	protected void executeNative(Object ... args) {
+		// 不要使用：Platform.runLater
 		TaskDisplay.getInstance().refreshTaskList();
 	}
 

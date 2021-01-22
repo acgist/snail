@@ -8,7 +8,7 @@ import com.acgist.snail.gui.javafx.Alerts;
 import javafx.application.Platform;
 
 /**
- * <p>GUI提示窗口事件</p>
+ * <p>GUI窗口消息事件</p>
  * 
  * @author acgist
  */

@@ -10,6 +10,16 @@ import com.acgist.snail.IContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
+import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
+import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
+import com.acgist.snail.gui.event.adapter.ExitEventAdapter;
+import com.acgist.snail.gui.event.adapter.HideEventAdapter;
+import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
+import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
+import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
+import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
+import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
+import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
 import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -129,6 +139,22 @@ public final class GuiContext implements IContext {
 		INSTANCE.events.put(event.type(), event);
 	}
 
+	/**
+	 * <p>注册所有GUI事件适配器</p>
+	 */
+	public static final void registerAdapter() {
+		GuiContext.register(new ShowEventAdapter());
+		GuiContext.register(new HideEventAdapter());
+		GuiContext.register(new ExitEventAdapter());
+		GuiContext.register(new BuildEventAdapter());
+		GuiContext.register(new AlertEventAdapter());
+		GuiContext.register(new NoticeEventAdapter());
+		GuiContext.register(new TorrentEventAdapter());
+		GuiContext.register(new ResponseEventAdapter());
+		GuiContext.register(new RefreshTaskListEventAdapter());
+		GuiContext.register(new RefreshTaskStatusEventAdapter());
+	}
+	
 	/**
 	 * <p>初始化GUI上下文</p>
 	 * 
@@ -295,6 +321,7 @@ public final class GuiContext implements IContext {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
+		LOGGER.debug("执行GUI事件：{}", type);
 		final GuiEvent event = this.events.get(type);
 		if(event == null) {
 			LOGGER.warn("GUI事件没有注册：{}", type);

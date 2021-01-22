@@ -133,8 +133,11 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		case NOTICE:
 			this.onNotice(message);
 			break;
-		case REFRESH:
-			this.onRefresh();
+		case REFRESH_TASK_LIST:
+			this.onRefreshTaskList();
+			break;
+		case REFRESH_TASK_STATUS:
+			this.onRefreshTaskStatus();
 			break;
 		case RESPONSE:
 			this.onResponse(message);
@@ -300,7 +303,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>提示窗口</p>
+	 * <p>窗口消息</p>
 	 * 
 	 * @param message 系统消息
 	 */
@@ -314,7 +317,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String content = decoder.getString("message");
 			GuiContext.getInstance().alert(title, content, GuiContext.MessageType.valueOf(type));
 		} catch (PacketSizeException e) {
-			LOGGER.warn("处理提示窗口异常", e);
+			LOGGER.warn("处理窗口消息异常", e);
 		}
 	}
 	
@@ -338,10 +341,17 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>刷新任务</p>
+	 * <p>刷新任务列表</p>
 	 */
-	private void onRefresh() {
+	private void onRefreshTaskList() {
 		GuiContext.getInstance().refreshTaskList();
+	}
+	
+	/**
+	 * <p>刷新任务状态</p>
+	 */
+	private void onRefreshTaskStatus() {
+		GuiContext.getInstance().refreshTaskStatus();
 	}
 	
 	/**

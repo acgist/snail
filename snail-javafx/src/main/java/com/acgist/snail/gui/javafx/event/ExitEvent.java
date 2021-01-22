@@ -24,8 +24,10 @@ public final class ExitEvent extends ExitEventAdapter {
 
 	@Override
 	protected void executeNative(Object ... args) {
-		Platform.exit(); // 退出平台
-		TrayMenu.exit(); // 退出托盘
+		// 退出平台
+		Platform.exit();
+		// 退出托盘
+		TrayMenu.exit();
 	}
 
 }
