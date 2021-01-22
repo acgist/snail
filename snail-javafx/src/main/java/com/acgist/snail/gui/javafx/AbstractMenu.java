@@ -14,19 +14,10 @@ import javafx.scene.control.SeparatorMenuItem;
 public abstract class AbstractMenu extends ContextMenu {
 
 	/**
-	 * <p>添加菜单</p>
-	 * 
-	 * @param menuItem 菜单
-	 */
-	protected void addMenu(MenuItem menuItem) {
-		this.getItems().add(menuItem);
-	}
-	
-	/**
 	 * <p>添加分隔</p>
 	 */
-	protected void addSeparator() {
-		this.addMenu(new SeparatorMenuItem());
+	protected void buildSeparator() {
+		this.getItems().add(new SeparatorMenuItem());
 	}
 	
 	/**
@@ -49,11 +40,14 @@ public abstract class AbstractMenu extends ContextMenu {
 	 * @return 菜单
 	 */
 	protected MenuItem buildMenuItem(String value, SnailIcon icon) {
+		MenuItem menuItem;
 		if(icon == null) {
-			return new MenuItem(value);
+			menuItem = new MenuItem(value);
 		} else {
-			return new MenuItem(value, icon.iconLabel());
+			menuItem = new MenuItem(value, icon.iconLabel());
 		}
+		this.getItems().add(menuItem);
+		return menuItem;
 	}
 	
 	/**

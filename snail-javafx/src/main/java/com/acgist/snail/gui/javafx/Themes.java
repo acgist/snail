@@ -7,6 +7,8 @@ import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
 
 import javafx.collections.ObservableList;
+import javafx.css.Styleable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -150,7 +152,7 @@ public final class Themes {
 	}
 	
 	/**
-	 * <p>设置控件主题样式</p>
+	 * <p>设置场景主题样式</p>
 	 * 
 	 * @param scene 场景
 	 */
@@ -160,6 +162,25 @@ public final class Themes {
 		root.setStyle(Themes.getThemeStyle());
 		// 设置样式文件
 		root.getStylesheets().add(Themes.FXML_STYLE);
+	}
+
+	/**
+	 * <p>设置节点主题样式</p>
+	 * 
+	 * @param node 节点
+	 */
+	public static final void applyTheme(Node node) {
+		node.setStyle(Themes.getThemeStyle());
+	}
+	
+	/**
+	 * <p>添加样式</p>
+	 * 
+	 * @param styleable 样式列表
+	 * @param styleClass 样式名称
+	 */
+	public static final void applyClass(Styleable styleable, String styleClass) {
+		styleable.getStyleClass().add(styleClass);
 	}
 	
 }

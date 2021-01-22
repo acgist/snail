@@ -178,7 +178,7 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	protected void buildWindow(Stage stage, Modality modality) throws IOException {
 		final Parent root = this.loadFxml();
 		final Scene scene = new Scene(root, this.width, this.height);
-		root.setStyle(Themes.getThemeStyle());
+		Themes.applyTheme(root);
 		stage.initModality(modality);
 		stage.setScene(scene);
 		stage.setTitle(this.title);

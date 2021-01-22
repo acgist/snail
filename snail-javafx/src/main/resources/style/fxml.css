@@ -126,10 +126,10 @@
  * <p>托盘样式</p>
  */
 .tray {
-	-fx-font-size:14px;
+	-fx-font-size:16px;
 }
 .tray .snail-icon {
-	-fx-font-size:14px;
+	-fx-font-size:16px;
 }
 /**
  * <p>关于窗口：about.fxml</p>
