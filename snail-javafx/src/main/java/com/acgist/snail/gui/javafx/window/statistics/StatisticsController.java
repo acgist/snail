@@ -367,18 +367,17 @@ public final class StatisticsController extends AbstractController {
 	 */
 	private void buildSelectNodeStatistics() {
 		final List<NodeSession> nodes = NodeContext.getInstance().nodes();
-		final Map<NodeSession.Status, Long> nodeGroup = nodes.stream()
+		final Map<NodeSession.Status, Long> group = nodes.stream()
 			.collect(Collectors.groupingBy(NodeSession::getStatus, Collectors.counting()));
-		final int total = nodes.size();
-		final long unuse = nodeGroup.getOrDefault(NodeSession.Status.UNUSE, 0L);
-		final long verify = nodeGroup.getOrDefault(NodeSession.Status.VERIFY, 0L);
-		final long available = nodeGroup.getOrDefault(NodeSession.Status.AVAILABLE, 0L);
+		final long unuse = group.getOrDefault(NodeSession.Status.UNUSE, 0L);
+		final long verify = group.getOrDefault(NodeSession.Status.VERIFY, 0L);
+		final long available = group.getOrDefault(NodeSession.Status.AVAILABLE, 0L);
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
 			new PieChart.Data("验证", verify),
 			new PieChart.Data("可用", available),
 			new PieChart.Data("未知", unuse)
 		);
-		final String title = String.format("总量：%d", total);
+		final String title = String.format("总量：%d", nodes.size());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
@@ -389,17 +388,16 @@ public final class StatisticsController extends AbstractController {
 	 * <p>Tracker统计</p>
 	 */
 	private void buildSelectTrackerStatistics() {
-		final List<TrackerSession> sessions = TrackerContext.getInstance().sessions();
-		final Map<Boolean, Long> clientGroup = sessions.stream()
+		final List<TrackerSession> trackers = TrackerContext.getInstance().sessions();
+		final Map<Boolean, Long> group = trackers.stream()
 			.collect(Collectors.groupingBy(TrackerSession::available, Collectors.counting()));
-		final int total = sessions.size();
-		final long disable = clientGroup.getOrDefault(Boolean.FALSE, 0L);
-		final long available = clientGroup.getOrDefault(Boolean.TRUE, 0L);
+		final long disable = group.getOrDefault(Boolean.FALSE, 0L);
+		final long available = group.getOrDefault(Boolean.TRUE, 0L);
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
 			new PieChart.Data("禁用", disable),
 			new PieChart.Data("可用", available)
 		);
-		final String title = String.format("总量：%d", total);
+		final String title = String.format("总量：%d", trackers.size());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
 		final var statisticsBoxNode= this.statisticsBoxClear();

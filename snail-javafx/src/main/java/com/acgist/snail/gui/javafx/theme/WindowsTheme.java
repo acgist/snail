@@ -33,7 +33,7 @@ public final class WindowsTheme implements ITheme {
 	/**
 	 * <p>Windows获取主题颜色命令</p>
 	 */
-	private static final String THEME_COLOR_COMMAND = "REG QUERY " + THEME_COLOR_PATH + " /v " + THEME_COLOR_KEY;
+	private static final String THEME_COLOR_COMMAND = String.format("REG QUERY %s /v %s", THEME_COLOR_PATH, THEME_COLOR_KEY);
 	
 	private WindowsTheme() {
 	}
@@ -41,7 +41,7 @@ public final class WindowsTheme implements ITheme {
 	/**
 	 * <p>新建Windows系统主题</p>
 	 * 
-	 * @return Windows系统主题
+	 * @return {@link WindowsTheme}
 	 */
 	public static final WindowsTheme newInstance() {
 		return new WindowsTheme();
@@ -89,15 +89,15 @@ public final class WindowsTheme implements ITheme {
 			theme = Themes.DEFAULT_THEME_COLOR;
 		} else {
 			final long value = Long.parseLong(colorValue.substring(2), 16);
-			final int alpha = (int) ((value >> 24) & 0xFF); // 透明度：可能不存在
+			final int alpha = (int) ((value >> 24) & 0xFF);
 			final int blud = (int) ((value >> 16) & 0xFF);
 			final int green = (int) ((value >> 8) & 0xFF);
 			final int red = (int) (value & 0xFF);
-			final double opacity = alpha >= 255D ? 1D : alpha / 255D;
-			if(alpha == 0) {
-				// 没有透明度默认设置不透明
+			if(alpha <= 0) {
+				// 没有透明度：设置不透明
 				theme = Color.rgb(red, green, blud);
 			} else {
+				final double opacity = alpha >= 255D ? 1D : alpha / 255D;
 				theme = Color.rgb(red, green, blud, opacity);
 			}
 		}
