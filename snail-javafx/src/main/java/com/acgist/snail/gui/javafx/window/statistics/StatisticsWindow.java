@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.javafx.window.statistics;
 
-import com.acgist.snail.gui.javafx.window.AbstractWindow;
+import com.acgist.snail.gui.javafx.window.Window;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * 
  * @author acgist
  */
-public final class StatisticsWindow extends AbstractWindow<StatisticsController> {
+public final class StatisticsWindow extends Window<StatisticsController> {
 	
 	private static final StatisticsWindow INSTANCE;
 	

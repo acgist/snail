@@ -16,9 +16,9 @@ import javafx.scene.input.Dragboard;
  * 
  * @author acgist
  */
-public abstract class AbstractController implements Initializable {
+public abstract class Controller implements Initializable {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Controller.class);
 
 	/**
 	 * <p>双击次数：{@value}</p>

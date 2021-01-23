@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.gui.javafx.AbstractMenu;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
@@ -30,7 +29,7 @@ import javafx.stage.WindowEvent;
  * 
  * @author acgist
  */
-public final class TaskMenu extends AbstractMenu {
+public final class TaskMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
 	

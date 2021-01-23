@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.javafx.window.torrent;
 
-import com.acgist.snail.gui.javafx.window.AbstractWindow;
+import com.acgist.snail.gui.javafx.window.Window;
 import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.stage.Modality;
@@ -11,7 +11,7 @@ import javafx.stage.Stage;
  * 
  * @author acgist
  */
-public final class TorrentWindow extends AbstractWindow<TorrentController> {
+public final class TorrentWindow extends Window<TorrentController> {
 
 	private static final TorrentWindow INSTANCE;
 	

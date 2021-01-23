@@ -137,12 +137,12 @@ list.stream()
 
 #### 抽象类
 
-* 抽象类使用`Abstract`开头
+* 抽象类不使用`base`、`Abstract`开头
 * 子类必须使用父类后缀结尾
 
 ###### 示例
 
-`AbstractTrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]
+`TrackerClient` -> [`UdpTrackerClient` | `HttpTrackerClient`]
 
 #### 工具助手
 

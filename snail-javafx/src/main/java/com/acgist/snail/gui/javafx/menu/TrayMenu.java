@@ -18,7 +18,6 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
-import com.acgist.snail.gui.javafx.AbstractMenu;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Themes;
@@ -41,7 +40,7 @@ import javafx.stage.WindowEvent;
  * 
  * @author acgist
  */
-public final class TrayMenu extends AbstractMenu {
+public final class TrayMenu extends Menu {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrayMenu.class);
 	

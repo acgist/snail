@@ -23,7 +23,7 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.gui.javafx.window.AbstractController;
+import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -60,7 +60,7 @@ import javafx.scene.text.TextFlow;
  * 
  * @author acgist
  */
-public final class StatisticsController extends AbstractController {
+public final class StatisticsController extends Controller {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	

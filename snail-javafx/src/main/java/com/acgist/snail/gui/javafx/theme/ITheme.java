@@ -1,9 +1,9 @@
-package com.acgist.snail.gui.javafx;
+package com.acgist.snail.gui.javafx.theme;
 
 import javafx.scene.paint.Color;
 
 /**
- * <p>系统主题</p>
+ * <p>系统主题接口</p>
  * 
  * @author acgist
  */

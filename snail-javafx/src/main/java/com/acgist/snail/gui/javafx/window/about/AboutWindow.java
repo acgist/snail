@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.javafx.window.about;
 
-import com.acgist.snail.gui.javafx.window.AbstractWindow;
+import com.acgist.snail.gui.javafx.window.Window;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * 
  * @author acgist
  */
-public final class AboutWindow extends AbstractWindow<AboutController> {
+public final class AboutWindow extends Window<AboutController> {
 
 	private static final AboutWindow INSTANCE;
 	

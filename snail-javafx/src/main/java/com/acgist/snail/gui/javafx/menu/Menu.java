@@ -1,4 +1,4 @@
-package com.acgist.snail.gui.javafx;
+package com.acgist.snail.gui.javafx.menu;
 
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 
@@ -11,7 +11,7 @@ import javafx.scene.control.SeparatorMenuItem;
  * 
  * @author acgist
  */
-public abstract class AbstractMenu extends ContextMenu {
+public abstract class Menu extends ContextMenu {
 
 	/**
 	 * <p>添加分隔</p>
