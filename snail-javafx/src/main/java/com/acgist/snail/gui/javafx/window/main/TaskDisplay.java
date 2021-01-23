@@ -78,9 +78,9 @@ public final class TaskDisplay {
 	private MainController controller() {
 		if(INSTANCE.controller == null) {
 			synchronized (this.lock) {
+				// 等待初始化完成
 				while(INSTANCE.controller == null) {
 					try {
-						// 等待初始化完成：wait会释放锁
 						this.lock.wait(SystemConfig.ONE_SECOND_MILLIS);
 					} catch (InterruptedException e) {
 						LOGGER.debug("线程等待异常", e);
