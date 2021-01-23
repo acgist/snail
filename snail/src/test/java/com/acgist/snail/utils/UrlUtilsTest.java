@@ -33,6 +33,11 @@ public class UrlUtilsTest extends Performance {
 		assertEquals(UrlUtils.redirect("https://www.acgist.com/a/b/", " \"/index.html\" "), path);
 		assertEquals(UrlUtils.redirect(path, baidu), baidu);
 	}
+
+	@Test
+	public void testCosted() {
+		this.costed(100000, () -> this.testRedirect());
+	}
 	
 	@Test
 	public void encode() throws UnsupportedEncodingException {

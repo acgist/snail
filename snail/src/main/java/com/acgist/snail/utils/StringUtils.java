@@ -550,7 +550,7 @@ public final class StringUtils {
 		if(content == null) {
 			return List.of();
 		}
-		return Stream.of(content.split(SymbolConfig.LINE_SEPARATOR))
+		return Stream.of(content.split(SymbolConfig.Symbol.LINE_SEPARATOR.toString()))
 			 .map(value -> value.trim())
 			 .collect(Collectors.toList());
 	}
