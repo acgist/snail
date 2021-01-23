@@ -11,7 +11,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -37,11 +37,11 @@ public class HeaderWrapper {
 	/**
 	 * <p>头部信息换行符（读取）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_READER = SystemConfig.LINE_SEPARATOR;
+	private static final String HEADER_LINE_READER = SymbolConfig.LINE_SEPARATOR;
 	/**
 	 * <p>头部信息换行符（写出）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_WRITER = SystemConfig.LINE_SEPARATOR_COMPAT;
+	private static final String HEADER_LINE_WRITER = SymbolConfig.LINE_SEPARATOR_COMPAT;
 
 	/**
 	 * <p>头部信息分隔符</p>

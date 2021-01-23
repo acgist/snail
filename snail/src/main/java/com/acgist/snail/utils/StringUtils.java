@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 
 /**
@@ -549,7 +550,7 @@ public final class StringUtils {
 		if(content == null) {
 			return List.of();
 		}
-		return Stream.of(content.split(SystemConfig.LINE_SEPARATOR))
+		return Stream.of(content.split(SymbolConfig.LINE_SEPARATOR))
 			 .map(value -> value.trim())
 			 .collect(Collectors.toList());
 	}
