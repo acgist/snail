@@ -8,77 +8,93 @@ package com.acgist.snail.config;
 public final class SymbolConfig {
 
 	/**
-	 * <p>换行分隔符：{@value}</p>
+	 * <p>符号</p>
+	 * 
+	 * @author acgist
 	 */
-	public static final String LINE_SEPARATOR = "\n";
+	public enum Symbol {
+		
+		/**
+		 * <p>点号</p>
+		 */
+		DOT('.'),
+		/**
+		 * <p>逗号</p>
+		 */
+		COMMA(','),
+		/**
+		 * <p>冒号</p>
+		 */
+		COLON(':'),
+		/**
+		 * <p>斜杠</p>
+		 */
+		SLASH('/'),
+		/**
+		 * <p>反斜杠</p>
+		 */
+		BACKSLASH('\\'),
+		/**
+		 * <p>问号</p>
+		 */
+		QUESTION_MARK('?'),
+		/**
+		 * <p>双引号</p>
+		 */
+		DOUBLE_QUOTE('\"'),
+		/**
+		 * <p>单引号</p>
+		 */
+		SINGLE_QUOTE('\''),
+		/**
+		 * <p>换行符</p>
+		 */
+		LINE_SEPARATOR('\n'),
+		/**
+		 * <p>回车符</p>
+		 */
+		CARRIAGE_RETURN('\r');
+		
+		/**
+		 * <p>字符值</p>
+		 */
+		private final char charValue;
+		/**
+		 * <p>字符串值</p>
+		 */
+		private final String stringValue;
+		
+		/**
+		 * @param value 字符值
+		 */
+		private Symbol(char value) {
+			this.charValue = value;
+			this.stringValue = Character.toString(value);
+		}
+		
+		/**
+		 * <p>获取字符值</p>
+		 * 
+		 * @return 字符值
+		 */
+		public char toChar() {
+			return this.charValue;
+		}
+
+		@Override
+		public String toString() {
+			return this.stringValue;
+		}
+		
+	}
+	
 	/**
-	 * <p>换行分隔符（兼容）：{@value}</p>
+	 * <p>回车换行符（兼容）</p>
+	 * 
+	 * @see Symbol#CARRIAGE_RETURN
+	 * @see Symbol#LINE_SEPARATOR
 	 */
-	public static final String LINE_SEPARATOR_COMPAT = "\r\n";
-	/**
-	 * <p>双引号：{@value}</p>
-	 */
-	public static final String DOUBLE_QUOTE = "\"";
-	/**
-	 * <p>双引号：{@value}</p>
-	 */
-	public static final char DOUBLE_QUOTE_CHAR = '"';
-	/**
-	 * <p>单引号：{@value}</p>
-	 */
-	public static final String SINGLE_QUOTE = "'";
-	/**
-	 * <p>单引号：{@value}</p>
-	 */
-	public static final char SINGLE_QUOTE_CHAR = '\'';
-	/**
-	 * <p>斜杠：{@value}</p>
-	 */
-	public static final String SLASH = "/";
-	/**
-	 * <p>斜杠：{@value}</p>
-	 */
-	public static final char SLASH_CHAR = '/';
-	/**
-	 * <p>反斜杠：{@value}</p>
-	 */
-	public static final String BACKSLASH = "\\";
-	/**
-	 * <p>反斜杠：{@value}</p>
-	 */
-	public static final char BACKSLASH_CHAR = '\\';
-	/**
-	 * <p>问号：{@value}</p>
-	 */
-	public static final String QUESTION_MARK = "?";
-	/**
-	 * <p>问号：{@value}</p>
-	 */
-	public static final char QUESTION_MARK_CHAR = '?';
-	/**
-	 * <p>冒号：{@value}</p>
-	 */
-	public static final String COLON = ":";
-	/**
-	 * <p>冒号：{@value}</p>
-	 */
-	public static final char COLON_CHAR = ':';
-	/**
-	 * <p>点号：{@value}</p>
-	 */
-	public static final String DOT = ".";
-	/**
-	 * <p>点号：{@value}</p>
-	 */
-	public static final char DOT_CHAR = '.';
-	/**
-	 * <p>逗号：{@value}</p>
-	 */
-	public static final String COMMA = ",";
-	/**
-	 * <p>逗号：{@value}</p>
-	 */
-	public static final char COMMA_CHAR = ',';
+	public static final String LINE_SEPARATOR_COMPAT = Symbol.CARRIAGE_RETURN.toString() + Symbol.LINE_SEPARATOR.toString();
 	
 	private SymbolConfig() {
 	}

@@ -37,7 +37,7 @@ public class HeaderWrapper {
 	/**
 	 * <p>头部信息换行符（读取）：{@value}</p>
 	 */
-	private static final String HEADER_LINE_READER = SymbolConfig.LINE_SEPARATOR;
+	private static final String HEADER_LINE_READER = SymbolConfig.Symbol.LINE_SEPARATOR.toString();
 	/**
 	 * <p>头部信息换行符（写出）：{@value}</p>
 	 */

@@ -79,19 +79,19 @@ public final class UrlUtils {
 		Objects.requireNonNull(target, "目标页面链接不能为空");
 		target = target.trim();
 		// 去掉引号
-		if(target.startsWith(SymbolConfig.DOUBLE_QUOTE)) {
+		if(target.startsWith(SymbolConfig.Symbol.DOUBLE_QUOTE.toString())) {
 			target = target.substring(1);
 		}
-		if(target.endsWith(SymbolConfig.DOUBLE_QUOTE)) {
+		if(target.endsWith(SymbolConfig.Symbol.DOUBLE_QUOTE.toString())) {
 			target = target.substring(0, target.length() - 1);
 		}
 		if(Protocol.Type.HTTP.verify(target)) {
 			// 完整链接
 			return target;
-		} else if(target.startsWith(SymbolConfig.SLASH)) {
+		} else if(target.startsWith(SymbolConfig.Symbol.SLASH.toString())) {
 			// 绝对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.indexOf(SymbolConfig.SLASH_CHAR, prefix.length());
+			final int index = source.indexOf(SymbolConfig.Symbol.SLASH.toChar(), prefix.length());
 			if(index > prefix.length()) {
 				return source.substring(0, index) + target;
 			} else {
@@ -100,11 +100,11 @@ public final class UrlUtils {
 		} else {
 			// 相对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.lastIndexOf(SymbolConfig.SLASH_CHAR);
+			final int index = source.lastIndexOf(SymbolConfig.Symbol.SLASH.toChar());
 			if(index > prefix.length()) {
-				return source.substring(0, index) + SymbolConfig.SLASH + target;
+				return source.substring(0, index) + SymbolConfig.Symbol.SLASH.toString() + target;
 			} else {
-				return source + SymbolConfig.SLASH + target;
+				return source + SymbolConfig.Symbol.SLASH.toString() + target;
 			}
 		}
 	}
