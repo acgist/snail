@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
@@ -32,7 +33,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>消息分隔符：{@value}</p>
 	 */
-	private static final String SEPARATOR = SystemConfig.LINE_SEPARATOR_COMPAT;
+	private static final String SEPARATOR = SymbolConfig.LINE_SEPARATOR_COMPAT;
 	/**
 	 * <p>多行消息结束符：{@value}</p>
 	 * <p>扩展命令FEAT返回多行信息</p>

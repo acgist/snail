@@ -182,14 +182,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int TASK_REFRESH_INTERVAL = 4;
 	/**
-	 * <p>换行分隔符：{@value}</p>
-	 */
-	public static final String LINE_SEPARATOR = "\n";
-	/**
-	 * <p>换行分隔符（兼容）：{@value}</p>
-	 */
-	public static final String LINE_SEPARATOR_COMPAT = "\r\n";
-	/**
 	 * <p>用户工作目录</p>
 	 * <p>注意：初始化为常量（不能使用类变量：本类初始化时会使用）</p>
 	 */

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.context.SystemContext;
@@ -38,7 +38,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	/**
 	 * <p>多条消息分隔符：{@value}</p>
 	 */
-	private static final String SEPARATOR = SystemConfig.LINE_SEPARATOR_COMPAT;
+	private static final String SEPARATOR = SymbolConfig.LINE_SEPARATOR_COMPAT;
 	
 	public ApplicationMessageHandler() {
 		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);

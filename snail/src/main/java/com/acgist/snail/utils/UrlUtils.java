@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.protocol.Protocol;
 
@@ -20,18 +21,15 @@ public final class UrlUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private UrlUtils() {
 	}
 	
 	/**
 	 * <p>URL编码</p>
 	 * 
-	 * @param content 待编码内容
+	 * @param content 原始内容
 	 * 
-	 * @return 编码后内容
+	 * @return 编码内容
 	 */
 	public static final String encode(String content) {
 		if(StringUtils.isEmpty(content)) {
@@ -40,7 +38,8 @@ public final class UrlUtils {
 		try {
 			return URLEncoder
 				.encode(content, SystemConfig.DEFAULT_CHARSET)
-				.replace("+", "%20"); // 空格编码变成加号：加号解码变成空格
+				// 空格编码变成加号：加号解码变成空格
+				.replace("+", "%20");
 		} catch (UnsupportedEncodingException e) {
 			LOGGER.error("URL编码异常：{}", content, e);
 		}
@@ -50,9 +49,9 @@ public final class UrlUtils {
 	/**
 	 * <p>URL解码</p>
 	 * 
-	 * @param content 待解码内容
+	 * @param content 编码内容
 	 * 
-	 * @return 解码后内容
+	 * @return 原始内容
 	 */
 	public static final String decode(String content) {
 		if(StringUtils.isEmpty(content)) {
@@ -67,8 +66,8 @@ public final class UrlUtils {
 	}
 	
 	/**
-	 * <p>获取跳转链接完整路径</p>
-	 * <p>支持协议：HTTP</p>
+	 * <p>获取跳转链接完整链接</p>
+	 * <p>支持协议：HTTP、HTTPS</p>
 	 * 
 	 * @param source 原始页面链接
 	 * @param target 目标页面链接
@@ -78,22 +77,21 @@ public final class UrlUtils {
 	public static final String redirect(final String source, String target) {
 		Objects.requireNonNull(source, "原始页面链接不能为空");
 		Objects.requireNonNull(target, "目标页面链接不能为空");
-		// 去掉引号
 		target = target.trim();
-		if(target.startsWith("\"")) {
+		// 去掉引号
+		if(target.startsWith(SymbolConfig.DOUBLE_QUOTE)) {
 			target = target.substring(1);
 		}
-		if(target.endsWith("\"")) {
+		if(target.endsWith(SymbolConfig.DOUBLE_QUOTE)) {
 			target = target.substring(0, target.length() - 1);
 		}
-		// 执行跳转
 		if(Protocol.Type.HTTP.verify(target)) {
-			// 完整连接
+			// 完整链接
 			return target;
-		} else if(target.startsWith("/")) {
+		} else if(target.startsWith(SymbolConfig.SLASH)) {
 			// 绝对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.indexOf('/', prefix.length());
+			final int index = source.indexOf(SymbolConfig.SLASH_CHAR, prefix.length());
 			if(index > prefix.length()) {
 				return source.substring(0, index) + target;
 			} else {
@@ -102,11 +100,11 @@ public final class UrlUtils {
 		} else {
 			// 相对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.lastIndexOf('/');
+			final int index = source.lastIndexOf(SymbolConfig.SLASH_CHAR);
 			if(index > prefix.length()) {
-				return source.substring(0, index) + "/" + target;
+				return source.substring(0, index) + SymbolConfig.SLASH + target;
 			} else {
-				return source + "/" + target;
+				return source + SymbolConfig.SLASH + target;
 			}
 		}
 	}
