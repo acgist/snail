@@ -12,16 +12,13 @@ public final class ThreadUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private ThreadUtils() {
 	}
 	
 	/**
 	 * <p>线程休眠</p>
 	 * 
-	 * @param millis 休眠时间（毫秒）
+	 * @param millis 休眠时间（单位：毫秒）
 	 */
 	public static final void sleep(long millis) {
 		try {
