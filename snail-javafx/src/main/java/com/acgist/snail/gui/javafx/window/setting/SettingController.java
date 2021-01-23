@@ -9,7 +9,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.gui.javafx.window.AbstractController;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -29,7 +29,7 @@ import javafx.util.StringConverter;
  * 
  * @author acgist
  */
-public final class SettingController extends AbstractController {
+public final class SettingController extends Controller {
 	
 	/**
 	 * <p>下载速度滑块滑动大小：{@value}</p>

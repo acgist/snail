@@ -25,9 +25,9 @@ import javafx.stage.WindowEvent;
  * 
  * @author acgist
  */
-public abstract class AbstractWindow<T extends AbstractController> extends Application {
+public abstract class Window<T extends Controller> extends Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWindow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	
 	/**
 	 * <p>按键任务</p>
@@ -75,7 +75,7 @@ public abstract class AbstractWindow<T extends AbstractController> extends Appli
 	 * @param height 窗口高度
 	 * @param fxml 窗口FXML路径
 	 */
-	protected AbstractWindow(String title, int width, int height, String fxml) {
+	protected Window(String title, int width, int height, String fxml) {
 		LOGGER.debug("初始化窗口：{}", title);
 		this.title = title;
 		this.width = width;

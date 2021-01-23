@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.gui.javafx.ITheme;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;

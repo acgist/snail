@@ -11,7 +11,7 @@ import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
-import com.acgist.snail.gui.javafx.window.AbstractController;
+import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;
@@ -27,7 +27,7 @@ import javafx.scene.layout.FlowPane;
  * 
  * @author acgist
  */
-public final class BuildController extends AbstractController {
+public final class BuildController extends Controller {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuildController.class);
 	

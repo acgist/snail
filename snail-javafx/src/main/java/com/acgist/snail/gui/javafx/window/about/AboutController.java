@@ -9,7 +9,7 @@ import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
-import com.acgist.snail.gui.javafx.window.AbstractController;
+import com.acgist.snail.gui.javafx.window.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
  * 
  * @author acgist
  */
-public final class AboutController extends AbstractController {
+public final class AboutController extends Controller {
 	
 	@FXML
 	private BorderPane root;
