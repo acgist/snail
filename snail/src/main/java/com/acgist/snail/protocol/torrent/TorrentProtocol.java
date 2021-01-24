@@ -111,7 +111,7 @@ public final class TorrentProtocol extends Protocol {
 	protected void done() throws DownloadException {
 		this.buildFolder();
 		this.torrentHandle();
-		this.selectTorrentFiles();
+		this.selectFiles();
 	}
 	
 	/**
@@ -184,7 +184,7 @@ public final class TorrentProtocol extends Protocol {
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private void selectTorrentFiles() throws DownloadException {
+	private void selectFiles() throws DownloadException {
 		ITaskSession taskSession = null;
 		try {
 			taskSession = TaskSession.newInstance(this.taskEntity);
@@ -197,7 +197,7 @@ public final class TorrentProtocol extends Protocol {
 		if(taskSession.multifileSelected().isEmpty()) {
 			// 没有选择下载文件：删除已经创建文件
 			FileUtils.delete(this.taskEntity.getFile());
-			throw new DownloadException("请选择下载文件");
+			throw new DownloadException("没有选择下载文件");
 		}
 	}
 	
