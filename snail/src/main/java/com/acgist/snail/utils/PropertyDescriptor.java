@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
- * <p>属性工具</p>
+ * <p>对象属性工具</p>
  * 
  * @author acgist
  */
@@ -26,33 +26,31 @@ public final class PropertyDescriptor {
 	private static final String PREFIX_SET = "set";
 	
 	/**
-	 * <p>属性</p>
-	 */
-	private final String property;
-	/**
 	 * <p>类型</p>
 	 */
 	private final Class<?> clazz;
+	/**
+	 * <p>对象</p>
+	 */
+	private final Object instance;
 	
 	/**
-	 * @param property 属性
-	 * @param clazz 类型
+	 * @param instance 对象
 	 */
-	private PropertyDescriptor(String property, Class<?> clazz) {
-		this.property = property;
-		this.clazz = clazz;
+	private PropertyDescriptor(Object instance) {
+		this.instance = instance;
+		this.clazz = instance.getClass();
 	}
 	
 	/**
-	 * <p>创建属性工具</p>
+	 * <p>创建对象属性工具</p>
 	 * 
-	 * @param property 属性
-	 * @param clazz 类型
+	 * @param instance 对象
 	 * 
 	 * @return {@link PropertyDescriptor}
 	 */
-	public static final PropertyDescriptor newInstance(String property, Class<?> clazz) {
-		return new PropertyDescriptor(property, clazz);
+	public static final PropertyDescriptor newInstance(Object instance) {
+		return new PropertyDescriptor(instance);
 	}
 	
 	/**
@@ -77,12 +75,14 @@ public final class PropertyDescriptor {
 	/**
 	 * <p>获取属性GETTER</p>
 	 * 
+	 * @param property 属性名称
+	 * 
 	 * @return GETTER
 	 */
-	public Method getter() {
+	public Method getter(String property) {
 		final Method[] methods = this.clazz.getMethods();
-		final String isMethod = PREFIX_IS + this.property;
-		final String getMethod = PREFIX_GET + this.property;
+		final String isMethod = PREFIX_IS + property;
+		final String getMethod = PREFIX_GET + property;
 		String methodName;
 		for (Method method : methods) {
 			methodName = method.getName();
@@ -100,7 +100,7 @@ public final class PropertyDescriptor {
 	/**
 	 * <p>获取属性值</p>
 	 * 
-	 * @param instance 对象
+	 * @param property 属性名称
 	 * 
 	 * @return 属性值
 	 * 
@@ -108,22 +108,24 @@ public final class PropertyDescriptor {
 	 * @throws IllegalArgumentException 参数异常
 	 * @throws InvocationTargetException 反射异常
 	 */
-	public Object get(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		final Method getter = this.getter();
+	public Object get(String property) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Method getter = this.getter(property);
 		if(getter == null) {
-			throw new IllegalArgumentException("属性不存在：" + this.property);
+			throw new IllegalArgumentException("属性不存在：" + property);
 		}
-		return getter.invoke(instance);
+		return getter.invoke(this.instance);
 	}
 	
 	/**
 	 * <p>获取属性SETTER</p>
 	 * 
+	 * @param property 属性名称
+	 * 
 	 * @return SETTER
 	 */
-	public Method setter() {
+	public Method setter(String property) {
 		final Method[] methods = this.clazz.getMethods();
-		final String setMethod = PREFIX_SET + this.property;
+		final String setMethod = PREFIX_SET + property;
 		String methodName;
 		for (Method method : methods) {
 			methodName = method.getName();
@@ -137,39 +139,39 @@ public final class PropertyDescriptor {
 	/**
 	 * <p>设置属性值</p>
 	 * 
-	 * @param instance 对象
-	 * 
+	 * @param property 属性名称
 	 * @param value 属性值
 	 * 
 	 * @throws IllegalAccessException 访问异常
 	 * @throws IllegalArgumentException 参数异常
 	 * @throws InvocationTargetException 反射异常
 	 */
-	public void set(Object instance, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		final Method setter = this.setter();
+	public void set(String property, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Method setter = this.setter(property);
 		if(setter == null) {
-			throw new IllegalArgumentException("属性不存在：" + this.property);
+			throw new IllegalArgumentException("属性不存在：" + property);
 		}
-		setter.invoke(instance, value);
+		setter.invoke(this.instance, value);
 	}
 	
 	/**
 	 * <p>获取属性类型</p>
 	 * 
+	 * @param property 属性名称
+	 * 
 	 * @return 属性类型
 	 */
-	public Class<?> getPropertyType() {
+	public Class<?> getPropertyType(String property) {
+		String fieldName;
 		Class<?> clazz = this.clazz;
 		while(clazz != null) {
-			String fieldName;
 			final Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				fieldName = field.getName();
-				if(!ignoreProperty(field) && fieldName.equals(this.property)) {
+				if(!ignoreProperty(field) && fieldName.equals(property)) {
 					return field.getType();
 				}
 			}
-			// 获取父类属性
 			clazz = clazz.getSuperclass();
 		}
 		return null;

@@ -178,11 +178,10 @@ public final class BeanUtils {
 	public static final Object propertyValue(final Object instance, final String property) {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(property);
-		final Class<?> clazz = instance.getClass();
 		try {
-			return PropertyDescriptor.newInstance(property, clazz).get(instance);
+			return PropertyDescriptor.newInstance(instance).get(property);
 		} catch (Exception e) {
-			LOGGER.error("获取对象指定属性的属性值异常：{}-{}", clazz, property, e);
+			LOGGER.error("获取对象指定属性的属性值异常：{}-{}", instance, property, e);
 		}
 		return null;
 	}
@@ -196,12 +195,12 @@ public final class BeanUtils {
 	public static final void properties(Object instance, Map<String, Object> data) {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(data);
-		final Class<?> clazz = instance.getClass();
+		final PropertyDescriptor descriptor = PropertyDescriptor.newInstance(instance);
 		data.forEach((property, value) -> {
 			try {
-				PropertyDescriptor.newInstance(property, clazz).set(instance, value);
+				descriptor.set(property, value);
 			} catch (Exception e) {
-				LOGGER.error("设置对象属性异常：{}-{}", clazz, property, e);
+				LOGGER.error("设置对象属性异常：{}-{}-{}", instance, property, value, e);
 			}
 		});
 	}
