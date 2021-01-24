@@ -65,6 +65,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
+	 * <p>是否可用</p>
+	 */
+	private volatile boolean available = false;
+	/**
 	 * <p>是否已经发送握手</p>
 	 */
 	private volatile boolean handshakeSend = false;
@@ -262,8 +266,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				LOGGER.warn("处理Peer消息错误（未知类型）：{}", typeId);
 				return;
 			}
-			if(this.peerSession == null) {
-				LOGGER.debug("处理Peer消息错误（PeerSession为空）：{}", type);
+			if(!this.available) {
+				LOGGER.debug("处理Peer消息错误（状态错误）：{}-{}-{}-{}", this.server, this.available, this.handshakeSend, this.handshakeRecv);
 				return;
 			}
 			LOGGER.debug("处理Peer消息类型：{}", type);
@@ -407,9 +411,13 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.get(peerId);
 		if(this.server) {
 			final boolean success = this.initServer(infoHashHex, peerId);
-			if(!success) {
+			if(success) {
+				this.available = true;
+			} else {
 				return false;
 			}
+		} else {
+			this.available = true;
 		}
 		this.handshake((PeerDownloader) null);
 		this.peerSession.id(peerId);
