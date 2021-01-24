@@ -31,10 +31,6 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	 * <p>消息长度</p>
 	 */
 	private final ByteBuffer lengthStick;
-	/**
-	 * <p>Peer消息代理</p>
-	 */
-	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * @param peerSubMessageHandler Peer消息代理
@@ -42,15 +38,16 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerSubMessageHandler);
 		this.lengthStick = ByteBuffer.allocate(INT_BYTE_LENGTH);
-		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
 	@Override
 	public void doDecode(ByteBuffer buffer, InetSocketAddress address) throws NetException {
-		int length = 0; // 消息数据长度
+		// 消息数据长度
+		int length = 0;
 		while(true) {
 			if(this.buffer == null) {
-				if(this.peerSubMessageHandler.handshakeRecv()) {
+				final PeerSubMessageHandler peerSubMessageHandler = (PeerSubMessageHandler) this.messageCodec;
+				if(peerSubMessageHandler.handshakeRecv()) {
 					for (int index = 0; index < buffer.limit() && buffer.hasRemaining(); index++) {
 						this.lengthStick.put(buffer.get());
 						if(this.lengthStick.position() == INT_BYTE_LENGTH) {
@@ -61,18 +58,22 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 						this.lengthStick.flip();
 						length = this.lengthStick.getInt();
 						this.lengthStick.compact();
-					} else { // 消息长度读取不完整跳出
+					} else {
+						// 消息长度读取不完整跳出
 						break;
 					}
-				} else { // 握手消息长度
+				} else {
+					// 握手消息长度
 					length = PeerConfig.HANDSHAKE_LENGTH;
 				}
 				// 心跳消息
 				if(length <= 0) {
-					this.peerSubMessageHandler.keepAlive();
-					if(buffer.hasRemaining()) { // 还有消息：继续处理
+					peerSubMessageHandler.keepAlive();
+					if(buffer.hasRemaining()) {
+						// 还有消息：继续处理
 						continue;
-					} else { // 没有消息：跳出循环
+					} else {
+						// 没有消息：跳出循环
 						break;
 					}
 				}
@@ -83,14 +84,16 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 				length = this.buffer.capacity() - this.buffer.position();
 			}
 			final int remaining = buffer.remaining();
-			if(remaining > length) { // 包含一条完整消息：处理完成后继续读取
+			if(remaining > length) {
+				// 包含一条完整消息：处理完成后继续读取
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
 				this.buffer.flip();
 				this.doNext(this.buffer, address);
 				this.buffer = null;
-			} else if(remaining == length) { // 刚好一条完整消息：处理完成后跳出循环
+			} else if(remaining == length) {
+				// 刚好一条完整消息：处理完成后跳出循环
 				final byte[] bytes = new byte[length];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
@@ -98,7 +101,8 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 				this.doNext(this.buffer, address);
 				this.buffer = null;
 				break;
-			} else if(remaining < length) { // 不是一条完整消息：跳出循环等待后续数据
+			} else if(remaining < length) {
+				// 不是一条完整消息：跳出循环等待后续数据
 				final byte[] bytes = new byte[remaining];
 				buffer.get(bytes);
 				this.buffer.put(bytes);
