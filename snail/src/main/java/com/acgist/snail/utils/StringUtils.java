@@ -51,7 +51,7 @@ public final class StringUtils {
 	/**
 	 * <p>空白字符正则表达式</p>
 	 */
-	public static final String BLANK_REGEX = "\\s";
+	private static final String BLANK_REGEX = "\\s";
 	
 	/**
 	 * <p>判断字符串是否为空</p>
@@ -202,7 +202,7 @@ public final class StringUtils {
 	 * @param value 原始字符串
 	 * @param from 输入编码
 	 * 
-	 * @return 编码字符串
+	 * @return 目标字符串
 	 * 
 	 * @see #charset(String, String, String)
 	 */
@@ -216,7 +216,7 @@ public final class StringUtils {
 	 * @param value 原始字符串
 	 * @param to 输出编码
 	 * 
-	 * @return 编码字符串
+	 * @return 目标字符串
 	 * 
 	 * @see #charset(String, String, String)
 	 */
@@ -231,7 +231,7 @@ public final class StringUtils {
 	 * @param from 输入编码
 	 * @param to 输出编码
 	 * 
-	 * @return 编码字符串
+	 * @return 目标字符串
 	 */
 	public static final String charset(String value, String from, String to) {
 		if(isEmpty(value)) {
