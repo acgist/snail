@@ -36,8 +36,6 @@ public class UrlUtilsTest extends Performance {
 
 	@Test
 	public void testEncodeDecode() throws UnsupportedEncodingException {
-		this.log(URLEncoder.encode("+ +", "UTF-8"));
-		this.log(URLDecoder.decode("%2B+%2B", "UTF-8"));
 		assertEquals("%2B+%2B", URLEncoder.encode("+ +", "UTF-8"));
 		assertEquals("+ +", URLDecoder.decode("%2B+%2B", "UTF-8"));
 		assertEquals("%2B%20%2B", UrlUtils.encode("+ +"));
