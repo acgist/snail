@@ -13,19 +13,4 @@ public class BeanUtilsTest extends Performance {
 		this.log(BeanUtils.propertyValue(entity, "id"));
 	}
 	
-	@Test
-	public void testEnumProperty() {
-		PropertyDescriptor descriptor = new PropertyDescriptor("status", TaskEntity.class);
-		if(descriptor.getPropertyType().isEnum()) {
-			final var enums = descriptor.getPropertyType().getEnumConstants();
-			for (Object object : enums) {
-				if(object.toString().equals("PAUSE")) {
-					this.log(object);
-					this.log(object.getClass());
-				}
-			}
-//			this.log(Enum.valueOf(((Class<Enum>) descriptor.getPropertyType()), "PAUSE"));
-		}
-	}
-	
 }
