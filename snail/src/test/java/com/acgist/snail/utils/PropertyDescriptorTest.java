@@ -18,8 +18,7 @@ public class PropertyDescriptorTest extends Performance {
 		final String id = "1234";
 		final TaskEntity task = new TaskEntity();
 		task.setId(id);
-		final PropertyDescriptor descriptor = PropertyDescriptor.newInstance("id", task.getClass());
-		assertEquals(id, descriptor.get(task));
+		assertEquals(id, PropertyDescriptor.newInstance(task).get("id"));
 	}
 	
 	@Test
@@ -27,7 +26,7 @@ public class PropertyDescriptorTest extends Performance {
 		final String id = "1234";
 		final TaskEntity task = new TaskEntity();
 		assertNull(task.getId());
-		PropertyDescriptor.newInstance("id", task.getClass()).set(task, id);
+		PropertyDescriptor.newInstance(task).set("id", id);
 		assertEquals(id, task.getId());
 	}
 	
@@ -36,11 +35,11 @@ public class PropertyDescriptorTest extends Performance {
 		boolean find = false;
 		final TaskEntity task = new TaskEntity();
 		task.setStatus(Status.AWAIT);
-		final PropertyDescriptor descriptor = PropertyDescriptor.newInstance("status", TaskEntity.class);
-		if(descriptor.getPropertyType().isEnum()) {
-			final var enums = descriptor.getPropertyType().getEnumConstants();
+		final PropertyDescriptor descriptor = PropertyDescriptor.newInstance(task);
+		if(descriptor.getPropertyType("status").isEnum()) {
+			final var enums = descriptor.getPropertyType("status").getEnumConstants();
 			for (Object object : enums) {
-				if(object == descriptor.get(task)) {
+				if(object == descriptor.get("status")) {
 					find = true;
 					break;
 				}
@@ -52,16 +51,17 @@ public class PropertyDescriptorTest extends Performance {
 	@Test
 	public void testCosted() {
 		final TaskEntity task = new TaskEntity();
+		final var descriptor = PropertyDescriptor.newInstance(task);
 		this.costed(100000, () -> {
 			try {
-				PropertyDescriptor.newInstance("id", task.getClass()).get(task);
+				descriptor.get("id");
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				this.log(e);
 			}
 		});
 		this.costed(100000, () -> {
 			try {
-				PropertyDescriptor.newInstance("id", task.getClass()).set(task, "1234");
+				descriptor.set("id", "1234");
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				this.log(e);
 			}
