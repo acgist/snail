@@ -1,7 +1,6 @@
 package com.acgist.snail.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -181,11 +180,7 @@ public final class BeanUtils {
 		Objects.requireNonNull(property);
 		final Class<?> clazz = instance.getClass();
 		try {
-			final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-			final Method method = descriptor.getReadMethod();
-			if(method != null) {
-				return method.invoke(instance);
-			}
+			return PropertyDescriptor.newInstance(property, clazz).get(instance);
 		} catch (Exception e) {
 			LOGGER.error("获取对象指定属性的属性值异常：{}-{}", clazz, property, e);
 		}
@@ -202,18 +197,13 @@ public final class BeanUtils {
 		Objects.requireNonNull(instance);
 		Objects.requireNonNull(data);
 		final Class<?> clazz = instance.getClass();
-		final String[] properties = properties(clazz);
-		for (String property : properties) {
+		data.forEach((property, value) -> {
 			try {
-				final PropertyDescriptor descriptor = new PropertyDescriptor(property, clazz);
-				final Method method = descriptor.getWriteMethod();
-				if(method != null) {
-					method.invoke(instance, data.get(property));
-				}
+				PropertyDescriptor.newInstance(property, clazz).set(instance, value);
 			} catch (Exception e) {
 				LOGGER.error("设置对象属性异常：{}-{}", clazz, property, e);
 			}
-		}
+		});
 	}
 	
 }

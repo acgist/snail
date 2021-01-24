@@ -1,27 +1,27 @@
 package com.acgist.snail.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
- * <p>属性操作</p>
+ * <p>属性工具</p>
  * 
  * @author acgist
  */
 public final class PropertyDescriptor {
 
 	/**
-	 * <p>方法前缀：{@value}</p>
-	 * <p>boolean值使用这个前缀作为get方法</p>
+	 * <p>GETTER前缀（Boolean）：{@value}</p>
 	 */
 	private static final String PREFIX_IS = "is";
 	/**
-	 * <p>方法前缀：{@value}</p>
+	 * <p>GETTER前缀：{@value}</p>
 	 */
 	private static final String PREFIX_GET = "get";
 	/**
-	 * <p>方法前缀：{@value}</p>
+	 * <p>SETTER前缀：{@value}</p>
 	 */
 	private static final String PREFIX_SET = "set";
 	
@@ -38,9 +38,21 @@ public final class PropertyDescriptor {
 	 * @param property 属性
 	 * @param clazz 类型
 	 */
-	public PropertyDescriptor(String property, Class<?> clazz) {
+	private PropertyDescriptor(String property, Class<?> clazz) {
 		this.property = property;
 		this.clazz = clazz;
+	}
+	
+	/**
+	 * <p>创建属性工具</p>
+	 * 
+	 * @param property 属性
+	 * @param clazz 类型
+	 * 
+	 * @return {@link PropertyDescriptor}
+	 */
+	public static final PropertyDescriptor newInstance(String property, Class<?> clazz) {
+		return new PropertyDescriptor(property, clazz);
 	}
 	
 	/**
@@ -56,16 +68,18 @@ public final class PropertyDescriptor {
 	 */
 	public static final boolean ignoreProperty(Field field) {
 		return
-			Modifier.isStatic(field.getModifiers()) || // 静态属性
-			Modifier.isTransient(field.getModifiers()); // 瞬时属性
+			// 静态属性
+			Modifier.isStatic(field.getModifiers()) ||
+			// 瞬时属性
+			Modifier.isTransient(field.getModifiers());
 	}
 	
 	/**
-	 * <p>获取属性GET方法</p>
+	 * <p>获取属性GETTER</p>
 	 * 
-	 * @return GET方法
+	 * @return GETTER
 	 */
-	public Method getReadMethod() {
+	public Method getter() {
 		final Method[] methods = this.clazz.getMethods();
 		final String isMethod = PREFIX_IS + this.property;
 		final String getMethod = PREFIX_GET + this.property;
@@ -82,13 +96,32 @@ public final class PropertyDescriptor {
 		}
 		return null;
 	}
+
+	/**
+	 * <p>获取属性值</p>
+	 * 
+	 * @param instance 对象
+	 * 
+	 * @return 属性值
+	 * 
+	 * @throws IllegalAccessException 访问异常
+	 * @throws IllegalArgumentException 参数异常
+	 * @throws InvocationTargetException 反射异常
+	 */
+	public Object get(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Method getter = this.getter();
+		if(getter == null) {
+			throw new IllegalArgumentException("属性不存在：" + this.property);
+		}
+		return getter.invoke(instance);
+	}
 	
 	/**
-	 * <p>获取属性SET方法</p>
+	 * <p>获取属性SETTER</p>
 	 * 
-	 * @return SET方法
+	 * @return SETTER
 	 */
-	public Method getWriteMethod() {
+	public Method setter() {
 		final Method[] methods = this.clazz.getMethods();
 		final String setMethod = PREFIX_SET + this.property;
 		String methodName;
@@ -102,6 +135,25 @@ public final class PropertyDescriptor {
 	}
 
 	/**
+	 * <p>设置属性值</p>
+	 * 
+	 * @param instance 对象
+	 * 
+	 * @param value 属性值
+	 * 
+	 * @throws IllegalAccessException 访问异常
+	 * @throws IllegalArgumentException 参数异常
+	 * @throws InvocationTargetException 反射异常
+	 */
+	public void set(Object instance, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Method setter = this.setter();
+		if(setter == null) {
+			throw new IllegalArgumentException("属性不存在：" + this.property);
+		}
+		setter.invoke(instance, value);
+	}
+	
+	/**
 	 * <p>获取属性类型</p>
 	 * 
 	 * @return 属性类型
@@ -109,9 +161,11 @@ public final class PropertyDescriptor {
 	public Class<?> getPropertyType() {
 		Class<?> clazz = this.clazz;
 		while(clazz != null) {
+			String fieldName;
 			final Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
-				if(!ignoreProperty(field) && field.getName().equals(this.property)) {
+				fieldName = field.getName();
+				if(!ignoreProperty(field) && fieldName.equals(this.property)) {
 					return field.getType();
 				}
 			}
