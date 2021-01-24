@@ -208,11 +208,11 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	}
 	
 	/**
-	 * <p>是否握手完成</p>
+	 * <p>判断是否处理握手消息</p>
 	 * 
-	 * @return true-完成；false-没有完成；
+	 * @return 是否处理握手消息
 	 */
-	public boolean handshake() {
+	public boolean handshakeRecv() {
 		return this.handshakeRecv;
 	}
 	
@@ -254,7 +254,8 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	
 	@Override
 	public void onMessage(final ByteBuffer buffer) throws NetException {
-		if(this.handshakeRecv) { // 已经握手
+		if(this.handshakeRecv) {
+			// 已经握手
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.of(typeId);
 			if(type == null) {
@@ -323,8 +324,14 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 				LOGGER.warn("处理Peer消息错误（类型未适配）：{}", type);
 				break;
 			}
-		} else { // 没有握手
-			this.handshake(buffer);
+		} else {
+			// 没有握手
+			this.handshakeRecv = true;
+			final boolean success = this.handshake(buffer);
+			if(!success) {
+				// 握手失败关闭连接
+				this.close();
+			}
 		}
 	}
 
@@ -343,6 +350,10 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * @param peerDownloader Peer下载
 	 */
 	public void handshake(PeerDownloader peerDownloader) {
+		if(this.handshakeSend) {
+			LOGGER.debug("已经发送过握手消息");
+			return;
+		}
 		LOGGER.debug("发送握手消息");
 		this.handshakeSend = true;
 		if(peerDownloader != null) {
@@ -366,29 +377,27 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 	 * <p>通用：发送扩展消息、发送DHT消息、交换Piece位图</p>
 	 * 
 	 * @param buffer 消息
+	 * 
+	 * @return 是否握手成功
 	 */
-	private void handshake(ByteBuffer buffer) {
+	private boolean handshake(ByteBuffer buffer) {
 		LOGGER.debug("处理握手消息");
 		if(buffer.remaining() != PeerConfig.HANDSHAKE_LENGTH) {
 			LOGGER.warn("处理握手消息格式错误（消息长度）：{}", buffer.remaining());
-//			this.close(); // 不关闭：选择忽略
-			return;
+			return false;
 		}
 		final byte length = buffer.get();
 		if(length != PeerConfig.PROTOCOL_NAME_LENGTH) {
 			LOGGER.warn("处理握手消息格式错误（协议长度）：{}", length);
-//			this.close(); // 不关闭：选择忽略
-			return;
+			return false;
 		}
 		final byte[] names = new byte[length];
 		buffer.get(names);
 		final String name = new String(names);
 		if(!PeerConfig.PROTOCOL_NAME.equals(name)) {
 			LOGGER.warn("处理握手消息格式错误（下载协议错误）：{}", name);
-//			this.close(); // 不关闭：选择忽略
-			return;
+			return false;
 		}
-		this.handshakeRecv = true;
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
 		buffer.get(reserved);
 		final byte[] infoHash = new byte[SystemConfig.SHA1_HASH_LENGTH];
@@ -398,21 +407,19 @@ public final class PeerSubMessageHandler implements IMessageCodec<ByteBuffer> {
 		buffer.get(peerId);
 		if(this.server) {
 			final boolean success = this.initServer(infoHashHex, peerId);
-			if(success) {
-				if(!this.handshakeSend) {
-					this.handshake((PeerDownloader) null);
-				}
-			} else {
-				this.close();
-				return;
+			if(!success) {
+				return false;
 			}
 		}
-		this.peerSession.id(peerId); // 设置PeerId
-		this.peerSession.reserved(reserved); // 设置保留位
-		this.extension(); // 发送扩展消息：优先交换扩展
-		this.dht(); // 发送DHT消息
-		this.exchangeBitfield(); // 交换Piece位图
-		this.unchoke(); // 解除阻塞
+		this.handshake((PeerDownloader) null);
+		this.peerSession.id(peerId);
+		this.peerSession.reserved(reserved);
+		// 发送扩展消息：优先交换扩展
+		this.extension();
+		this.dht();
+		this.exchangeBitfield();
+		this.unchoke();
+		return true;
 	}
 
 	/**
