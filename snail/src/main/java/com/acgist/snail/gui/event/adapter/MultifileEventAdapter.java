@@ -17,16 +17,16 @@ import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>GUI种子文件选择事件</p>
+ * <p>GUI选择下载文件事件</p>
  * 
  * @author acgist
  */
-public class TorrentEventAdapter extends GuiEventArgs {
+public class MultifileEventAdapter extends GuiEventArgs {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentEventAdapter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileEventAdapter.class);
 	
-	public TorrentEventAdapter() {
-		super(Type.TORRENT, "种子文件选择事件");
+	public MultifileEventAdapter() {
+		super(Type.MULTIFILE, "选择下载文件事件");
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 	protected void executeExtendExtend(ITaskSession taskSession) {
 		final String files = GuiContext.getInstance().files();
 		if(StringUtils.isEmpty(files)) {
-			LOGGER.debug("种子文件选择没有文件信息：{}", files);
+			LOGGER.debug("选择下载文件没有文件信息：{}", files);
 			return;
 		}
 		try {
@@ -77,7 +77,7 @@ public class TorrentEventAdapter extends GuiEventArgs {
 			taskSession.setSize(size);
 			taskSession.setDescription(files);
 		} catch (DownloadException | PacketSizeException e) {
-			LOGGER.error("设置种子文件选择异常：{}", files, e);
+			LOGGER.error("设置选择下载文件异常：{}", files, e);
 		}
 	}
 	

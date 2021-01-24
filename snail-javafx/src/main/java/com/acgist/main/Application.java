@@ -10,12 +10,12 @@ import com.acgist.snail.gui.javafx.event.AlertEvent;
 import com.acgist.snail.gui.javafx.event.BuildEvent;
 import com.acgist.snail.gui.javafx.event.ExitEvent;
 import com.acgist.snail.gui.javafx.event.HideEvent;
+import com.acgist.snail.gui.javafx.event.MultifileEvent;
 import com.acgist.snail.gui.javafx.event.NoticeEvent;
 import com.acgist.snail.gui.javafx.event.RefreshTaskListEvent;
 import com.acgist.snail.gui.javafx.event.RefreshTaskStatusEvent;
 import com.acgist.snail.gui.javafx.event.ResponseEvent;
 import com.acgist.snail.gui.javafx.event.ShowEvent;
-import com.acgist.snail.gui.javafx.event.TorrentEvent;
 
 /**
  * <p>Snail启动类</p>
@@ -68,8 +68,8 @@ public final class Application {
 		GuiContext.register(BuildEvent.getInstance());
 		GuiContext.register(AlertEvent.getInstance());
 		GuiContext.register(NoticeEvent.getInstance());
-		GuiContext.register(TorrentEvent.getInstance());
 		GuiContext.register(ResponseEvent.getInstance());
+		GuiContext.register(MultifileEvent.getInstance());
 		GuiContext.register(RefreshTaskListEvent.getInstance());
 		GuiContext.register(RefreshTaskStatusEvent.getInstance());
 	}

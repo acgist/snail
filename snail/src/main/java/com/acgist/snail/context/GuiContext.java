@@ -14,12 +14,12 @@ import com.acgist.snail.gui.event.adapter.AlertEventAdapter;
 import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
 import com.acgist.snail.gui.event.adapter.ExitEventAdapter;
 import com.acgist.snail.gui.event.adapter.HideEventAdapter;
+import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.gui.event.adapter.NoticeEventAdapter;
 import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
 import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
 import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
 import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
-import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
 import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
@@ -103,7 +103,9 @@ public final class GuiContext implements IContext {
 	 */
 	private Mode mode = Mode.NATIVE;
 	/**
-	 * <p>种子文件选择列表（B编码）</p>
+	 * <p>选择下载文件列表（B编码）</p>
+	 * 
+	 * @see Type#MULTIFILE
 	 */
 	private String files;
 	/**
@@ -149,8 +151,8 @@ public final class GuiContext implements IContext {
 		GuiContext.register(new BuildEventAdapter());
 		GuiContext.register(new AlertEventAdapter());
 		GuiContext.register(new NoticeEventAdapter());
-		GuiContext.register(new TorrentEventAdapter());
 		GuiContext.register(new ResponseEventAdapter());
+		GuiContext.register(new MultifileEventAdapter());
 		GuiContext.register(new RefreshTaskListEventAdapter());
 		GuiContext.register(new RefreshTaskStatusEventAdapter());
 	}
@@ -269,14 +271,14 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>种子文件选择</p>
+	 * <p>选择下载文件</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return GuiContext
 	 */
-	public GuiContext torrent(ITaskSession taskSession) {
-		return this.event(Type.TORRENT, taskSession);
+	public GuiContext multifile(ITaskSession taskSession) {
+		return this.event(Type.MULTIFILE, taskSession);
 	}
 	
 	/**
@@ -332,18 +334,18 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取种子文件选择列表</p>
+	 * <p>获取选择下载文件列表（B编码）</p>
 	 * 
-	 * @return 种子文件选择列表（B编码）
+	 * @return 选择下载文件列表（B编码）
 	 */
 	public String files() {
 		return this.files;
 	}
 	
 	/**
-	 * <p>设置种子文件选择列表</p>
+	 * <p>设置选择下载文件列表（B编码）</p>
 	 * 
-	 * @param files 种子文件选择列表（B编码）
+	 * @param files 选择下载文件列表（B编码）
 	 */
 	public void files(String files) {
 		this.files = files;
