@@ -50,7 +50,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 		int length = 0; // 消息数据长度
 		while(true) {
 			if(this.buffer == null) {
-				if(this.peerSubMessageHandler.handshake()) {
+				if(this.peerSubMessageHandler.handshakeRecv()) {
 					for (int index = 0; index < buffer.limit() && buffer.hasRemaining(); index++) {
 						this.lengthStick.put(buffer.get());
 						if(this.lengthStick.position() == INT_BYTE_LENGTH) {
