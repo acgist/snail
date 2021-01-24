@@ -345,12 +345,16 @@ public final class StatisticsController extends Controller {
 	 * <p>系统信息</p>
 	 */
 	private void buildSelectSystemStatistics() {
+		final var runtime = Runtime.getRuntime();
 		final VBox systemInfo = new VBox(
 			this.buildTextFlow("本机IP：", NetUtils.LOCAL_HOST_ADDRESS),
 			this.buildTextFlow("外网IP：", SystemConfig.getExternalIpAddress()),
 			this.buildTextFlow("外网端口：", SystemConfig.getTorrentPortExt()),
 			this.buildTextFlow("内网穿透：", NatContext.getInstance().type()),
 			this.buildTextFlow("软件版本：", SystemConfig.getVersion()),
+			this.buildTextFlow("线程总量：", Thread.activeCount()),
+			this.buildTextFlow("内存空闲：", FileUtils.formatSize(runtime.freeMemory())),
+			this.buildTextFlow("内存占用：", FileUtils.formatSize(runtime.totalMemory())),
 			this.buildTextFlow("系统名称：", System.getProperty("os.name")),
 			this.buildTextFlow("系统版本：", System.getProperty("os.version")),
 			this.buildTextFlow("Java版本：", System.getProperty("java.version")),
