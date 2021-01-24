@@ -218,6 +218,15 @@ public final class PeerSession implements IStatisticsSessionGetter {
 	}
 	
 	/**
+	 * <p>设置客户端名称</p>
+	 * 
+	 * @param clientName 客户端名称
+	 */
+	public void clientName(String clientName) {
+		this.clientName = clientName;
+	}
+	
+	/**
 	 * <p>获取Peer地址</p>
 	 * 
 	 * @return Peer地址

@@ -300,6 +300,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(metadataSize != null && this.infoHash.size() <= 0) {
 			this.infoHash.size(metadataSize.intValue());
 		}
+		// 设置客户端名称
+		if(this.peerSession.clientName() == null) {
+			final String clientName = decoder.getString(EX_V);
+			LOGGER.debug("设置客户端名称：{}", clientName);
+			this.peerSession.clientName(clientName);
+		}
 		// 支持的扩展协议：扩展协议名称=扩展协议标识
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
 		if(MapUtils.isNotEmpty(supportTypes)) {
