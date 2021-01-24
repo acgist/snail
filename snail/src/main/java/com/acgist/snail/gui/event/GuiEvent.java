@@ -42,13 +42,14 @@ public abstract class GuiEvent {
 		 */
 		NOTICE,
 		/**
-		 * <p>种子文件选择</p>
-		 */
-		TORRENT,
-		/**
 		 * <p>响应消息</p>
 		 */
 		RESPONSE,
+		/**
+		 * <p>选择下载文件</p>
+		 * <p>多文件下载任务选择下载文件</p>
+		 */
+		MULTIFILE,
 		/**
 		 * <p>刷新任务列表：添加、删除</p>
 		 */

@@ -15,7 +15,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
+import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.utils.Performance;
@@ -33,8 +33,6 @@ public class SnailTest extends Performance {
 		final var snail = SnailBuilder.newBuilder()
 			.enableTorrent()
 			.buildSync();
-		// 注册种子选择事件
-		GuiContext.register(new TorrentEventAdapter());
 		// 解析种子文件
 		final var torrent = TorrentContext.loadTorrent("E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent");
 		// 自行过滤下载文件
@@ -44,6 +42,8 @@ public class SnailTest extends Performance {
 			.collect(Collectors.toList());
 		// 设置需要下载文件
 		GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+		// 注册文件选择事件
+		GuiContext.register(new MultifileEventAdapter());
 		// 开始下载
 		snail.download("E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent").getStatusValue();
 		snail.lockDownload();

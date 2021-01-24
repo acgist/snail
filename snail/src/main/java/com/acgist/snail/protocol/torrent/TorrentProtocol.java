@@ -188,7 +188,7 @@ public final class TorrentProtocol extends Protocol {
 		ITaskSession taskSession = null;
 		try {
 			taskSession = TaskSession.newInstance(this.taskEntity);
-			GuiContext.getInstance().torrent(taskSession);
+			GuiContext.getInstance().multifile(taskSession);
 		} catch (DownloadException e) {
 			throw e;
 		} catch (Exception e) {

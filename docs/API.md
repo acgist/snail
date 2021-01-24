@@ -91,8 +91,6 @@ snail.lockDownload();
 final var snail = SnailBuilder.newBuilder()
 	.enableTorrent()
 	.buildSync();
-// 注册种子选择事件
-GuiContext.register(new TorrentEventAdapter());
 // 解析种子文件
 final var torrent = TorrentContext.loadTorrent("种子文件");
 // 自行过滤下载文件
@@ -102,6 +100,8 @@ final var list = torrent.getInfo().files().stream()
 	.collect(Collectors.toList());
 // 设置需要下载文件
 GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+// 注册选择下载文件事件
+GuiContext.register(new MultifileEventAdapter());
 // 开始下载
 snail.download("种子文件");
 snail.lockDownload();
@@ -186,7 +186,7 @@ B编码Map
 |名称|必要|描述|
 |:--|:--|:--|
 |url|√|下载链接|
-|files|○|种子文件选择列表|
+|files|○|选择下载文件列表|
 
 #### 任务列表响应主体
 
@@ -269,7 +269,7 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 |创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
 |窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
-|种子文件选择|TORRENT|-|选择种子下载文件（静默处理）|TorrentEventAdapter|
+|选择下载文件|MULTIFILE|-|选择下载文件（静默处理）|MultifileEventAdapter|
 |响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
 |刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|

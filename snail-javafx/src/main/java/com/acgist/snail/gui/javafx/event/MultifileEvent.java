@@ -1,25 +1,25 @@
 package com.acgist.snail.gui.javafx.event;
 
-import com.acgist.snail.gui.event.adapter.TorrentEventAdapter;
+import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.application.Platform;
 
 /**
- * <p>GUI种子文件选择事件</p>
+ * <p>GUI选择下载文件事件</p>
  * 
  * @author acgist
  */
-public final class TorrentEvent extends TorrentEventAdapter {
+public final class MultifileEvent extends MultifileEventAdapter {
 
-	private static final TorrentEvent INSTANCE = new TorrentEvent();
+	private static final MultifileEvent INSTANCE = new MultifileEvent();
 	
-	public static final TorrentEvent getInstance() {
+	public static final MultifileEvent getInstance() {
 		return INSTANCE;
 	}
 	
-	private TorrentEvent() {
+	private MultifileEvent() {
 	}
 
 	@Override

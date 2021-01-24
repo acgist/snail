@@ -197,7 +197,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * <dl>
 	 * 	<dt>body：Map（B编码）</dt>
 	 * 	<dd>url：下载链接</dd>
-	 * 	<dd>files：种子文件选择列表（B编码）</dd>
+	 * 	<dd>files：选择下载文件列表（B编码）</dd>
 	 * </dl>
 	 * 
 	 * @param message 系统消息
