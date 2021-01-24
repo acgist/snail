@@ -85,13 +85,15 @@ public final class UrlUtils {
 		if(target.endsWith(SymbolConfig.Symbol.DOUBLE_QUOTE.toString())) {
 			target = target.substring(0, target.length() - 1);
 		}
+		final String slash = SymbolConfig.Symbol.SLASH.toString();
+		final char slashChar = SymbolConfig.Symbol.SLASH.toChar();
 		if(Protocol.Type.HTTP.verify(target)) {
 			// 完整链接
 			return target;
-		} else if(target.startsWith(SymbolConfig.Symbol.SLASH.toString())) {
+		} else if(target.startsWith(slash)) {
 			// 绝对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.indexOf(SymbolConfig.Symbol.SLASH.toChar(), prefix.length());
+			final int index = source.indexOf(slashChar, prefix.length());
 			if(index > prefix.length()) {
 				return source.substring(0, index) + target;
 			} else {
@@ -100,11 +102,11 @@ public final class UrlUtils {
 		} else {
 			// 相对目录链接
 			final String prefix = Protocol.Type.HTTP.prefix(source);
-			final int index = source.lastIndexOf(SymbolConfig.Symbol.SLASH.toChar());
+			final int index = source.lastIndexOf(slashChar);
 			if(index > prefix.length()) {
-				return source.substring(0, index) + SymbolConfig.Symbol.SLASH.toString() + target;
+				return source.substring(0, index) + slash + target;
 			} else {
-				return source + SymbolConfig.Symbol.SLASH.toString() + target;
+				return source + slash + target;
 			}
 		}
 	}

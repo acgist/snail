@@ -35,6 +35,10 @@ public final class SymbolConfig {
 		 */
 		BACKSLASH('\\'),
 		/**
+		 * <p>等号</p>
+		 */
+		EQUALS_SIGN('='),
+		/**
 		 * <p>问号</p>
 		 */
 		QUESTION_MARK('?'),
