@@ -167,7 +167,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 			return new ArrayList<>();
 		}
 		return path.stream()
-			.map(value -> StringUtils.getStringCharset(value, encoding))
+			.map(value -> StringUtils.getCharsetString(value, encoding))
 			.collect(Collectors.toList());
 	}
 

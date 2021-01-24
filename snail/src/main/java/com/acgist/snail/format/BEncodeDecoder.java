@@ -621,7 +621,7 @@ public final class BEncodeDecoder {
 		if(bytes == null) {
 			return null;
 		}
-		return StringUtils.getStringCharset(bytes, encoding);
+		return StringUtils.getCharsetString(bytes, encoding);
 	}
 	
 	/**
