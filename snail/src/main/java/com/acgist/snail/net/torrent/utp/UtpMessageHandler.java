@@ -93,10 +93,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>连接锁</p>
 	 */
 	private final AtomicBoolean connectLock;
-	/**
-	 * <p>Peer消息代理</p>
-	 */
-	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * <p>服务端</p>
@@ -125,10 +121,9 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * @param server 是否服务端
 	 */
 	private UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress, short connectionId, boolean server) {
-		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.peerSubMessageHandler.messageEncryptSender(this);
-		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
-		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
+		peerSubMessageHandler.messageEncryptSender(this);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
 		this.utpService = UtpService.getInstance();
 		this.sendWindow = UtpWindow.newSendInstance();

@@ -13,13 +13,6 @@ import com.acgist.snail.net.TcpMessageHandler;
  */
 public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(PeerMessageHandler.class);
-	
-	/**
-	 * <p>Peer消息代理</p>
-	 */
-	private final PeerSubMessageHandler peerSubMessageHandler;
-
 	/**
 	 * <p>服务端</p>
 	 */
@@ -33,11 +26,10 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	public PeerMessageHandler(PeerSubMessageHandler peerSubMessageHandler) {
-		this.peerSubMessageHandler = peerSubMessageHandler;
-		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(this.peerSubMessageHandler);
-		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, this.peerSubMessageHandler);
+		peerSubMessageHandler.messageEncryptSender(this);
+		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(peerSubMessageHandler);
+		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
 		this.messageCodec = peerCryptMessageCodec;
-		this.peerSubMessageHandler.messageEncryptSender(this);
 	}
 	
 	@Override
