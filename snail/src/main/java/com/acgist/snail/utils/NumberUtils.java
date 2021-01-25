@@ -2,14 +2,9 @@ package com.acgist.snail.utils;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>数值工具</p>
@@ -18,26 +13,21 @@ import org.slf4j.LoggerFactory;
  */
 public final class NumberUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NumberUtils.class);
-	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private NumberUtils() {
 	}
 	
 	/**
-	 * <p>最小唯一编号索引：{@value}</p>
+	 * <p>唯一编号最小索引：{@value}</p>
 	 */
 	private static final int MIN_INDEX = 1000;
 	/**
-	 * <p>最大唯一编号索引：{@value}</p>
+	 * <p>唯一编号最大索引：{@value}</p>
 	 */
 	private static final int MAX_INDEX = 9999;
 	
 	/**
 	 * <p>唯一编号索引</p>
-	 * <p>随机生成：防止一分钟内多次启动生成重复索引</p>
+	 * <p>第一个随机初始化：防止一分钟内多次启动重复生成</p>
 	 */
 	private static int index = (int) (System.currentTimeMillis() % (MAX_INDEX - MIN_INDEX) + MIN_INDEX);
 	
@@ -70,21 +60,14 @@ public final class NumberUtils {
 	 */
 	public static final long bytesToLong(byte[] bytes) {
 		long value = 0L;
-		value |= (bytes[0] & 0xFF);
-		value <<= 8;
-		value |= (bytes[1] & 0xFF);
-		value <<= 8;
-		value |= (bytes[2] & 0xFF);
-		value <<= 8;
-		value |= (bytes[3] & 0xFF);
-		value <<= 8;
-		value |= (bytes[4] & 0xFF);
-		value <<= 8;
-		value |= (bytes[5] & 0xFF);
-		value <<= 8;
-		value |= (bytes[6] & 0xFF);
-		value <<= 8;
-		value |= (bytes[7] & 0xFF);
+		value |= ((long) (bytes[0] & 0xFF)) << 56;
+		value |= ((long) (bytes[1] & 0xFF)) << 48;
+		value |= ((long) (bytes[2] & 0xFF)) << 40;
+		value |= ((long) (bytes[3] & 0xFF)) << 32;
+		value |= ((long) (bytes[4] & 0xFF)) << 24;
+		value |= ((long) (bytes[5] & 0xFF)) << 16;
+		value |= ((long) (bytes[6] & 0xFF)) << 8;
+		value |= ((long) (bytes[7] & 0xFF));
 		return value;
 	}
 	
@@ -97,13 +80,13 @@ public final class NumberUtils {
 	 */
 	public static final byte[] longToBytes(long value) {
 		final byte[] bytes = new byte[8];
-		bytes[0] = (byte) ((value >> 56) & 0xFF);
-		bytes[1] = (byte) ((value >> 48) & 0xFF);
-		bytes[2] = (byte) ((value >> 40) & 0xFF);
-		bytes[3] = (byte) ((value >> 32) & 0xFF);
-		bytes[4] = (byte) ((value >> 24) & 0xFF);
-		bytes[5] = (byte) ((value >> 16) & 0xFF);
-		bytes[6] = (byte) ((value >> 8) & 0xFF);
+		bytes[0] = (byte) (value >> 56 & 0xFF);
+		bytes[1] = (byte) (value >> 48 & 0xFF);
+		bytes[2] = (byte) (value >> 40 & 0xFF);
+		bytes[3] = (byte) (value >> 32 & 0xFF);
+		bytes[4] = (byte) (value >> 24 & 0xFF);
+		bytes[5] = (byte) (value >> 16 & 0xFF);
+		bytes[6] = (byte) (value >> 8 & 0xFF);
 		bytes[7] = (byte) (value & 0xFF);
 		return bytes;
 	}
@@ -117,12 +100,9 @@ public final class NumberUtils {
 	 */
 	public static final int bytesToInt(byte[] bytes) {
 		int value = 0;
-		value |= (bytes[0] & 0xFF);
-		value <<= 8;
-		value |= (bytes[1] & 0xFF);
-		value <<= 8;
-		value |= (bytes[2] & 0xFF);
-		value <<= 8;
+		value |= (bytes[0] & 0xFF) << 24;
+		value |= (bytes[1] & 0xFF) << 16;
+		value |= (bytes[2] & 0xFF) << 8;
 		value |= (bytes[3] & 0xFF);
 		return value;
 	}
@@ -136,9 +116,9 @@ public final class NumberUtils {
 	 */
 	public static final byte[] intToBytes(int value) {
 		final byte[] bytes = new byte[4];
-		bytes[0] = (byte) ((value >> 24) & 0xFF);
-		bytes[1] = (byte) ((value >> 16) & 0xFF);
-		bytes[2] = (byte) ((value >> 8) & 0xFF);
+		bytes[0] = (byte) (value >> 24 & 0xFF);
+		bytes[1] = (byte) (value >> 16 & 0xFF);
+		bytes[2] = (byte) (value >> 8 & 0xFF);
 		bytes[3] = (byte) (value & 0xFF);
 		return bytes;
 	}
@@ -152,8 +132,7 @@ public final class NumberUtils {
 	 */
 	public static final short bytesToShort(byte[] bytes) {
 		short value = 0;
-		value |= (bytes[0] & 0xFF);
-		value <<= 8;
+		value |= (bytes[0] & 0xFF) << 8;
 		value |= (bytes[1] & 0xFF);
 		return value;
 	}
@@ -167,13 +146,13 @@ public final class NumberUtils {
 	 */
 	public static final byte[] shortToBytes(short value) {
 		final byte[] bytes = new byte[2];
-		bytes[0] = (byte) ((value >> 8) & 0xFF);
+		bytes[0] = (byte) (value >> 8 & 0xFF);
 		bytes[1] = (byte) (value & 0xFF);
 		return bytes;
 	}
 	
 	/**
-	 * <p>向上取整（除法）</p>
+	 * <p>除法向上取整</p>
 	 * <pre>
 	 * ceilDiv(2, 2) = 1;
 	 * ceilDiv(3, 2) = 2;
@@ -194,7 +173,7 @@ public final class NumberUtils {
 	}
 
 	/**
-	 * <p>向上取整（乘法）</p>
+	 * <p>乘法向上取整</p>
 	 * <pre>
 	 * ceilMult(2, 2) = 2;
 	 * ceilMult(3, 2) = 4;
@@ -213,7 +192,7 @@ public final class NumberUtils {
 	/**
 	 * <p>大整数转为二进制字节数组</p>
 	 * 
-	 * @param value 大整数（不可能是负数）
+	 * @param value 大整数（正数）
 	 * @param length 数组长度
 	 * 
 	 * @return 字节数组
@@ -222,10 +201,10 @@ public final class NumberUtils {
 		if (length < 1) {
 			throw new IllegalArgumentException("数组长度错误：" + length);
 		}
-		byte[] bytes = value.toByteArray(); // 二进制补码
-		// 符号位是零
+		// 二进制补码
+		byte[] bytes = value.toByteArray();
 		if (bytes[0] == 0) {
-			// 去掉符号位
+			// 符号位是零：去掉符号位
 			bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
 		}
 		// 填充数据
@@ -243,7 +222,7 @@ public final class NumberUtils {
 	 * @param buffer 字节数组
 	 * @param length 数组长度
 	 * 
-	 * @return 大整数
+	 * @return 大整数（正数）
 	 */
 	public static final BigInteger decodeBigInteger(final ByteBuffer buffer, final int length) {
 		if (length < 1 || buffer.remaining() < length) {
@@ -251,10 +230,11 @@ public final class NumberUtils {
 		}
 		int index = 0;
 		byte nonzero;
-		// 去掉前导零
-		while ((nonzero = buffer.get()) == 0 && ++index < length);
-		// 所有均是零
+		while ((nonzero = buffer.get()) == 0 && ++index < length) {
+			// 去掉前导零
+		}
 		if (index == length) {
+			// 所有位全是零
 			return BigInteger.ZERO;
 		}
 		final int newLength = length - index;
@@ -262,22 +242,8 @@ public final class NumberUtils {
 		// 读取非零数据
 		bytes[0] = nonzero;
 		buffer.get(bytes, 1, newLength - 1);
-		return new BigInteger(1, bytes); // 正整数
-	}
-	
-	/**
-	 * <p>获取随机数对象</p>
-	 * <p>注意：安全随机数性能存在问题</p>
-	 * 
-	 * @return 随机数对象
-	 */
-	public static final Random random() {
-		try {
-			return SecureRandom.getInstanceStrong();
-		} catch (NoSuchAlgorithmException e) {
-			LOGGER.error("获取随机数对象异常", e);
-		}
-		return new Random();
+		// 正整数
+		return new BigInteger(1, bytes);
 	}
 	
 	/**
@@ -286,10 +252,20 @@ public final class NumberUtils {
 	 * @param source 原始数值
 	 * @param target 目标数值
 	 * 
-	 * @return 是否相对
+	 * @return 是否相等
 	 */
 	public static final boolean equals(Number source, Number target) {
 		return source == null ? target == null : source.equals(target);
+	}
+
+	/**
+	 * <p>获取随机数对象</p>
+	 * <p>注意（存在性能问题）：SecureRandom.getInstanceStrong()</p>
+	 * 
+	 * @return 随机数对象
+	 */
+	public static final SecureRandom random() {
+		return new SecureRandom();
 	}
 	
 }
