@@ -151,16 +151,18 @@ public final class StringUtils {
 		if(content == null) {
 			return null;
 		}
+		// byte十六进制长度
+		final int byteHexLength = 2;
 		int length = content.length();
-		if (length % 2 != 0) {
+		if (length % byteHexLength != 0) {
 			// 填充字符
 			length++;
 			content = SymbolConfig.Symbol.ZERO.toString() + content;
 		}
 		int jndex = 0;
-		final byte[] hexBytes = new byte[length / 2];
-		for (int index = 0; index < length; index += 2) {
-			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + 2), 16);
+		final byte[] hexBytes = new byte[length / byteHexLength];
+		for (int index = 0; index < length; index += byteHexLength) {
+			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + byteHexLength), 16);
 			jndex++;
 		}
 		return hexBytes;
@@ -310,14 +312,16 @@ public final class StringUtils {
 		int length;
 		char value;
 		String hex;
+		// char十六进制长度
+		final int charHexLength = 4;
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < content.length(); index++) {
 			value = content.charAt(index);
 			builder.append("\\u");
 			hex = Integer.toHexString(value);
 			length = hex.length();
-			if(length < 4) {
-				builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(4 - length));
+			if(length < charHexLength) {
+				builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(charHexLength - length));
 			}
 			builder.append(Integer.toHexString(value));
 		}
