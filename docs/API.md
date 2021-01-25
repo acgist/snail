@@ -107,6 +107,12 @@ snail.download("种子文件");
 snail.lockDownload();
 ```
 
+#### BT任务指定优先下载位置
+
+```java
+TorrentSession.piecePos(int)
+```
+
 ### 任务信息
 
 ```java

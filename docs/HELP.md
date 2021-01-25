@@ -137,11 +137,7 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ### 边下边播
 
-可以指定优先下载位置：
-
-```java
-TorrentSession#piecePos(int)
-```
+[指定优先下载位置](./GUI.md#统计-piece统计)
 
 ## BT任务
 
