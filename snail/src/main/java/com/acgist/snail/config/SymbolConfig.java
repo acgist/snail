@@ -19,6 +19,10 @@ public final class SymbolConfig {
 		 */
 		DOT('.'),
 		/**
+		 * <>零</p>
+		 */
+		ZERO('0'),
+		/**
 		 * <p>逗号</p>
 		 */
 		COMMA(','),

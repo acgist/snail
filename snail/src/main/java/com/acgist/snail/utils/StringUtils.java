@@ -132,8 +132,8 @@ public final class StringUtils {
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < bytes.length; index++) {
 			hex = Integer.toHexString(bytes[index] & 0xFF);
-			if (hex.length() < SystemConfig.HEX_BYTE_LENGTH) {
-				builder.append(SystemConfig.HEX_BYTE_PADDING);
+			if (hex.length() < 2) {
+				builder.append(SymbolConfig.Symbol.ZERO.toString());
 			}
 			builder.append(hex);
 		}
@@ -152,15 +152,15 @@ public final class StringUtils {
 			return null;
 		}
 		int length = content.length();
-		if (length % SystemConfig.HEX_BYTE_LENGTH != 0) {
+		if (length % 2 != 0) {
 			// 填充字符
 			length++;
-			content = SystemConfig.HEX_BYTE_PADDING + content;
+			content = SymbolConfig.Symbol.ZERO.toString() + content;
 		}
 		int jndex = 0;
-		final byte[] hexBytes = new byte[length / SystemConfig.HEX_BYTE_LENGTH];
-		for (int index = 0; index < length; index += SystemConfig.HEX_BYTE_LENGTH) {
-			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + SystemConfig.HEX_BYTE_LENGTH), 16);
+		final byte[] hexBytes = new byte[length / 2];
+		for (int index = 0; index < length; index += 2) {
+			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + 2), 16);
 			jndex++;
 		}
 		return hexBytes;
@@ -307,13 +307,17 @@ public final class StringUtils {
 	 * @return Unicode字符串
 	 */
 	public static final String toUnicode(String content) {
+		int length;
 		char value;
+		String hex;
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < content.length(); index++) {
 			value = content.charAt(index);
 			builder.append("\\u");
-			if(value <= 0xFF) {
-				builder.append("00");
+			hex = Integer.toHexString(value);
+			length = hex.length();
+			if(length < 4) {
+				builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(4 - length));
 			}
 			builder.append(Integer.toHexString(value));
 		}
@@ -331,6 +335,7 @@ public final class StringUtils {
 		final String[] hex = unicode.split("\\\\u");
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 1; index < hex.length; index++) {
+			// 去掉首个空白字符
 			builder.append((char) Integer.parseInt(hex[index], 16));
 		}
 		return builder.toString();
