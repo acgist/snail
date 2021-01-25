@@ -182,6 +182,14 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int TASK_REFRESH_INTERVAL = 4;
 	/**
+	 * <p>十六进制字符长度：{@value}</p>
+	 */
+	public static final int HEX_BYTE_LENGTH = 2;
+	/**
+	 * <p>十六进制填充字符：{@value}</p>
+	 */
+	public static final String HEX_BYTE_PADDING = "0";
+	/**
 	 * <p>用户工作目录</p>
 	 * <p>注意：初始化为常量（不能使用类变量：本类初始化时会使用）</p>
 	 */

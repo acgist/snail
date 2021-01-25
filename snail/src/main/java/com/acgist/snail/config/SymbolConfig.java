@@ -39,6 +39,10 @@ public final class SymbolConfig {
 		 */
 		EQUALS_SIGN('='),
 		/**
+		 * <p>百分号</p>
+		 */
+		PERCENT_SIGN('%'),
+		/**
 		 * <p>问号</p>
 		 */
 		QUESTION_MARK('?'),
