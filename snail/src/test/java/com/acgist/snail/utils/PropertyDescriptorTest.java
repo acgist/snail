@@ -1,6 +1,7 @@
 package com.acgist.snail.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -66,6 +67,7 @@ public class PropertyDescriptorTest extends Performance {
 				this.log(e);
 			}
 		});
+		assertNotNull(task);
 	}
 	
 }

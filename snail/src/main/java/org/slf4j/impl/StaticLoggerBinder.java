@@ -14,10 +14,6 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
 	private static final StaticLoggerBinder INSTANCE = new StaticLoggerBinder();
 	
-	public static final StaticLoggerBinder getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
 	 * <p>SL4J绑定方法</p>
 	 * 

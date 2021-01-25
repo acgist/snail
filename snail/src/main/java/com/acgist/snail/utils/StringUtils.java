@@ -41,14 +41,6 @@ public final class StringUtils {
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	/**
-	 * <p>十六进制字符长度：{@value}</p>
-	 */
-	private static final int HEX_LENGTH = 2;
-	/**
-	 * <p>十六进制填充字符：{@value}</p>
-	 */
-	private static final String HEX_PADDING = "0";
-	/**
 	 * <p>空白字符正则表达式</p>
 	 */
 	private static final String BLANK_REGEX = "\\s";
@@ -140,8 +132,8 @@ public final class StringUtils {
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < bytes.length; index++) {
 			hex = Integer.toHexString(bytes[index] & 0xFF);
-			if (hex.length() < HEX_LENGTH) {
-				builder.append(HEX_PADDING);
+			if (hex.length() < SystemConfig.HEX_BYTE_LENGTH) {
+				builder.append(SystemConfig.HEX_BYTE_PADDING);
 			}
 			builder.append(hex);
 		}
@@ -160,15 +152,15 @@ public final class StringUtils {
 			return null;
 		}
 		int length = content.length();
-		if (length % HEX_LENGTH != 0) {
+		if (length % SystemConfig.HEX_BYTE_LENGTH != 0) {
 			// 填充字符
 			length++;
-			content = HEX_PADDING + content;
+			content = SystemConfig.HEX_BYTE_PADDING + content;
 		}
 		int jndex = 0;
-		final byte[] hexBytes = new byte[length / HEX_LENGTH];
-		for (int index = 0; index < length; index += HEX_LENGTH) {
-			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + HEX_LENGTH), 16);
+		final byte[] hexBytes = new byte[length / SystemConfig.HEX_BYTE_LENGTH];
+		for (int index = 0; index < length; index += SystemConfig.HEX_BYTE_LENGTH) {
+			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + SystemConfig.HEX_BYTE_LENGTH), 16);
 			jndex++;
 		}
 		return hexBytes;

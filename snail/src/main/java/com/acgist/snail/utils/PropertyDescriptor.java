@@ -105,10 +105,9 @@ public final class PropertyDescriptor {
 	 * @return 属性值
 	 * 
 	 * @throws IllegalAccessException 访问异常
-	 * @throws IllegalArgumentException 参数异常
 	 * @throws InvocationTargetException 反射异常
 	 */
-	public Object get(String property) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object get(String property) throws IllegalAccessException, InvocationTargetException {
 		final Method getter = this.getter(property);
 		if(getter == null) {
 			throw new IllegalArgumentException("属性不存在：" + property);
@@ -143,10 +142,9 @@ public final class PropertyDescriptor {
 	 * @param value 属性值
 	 * 
 	 * @throws IllegalAccessException 访问异常
-	 * @throws IllegalArgumentException 参数异常
 	 * @throws InvocationTargetException 反射异常
 	 */
-	public void set(String property, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void set(String property, Object value) throws IllegalAccessException, InvocationTargetException {
 		final Method setter = this.setter(property);
 		if(setter == null) {
 			throw new IllegalArgumentException("属性不存在：" + property);
@@ -163,16 +161,16 @@ public final class PropertyDescriptor {
 	 */
 	public Class<?> getPropertyType(String property) {
 		String fieldName;
-		Class<?> clazz = this.clazz;
-		while(clazz != null) {
-			final Field[] fields = clazz.getDeclaredFields();
+		Class<?> parentClazz = this.clazz;
+		while(parentClazz != null) {
+			final Field[] fields = parentClazz.getDeclaredFields();
 			for (Field field : fields) {
 				fieldName = field.getName();
 				if(!ignoreProperty(field) && fieldName.equals(property)) {
 					return field.getType();
 				}
 			}
-			clazz = clazz.getSuperclass();
+			parentClazz = parentClazz.getSuperclass();
 		}
 		return null;
 	}
