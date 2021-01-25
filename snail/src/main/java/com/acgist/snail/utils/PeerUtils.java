@@ -18,15 +18,15 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * <p>allowedFast Piece长度：{@value}</p>
+	 * <p>快速允许（allowedFast）Piece长度：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_K = 10;
 	/**
-	 * <p>allowedFast IP Mask：{@value}</p>
+	 * <p>快速允许（allowedFast）IP Mask：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_IP_MASK = 0xFFFFFF00;
 	/**
-	 * <p>allowedFast 循环次数：{@value}</p>
+	 * <p>快速允许（allowedFast）循环次数：{@value}</p>
 	 */
 	private static final int ALLOWED_FAST_LOOP_LENGTH = 5;
 
@@ -57,7 +57,7 @@ public final class PeerUtils {
 		if(buffer == null) {
 			return null;
 		}
-		final Map<String, Integer> data = new HashMap<>(16);
+		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.remaining() >= SystemConfig.IP_PORT_LENGTH) {
 			final String ip = NetUtils.intToIP(buffer.getInt());
 			final int port = NetUtils.portToInt(buffer.getShort());
