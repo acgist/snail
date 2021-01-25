@@ -121,8 +121,8 @@ public final class PeerUtils {
 				// 需要编码字符
 				builder.append(SymbolConfig.Symbol.PERCENT_SIGN.toString());
 				valueHex = Integer.toHexString(value & 0xFF);
-				if(valueHex.length() < SystemConfig.HEX_BYTE_LENGTH) {
-					builder.append(SystemConfig.HEX_BYTE_PADDING);
+				if(valueHex.length() < 2) {
+					builder.append(SymbolConfig.Symbol.ZERO.toString());
 				}
 				builder.append(valueHex);
 			}

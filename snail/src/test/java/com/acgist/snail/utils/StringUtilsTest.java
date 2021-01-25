@@ -68,6 +68,8 @@ public class StringUtilsTest extends Performance {
 		final String target = "\\u6d4b\\u8bd5\\u4ee3\\u7801";
 		assertEquals(target, StringUtils.toUnicode("测试代码"));
 		assertEquals(source, StringUtils.ofUnicode(target));
+		assertEquals("\\u0002", StringUtils.toUnicode(Character.toString(2)));
+		this.costed(100000, () -> StringUtils.toUnicode("测试代码"));
 	}
 	
 	@Test
