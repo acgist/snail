@@ -35,11 +35,8 @@ public abstract class Controller implements Initializable {
 	 */
 	protected final String dragboard(DragEvent event) {
 		final Dragboard dragboard = event.getDragboard();
-		if (dragboard.hasUrl()) {
-			return dragboard.getUrl();
-		} else if (dragboard.hasString()) {
-			return dragboard.getString();
-		} else if (dragboard.hasFiles()) {
+		if (dragboard.hasFiles()) {
+			// 优先判断文件
 			final var files = dragboard.getFiles();
 			if (CollectionUtils.isNotEmpty(files)) {
 				for (File file : files) {
@@ -48,6 +45,10 @@ public abstract class Controller implements Initializable {
 					}
 				}
 			}
+		} else if (dragboard.hasUrl()) {
+			return dragboard.getUrl();
+		} else if (dragboard.hasString()) {
+			return dragboard.getString();
 		}
 		return null;
 	}
