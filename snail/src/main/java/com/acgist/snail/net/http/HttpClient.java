@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -28,6 +27,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.MapUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
@@ -571,7 +571,7 @@ public final class HttpClient {
 		try {
 			// SSL协议：SSL、SSLv2、SSLv3、TLS、TLSv1、TLSv1.1、TLSv1.2、TLSv1.3
 			final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-			sslContext.init(null, new X509TrustManager[] { SnailTrustManager.INSTANCE }, SecureRandom.getInstanceStrong());
+			sslContext.init(null, new X509TrustManager[] { SnailTrustManager.INSTANCE }, NumberUtils.random());
 			return sslContext;
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			LOGGER.error("新建SSLContext异常", e);

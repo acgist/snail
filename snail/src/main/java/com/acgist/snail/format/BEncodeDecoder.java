@@ -625,23 +625,23 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取字符数组</p>
+	 * <p>获取字节数组</p>
 	 * 
 	 * @param key 键
 	 * 
-	 * @return 字符数组
+	 * @return 字节数组
 	 */
 	public byte[] getBytes(String key) {
 		return getBytes(this.map, key);
 	}
 	
 	/**
-	 * <p>获取字符数组</p>
+	 * <p>获取字节数组</p>
 	 * 
 	 * @param map 数据
 	 * @param key 键
 	 * 
-	 * @return 字符数组
+	 * @return 字节数组
 	 */
 	public static final byte[] getBytes(Map<?, ?> map, String key) {
 		if(map == null) {
