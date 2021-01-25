@@ -19,7 +19,8 @@ import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
+import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.codec.LineMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.pojo.ITaskSession;
@@ -31,19 +32,20 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class ApplicationMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
+public final class ApplicationMessageHandler extends TcpMessageHandler implements IMessageDecoder<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageHandler.class);
 	
 	/**
-	 * <p>多条消息分隔符：{@value}</p>
+	 * <p>消息编码器</p>
 	 */
-	private static final String SEPARATOR = SymbolConfig.LINE_SEPARATOR_COMPAT;
+	private final IMessageEncoder<String> messageEncoder;
 	
 	public ApplicationMessageHandler() {
-		final var lineMessageCodec = new LineMessageCodec(this, SEPARATOR);
+		final var lineMessageCodec = new LineMessageCodec(this, SymbolConfig.LINE_SEPARATOR_COMPAT);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
-		this.messageCodec = stringMessageCodec;
+		this.messageDecoder = stringMessageCodec;
+		this.messageEncoder = lineMessageCodec;
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	@Override
 	public void send(String message, String charset) throws NetException {
-		super.send(this.messageCodec.encode(message), charset);
+		super.send(this.messageEncoder.encode(message), charset);
 	}
 	
 	@Override

@@ -14,12 +14,12 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 
 	/**
 	 * <p>消息分隔符</p>
-	 * <p>使用消息分隔符区分多条消息</p>
+	 * <p>区分多条消息</p>
 	 */
 	private final String separator;
 	/**
 	 * <p>多行消息结束符（正则表达式）</p>
-	 * <p>消息匹配多行消息结束符成功时合并为一条消息</p>
+	 * <p>合并多条行消息</p>
 	 */
 	private final String multilineRegex;
 	/**
@@ -28,12 +28,12 @@ public final class MultilineMessageCodec extends MessageCodec<String, String> {
 	private final StringBuilder multilineMessage;
 	
 	/**
-	 * @param messageCodec 下一个消息处理器
+	 * @param messageDecoder 消息处理器
 	 * @param separator 消息分隔符
 	 * @param multilineRegex 多行消息结束符
 	 */
-	public MultilineMessageCodec(IMessageCodec<String> messageCodec, String separator, String multilineRegex) {
-		super(messageCodec);
+	public MultilineMessageCodec(IMessageDecoder<String> messageDecoder, String separator, String multilineRegex) {
+		super(messageDecoder);
 		this.separator = separator;
 		this.multilineRegex = multilineRegex;
 		this.multilineMessage = new StringBuilder();

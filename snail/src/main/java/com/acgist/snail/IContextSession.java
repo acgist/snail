@@ -1,7 +1,7 @@
 package com.acgist.snail;
 
 /**
- * <p>上下文Session</p>
+ * <p>上下文Session接口</p>
  * 
  * @author acgist
  */

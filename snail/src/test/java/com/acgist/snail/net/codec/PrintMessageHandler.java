@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
 
-public class PrintMessageHandler implements IMessageCodec<String> {
+public class PrintMessageHandler implements IMessageDecoder<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrintMessageHandler.class);
 	

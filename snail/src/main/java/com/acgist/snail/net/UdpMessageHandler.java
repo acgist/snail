@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**
  * <p>UDP消息代理</p>
@@ -38,20 +38,19 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	/**
 	 * <p>消息处理器</p>
 	 */
-	protected IMessageCodec<ByteBuffer> messageCodec;
+	protected IMessageDecoder<ByteBuffer> messageDecoder;
 	
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>使用消息处理器处理消息</p>
-	 * <p>如果没有实现消息处理器，请重写该方法。</p>
+	 * <p>设置{@link #messageDecoder}或者重写{@link #onReceive(ByteBuffer, InetSocketAddress)}方法</p>
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		if(this.messageCodec == null) {
-			throw new NetException("请实现消息处理器");
+		if(this.messageDecoder == null) {
+			throw new NetException("请设置消息处理器");
 		}
-		this.messageCodec.decode(buffer, socketAddress);
+		this.messageDecoder.decode(buffer, socketAddress);
 	}
 	
 	/**

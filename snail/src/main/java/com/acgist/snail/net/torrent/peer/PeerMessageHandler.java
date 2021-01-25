@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.TcpMessageHandler;
+import com.acgist.snail.net.codec.IMessageEncoder;
 
 /**
  * <p>Peer消息代理</p>
@@ -13,6 +14,11 @@ import com.acgist.snail.net.TcpMessageHandler;
  */
 public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
 
+	/**
+	 * <p>消息编码器</p>
+	 */
+	private final IMessageEncoder<ByteBuffer> messageEncoder;
+	
 	/**
 	 * <p>服务端</p>
 	 */
@@ -29,12 +35,13 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 		peerSubMessageHandler.messageEncryptSender(this);
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
-		this.messageCodec = peerCryptMessageCodec;
+		this.messageDecoder = peerCryptMessageCodec;
+		this.messageEncoder = peerCryptMessageCodec;
 	}
 	
 	@Override
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
-		this.messageCodec.encode(buffer);
+		this.messageEncoder.encode(buffer);
 		this.send(buffer, timeout);
 	}
 

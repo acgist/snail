@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.StringUtils;
@@ -21,7 +21,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class UpnpMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
+public final class UpnpMessageHandler extends UdpMessageHandler implements IMessageDecoder<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpMessageHandler.class);
 
@@ -31,7 +31,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	private static final String HEADER_LOCATION = "location";
 	
 	public UpnpMessageHandler() {
-		this.messageCodec = new StringMessageCodec(this);
+		this.messageDecoder = new StringMessageCodec(this);
 	}
 	
 	@Override
