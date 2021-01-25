@@ -86,7 +86,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	}
 
 	@Override
-	public void onMessage(String message) throws NetException {
+	public void onMessage(String message) {
 		LOGGER.debug("处理FTP消息：{}", message);
 		if(StringUtils.startsWith(message, "530 ")) {
 			// 登陆失败
@@ -134,6 +134,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 					this.inputSocket.setSoTimeout(SystemConfig.DOWNLOAD_TIMEOUT_MILLIS);
 					this.inputSocket.connect(NetUtils.buildSocketAddress(host, port), SystemConfig.CONNECT_TIMEOUT_MILLIS);
 				} catch (IOException e) {
+					this.failMessage = "打开文件下载Socket失败";
 					LOGGER.error("打开文件下载Socket异常：{}-{}", host, port, e);
 				}
 			}
@@ -143,12 +144,14 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		) {
 			// 打开下载文件连接
 			if(this.inputSocket == null) {
-				throw new NetException("请切换到被动模式");
-			}
-			try {
-				this.inputStream = this.inputSocket.getInputStream();
-			} catch (IOException e) {
-				LOGGER.error("打开文件输入流异常", e);
+				this.failMessage = "没有切换被动模式";
+			} else {
+				try {
+					this.inputStream = this.inputSocket.getInputStream();
+				} catch (IOException e) {
+					this.failMessage = "打开文件输出流失败";
+					LOGGER.error("打开文件输出流异常", e);
+				}
 			}
 		}
 		this.unlock(); // 释放命令锁
