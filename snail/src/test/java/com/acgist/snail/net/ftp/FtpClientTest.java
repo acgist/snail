@@ -32,7 +32,7 @@ public class FtpClientTest extends Performance {
 		}
 		this.log("文件大小：" + client.size());
 		final var input = client.download();
-		final String target = "E:/tmp/" + FileUtils.fileName(path);
+		final String target = "E:/snail/tmp/" + FileUtils.fileName(path);
 		final var output = new FileOutputStream(target);
 		input.transferTo(output);
 		output.flush();

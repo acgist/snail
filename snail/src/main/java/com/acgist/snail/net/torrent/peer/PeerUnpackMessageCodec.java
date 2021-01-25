@@ -31,12 +31,17 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	 * <p>消息长度</p>
 	 */
 	private final ByteBuffer lengthStick;
+	/**
+	 * <p>Peer消息代理</p>
+	 */
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerSubMessageHandler);
+		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.lengthStick = ByteBuffer.allocate(INT_BYTE_LENGTH);
 	}
 	
@@ -46,8 +51,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 		int length = 0;
 		while(true) {
 			if(this.buffer == null) {
-				final PeerSubMessageHandler peerSubMessageHandler = (PeerSubMessageHandler) this.messageCodec;
-				if(peerSubMessageHandler.handshakeRecv()) {
+				if(this.peerSubMessageHandler.handshakeRecv()) {
 					for (int index = 0; index < buffer.limit() && buffer.hasRemaining(); index++) {
 						this.lengthStick.put(buffer.get());
 						if(this.lengthStick.position() == INT_BYTE_LENGTH) {
@@ -68,7 +72,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 				}
 				// 心跳消息
 				if(length <= 0) {
-					peerSubMessageHandler.keepAlive();
+					this.peerSubMessageHandler.keepAlive();
 					if(buffer.hasRemaining()) {
 						// 还有消息：继续处理
 						continue;

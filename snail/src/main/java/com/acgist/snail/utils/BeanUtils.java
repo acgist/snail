@@ -29,7 +29,7 @@ public final class BeanUtils {
 	 * <p>通过反射生成实例</p>
 	 * <p>调用默认无参构造方法</p>
 	 * 
-	 * @param <T> 类型泛型
+	 * @param <T> 类型
 	 * 
 	 * @param clazz 类型
 	 * 

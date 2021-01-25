@@ -13,7 +13,8 @@ import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
+import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.codec.LineMessageCodec;
 import com.acgist.snail.net.codec.MultilineMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
@@ -26,28 +27,16 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class FtpMessageHandler extends TcpMessageHandler implements IMessageCodec<String> {
+public final class FtpMessageHandler extends TcpMessageHandler implements IMessageDecoder<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpMessageHandler.class);
 	
 	/**
-	 * <p>消息分隔符：{@value}</p>
-	 */
-	private static final String SEPARATOR = SymbolConfig.LINE_SEPARATOR_COMPAT;
-	/**
-	 * <p>多行消息结束符：{@value}</p>
-	 * <p>扩展命令FEAT返回多行信息</p>
+	 * <p>多行消息正则表达式：{@value}</p>
+	 * <p>返回多行消息FTP命令：FEAT</p>
 	 */
 	private static final String MULTILINE_REGEX = "\\d{3} .*";
 	
-	/**
-	 * <p>输入流Socket</p>
-	 */
-	private Socket inputSocket;
-	/**
-	 * <p>输入流</p>
-	 */
-	private InputStream inputStream;
 	/**
 	 * <p>是否登陆成功</p>
 	 */
@@ -66,21 +55,34 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	 */
 	private String failMessage;
 	/**
+	 * <p>输入流Socket</p>
+	 */
+	private Socket inputSocket;
+	/**
+	 * <p>输入流</p>
+	 */
+	private InputStream inputStream;
+	/**
+	 * <p>消息编码器</p>
+	 */
+	private final IMessageEncoder<String> messageEncoder;
+	/**
 	 * <p>命令锁</p>
 	 * <p>等待命令执行响应</p>
 	 */
 	private final AtomicBoolean lock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
-		final var multilineMessageCodec = new MultilineMessageCodec(this, SEPARATOR, MULTILINE_REGEX);
-		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SEPARATOR);
+		final var multilineMessageCodec = new MultilineMessageCodec(this, SymbolConfig.LINE_SEPARATOR_COMPAT, MULTILINE_REGEX);
+		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SymbolConfig.LINE_SEPARATOR_COMPAT);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
-		this.messageCodec = stringMessageCodec;
+		this.messageDecoder = stringMessageCodec;
+		this.messageEncoder = lineMessageCodec;
 	}
 	
 	@Override
 	public void send(String message) throws NetException {
-		super.send(this.messageCodec.encode(message), this.charset);
+		super.send(this.messageEncoder.encode(message), this.charset);
 	}
 
 	@Override

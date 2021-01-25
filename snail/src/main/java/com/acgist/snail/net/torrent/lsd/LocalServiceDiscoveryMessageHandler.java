@@ -10,7 +10,7 @@ import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -26,7 +26,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler implements IMessageCodec<String> {
+public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler implements IMessageDecoder<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalServiceDiscoveryMessageHandler.class);
 
@@ -49,7 +49,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	public static final String HEADER_INFOHASH = "Infohash";
 
 	public LocalServiceDiscoveryMessageHandler() {
-		this.messageCodec = new StringMessageCodec(this);
+		this.messageDecoder = new StringMessageCodec(this);
 	}
 	
 	@Override

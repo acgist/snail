@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -39,19 +39,19 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * <p>消息处理器</p>
 	 */
-	protected IMessageCodec<ByteBuffer> messageCodec;
-	
+	protected IMessageDecoder<ByteBuffer> messageDecoder;
+
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>使用消息处理器处理消息，如果没有实现消息处理器，请重写该方法。</p>
+	 * <p>设置{@link #messageDecoder}或者重写{@link #onReceive(ByteBuffer)}方法</p>
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer) throws NetException {
-		if(this.messageCodec == null) {
-			throw new NetException("请实现消息处理器");
+		if(this.messageDecoder == null) {
+			throw new NetException("请设置消息处理器");
 		}
-		this.messageCodec.decode(buffer);
+		this.messageDecoder.decode(buffer);
 	}
 	
 	/**

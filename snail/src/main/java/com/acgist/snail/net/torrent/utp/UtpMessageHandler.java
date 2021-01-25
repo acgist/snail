@@ -15,6 +15,7 @@ import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
@@ -93,6 +94,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>连接锁</p>
 	 */
 	private final AtomicBoolean connectLock;
+	/**
+	 * <p>消息编码器</p>
+	 */
+	private final IMessageEncoder<ByteBuffer> messageEncoder;
 	
 	/**
 	 * <p>服务端</p>
@@ -124,10 +129,11 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		peerSubMessageHandler.messageEncryptSender(this);
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
-		this.messageCodec = peerCryptMessageCodec;
+		this.messageDecoder = peerCryptMessageCodec;
+		this.messageEncoder = peerCryptMessageCodec;
 		this.utpService = UtpService.getInstance();
 		this.sendWindow = UtpWindow.newSendInstance();
-		this.recvWindow = UtpWindow.newRecvInstance(this.messageCodec);
+		this.recvWindow = UtpWindow.newRecvInstance(this.messageDecoder);
 		this.ackLossTimes = new AtomicInteger(0);
 		this.connectLock = new AtomicBoolean(false);
 		this.socketAddress = socketAddress;
@@ -209,7 +215,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	@Override
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
-		this.messageCodec.encode(buffer);
+		this.messageEncoder.encode(buffer);
 		this.sendPacket(buffer);
 	}
 

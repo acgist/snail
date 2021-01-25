@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.UtpConfig;
-import com.acgist.snail.net.codec.IMessageCodec;
+import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.utils.DateUtils;
 
 /**
@@ -116,10 +116,10 @@ public final class UtpWindow {
 	/**
 	 * <p>消息处理器</p>
 	 */
-	private final IMessageCodec<ByteBuffer> messageCodec;
+	private final IMessageDecoder<ByteBuffer> messageDecoder;
 	
 	/**
-	 * @see #UtpWindow(IMessageCodec)
+	 * @see #UtpWindow(IMessageDecoder)
 	 */
 	private UtpWindow() {
 		this(null);
@@ -127,11 +127,10 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>创建窗口对象</p>
-	 * <p>如果消息处理器等于{@code null}时不创建请求队列</p>
 	 * 
-	 * @param messageCodec 消息处理器
+	 * @param messageDecoder 消息处理器
 	 */
-	private UtpWindow(IMessageCodec<ByteBuffer> messageCodec) {
+	private UtpWindow(IMessageDecoder<ByteBuffer> messageDecoder) {
 		this.rtt = 0;
 		this.rttVar = 0;
 		this.timeout = MAX_TIMEOUT;
@@ -140,15 +139,16 @@ public final class UtpWindow {
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
 		this.semaphore = new Semaphore(MIN_WND_SIZE);
-		if(messageCodec == null) {
+		if(messageDecoder == null) {
 			// 发送窗口对象
+			// 发送窗口不创建请求队列
 			this.requests = null;
-			this.messageCodec = null;
+			this.messageDecoder = null;
 		} else {
 			// 接收窗口对象
 			// 同一个窗口必须将消息发送到同一个请求队列防止消息出现乱序
 			this.requests = UtpRequestQueue.getInstance().requestQueue();
-			this.messageCodec = messageCodec;
+			this.messageDecoder = messageDecoder;
 		}
 	}
 	
@@ -166,12 +166,12 @@ public final class UtpWindow {
 	 * <p>创建接收窗口对象</p>
 	 * <p>接收窗口接收和处理请求，创建请求队列。</p>
 	 * 
-	 * @param messageCodec 消息处理器
+	 * @param messageDecoder 消息处理器
 	 * 
 	 * @return 窗口对象
 	 */
-	public static final UtpWindow newRecvInstance(IMessageCodec<ByteBuffer> messageCodec) {
-		return new UtpWindow(messageCodec);
+	public static final UtpWindow newRecvInstance(IMessageDecoder<ByteBuffer> messageDecoder) {
+		return new UtpWindow(messageDecoder);
 	}
 	
 	/**
@@ -319,10 +319,8 @@ public final class UtpWindow {
 				return;
 			}
 			LOGGER.debug("处理数据消息：{}", this.seqnr);
-			// 同步处理
-//			this.messageCodec.decode(ByteBuffer.wrap(bytes));
-			// 异步处理
-			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes), this.messageCodec))) {
+			// 异步处理请求
+			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes), this.messageDecoder))) {
 				LOGGER.warn("UTP请求插入请求队列失败：{}", this.seqnr);
 			}
 		}

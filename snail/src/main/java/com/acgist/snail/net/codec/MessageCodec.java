@@ -1,62 +1,52 @@
 package com.acgist.snail.net.codec;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>消息处理器适配器</p>
+ * <p>消息处理器</p>
  * <table border="1">
  * 	<caption>消息处理器</caption>
  * 	<tr>
- * 		<th>处理器</th><th>功能</th><th>实现</th>
+ * 		<th>功能</th><th>实现</th>
  * 	</tr>
  * 	<tr>
- * 		<td>中间处理器</td>
- * 		<td>消息编码、消息解码</td>
- * 		<td>继承{@linkplain MessageCodec 消息处理器适配器}</td>
+ * 		<td>消息解码</td>
+ * 		<td>继承{@link MessageCodec}</td>
  * 	</tr>
  * 	<tr>
- * 		<td>最终处理器</td>
- * 		<td>消息消费、消息处理</td>
- * 		<td>实现{@linkplain IMessageCodec 消息处理器接口}</td>
+ * 		<td>消息处理</td>
+ * 		<td>实现{@link IMessageDecoder}</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>消息编码</td>
+ * 		<td>实现{@link IMessageEncoder}</td>
  * 	</tr>
  * </table>
- * <p>注意编码解码的逻辑顺序（防止多个处理器结合使用时出现错误）</p>
  * 
- * @param <I> 输入消息泛型
- * @param <O> 输出消息泛型
+ * @param <I> 输入消息类型
+ * @param <O> 输出消息类型
  * 
  * @author acgist
  */
-public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
+public abstract class MessageCodec<I, O> implements IMessageDecoder<I>, IMessageEncoder<I> {
 
 	/**
-	 * <p>下一个消息处理器</p>
+	 * <p>消息处理器</p>
 	 */
-	protected final IMessageCodec<O> messageCodec;
+	protected final IMessageDecoder<O> messageDecoder;
 
 	/**
-	 * @param messageCodec 下一个消息处理器
+	 * @param messageDecoder 消息处理器
 	 */
-	protected MessageCodec(IMessageCodec<O> messageCodec) {
-		this.messageCodec = messageCodec;
+	protected MessageCodec(IMessageDecoder<O> messageDecoder) {
+		this.messageDecoder = messageDecoder;
 	}
 
 	@Override
 	public final boolean done() {
 		return false;
-	}
-	
-	@Override
-	public String encode(String message) {
-		return this.messageCodec.encode(message);
-	}
-	
-	@Override
-	public ByteBuffer encode(ByteBuffer message) {
-		return this.messageCodec.encode(message);
 	}
 	
 	@Override
@@ -81,7 +71,7 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	protected abstract void doDecode(I message, InetSocketAddress address) throws NetException;
 	
 	/**
-	 * <p>执行下一个消息处理器</p>
+	 * <p>执行消息处理器</p>
 	 * 
 	 * @param message 消息
 	 * @param address 地址
@@ -90,16 +80,16 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	 */
 	protected void doNext(O message, InetSocketAddress address) throws NetException {
 		if(address != null) {
-			if(this.messageCodec.done()) {
-				this.messageCodec.onMessage(message, address);
+			if(this.messageDecoder.done()) {
+				this.messageDecoder.onMessage(message, address);
 			} else {
-				this.messageCodec.decode(message, address);
+				this.messageDecoder.decode(message, address);
 			}
 		} else {
-			if(this.messageCodec.done()) {
-				this.messageCodec.onMessage(message);
+			if(this.messageDecoder.done()) {
+				this.messageDecoder.onMessage(message);
 			} else {
-				this.messageCodec.decode(message);
+				this.messageDecoder.decode(message);
 			}
 		}
 	}
@@ -107,21 +97,21 @@ public abstract class MessageCodec<I, O> implements IMessageCodec<I> {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
+	 * <p>消息处理请实现{@link IMessageDecoder}</p>
 	 */
 	@Override
 	public final void onMessage(I message) throws NetException {
-		throw new NetException("请实现消息处理器接口");
+		throw new NetException("消息处理器不能直接处理消息");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>消息最终处理器请实现{@linkplain IMessageCodec 消息处理器接口}</p>
+	 * <p>消息处理请实现{@link IMessageDecoder}</p>
 	 */
 	@Override
 	public final void onMessage(I message, InetSocketAddress address) throws NetException {
-		throw new NetException("请实现消息处理器接口");
+		throw new NetException("消息处理器不能直接处理消息");
 	}
 	
 }
