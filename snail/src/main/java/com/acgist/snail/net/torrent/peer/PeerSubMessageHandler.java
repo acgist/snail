@@ -31,25 +31,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0006.html</p>
  * <p>Private Torrents</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0027.html</p>
- * <pre>
- * D = 目前正在下载（有需要的文件部份且没有禁止连接）
- * d = 客户端请求下载，但用户拒绝传输（有需要的文件部份但连接被禁止）
- * U = 目前正在上传（需要的文件部份且没有禁止连接）
- * u = 用户请求客户端上传，但客户端拒绝（有需要的文件部份但连接被禁止）
- * O = 刷新并接受禁止连接的用户
- * S = 用户被拒（一段时间没有传送任何数据的用户，一般是60秒）
- * I = 用户为传入连接
- * K = 客户端没有用户需要的文件部份
- * ? = 用户没有客户端需要的文件部份
- * X = 通过Peer Exchange（PEX）获取的用户列表所包含的用户或IPv6用户通知客户端其IPv4地址
- * H = 通过DHT连接的用户
- * E = 用户正使用协议加密连接（全部流量）
- * e = 用户正使用协议加密连接（握手）
- * P = 用户正使用uTP连接
- * L = 用户是本地的（通过网络广播或是保留的本地IP范围发现）
- * </pre>
- * <p>消息格式：长度 类型 负载</p>
- * <p>加密：如果Peer没有强制使用加密，优先使用明文。</p>
+ * <p>Peer状态标识：https://baike.baidu.com/item/uTorrent/8195186</p>
  * 
  * TODO：流水线
  * 
@@ -230,15 +212,16 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer> 
 	}
 	
 	/**
-	 * <p>是否需要加密</p>
+	 * <p>判断是否需要加密</p>
 	 * <p>验证Peer是否偏爱加密</p>
 	 * 
-	 * @return true-加密；false-明文；
+	 * @return 是否需要加密
 	 * 
 	 * @see PeerSession#encrypt()
 	 */
 	public boolean needEncrypt() {
 		if(this.peerSession == null) {
+			// 默认使用明文
 			return false;
 		}
 		return this.peerSession.encrypt();
