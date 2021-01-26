@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -503,7 +504,7 @@ public final class MSECryptHandshakeHandler {
 			digest.update("req2".getBytes());
 			digest.update(infoHashMatch.infoHash());
 			final byte[] req2 = digest.digest();
-			if (ArrayUtils.equals(ArrayUtils.xor(req2, req3), req2x3Peer)) {
+			if (Arrays.equals(ArrayUtils.xor(req2, req3), req2x3Peer)) {
 				infoHash = infoHashMatch;
 				break;
 			}
@@ -707,7 +708,7 @@ public final class MSECryptHandshakeHandler {
 			// 判断协议名称
 			final byte[] names = new byte[PeerConfig.PROTOCOL_NAME_LENGTH];
 			message.get(names);
-			if(ArrayUtils.equals(names, PeerConfig.PROTOCOL_NAME_BYTES)) {
+			if(Arrays.equals(names, PeerConfig.PROTOCOL_NAME_BYTES)) {
 				// 握手消息直接使用明文
 				this.plaintext();
 				message.position(0); // 重置长度

@@ -98,7 +98,7 @@ public final class UpnpService {
 	 */
 	public UpnpService load(String location) throws NetException {
 		final URIWrapper wrapper = URIWrapper.newInstance(location).decode();
-		if(!NetUtils.gateway(wrapper.host())) {
+		if(!NetUtils.lan(wrapper.host())) {
 			LOGGER.info("UPNP描述文件错误：{}", location);
 			return this;
 		}
@@ -264,7 +264,7 @@ public final class UpnpService {
 		if(this.remapping) {
 			this.remapping = false;
 			final String externalIpAddress = this.getExternalIPAddress();
-			if(NetUtils.localIPAddress(externalIpAddress)) {
+			if(NetUtils.localIP(externalIpAddress)) {
 				// 获取的公网IP地址为内网地址：多重路由环境
 				LOGGER.warn("UPNP端口映射失败：多重路由环境");
 			} else {

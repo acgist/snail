@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.peer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.BitSet;
 
 import org.slf4j.Logger;
@@ -156,7 +157,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer> 
 	 * @return 是否成功
 	 */
 	private boolean initServer(String infoHashHex, byte[] peerId) {
-		if(ArrayUtils.equals(PeerService.getInstance().peerId(), peerId)) {
+		if(Arrays.equals(PeerService.getInstance().peerId(), peerId)) {
 			LOGGER.debug("Peer接入失败：PeerId一致");
 			return false;
 		}

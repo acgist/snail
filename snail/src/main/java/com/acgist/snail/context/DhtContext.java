@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -13,7 +14,6 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -197,7 +197,7 @@ public final class DhtContext implements IContext {
 		final var iterator = this.requests.iterator();
 		while(iterator.hasNext()) {
 			request = iterator.next();
-			if(ArrayUtils.equals(id, request.getT())) {
+			if(Arrays.equals(id, request.getT())) {
 				iterator.remove();
 				return request;
 			}

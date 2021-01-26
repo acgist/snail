@@ -5,11 +5,15 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.acgist.snail.config.SymbolConfig.Symbol;
 
 /**
  * <p>网络工具</p>
@@ -21,10 +25,6 @@ public final class NetUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 	
 	/**
-	 * <p>子网掩码</p>
-	 */
-	public static final int LOCAL_HOST_MASK;
-	/**
 	 * <p>本机名称</p>
 	 * <p>例子：192.168.1.100</p>
 	 */
@@ -35,12 +35,16 @@ public final class NetUtils {
 	 */
 	public static final String LOCAL_HOST_ADDRESS;
 	/**
-	 * <p>环回主机名称</p>
+	 * <p>本机子网前缀</p>
+	 */
+	public static final short LOCAL_PREFIX_LENGTH;
+	/**
+	 * <p>本机环回名称</p>
 	 * <p>例子：localhost</p>
 	 */
 	public static final String LOOPBACK_HOST_NAME;
 	/**
-	 * <p>环回地址</p>
+	 * <p>本机环回地址</p>
 	 * <p>例子：127.0.0.1</p>
 	 */
 	public static final String LOOPBACK_HOST_ADDRESS;
@@ -55,58 +59,70 @@ public final class NetUtils {
 	/**
 	 * <p>IPv4地址正则表达式：{@value}</p>
 	 */
-	private static final String IP_REGEX = "(\\d{0,3}\\.){3}\\d{0,3}";
+	private static final String IPV4_REGEX = "(\\d{1,3}\\.){3}\\d{1,3}";
+	/**
+	 * <p>IPv6地址正则表达式：{@value}</p>
+	 */
+	private static final String IPV6_REGEX =
+		"((([0-9a-f]{1,4}(:|::))|(::)){0,7}){1}" +
+		"(([0-9a-f]{1,4})|(\\d{1,3}\\.){3}\\d{1,3})?" +
+		// 子网前缀
+		"(\\/\\d{0,3})?" +
+		// 网卡标识
+		"(%.+)?";
 	
 	static {
 		final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
+		final ModifyOptional<Short> localPrefixLength = ModifyOptional.newInstance();
 		final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
-		final ModifyOptional<Integer> localHostMask = ModifyOptional.newInstance();
 		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
 			// 处理多个物理网卡和虚拟网卡
 			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
 				final int nowIndex = networkInterface.getIndex();
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
-					final var address = interfaceAddress.getAddress(); // 地址
-//					final var broadcast = interfaceAddress.getBroadcast(); // 广播地址
+					// 本机地址
+					final var address = interfaceAddress.getAddress();
 					// 本地地址和公网地址
 					if(
-						index.get() > nowIndex && // 索引最小网卡
-//						address.isSiteLocalAddress() && // 本地地址
-						!address.isAnyLocalAddress() && // 通配地址
-						!address.isLoopbackAddress() && // 环回地址
-						!address.isLinkLocalAddress() && // 链接地址：虚拟网卡
-						!address.isMulticastAddress() // 广播地址
+						// 索引最小网卡
+						index.get() > nowIndex &&
+						// 本地地址
+//						address.isSiteLocalAddress() &&
+						// 通配地址
+						!address.isAnyLocalAddress() &&
+						// 环回地址
+						!address.isLoopbackAddress() &&
+						// 链接地址：虚拟网卡
+						!address.isLinkLocalAddress() &&
+						// 组播地址
+						!address.isMulticastAddress()
 					) {
 						index.set(nowIndex);
 //						address.getHostName() // 速度太慢：buildLocalHostName()
 						localHostAddress.set(address.getHostAddress());
+						localPrefixLength.set(interfaceAddress.getNetworkPrefixLength());
 						defaultNetworkInterface.set(networkInterface);
-						final var length = interfaceAddress.getNetworkPrefixLength();
-						localHostMask.set(-1 << (32 - length));
 					}
 				});
 			});
 		} catch (SocketException e) {
 			LOGGER.error("初始化本机网络信息异常", e);
 		}
-		LOCAL_HOST_MASK = localHostMask.get(0);
 		LOCAL_HOST_NAME = buildLocalHostName();
 		LOCAL_HOST_ADDRESS = localHostAddress.get();
+		LOCAL_PREFIX_LENGTH = localPrefixLength.get((short) 0);
 		LOOPBACK_HOST_NAME = buildLoopbackHostName();
 		LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
-		LOGGER.debug("子网掩码：{}", LOCAL_HOST_MASK);
 		LOGGER.debug("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.debug("本机地址：{}", LOCAL_HOST_ADDRESS);
-		LOGGER.debug("环回主机名称：{}", LOOPBACK_HOST_NAME);
-		LOGGER.debug("环回地址：{}", LOOPBACK_HOST_ADDRESS);
+		LOGGER.debug("本机子网前缀：{}", LOCAL_PREFIX_LENGTH);
+		LOGGER.debug("本机环回名称：{}", LOOPBACK_HOST_NAME);
+		LOGGER.debug("本机环回地址：{}", LOOPBACK_HOST_ADDRESS);
 		LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
 	}
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private NetUtils() {
 	}
 	
@@ -140,55 +156,35 @@ public final class NetUtils {
 	 * @return IP地址（int）
 	 */
 	public static final int ipToInt(String ip) {
-		return (int) ipToLong(ip);
-	}
-	
-	/**
-	 * <p>IPv4地址编码</p>
-	 * 
-	 * @param ip IP地址（字符串）
-	 * 
-	 * @return IP地址（long）
-	 */
-	public static final long ipToLong(String ip) {
 		Objects.requireNonNull(ip, "IP地址不能为空");
-		final String[] array = ip.split("\\.");
-		if(array.length != 4) {
-			throw new IllegalArgumentException("IP格式错误：" + ip);
+		final StringTokenizer tokenizer = new StringTokenizer(ip, Symbol.DOT.toString());
+		int index = 0;
+		final byte[] bytes = new byte[4];
+		while(tokenizer.hasMoreTokens()) {
+			if(bytes.length <= index) {
+				throw new IllegalArgumentException("IP地址错误：" + ip);
+			}
+			bytes[index++] = (byte) Short.parseShort(tokenizer.nextToken());
 		}
-		long value;
-		long result = 0;
-		for (int index = 3; index >= 0; index--) {
-			value = Long.parseLong(array[3 - index]);
-			result |= value << (index * 8);
-		}
-		return result;
-	}
-
-	/**
-	 * <p>IPv4地址解码</p>
-	 * 
-	 * @param value IP地址（int）
-	 * 
-	 * @return IP地址（字符串）
-	 */
-	public static final String intToIP(int value) {
-		return longToIP(Integer.toUnsignedLong(value));
+		return NumberUtils.bytesToInt(bytes);
 	}
 	
 	/**
 	 * <p>IPv4地址解码</p>
 	 * 
-	 * @param value IP地址（long）
+	 * @param ip IP地址（int）
 	 * 
 	 * @return IP地址（字符串）
 	 */
-	public static final String longToIP(long value) {
-		return
-			((value >> 24) & 0xFF) + "." +
-			((value >> 16) & 0xFF) + "." +
-			((value >> 8) & 0xFF) + "." +
-			(value & 0xFF);
+	public static final String intToIP(int ip) {
+		final byte[] bytes = NumberUtils.intToBytes(ip);
+		final StringBuilder builder = new StringBuilder();
+		builder
+			.append(Byte.toUnsignedInt(bytes[0])).append(Symbol.DOT.toString())
+			.append(Byte.toUnsignedInt(bytes[1])).append(Symbol.DOT.toString())
+			.append(Byte.toUnsignedInt(bytes[2])).append(Symbol.DOT.toString())
+			.append(Byte.toUnsignedInt(bytes[3]));
+		return builder.toString();
 	}
 	
 	/**
@@ -203,13 +199,13 @@ public final class NetUtils {
 		try {
 			return InetAddress.getByName(ip).getAddress();
 		} catch (UnknownHostException e) {
-			LOGGER.error("地址编码异常：{}", ip, e);
+			LOGGER.error("IP地址编码异常：{}", ip, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>地址解码</p>
+	 * <p>IP地址解码</p>
 	 * <p>支持IP：IPv4、IPv6</p>
 	 * 
 	 * @param value IP地址（字节数组）
@@ -220,25 +216,118 @@ public final class NetUtils {
 		try {
 			return InetAddress.getByAddress(value).getHostAddress();
 		} catch (UnknownHostException e) {
-			LOGGER.error("地址解码异常", e);
+			LOGGER.error("IP地址解码异常", e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>判断是否是同一个网关</p>
+	 * <p>判断是否是IP地址</p>
+	 * 
+	 * @param host IP地址
+	 * 
+	 * @return 是否是IP地址
+	 * 
+	 * @see #IPV4_REGEX
+	 * @see #IPV6_REGEX
+	 */
+	public static final boolean ip(String host) {
+		return
+			StringUtils.regex(host, IPV4_REGEX, true) ||
+			StringUtils.regex(host, IPV6_REGEX, true);
+	}
+	
+	/**
+	 * <p>判断是否是同个局域网</p>
 	 * 
 	 * @param host 地址
 	 * 
-	 * @return 是否是同一个网关
+	 * @return 是否是同个局域网
 	 */
-	public static final boolean gateway(String host) {
-		if(ipAddress(host)) {
-			final int value = ipToInt(host);
-			final int localHostValue = ipToInt(LOCAL_HOST_ADDRESS);
-			return (value & LOCAL_HOST_MASK) == (localHostValue & LOCAL_HOST_MASK);
+	public static final boolean lan(String host) {
+		if(ip(host)) {
+			final byte[] bytes = ipToBytes(host);
+			final byte[] localHostBytes = ipToBytes(LOCAL_HOST_ADDRESS);
+			final int index = Arrays.mismatch(bytes, localHostBytes);
+			if(index == -1) {
+				// 完全匹配
+				return true;
+			}
+			// 每个字节八位
+			return index * 8 >= LOCAL_PREFIX_LENGTH;
 		}
 		return false;
+	}
+	
+	/**
+	 * <p>判断是否是本地IP地址</p>
+	 * <p>A类私用地址</p>
+	 * <p>A类地址范围：0.0.0.0-127.255.255.255</p>
+	 * <p>A类默认子网掩码：255.0.0.0</p>
+	 * <p>B类私用地址</p>
+	 * <p>B类地址范围：128.0.0.0-191.255.255.255</p>
+	 * <p>B类默认子网掩码：255.255.0.0</p>
+	 * <p>C类私用地址</p>
+	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
+	 * <p>C类默认子网掩码：255.255.255.0</p>
+	 * <p>本地环回地址</p>
+	 * <p>本地环回地址范围：127.0.0.0-127.255.255.255</p>
+	 * <p>DHCP地址</p>
+	 * <p>DHCP地址范围：169.254.0.0-169.254.255.255</p>
+	 * <p>组播地址</p>
+	 * <p>组播地址范围：224.0.0.0-239.255.255.255</p>
+	 * 
+	 * @param host 地址
+	 * 
+	 * @return 是否是本地IP地址
+	 */
+	public static final boolean localIP(String host) {
+		InetAddress inetAddress = null;
+		try {
+			inetAddress = InetAddress.getByName(host);
+		} catch (UnknownHostException e) {
+			LOGGER.error("IP地址转换异常：{}", host, e);
+			return true;
+		}
+		return
+			// 通配地址
+			inetAddress.isAnyLocalAddress() ||
+			// 环回地址
+			inetAddress.isLoopbackAddress() ||
+			// 链接地址：虚拟网卡
+			inetAddress.isLinkLocalAddress() ||
+			// 组播地址
+			inetAddress.isMulticastAddress() ||
+			// 本地地址：A/B/C类
+			inetAddress.isSiteLocalAddress();
+	}
+	
+	/**
+	 * <p>创建Socket地址</p>
+	 * 
+	 * @param port 端口
+	 * 
+	 * @return Socket地址
+	 */
+	public static final InetSocketAddress buildSocketAddress(final int port) {
+		return buildSocketAddress(null, port);
+	}
+	
+	/**
+	 * <p>创建Socket地址</p>
+	 * <p>注意：如果HOST是域名可能出现DNS查询超时</p>
+	 * 
+	 * @param host 地址
+	 * @param port 端口
+	 * 
+	 * @return Socket地址
+	 */
+	public static final InetSocketAddress buildSocketAddress(final String host, final int port) {
+		if(StringUtils.isEmpty(host)) {
+			return new InetSocketAddress(port);
+		} else {
+			return new InetSocketAddress(host, port);
+		}
 	}
 	
 	/**
@@ -256,100 +345,21 @@ public final class NetUtils {
 	}
 
 	/**
-	 * <p>获取环回主机名称</p>
+	 * <p>获取本机环回名称</p>
 	 * 
-	 * @return 环回主机名称
+	 * @return 本机环回名称
 	 */
 	private static final String buildLoopbackHostName() {
 		return InetAddress.getLoopbackAddress().getHostName();
 	}
 	
 	/**
-	 * <p>获取环回地址</p>
+	 * <p>获取本机环回地址</p>
 	 * 
-	 * @return 环回地址
+	 * @return 本机环回地址
 	 */
 	private static final String buildLoopbackHostAddress() {
 		return InetAddress.getLoopbackAddress().getHostAddress();
-	}
-	
-	/**
-	 * <p>是否是IP地址</p>
-	 * 
-	 * @param host IP地址
-	 * 
-	 * @return true-是；false-不是；
-	 * 
-	 * TODO：IPv6
-	 */
-	public static final boolean ipAddress(String host) {
-		return StringUtils.regex(host, IP_REGEX, true);
-	}
-
-	/**
-	 * <p>是否是本地IP地址</p>
-	 * <p>A类私用地址</p>
-	 * <p>A类地址范围：0.0.0.0-127.255.255.255</p>
-	 * <p>A类默认子网掩码：255.0.0.0</p>
-	 * <p>B类私用地址</p>
-	 * <p>B类地址范围：128.0.0.0-191.255.255.255</p>
-	 * <p>B类默认子网掩码：255.255.0.0</p>
-	 * <p>C类私用地址</p>
-	 * <p>C类地址范围：192.0.0.0-223.255.255.255</p>
-	 * <p>C类默认子网掩码：255.255.255.0</p>
-	 * <p>本地环回地址</p>
-	 * <p>本地环回地址范围：127.0.0.0-127.255.255.255</p>
-	 * <p>DHCP地址</p>
-	 * <p>DHCP地址范围：169.254.0.0-169.254.255.255</p>
-	 * <p>组播地址</p>
-	 * <p>组播地址范围：224.0.0.0-239.255.255.255</p>
-	 * 
-	 * @param host IP地址
-	 * 
-	 * @return true-本地地址；false-公网地址；
-	 */
-	public static final boolean localIPAddress(String host) {
-		InetAddress inetAddress = null;
-		try {
-			inetAddress = InetAddress.getByName(host);
-		} catch (UnknownHostException e) {
-			LOGGER.error("IP地址转换异常：{}", host, e);
-			return true;
-		}
-		return
-			inetAddress.isAnyLocalAddress() || // 通配地址
-			inetAddress.isLoopbackAddress() || // 环回地址
-			inetAddress.isMulticastAddress() || // 组播地址
-			inetAddress.isLinkLocalAddress() || // 链接地址：虚拟网卡
-			inetAddress.isSiteLocalAddress(); // 本地地址：A/B/C类
-	}
-	
-	/**
-	 * <p>创建Socket地址</p>
-	 * 
-	 * @param port 端口
-	 * 
-	 * @return Socket地址
-	 */
-	public static final InetSocketAddress buildSocketAddress(final int port) {
-		return buildSocketAddress(null, port);
-	}
-	
-	/**
-	 * <p>创建Socket地址</p>
-	 * <p>如果HOST是域名可能出现DNS查询超时</p>
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 * 
-	 * @return Socket地址
-	 */
-	public static final InetSocketAddress buildSocketAddress(final String host, final int port) {
-		if(StringUtils.isEmpty(host)) {
-			return new InetSocketAddress(port);
-		} else {
-			return new InetSocketAddress(host, port);
-		}
 	}
 	
 }

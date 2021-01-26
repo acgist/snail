@@ -3,68 +3,131 @@ package com.acgist.snail.utils;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 public class NetUtilsTest extends Performance {
 
 	@Test
-	public void testIP() {
-		this.log(NetUtils.longToIP(2130706433));
-		this.log(NetUtils.ipToLong("127.1.1.1"));
-		final String ipv6 = "fe80::f84b:bc3a:9556:683d";
-		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6);
-		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
-		this.log(StringUtils.hex(ipv6Bytes));
-		this.log(ipv6Value);
+	public void testNetUtils() {
+		assertNotNull(NetUtils.LOCAL_HOST_ADDRESS);
 	}
 	
 	@Test
-	public void testInetAddress() throws UnknownHostException {
-		List.of(
-			InetAddress.getByName("10.0.0.0"),
-			InetAddress.getByName("172.16.0.0"),
-			InetAddress.getByName("192.168.0.0"),
-			InetAddress.getByName("127.0.0.0"),
-			InetAddress.getByName("169.254.0.0"),
-			InetAddress.getByName("224.0.0.0"),
-			InetAddress.getByName("114.114.114.114"),
-			InetAddress.getByName("0:0:0:0:0:0:0:1"),
-			InetAddress.getByName("fe80::c86:25ef:e78f:5479%19"),
-			InetAddress.getByName("fe80:0:0:0:894e:9ee1:5167:53ef%eth6"),
-			InetAddress.getByName("fe80:0:0:0:d875:8e02:4383:9e5c%wlan10")
-			).forEach(address -> {
-				this.log(
-					"通配：{}-回环：{}-链接：{}-组播：{}-本地：{}-地址：{}",
-					address.isAnyLocalAddress(),
-					address.isLoopbackAddress(),
-					address.isLinkLocalAddress(),
-					address.isMulticastAddress(),
-					address.isSiteLocalAddress(),
-					address.toString()
-				);
-			});
+	public void testPort() {
+		for (int port = 0; port < NetUtils.MAX_PORT; port++) {
+			final short portShort = NetUtils.portToShort(port);
+			assertEquals(port, NetUtils.portToInt(portShort));
+		}
+	}
+	
+	@Test
+	public void testIPv4() {
+		assertThrows(IllegalArgumentException.class, () -> NetUtils.ipToInt("1.1.1.1.1"));
+		int ipInt = (int) 2130706433L;
+		String ip = "127.0.0.1";
+		assertEquals(ip, NetUtils.intToIP(ipInt));
+		assertEquals(ipInt, NetUtils.ipToInt(ip));
+		this.log(NetUtils.intToIP(ipInt));
+		this.log(NetUtils.ipToInt(ip));
+		ipInt = (int) 4294967295L;
+		ip = "255.255.255.255";
+		assertEquals(ip, NetUtils.intToIP(ipInt));
+		assertEquals(ipInt, NetUtils.ipToInt(ip));
+		this.log(NetUtils.intToIP(ipInt));
+		this.log(NetUtils.ipToInt(ip));
+		ipInt = (int) 0L;
+		ip = "0.0.0.0";
+		assertEquals(ip, NetUtils.intToIP(ipInt));
+		assertEquals(ipInt, NetUtils.ipToInt(ip));
+		this.log(NetUtils.intToIP(ipInt));
+		this.log(NetUtils.ipToInt(ip));
+		ipInt = (int) 2155905152L;
+		ip = "128.128.128.128";
+		assertEquals(ip, NetUtils.intToIP(ipInt));
+		assertEquals(ipInt, NetUtils.ipToInt(ip));
+		this.log(NetUtils.intToIP(ipInt));
+		this.log(NetUtils.ipToInt(ip));
+		for (int ipIndex = Short.MIN_VALUE; ipIndex < Short.MAX_VALUE; ipIndex++) {
+			final String ipAddress = NetUtils.intToIP(ipIndex);
+			assertEquals(ipIndex, NetUtils.ipToInt(ipAddress));
+		}
+		this.costed(100000, () -> NetUtils.ipToInt("128.128.128.128"));
+		this.costed(100000, () -> NetUtils.intToIP((int) 2155905152L));
 	}
 
 	@Test
-	public void testLocalIPAddress() {
+	public void testIPv6() {
+		final String ipv6Address = "fe80::f84b:bc3a:9556:683d";
+		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6Address);
+		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
+		assertArrayEquals(ipv6Bytes, NetUtils.ipToBytes(ipv6Value));
+		this.log(ipv6Value);
+		this.log(StringUtils.hex(ipv6Bytes));
+		final byte[] ipv4Bytes = NumberUtils.intToBytes((int) 2155905152L);
+		this.costed(100000, () -> NetUtils.ipToBytes("128.128.128.128"));
+		this.costed(100000, () -> NetUtils.bytesToIP(ipv4Bytes));
+		this.costed(100000, () -> NetUtils.ipToBytes(ipv6Value));
+		this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
+	}
+	
+	@Test
+	public void testIP() {
+		assertTrue(NetUtils.ip("192.168.1.1"));
+		assertTrue(NetUtils.ip("192.168.1.100"));
+		assertTrue(NetUtils.ip("999.999.999.999"));
+		assertFalse(NetUtils.ip(".168.1.1"));
+		assertFalse(NetUtils.ip("192.168.1.1000"));
+		assertTrue(NetUtils.ip("::"));
+		assertTrue(NetUtils.ip("::0001"));
+		assertTrue(NetUtils.ip("2409:8054:48::1006/128"));
+		assertTrue(NetUtils.ip("fe80:0000:0000:0000:0204:61ff:fe9d:f156"));
+		assertTrue(NetUtils.ip("fe80:0:0:0:204:61ff:fe9d:f156"));
+		assertTrue(NetUtils.ip("fe80::204:61ff:fe9d:f156"));
+		assertTrue(NetUtils.ip("fe80:0000:0000:0000:0204:61ff:254.157.241.86"));
+		assertTrue(NetUtils.ip("fe80:0:0:0:0204:61ff:254.157.241.86"));
+		assertTrue(NetUtils.ip("fe80::204:61ff:254.157.241.86"));
+		assertTrue(NetUtils.ip("fe80::c86:25ef:e78f:5479%19"));
+		assertTrue(NetUtils.ip("fe80::c86:25ef:e78f:5479%19".toUpperCase()));
+		assertTrue(NetUtils.ip("::ffff:192.168.89.9"));
+		assertTrue(NetUtils.ip("0000:0000:0000:0000:0000:ffff:c0a8:5909"));
+		assertTrue(NetUtils.ip("0000:0000:0000:0000:0000:ffff:c0a8:5909".toUpperCase()));
+		assertTrue(NetUtils.ip("::ffff:10.0.0.1"));
+		assertTrue(NetUtils.ip("::0102:f001"));
+		assertTrue(NetUtils.ip("::1.2.240.1"));
+		assertFalse(NetUtils.ip(":::1.2.240.1"));
+		this.costed(100000, () -> NetUtils.ip("192.168.1.1"));
+		this.costed(100000, () -> NetUtils.ip("0000:0000:0000:0000:0000:ffff:c0a8:5909"));
+	}
+	
+	@Test
+	public void testLan() {
+		assertTrue(NetUtils.lan("192.168.1.1"));
+		assertTrue(NetUtils.lan("192.168.1.100"));
+		assertFalse(NetUtils.lan("192.168.100.100"));
+		assertFalse(NetUtils.lan("114.114.114.114"));
+		this.costed(100000, () -> NetUtils.lan("192.168.1.100"));
+	}
+	
+	@Test
+	public void testLocalIP() {
 		this.log(NetUtils.LOCAL_HOST_ADDRESS);
-		assertTrue(NetUtils.localIPAddress("10.0.0.0"));
-		assertTrue(NetUtils.localIPAddress("172.16.0.0"));
-		assertTrue(NetUtils.localIPAddress("192.168.0.0"));
-		assertTrue(NetUtils.localIPAddress("127.0.0.0"));
-		assertTrue(NetUtils.localIPAddress("169.254.0.0"));
-		assertTrue(NetUtils.localIPAddress("224.0.0.0"));
-		assertTrue(NetUtils.localIPAddress("0:0:0:0:0:0:0:1"));
-		assertTrue(NetUtils.localIPAddress("fe80::c86:25ef:e78f:5479%19"));
-		assertFalse(NetUtils.localIPAddress("114.114.114.114"));
+		assertTrue(NetUtils.localIP("10.0.0.0"));
+		assertTrue(NetUtils.localIP("172.16.0.0"));
+		assertTrue(NetUtils.localIP("192.168.0.0"));
+		assertTrue(NetUtils.localIP("127.0.0.0"));
+		assertTrue(NetUtils.localIP("169.254.0.0"));
+		assertTrue(NetUtils.localIP("224.0.0.0"));
+		assertTrue(NetUtils.localIP("0:0:0:0:0:0:0:1"));
+		assertTrue(NetUtils.localIP("fe80::c86:25ef:e78f:5479%19"));
+		assertFalse(NetUtils.localIP("114.114.114.114"));
+		this.costed(100000, () -> NetUtils.localIP("192.168.1.100"));
 	}
 	
 	@Test
@@ -85,37 +148,7 @@ public class NetUtilsTest extends Performance {
 			});
 			this.log("网卡：{}", networkInterfaces);
 		});
-	}
-	
-	@Test
-	public void testIPToBytes() {
-		final byte[] ipv4Bytes = NetUtils.ipToBytes("127.0.0.1");
-		final int ipv4 = NumberUtils.bytesToInt(ipv4Bytes);
-		final int ipv4Int = NetUtils.ipToInt("127.0.0.1");
-		this.log(ipv4);
-		this.log(NetUtils.intToIP(ipv4));
-		this.log(NetUtils.bytesToIP(ipv4Bytes));
-		assertEquals(ipv4, ipv4Int);
-		assertArrayEquals(NumberUtils.intToBytes(ipv4Int), ipv4Bytes);
-		final byte[] ipv6Bytes = NetUtils.ipToBytes("::1");
-		final String ipv6 = NetUtils.bytesToIP(ipv6Bytes);
-		this.log(ipv6);
-	}
-	
-	@Test
-	public void testGateway() {
-		assertTrue(NetUtils.gateway("192.168.1.100"));
-		assertFalse(NetUtils.gateway("192.168.2.100"));
-	}
-
-	@Test
-	public void testCostedGateway() {
-		this.costed(100000, () -> NetUtils.gateway("192.168.1.100"));
-	}
-	
-	@Test
-	public void testCostedLocalIPAddress() {
-		this.costed(100000, () -> NetUtils.localIPAddress("192.168.1.100"));
+		assertNotNull(NetUtils.LOCAL_HOST_ADDRESS);
 	}
 	
 }

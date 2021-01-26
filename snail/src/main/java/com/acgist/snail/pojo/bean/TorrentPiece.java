@@ -1,7 +1,8 @@
 package com.acgist.snail.pojo.bean;
 
+import java.util.Arrays;
+
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -249,7 +250,7 @@ public final class TorrentPiece {
 	public boolean verify() {
 		if(this.verify) {
 			final var hash = StringUtils.sha1(this.data);
-			return ArrayUtils.equals(hash, this.hash);
+			return Arrays.equals(hash, this.hash);
 		}
 		return true;
 	}

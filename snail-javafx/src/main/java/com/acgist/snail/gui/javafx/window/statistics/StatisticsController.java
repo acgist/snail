@@ -31,6 +31,7 @@ import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -346,17 +347,13 @@ public final class StatisticsController extends Controller {
 	 */
 	private void buildSelectSystemStatistics() {
 		final var runtime = Runtime.getRuntime();
-		ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
-		while(threadGroup.getParent() != null) {
-			threadGroup = threadGroup.getParent();
-		}
 		final VBox systemInfo = new VBox(
 			this.buildTextFlow("本机IP：", NetUtils.LOCAL_HOST_ADDRESS),
 			this.buildTextFlow("外网IP：", SystemConfig.getExternalIpAddress()),
 			this.buildTextFlow("外网端口：", SystemConfig.getTorrentPortExt()),
 			this.buildTextFlow("内网穿透：", NatContext.getInstance().type()),
 			this.buildTextFlow("软件版本：", SystemConfig.getVersion()),
-			this.buildTextFlow("线程总量：", threadGroup.activeCount()),
+			this.buildTextFlow("线程总量：", ThreadUtils.activeCount()),
 			this.buildTextFlow("内存空闲：", FileUtils.formatSize(runtime.freeMemory())),
 			this.buildTextFlow("内存占用：", FileUtils.formatSize(runtime.totalMemory())),
 			this.buildTextFlow("系统名称：", System.getProperty("os.name")),

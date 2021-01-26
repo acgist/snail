@@ -3,6 +3,7 @@ package com.acgist.snail.net.torrent;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,6 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
@@ -162,7 +162,7 @@ public class TorrentStreamGroupTest extends Performance {
 				index++;
 				continue;
 			}
-			if(!ArrayUtils.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
+			if(!Arrays.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
 				this.log("Piece校验失败：{}->{}={}", index, StringUtils.sha1Hex(piece), StringUtils.hex(group.pieceHash(index)));
 			}
 			index++;
