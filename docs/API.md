@@ -107,6 +107,14 @@ snail.download("种子文件");
 snail.lockDownload();
 ```
 
+#### BT任务指定优先下载位置
+
+```java
+TorrentSession.piecePos(int)
+```
+
+> 如果能够从指定位置开始选择Piece，则优先从指定位置开始下载，反之则会忽略指定位置从0开始下载。
+
 ### 任务信息
 
 ```java
