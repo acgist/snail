@@ -5,10 +5,9 @@ import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Random;
 
 import com.acgist.snail.config.CryptConfig;
-import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
@@ -136,12 +135,7 @@ public final class MSEKeyPairBuilder {
 		 * @return 私钥数据
 		 */
 		private BigInteger buildPrivateKey() {
-			// 安全随机数性能问题
-			final Random random = NumberUtils.random();
-			final byte[] bytes = new byte[CryptConfig.PRIVATE_KEY_LENGTH];
-			for (int index = 0; index < CryptConfig.PRIVATE_KEY_LENGTH; index++) {
-				bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-			}
+			final byte[] bytes = ArrayUtils.random(CryptConfig.PRIVATE_KEY_LENGTH);
 			return NumberUtils.decodeBigInteger(ByteBuffer.wrap(bytes), CryptConfig.PRIVATE_KEY_LENGTH);
 		}
 		

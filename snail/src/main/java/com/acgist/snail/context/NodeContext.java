@@ -3,7 +3,6 @@ package com.acgist.snail.context;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -11,11 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
-import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -76,12 +74,7 @@ public final class NodeContext implements IContext {
 	 */
 	private byte[] buildNodeId() {
 		LOGGER.debug("生成系统NodeId");
-		final byte[] nodeIds = new byte[DhtConfig.NODE_ID_LENGTH];
-		final Random random = NumberUtils.random();
-		for (int index = 0; index < DhtConfig.NODE_ID_LENGTH; index++) {
-			nodeIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
-		return nodeIds;
+		return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
 	}
 	
 	/**
