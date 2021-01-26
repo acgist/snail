@@ -30,4 +30,17 @@ public final class ThreadUtils {
 		}
 	}
 	
+	/**
+	 * <p>获取当前用户线程总数</p>
+	 * 
+	 * @return 当前用户线程总数
+	 */
+	public static final int activeCount() {
+		ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
+		while(threadGroup.getParent() != null) {
+			threadGroup = threadGroup.getParent();
+		}
+		return threadGroup.activeCount();
+	}
+	
 }

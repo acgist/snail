@@ -2,7 +2,6 @@ package com.acgist.snail.pojo.session;
 
 import java.util.Arrays;
 
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
@@ -145,7 +144,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	
 	@Override
 	public int compareTo(NodeSession target) {
-		return ArrayUtils.compareUnsigned(this.id, target.id);
+		return Arrays.compareUnsigned(this.id, target.id);
 	}
 	
 	@Override
@@ -160,7 +159,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 		}
 		if(object instanceof NodeSession) {
 			final NodeSession session = (NodeSession) object;
-			return ArrayUtils.equals(this.id, session.id);
+			return Arrays.equals(this.id, session.id);
 		}
 		return false;
 	}

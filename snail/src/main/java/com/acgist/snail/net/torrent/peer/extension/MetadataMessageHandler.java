@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.peer.extension;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -201,7 +201,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = StringUtils.sha1(bytes);
 		// 判断Hash值是否相等（相等表示已经下载完成：完成后保存种子文件）
-		if(ArrayUtils.equals(sourceHash, targetHash)) {
+		if(Arrays.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrent();
 		}
 	}

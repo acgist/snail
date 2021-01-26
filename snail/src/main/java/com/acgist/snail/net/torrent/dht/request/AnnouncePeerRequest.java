@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.dht.request;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.net.torrent.dht.response.AnnouncePeerResponse;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -60,7 +60,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 	public static final AnnouncePeerResponse execute(DhtRequest request) {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		// 验证Token
-		if(!ArrayUtils.equals(token, DhtContext.getInstance().token())) {
+		if(!Arrays.equals(token, DhtContext.getInstance().token())) {
 			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);

@@ -17,7 +17,6 @@ import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -184,7 +183,8 @@ public class DhtRequest extends DhtMessage {
 			return new byte[0];
 		}
 		final var availableNodes = nodes.stream()
-			.filter(node -> NetUtils.ipAddress(node.getHost())) // 只分享IP地址
+			// 只分享IP地址
+			.filter(node -> NetUtils.ip(node.getHost()))
 			.collect(Collectors.toList());
 		if(CollectionUtils.isEmpty(availableNodes)) {
 			return new byte[0];
@@ -237,7 +237,7 @@ public class DhtRequest extends DhtMessage {
 		}
 		if(object instanceof DhtRequest) {
 			final DhtRequest request = (DhtRequest) object;
-			return ArrayUtils.equals(this.t, request.t);
+			return Arrays.equals(this.t, request.t);
 		}
 		return false;
 	}

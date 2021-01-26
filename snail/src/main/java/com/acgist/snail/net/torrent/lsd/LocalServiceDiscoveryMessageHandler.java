@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.lsd;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,7 +16,6 @@ import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -61,7 +61,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 		final List<String> infoHashHexs = headers.headerList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashHexs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
-			if(ArrayUtils.equals(peerId, PeerService.getInstance().peerId())) {
+			if(Arrays.equals(peerId, PeerService.getInstance().peerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
 				infoHashHexs.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));

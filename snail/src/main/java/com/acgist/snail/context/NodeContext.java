@@ -1,6 +1,7 @@
 package com.acgist.snail.context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -13,7 +14,6 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -265,7 +265,7 @@ public final class NodeContext implements IContext {
 	 */
 	private NodeSession select(byte[] nodeId) {
 		for (NodeSession nodeSession : this.nodes) {
-			if(ArrayUtils.equals(nodeId, nodeSession.getId())) {
+			if(Arrays.equals(nodeId, nodeSession.getId())) {
 				return nodeSession;
 			}
 		}
@@ -287,7 +287,7 @@ public final class NodeContext implements IContext {
 		NodeSession nodeSession;
 		for (int jndex = 0; jndex < this.nodes.size(); jndex++) {
 			nodeSession = this.nodes.get(jndex);
-			signum = ArrayUtils.compareUnsigned(nodeId, nodeSession.getId());
+			signum = Arrays.compareUnsigned(nodeId, nodeSession.getId());
 			if(signum > 0) {
 				// 尾部添加
 				index = jndex + 1;

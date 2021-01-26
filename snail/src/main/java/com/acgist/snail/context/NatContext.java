@@ -87,7 +87,7 @@ public final class NatContext implements IContext {
 			return;
 		}
 		LOGGER.debug("注册NAT服务");
-		if(NetUtils.localIPAddress(NetUtils.LOCAL_HOST_ADDRESS)) {
+		if(NetUtils.localIP(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp();
 			if(UpnpService.getInstance().useable()) {
@@ -97,13 +97,13 @@ public final class NatContext implements IContext {
 				LOGGER.debug("UPNP映射失败：使用STUN映射");
 				StunService.getInstance().mapping();
 			}
+			if(this.type == Type.NONE) {
+				LOGGER.info("注册NAT服务下次执行时间：{}", NAT_INTERVAL);
+				SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
+			}
 		} else {
 			LOGGER.debug("已是公网IP地址：忽略NAT设置");
 			SystemConfig.setExternalIpAddress(NetUtils.LOCAL_HOST_ADDRESS);
-		}
-		if(this.type == Type.NONE) {
-			LOGGER.info("注册NAT服务下次执行时间：{}", NAT_INTERVAL);
-			SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
 		}
 	}
 	

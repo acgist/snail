@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.bean.TorrentPiece;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -607,9 +607,9 @@ public final class TorrentStream {
 			// 校验Hash
 			final byte[] hash = digest.digest(bytes);
 			final byte[] verifyHash = this.torrentStreamGroup.pieceHash(index);
-			return ArrayUtils.equals(hash, verifyHash);
+			return Arrays.equals(hash, verifyHash);
 		} else {
-			// 不校验Hash：验证是否有数据
+			// 不校验Hash：验证是否有数据s
 			return this.hasData(bytes);
 		}
 	}

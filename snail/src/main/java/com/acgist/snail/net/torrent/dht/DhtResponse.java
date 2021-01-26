@@ -16,7 +16,6 @@ import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -257,7 +256,7 @@ public class DhtResponse extends DhtMessage {
 		}
 		if(object instanceof DhtResponse) {
 			final DhtResponse response = (DhtResponse) object;
-			return ArrayUtils.equals(this.t, response.t);
+			return Arrays.equals(this.t, response.t);
 		}
 		return false;
 	}

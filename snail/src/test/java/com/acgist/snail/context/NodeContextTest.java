@@ -88,10 +88,6 @@ public class NodeContextTest extends Performance {
 	}
 
 	private String buildId() {
-//		long value;
-//		final Random random = new Random();
-//		while((value = random.nextLong()) < 0);
-//		return String.format("%040d", value);
 		final byte[] bytes = new byte[20];
 		final Random random = new Random();
 		for (int index = 0; index < 20; index++) {

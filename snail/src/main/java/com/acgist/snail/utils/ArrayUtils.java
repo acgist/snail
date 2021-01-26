@@ -47,60 +47,6 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>判断数组是否相等</p>
-	 * <p>相等：数组元素全部一致</p>
-	 * 
-	 * @param sources 原始数据
-	 * @param targets 比较数据
-	 * 
-	 * @return 是否相等
-	 */
-	public static final boolean equals(byte[] sources, byte[] targets) {
-		if(sources == targets) {
-			return true;
-		}
-		if(sources == null || targets == null) {
-			return false;
-		}
-		final int length = sources.length;
-		if(length != targets.length) {
-			return false;
-		}
-		for (int index = 0; index < length; index++) {
-			if(sources[index] != targets[index]) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * <p>数组大小比较（无符号）</p>
-	 * <p>长度不同时：长度长的数组大</p>
-	 * <p>长度相同时：高位大的数组大</p>
-	 * 
-	 * @param sources 原始数据
-	 * @param targets 比较数据
-	 * 
-	 * @return 正数、零、负数代表原始数据大于、等于、小于比较数据
-	 */
-	public static final int compareUnsigned(byte[] sources, byte[] targets) {
-		Objects.requireNonNull(sources, "数组大小比较原始参数错误");
-		Objects.requireNonNull(targets, "数组大小比较比较参数错误");
-		final int length = sources.length;
-		if (length != targets.length) {
-			return length > targets.length ? 1 : -1;
-		} else {
-			for (int index = 0; index < length; index++) {
-				if (sources[index] != targets[index]) {
-					return ((char) sources[index]) - ((char) targets[index]);
-				}
-			}
-			return 0;
-		}
-	}
-	
-	/**
 	 * <p>数组是否为空</p>
 	 * 
 	 * @param objects 数组
@@ -161,6 +107,8 @@ public final class ArrayUtils {
 	}
 	
 	/**
+	 * <p>查找数组索引</p>
+	 * 
 	 * @param values 查找数组
 	 * @param value 查找数据
 	 * 
@@ -204,9 +152,27 @@ public final class ArrayUtils {
 	 * @return 数据索引
 	 * 
 	 * @see #NONE_INDEX
+	 * @see #indexOf(char[], int, int, char)
 	 */
 	public static final int indexOf(char[] values, char value) {
-		for (int index = 0; index < values.length; index++) {
+		return indexOf(values, 0, values.length, value);
+	}
+	
+	/**
+	 * <p>查找数组索引</p>
+	 * 
+	 * @param values 查找数组
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @param value 查找数据
+	 * 
+	 * @return 数据索引
+	 * 
+	 * @see #NONE_INDEX
+	 */
+	public static final int indexOf(char[] values, int begin, int end, char value) {
+		end = end > values.length ? values.length : end;
+		for (int index = begin; index < end; index++) {
 			if(values[index] == value) {
 				return index;
 			}
