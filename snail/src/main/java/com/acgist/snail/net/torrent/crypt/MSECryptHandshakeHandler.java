@@ -663,29 +663,35 @@ public final class MSECryptHandshakeHandler {
 	/**
 	 * <p>填充：随机值</p>
 	 * 
-	 * @param maxLength 填充长度
+	 * @param maxLength 最大填充长度
 	 * 
 	 * @return 填充数据
 	 */
 	private byte[] buildPadding(int maxLength) {
-		final Random random = NumberUtils.random();
-		final byte[] padding = new byte[random.nextInt(maxLength + 1)];
-		for (int index = 0; index < padding.length; index++) {
-			padding[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
-		return padding;
+		return ArrayUtils.random(this.randomLength(maxLength));
 	}
 	
 	/**
 	 * <p>填充：0</p>
 	 * 
-	 * @param maxLength 填充长度
+	 * @param maxLength 最大填充长度
 	 * 
 	 * @return 填充数据
 	 */
 	private byte[] buildZeroPadding(int maxLength) {
+		return new byte[this.randomLength(maxLength)];
+	}
+	
+	/**
+	 * <p>获取随机填充长度</p>
+	 * 
+	 * @param maxLength 最大填充长度
+	 * 
+	 * @return 填充长度
+	 */
+	private int randomLength(int maxLength) {
 		final Random random = NumberUtils.random();
-		return new byte[random.nextInt(maxLength + 1)];
+		return random.nextInt(maxLength + 1);
 	}
 	
 	/**

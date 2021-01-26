@@ -609,7 +609,7 @@ public final class TorrentStream {
 			final byte[] verifyHash = this.torrentStreamGroup.pieceHash(index);
 			return Arrays.equals(hash, verifyHash);
 		} else {
-			// 不校验Hash：验证是否有数据s
+			// 不校验Hash：验证是否有数据
 			return this.hasData(bytes);
 		}
 	}

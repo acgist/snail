@@ -1,15 +1,12 @@
 package com.acgist.snail.net.torrent.peer;
 
-import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.PeerUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Peer Service</p>
@@ -50,7 +47,6 @@ public final class PeerService {
 	private PeerService() {
 		this.peerId = this.buildPeerId();
 		this.peerIdUrl = this.buildPeerIdUrl();
-		LOGGER.debug("PeerId：{}", new String(this.peerId));
 		LOGGER.debug("PeerIdUrl：{}", this.peerIdUrl);
 	}
 	
@@ -72,13 +68,13 @@ public final class PeerService {
 			builder.append("0".repeat(VERSION_LENGTH - version.length()));
 		}
 		builder.append("-");
-		// 后缀：随机
 		final String peerIdPrefix = builder.toString();
-		System.arraycopy(peerIdPrefix.getBytes(), 0, peerIds, 0, peerIdPrefix.length());
-		final Random random = NumberUtils.random();
-		for (int index = peerIdPrefix.length(); index < PeerConfig.PEER_ID_LENGTH; index++) {
-			peerIds[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
+		final int peerIdPrefixLength = peerIdPrefix.length();
+		System.arraycopy(peerIdPrefix.getBytes(), 0, peerIds, 0, peerIdPrefixLength);
+		// 后缀：随机
+		final int paddingLength = PeerConfig.PEER_ID_LENGTH - peerIdPrefixLength;
+		final byte[] padding = ArrayUtils.random(paddingLength);
+		System.arraycopy(padding, 0, peerIds, peerIdPrefixLength, paddingLength);
 		return peerIds;
 	}
 	
@@ -88,10 +84,7 @@ public final class PeerService {
 	 * @return PeerIdUrl
 	 */
 	private String buildPeerIdUrl() {
-		// 标准编码
 		return PeerUtils.urlEncode(this.peerId);
-		// 全部编码
-//		return PeerUtils.urlEncode(this.peerIdHex());
 	}
 	
 	/**
@@ -101,15 +94,6 @@ public final class PeerService {
 	 */
 	public byte[] peerId() {
 		return this.peerId;
-	}
-	
-	/**
-	 * <p>获取16进制PeerId</p>
-	 * 
-	 * @return 16进制PeerId
-	 */
-	public String peerIdHex() {
-		return StringUtils.hex(this.peerId);
 	}
 	
 	/**
