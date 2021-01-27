@@ -63,6 +63,8 @@ public class FileUtilsTest extends Performance {
 		assertEquals("1.00KB", FileUtils.formatSize(1024L));
 		assertEquals("1.00M", FileUtils.formatSize(1024L * 1024));
 		assertEquals("1024.00KB", FileUtils.formatSize(1024L * 1024 - 1));
+		assertEquals("8388608.00T", FileUtils.formatSize(Long.MAX_VALUE));
+		this.costed(100000, () -> FileUtils.formatSize(1024L * 1024 - 1));
 	}
 	
 	@Test
