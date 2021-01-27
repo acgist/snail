@@ -2,6 +2,7 @@ package com.acgist.snail.context.recycle.windows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -114,47 +115,47 @@ public final class WindowsRecycle extends Recycle {
 	 * <p>创建删除信息文件</p>
 	 */
 	private void buildDeleteInfoFile() {
-		FileUtils.write(this.deleteInfoFilePath, this.buildDeleteInfo());
+		try {
+			FileUtils.write(this.deleteInfoFilePath, this.buildDeleteInfo());
+		} catch (IOException e) {
+			LOGGER.error("创建删除信息文件异常", e);
+		}
 	}
 	
 	/**
 	 * <p>创建删除信息</p>
 	 * 
 	 * @return 删除信息
+	 * 
+	 * @throws IOException IO异常
 	 */
-	private byte[] buildDeleteInfo() {
+	private byte[] buildDeleteInfo() throws IOException {
 		final String path = FileUtils.systemSeparator(this.path);
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// 固定值
 		out.write(2);
 		// 固定值
-		for (int index = 0; index < 15; index++) {
-			out.write(0);
-		}
+		out.write(new byte[7]);
+		out.write(4);
+		out.write(new byte[7]);
 		// 时间戳
 		final long timestamp = DateUtils.windowsTimestamp();
 		final ByteBuffer buffer = ByteBuffer.allocate(8);
 		// 设置CPU默认大小端模式
 		buffer.order(ByteOrder.nativeOrder());
 		buffer.putLong(timestamp);
-		for (byte value : buffer.array()) {
-			out.write(value);
-		}
+		out.write(buffer.array());
 		// 固定值 + 文件路径长度
 		final char length = (char) (1 + path.length());
 		this.buildInfoChar(out, length);
 		// 固定值
-		for (int index = 0; index < 2; index++) {
-			out.write(0);
-		}
+		out.write(new byte[2]);
 		// 文件路径
 		for (int index = 0; index < path.length(); index++) {
 			this.buildInfoChar(out, path.charAt(index));
 		}
 		// 固定值
-		for (int index = 0; index < 2; index++) {
-			out.write(0);
-		}
+		out.write(new byte[2]);
 		return out.toByteArray();
 	}
 	
@@ -166,26 +167,14 @@ public final class WindowsRecycle extends Recycle {
 	 * @param value 数据
 	 */
 	private void buildInfoChar(ByteArrayOutputStream out, char value) {
-		if(value > 0xFF) {
-			if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-				// 小端
-				out.write(value & 0xFF);
-				out.write(value >> 8 & 0xFF);
-			} else {
-				// 大端
-				out.write(value >> 8 & 0xFF);
-				out.write(value & 0xFF);
-			}
+		if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
+			// 小端
+			out.write(value & 0xFF);
+			out.write(value >> 8 & 0xFF);
 		} else {
-			if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-				// 小端
-				out.write(value);
-				out.write(0);
-			} else {
-				// 大端
-				out.write(0);
-				out.write(value);
-			}
+			// 大端
+			out.write(value >> 8 & 0xFF);
+			out.write(value & 0xFF);
 		}
 	}
 	

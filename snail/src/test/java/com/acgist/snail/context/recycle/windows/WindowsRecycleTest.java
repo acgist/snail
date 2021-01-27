@@ -5,21 +5,40 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
+import com.acgist.snail.utils.StringUtils;
 
 public class WindowsRecycleTest extends Performance {
 
 	@Test
 	public void testDelete() throws IOException {
-		final String path = "E://snail/" + System.currentTimeMillis() + ".txt";
+		final String path = "E:/snail/tmp/" + System.currentTimeMillis() + ".txt";
+		FileUtils.write(path, "1234".getBytes());
 		final File file = new File(path);
 		file.createNewFile();
 		assertTrue(file.exists());
 		new WindowsRecycle(path).delete();
 		assertFalse(file.exists());
+	}
+	
+	@Test
+	public void testRecycle() throws IOException {
+		if(SKIP_COSTED) {
+			this.log("跳过testRecycle测试");
+			return;
+		}
+		final var trueBytes = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$IU1IJFC.txt"));
+		final var snailA = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I72751559.txt"));
+		final var snailB = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I31411618.txt"));
+		this.log(StringUtils.hex(trueBytes));
+		this.log(StringUtils.hex(snailA));
+		this.log(StringUtils.hex(snailB));
 	}
 	
 }
