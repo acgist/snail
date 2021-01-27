@@ -160,10 +160,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	/**
-	 * <p>无符号BYTE最大值：{@value}</p>
-	 */
-	public static final int UNSIGNED_BYTE_MAX = 2 << 7;
-	/**
 	 * <p>数值：{@value}</p>
 	 */
 	public static final String DIGIT = "0123456789";

@@ -43,7 +43,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	/**
 	 * <p>Tracker服务器最大保存数量：{@value}</p>
 	 */
-	private static final int MAX_TRACKER_SIZE = 512;
+	public static final int MAX_TRACKER_SIZE = 512;
 	/**
 	 * <p>最大请求失败次数：{@value}</p>
 	 * <p>超过最大请求失败次数标记无效</p>
@@ -244,6 +244,7 @@ public final class TrackerConfig extends PropertiesConfig {
 		final AtomicInteger index = new AtomicInteger(0);
 		final var data = TrackerContext.getInstance().sessions().stream()
 			.filter(TrackerSession::available)
+			.sorted()
 			.limit(MAX_TRACKER_SIZE)
 			.collect(Collectors.toMap(
 				session -> String.format("%04d", index.incrementAndGet()),

@@ -9,7 +9,6 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.Performance;
@@ -49,7 +48,7 @@ public class NodeContextTest extends Performance {
 		this.costed(10000, () -> {
 			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
 		});
-		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::useable).count();
 		this.log("可用节点：{}", size);
 		final var target = buildId();
 //		final var target = StringUtils.hex(NodeContext.getInstance().nodes().get(0).getId());
@@ -64,12 +63,25 @@ public class NodeContextTest extends Performance {
 		for (int index = 0; index < nodes.size(); index++) {
 			assertEquals(nodes.get(index), newNodes.get(index));
 		}
-		assertEquals(8, nodes.size());
 		this.log(nodes.size());
 		this.log(target);
 		this.costed(10000, () -> NodeContext.getInstance().findNode(target));
 //		this.costed(10000, 10, () -> NodeContext.getInstance().findNode(target));
-		size = NodeContext.getInstance().nodes().stream().filter(NodeSession::persistentable).count();
+		size = NodeContext.getInstance().nodes().stream().filter(NodeSession::useable).count();
+		this.log("可用节点：{}", size);
+	}
+	
+	@Test
+	public void testResize() {
+		LoggerConfig.off();
+		this.costed(10000, () -> {
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+		});
+		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::useable).count();
+		this.log("可用节点：{}", size);
+		size = NodeContext.getInstance().resize().stream().filter(NodeSession::useable).count();
+		this.log("可用节点：{}", size);
+		this.costed(100000, () -> NodeContext.getInstance().resize());
 		this.log("可用节点：{}", size);
 	}
 
@@ -90,9 +102,7 @@ public class NodeContextTest extends Performance {
 	private String buildId() {
 		final byte[] bytes = new byte[20];
 		final Random random = new Random();
-		for (int index = 0; index < 20; index++) {
-			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
+		random.nextBytes(bytes);
 		return StringUtils.hex(bytes);
 	}
 	

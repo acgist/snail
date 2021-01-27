@@ -3,8 +3,6 @@ package com.acgist.snail.utils;
 import java.util.Objects;
 import java.util.Random;
 
-import com.acgist.snail.config.SystemConfig;
-
 /**
  * <p>数组工具</p>
  * 
@@ -91,7 +89,7 @@ public final class ArrayUtils {
 	}
 	
 	/**
-	 * <p>随机字节数组</p>
+	 * <p>获取随机字节数组</p>
 	 * 
 	 * @param length 数组长度
 	 * 
@@ -100,9 +98,7 @@ public final class ArrayUtils {
 	public static final byte[] random(int length) {
 		final byte[] bytes = new byte[length];
 		final Random random = NumberUtils.random();
-		for (int index = 0; index < length; index++) {
-			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
+		random.nextBytes(bytes);
 		return bytes;
 	}
 	

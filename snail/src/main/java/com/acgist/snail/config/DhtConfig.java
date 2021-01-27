@@ -3,7 +3,6 @@ package com.acgist.snail.config;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
 import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -347,12 +345,8 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public void persistent() {
 		LOGGER.debug("保存DHT节点配置");
-		final var persistentNodes = NodeContext.getInstance().nodes();
-		final int size = persistentNodes.size();
-		final Random random = NumberUtils.random();
-		final var data = persistentNodes.stream()
-			.filter(NodeSession::persistentable)
-			.filter(node -> size < MAX_NODE_SIZE || random.nextInt(size) < MAX_NODE_SIZE) // 随机保存
+		final var data = NodeContext.getInstance().resize().stream()
+			.filter(NodeSession::useable)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
 				node -> node.getHost() + ":" + node.getPort()

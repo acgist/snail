@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -93,6 +94,7 @@ public final class DhtLauncher implements Runnable {
 	 */
 	private List<InetSocketAddress> pick() {
 		return NodeContext.getInstance().findNode(this.infoHash.infoHash()).stream()
+			.filter(NodeSession::markVerify)
 			.map(node -> NetUtils.buildSocketAddress(node.getHost(), node.getPort()))
 			.collect(Collectors.toList());
 	}

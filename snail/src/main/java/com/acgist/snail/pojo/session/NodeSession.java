@@ -18,11 +18,19 @@ public final class NodeSession implements Comparable<NodeSession> {
 	 */
 	public enum Status {
 		
-		/** 未知：没有使用 */
+		/**
+		 * <p>未知：没有使用</p>
+		 */
 		UNUSE,
-		/** 验证：没有收到响应 */
+		/**
+		 * <p>验证：没有收到响应</p>
+		 * <p>使用后标记为验证状态</p>
+		 * <p>验证状态节点不能用于：保存、查找</p>
+		 */
 		VERIFY,
-		/** 可用：收到响应 */
+		/**
+		 * <p>可用：收到响应</p>
+		 */
 		AVAILABLE;
 		
 	}
@@ -71,30 +79,32 @@ public final class NodeSession implements Comparable<NodeSession> {
 
 	/**
 	 * <p>判断节点是否可以使用</p>
-	 * <p>如果节点没有使用标记为验证中</p>
 	 * 
 	 * @return 是否可以使用
 	 */
-	public boolean useableAndMark() {
-		if(this.getStatus() == NodeSession.Status.UNUSE) {
-			this.setStatus(NodeSession.Status.VERIFY);
-			return true;
-		} else if(this.getStatus() == NodeSession.Status.VERIFY) {
-			return false;
-		} else if(this.getStatus() == NodeSession.Status.AVAILABLE) {
-			return true;
-		} else {
-			return true;
-		}
+	public boolean useable() {
+		return this.status != Status.VERIFY;
+	}
+
+	/**
+	 * <p>判断节点是否有效</p>
+	 * 
+	 * @return 是否有效
+	 */
+	public boolean available() {
+		return this.status == Status.AVAILABLE;
 	}
 	
 	/**
-	 * <p>判断节点是否可以保存</p>
+	 * <p>标记验证状态</p>
 	 * 
-	 * @return 是否可以保存
+	 * @return 标记结果
 	 */
-	public boolean persistentable() {
-		return this.status != Status.VERIFY;
+	public boolean markVerify() {
+		if(this.status == Status.UNUSE) {
+			this.status = Status.VERIFY;
+		}
+		return true;
 	}
 	
 	/**
