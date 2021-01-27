@@ -380,7 +380,7 @@ public abstract class Protocol {
 		this.buildUrl();
 		this.buildType();
 		this.buildStatus();
-		final String fileName = FileUtils.fileNameFormat(this.buildFileName());
+		final String fileName = this.buildFileName();
 		this.buildName(fileName);
 		this.buildFile(fileName);
 		this.buildFileType(fileName);

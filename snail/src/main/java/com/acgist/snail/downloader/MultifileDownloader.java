@@ -33,7 +33,7 @@ public abstract class MultifileDownloader extends Downloader {
 	@Override
 	public void open() throws NetException, DownloadException {
 		// 创建文件目录：防止删除目录导致任务下载失败
-		FileUtils.buildFolder(this.taskSession.getFile(), false);
+		FileUtils.buildFolder(this.taskSession.getFile());
 		this.loadDownload();
 	}
 

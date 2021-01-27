@@ -302,7 +302,7 @@ public final class EntityContext implements IContext {
 			list.addAll(this.configEntities);
 		}
 		final File file = new File(ENTITY_FILE_PATH);
-		FileUtils.buildFolder(file, true);
+		FileUtils.buildParentFolder(file);
 		try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(file))) {
 			output.writeObject(list);
 		} catch (IOException e) {

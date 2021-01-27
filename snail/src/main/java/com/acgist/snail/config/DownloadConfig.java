@@ -224,7 +224,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return path;
 		}
 		path = SystemConfig.userDir(path);
-		FileUtils.buildFolder(path, false);
+		FileUtils.buildFolder(path);
 		return path;
 	}
 

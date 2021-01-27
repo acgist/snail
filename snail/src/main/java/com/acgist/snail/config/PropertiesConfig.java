@@ -127,7 +127,8 @@ public abstract class PropertiesConfig {
 			LOGGER.warn("保存配置文件失败：{}-{}", data, file);
 			return;
 		}
-		FileUtils.buildFolder(file, true); // 创建上级目录
+		// 创建上级目录
+		FileUtils.buildParentFolder(file);
 		try(final var output = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
 			// 不能使用内部变量：数据可能被清空
 			final Properties persistentProperties = new Properties();
