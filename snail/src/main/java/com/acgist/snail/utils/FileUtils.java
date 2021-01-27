@@ -343,7 +343,7 @@ public final class FileUtils {
 			try {
 				size = Files.size(file.toPath());
 			} catch (IOException e) {
-				LOGGER.error("获取文件大小异常：{}", file.getAbsolutePath(), e);
+				LOGGER.error("获取文件大小异常：{}", file, e);
 			}
 		} else {
 			final File[] files = file.listFiles();
