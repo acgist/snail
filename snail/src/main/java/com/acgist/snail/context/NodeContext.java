@@ -136,6 +136,7 @@ public final class NodeContext implements IContext {
 				if(session.available()) {
 					continue;
 				} else if(session.useable()) {
+					// 随机均匀剔除
 					if(random.nextInt(size) < DhtConfig.MAX_NODE_SIZE) {
 						continue;
 					} else {
