@@ -29,7 +29,7 @@ public final class ModifyOptional<T> {
 	 * 
 	 * @param <T> 数据类型
 	 * 
-	 * @return 工具对象
+	 * @return {@link ModifyOptional}
 	 */
 	public static final <T> ModifyOptional<T> newInstance() {
 		return new ModifyOptional<>();
@@ -42,7 +42,7 @@ public final class ModifyOptional<T> {
 	 * 
 	 * @param t 数据
 	 * 
-	 * @return 工具对象
+	 * @return {@link ModifyOptional}
 	 */
 	public static final <T> ModifyOptional<T> newInstance(T t) {
 		return new ModifyOptional<>(t);
@@ -80,7 +80,7 @@ public final class ModifyOptional<T> {
 	/**
 	 * <p>判断数据是否为空</p>
 	 * 
-	 * @return true-空；false-非空；
+	 * @return 数据是否为空
 	 */
 	public boolean isEmpty() {
 		return this.t == null;
@@ -89,7 +89,7 @@ public final class ModifyOptional<T> {
 	/**
 	 * <p>判断数据是否非空</p>
 	 * 
-	 * @return true-非空；false-空；
+	 * @return 数据是否非空
 	 */
 	public boolean isPresent() {
 		return !this.isEmpty();

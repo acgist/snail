@@ -240,7 +240,6 @@ public final class TrackerConfig extends PropertiesConfig {
 	 * <p>注意：如果没有启动BT任务没有必要保存</p>
 	 */
 	public void persistent() {
-		LOGGER.debug("保存Tracker服务器配置");
 		final AtomicInteger index = new AtomicInteger(0);
 		final var data = TrackerContext.getInstance().sessions().stream()
 			.filter(TrackerSession::available)
@@ -250,6 +249,7 @@ public final class TrackerConfig extends PropertiesConfig {
 				session -> String.format("%04d", index.incrementAndGet()),
 				TrackerSession::announceUrl
 			));
+		LOGGER.debug("保存Tracker服务器配置：{}", data.size());
 		this.persistent(data, FileUtils.userDirFile(TRACKER_CONFIG));
 	}
 	

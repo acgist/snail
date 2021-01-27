@@ -344,13 +344,13 @@ public final class DhtConfig extends PropertiesConfig {
 	 * <p>注意：如果没有启动BT任务没有必要保存</p>
 	 */
 	public void persistent() {
-		LOGGER.debug("保存DHT节点配置");
 		final var data = NodeContext.getInstance().resize().stream()
 			.filter(NodeSession::useable)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
 				node -> node.getHost() + ":" + node.getPort()
 			));
+		LOGGER.debug("保存DHT节点配置：{}", data.size());
 		this.persistent(data, FileUtils.userDirFile(DHT_CONFIG));
 	}
 	
