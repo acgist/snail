@@ -53,20 +53,8 @@ public class PropertyDescriptorTest extends Performance {
 	public void testCosted() {
 		final TaskEntity task = new TaskEntity();
 		final var descriptor = PropertyDescriptor.newInstance(task);
-		this.costed(100000, () -> {
-			try {
-				descriptor.get("id");
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				this.log(e);
-			}
-		});
-		this.costed(100000, () -> {
-			try {
-				descriptor.set("id", "1234");
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				this.log(e);
-			}
-		});
+		this.costed(100000, () -> descriptor.get("id"));
+		this.costed(100000, () -> descriptor.set("id", "1234"));
 		assertNotNull(task);
 	}
 	
