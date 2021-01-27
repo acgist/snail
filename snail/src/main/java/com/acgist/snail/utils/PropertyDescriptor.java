@@ -5,12 +5,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>对象属性工具</p>
  * 
  * @author acgist
  */
 public final class PropertyDescriptor {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertyDescriptor.class);
 
 	/**
 	 * <p>GETTER前缀（Boolean）：{@value}</p>
@@ -103,16 +108,18 @@ public final class PropertyDescriptor {
 	 * @param property 属性名称
 	 * 
 	 * @return 属性值
-	 * 
-	 * @throws IllegalAccessException 访问异常
-	 * @throws InvocationTargetException 反射异常
 	 */
-	public Object get(String property) throws IllegalAccessException, InvocationTargetException {
+	public Object get(String property) {
 		final Method getter = this.getter(property);
 		if(getter == null) {
-			throw new IllegalArgumentException("属性不存在：" + property);
+			return null;
 		}
-		return getter.invoke(this.instance);
+		try {
+			return getter.invoke(this.instance);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			LOGGER.error("获取属性值异常：{}-{}", this.instance, property, e);
+		}
+		return null;
 	}
 	
 	/**
@@ -140,16 +147,17 @@ public final class PropertyDescriptor {
 	 * 
 	 * @param property 属性名称
 	 * @param value 属性值
-	 * 
-	 * @throws IllegalAccessException 访问异常
-	 * @throws InvocationTargetException 反射异常
 	 */
-	public void set(String property, Object value) throws IllegalAccessException, InvocationTargetException {
+	public void set(String property, Object value) {
 		final Method setter = this.setter(property);
 		if(setter == null) {
-			throw new IllegalArgumentException("属性不存在：" + property);
+			return;
 		}
-		setter.invoke(this.instance, value);
+		try {
+			setter.invoke(this.instance, value);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			LOGGER.error("设置属性值异常：{}-{}-{}", this.instance, property, value, e);
+		}
 	}
 	
 	/**
@@ -161,16 +169,16 @@ public final class PropertyDescriptor {
 	 */
 	public Class<?> getPropertyType(String property) {
 		String fieldName;
-		Class<?> parentClazz = this.clazz;
-		while(parentClazz != null) {
-			final Field[] fields = parentClazz.getDeclaredFields();
+		Class<?> superClazz = this.clazz;
+		while(superClazz != null) {
+			final Field[] fields = superClazz.getDeclaredFields();
 			for (Field field : fields) {
 				fieldName = field.getName();
 				if(!ignoreProperty(field) && fieldName.equals(property)) {
 					return field.getType();
 				}
 			}
-			parentClazz = parentClazz.getSuperclass();
+			superClazz = superClazz.getSuperclass();
 		}
 		return null;
 	}

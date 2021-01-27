@@ -1,5 +1,6 @@
 package com.acgist.snail.utils;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
@@ -47,10 +48,12 @@ public class DateUtilsTest extends Performance {
 	
 	@Test
 	public void testCosted() {
-		this.costed(100000, () -> DateUtils.dateFormat(new Date()));
-		this.costed(100000, () -> DateUtils.localDateTimeFormat(LocalDateTime.now()));
-		this.costed(100000, () -> DateUtils.dateFormat(new Date(), "yyyy-MM-dd"));
-		this.costed(100000, () -> DateUtils.localDateTimeFormat(LocalDateTime.now(), "yyyy-MM-dd"));
+		assertDoesNotThrow(() -> {
+			this.costed(100000, () -> DateUtils.dateFormat(new Date()));
+			this.costed(100000, () -> DateUtils.localDateTimeFormat(LocalDateTime.now()));
+			this.costed(100000, () -> DateUtils.dateFormat(new Date(), "yyyy-MM-dd"));
+			this.costed(100000, () -> DateUtils.localDateTimeFormat(LocalDateTime.now(), "yyyy-MM-dd"));
+		});
 	}
 	
 }
