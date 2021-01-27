@@ -199,7 +199,7 @@ public final class TorrentStream {
 	 */
 	private RandomAccessFile buildFileStream() throws DownloadException {
 		// 创建文件上级目录：上级目录不存在会抛出FileNotFoundException
-		FileUtils.buildFolder(this.filePath, true);
+		FileUtils.buildParentFolder(this.filePath);
 		try {
 			return new RandomAccessFile(this.filePath, STREAM_MODE);
 		} catch (FileNotFoundException e) {

@@ -98,7 +98,7 @@ public final class HlsProtocol extends Protocol {
 	 * <p>创建下载目录</p>
 	 */
 	private void buildFolder() {
-		FileUtils.buildFolder(this.taskEntity.getFile(), false);
+		FileUtils.buildFolder(this.taskEntity.getFile());
 	}
 	
 	/**
