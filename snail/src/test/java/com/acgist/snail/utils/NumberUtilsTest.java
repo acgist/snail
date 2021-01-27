@@ -12,8 +12,6 @@ import java.nio.ByteBuffer;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.config.SystemConfig;
-
 public class NumberUtilsTest extends Performance {
 
 	@Test
@@ -92,9 +90,7 @@ public class NumberUtilsTest extends Performance {
 		final int length = 100;
 		final var random = NumberUtils.random();
 		final byte[] bytes = new byte[length];
-		for (int index = 0; index < length; index++) {
-			bytes[index] = (byte) random.nextInt(SystemConfig.UNSIGNED_BYTE_MAX);
-		}
+		random.nextBytes(bytes);
 		final var source = new BigInteger(1, bytes);
 		final var decode = NumberUtils.decodeBigInteger(ByteBuffer.wrap(bytes), length);
 		this.log(decode);

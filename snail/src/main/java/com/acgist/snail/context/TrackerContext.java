@@ -147,14 +147,14 @@ public final class TrackerContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取TrackerSession列表</p>
+	 * <p>获取TrackerSession拷贝</p>
 	 * 
-	 * @return TrackerSession列表
+	 * @return TrackerSession拷贝
 	 */
 	public List<TrackerSession> sessions() {
 		return new ArrayList<>(this.trackerSessions.values());
 	}
-	
+
 	/**
 	 * <p>获取TrackerSession列表</p>
 	 * 

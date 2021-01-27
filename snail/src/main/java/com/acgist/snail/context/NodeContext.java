@@ -2,7 +2,9 @@ package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
+import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -100,13 +103,50 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有节点的拷贝</p>
+	 * <p>获取所有节点拷贝</p>
 	 * 
-	 * @return 所有节点的拷贝
+	 * @return 所有节点拷贝
 	 */
 	public List<NodeSession> nodes() {
 		synchronized (this.nodes) {
 			return new ArrayList<>(this.nodes);
+		}
+	}
+
+	/**
+	 * <p>整理节点长度</p>
+	 * <p>超过最大保存数量：删除验证节点和多余节点</p>
+	 * 
+	 * @return 所有节点拷贝
+	 * 
+	 * @see DhtConfig#MAX_NODE_SIZE
+	 */
+	public List<NodeSession> resize() {
+		synchronized (this.nodes) {
+			final int size = this.nodes.size();
+			if(size < DhtConfig.MAX_NODE_SIZE) {
+				return this.nodes();
+			}
+			LOGGER.debug("整理节点长度：{}", size);
+			final Random random = NumberUtils.random();
+			final Iterator<NodeSession> iterator = this.nodes.iterator();
+			NodeSession session;
+			while(iterator.hasNext()) {
+				session = iterator.next();
+				if(session.available()) {
+					continue;
+				} else if(session.useable()) {
+					if(random.nextInt(size) < DhtConfig.MAX_NODE_SIZE) {
+						continue;
+					} else {
+						iterator.remove();
+					}
+				} else {
+					// 无效节点：删除
+					iterator.remove();
+				}
+			}
+			return this.nodes();
 		}
 	}
 	
@@ -184,7 +224,7 @@ public final class NodeContext implements IContext {
 			final int nodeSize = this.nodes.size();
 			if(nodeSize <= MAX_NODE_SIZE) {
 				closeNodes = this.nodes.stream()
-					.filter(NodeSession::useableAndMark)
+					.filter(NodeSession::useable)
 					.collect(Collectors.toList());
 			} else {
 				closeNodes = new ArrayList<>();
@@ -200,13 +240,13 @@ public final class NodeContext implements IContext {
 					leftPos + rightPos < nodeSize // 轮询整个列表
 				) {
 					leftNode = this.select(index - leftPos, nodeSize);
-					if(leftNode.useableAndMark()) {
+					if(leftNode.useable()) {
 						size++;
 						// 前面添加防止乱序
 						closeNodes.add(0, leftNode);
 					}
 					rightNode = this.select(index + rightPos, nodeSize);
-					if(rightNode.useableAndMark()) {
+					if(rightNode.useable()) {
 						size++;
 						closeNodes.add(rightNode);
 					}
