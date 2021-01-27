@@ -9,29 +9,26 @@ import java.util.Collection;
  */
 public final class CollectionUtils {
 
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private CollectionUtils() {
 	}
 	
 	/**
-	 * <p>集合是否为空</p>
+	 * <p>判断是否为空</p>
 	 * 
 	 * @param list 集合
 	 * 
-	 * @return true-空；false-非空；
+	 * @return 是否为空
 	 */
 	public static final boolean isEmpty(Collection<?> list) {
 		return list == null || list.isEmpty();
 	}
 	
 	/**
-	 * <p>集合是否非空</p>
+	 * <p>判断是否非空</p>
 	 * 
 	 * @param list 集合
 	 * 
-	 * @return true-非空；false-空；
+	 * @return 是否非空
 	 */
 	public static final boolean isNotEmpty(Collection<?> list) {
 		return !isEmpty(list);
