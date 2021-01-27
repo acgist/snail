@@ -146,6 +146,7 @@ public final class WindowsRecycle extends Recycle {
 		// 设置删除时间戳
 		buffer.putLong(DateUtils.windowsTimestamp());
 		out.write(buffer.array());
+		buffer.clear();
 		// 固定值 + 文件路径长度
 		final char length = (char) (1 + path.length());
 		this.buildInfoChar(out, length);
