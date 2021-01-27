@@ -132,25 +132,26 @@ public final class WindowsRecycle extends Recycle {
 	private byte[] buildDeleteInfo() throws IOException {
 		final String path = FileUtils.systemSeparator(this.path);
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		final ByteBuffer buffer = ByteBuffer.allocate(8);
+		// 设置大小端：默认CPU
+		buffer.order(ByteOrder.nativeOrder());
 		// 固定值
 		out.write(2);
 		// 固定值
 		out.write(new byte[7]);
-		out.write(4);
-		out.write(new byte[7]);
-		// 时间戳
-		final long timestamp = DateUtils.windowsTimestamp();
-		final ByteBuffer buffer = ByteBuffer.allocate(8);
-		// 设置CPU默认大小端模式
-		buffer.order(ByteOrder.nativeOrder());
-		buffer.putLong(timestamp);
+		// 设置文件大小
+		buffer.putLong(FileUtils.fileSize(this.deleteFilePath));
+		out.write(buffer.array());
+		buffer.clear();
+		// 设置删除时间戳
+		buffer.putLong(DateUtils.windowsTimestamp());
 		out.write(buffer.array());
 		// 固定值 + 文件路径长度
 		final char length = (char) (1 + path.length());
 		this.buildInfoChar(out, length);
 		// 固定值
 		out.write(new byte[2]);
-		// 文件路径
+		// 设置文件路径
 		for (int index = 0; index < path.length(); index++) {
 			this.buildInfoChar(out, path.charAt(index));
 		}
