@@ -11,9 +11,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public final class DigestUtils {
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private DigestUtils() {
 	}
 	

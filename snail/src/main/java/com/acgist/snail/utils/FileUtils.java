@@ -35,7 +35,7 @@ public final class FileUtils {
 	/**
 	 * <p>文件大小单位</p>
 	 */
-	private static final String[] FILE_LENGTH_UNIT = {"B", "KB", "M", "G", "T"};
+	private static final String[] FILE_SCALE_UNIT = {"B", "KB", "M", "G", "T"};
 	/**
 	 * <p>文件名禁用字符正则表达式：{@value}</p>
 	 */
@@ -157,7 +157,7 @@ public final class FileUtils {
 		}
 		// URL解码
 		String fileName = UrlUtils.decode(url);
-		// 斜杠转换
+		// 反斜杠转换为斜杠
 		final char slash = SymbolConfig.Symbol.SLASH.toChar();
 		if(fileName.contains(SymbolConfig.Symbol.BACKSLASH.toString())) {
 			fileName = fileName.replace(SymbolConfig.Symbol.BACKSLASH.toChar(), slash);
@@ -296,15 +296,16 @@ public final class FileUtils {
 			return "0B";
 		}
 		int index = 0;
-		BigDecimal decimal = new BigDecimal(size);
-		while(decimal.longValue() >= SystemConfig.DATA_SCALE) {
-			if(++index >= FILE_LENGTH_UNIT.length) {
-				index = FILE_LENGTH_UNIT.length - 1;
+		BigDecimal decimal = BigDecimal.valueOf(size);
+		final BigDecimal dataScale = BigDecimal.valueOf(SystemConfig.DATA_SCALE);
+		while(decimal.compareTo(dataScale) >= 0) {
+			if(++index >= FILE_SCALE_UNIT.length) {
+				index = FILE_SCALE_UNIT.length - 1;
 				break;
 			}
-			decimal = decimal.divide(new BigDecimal(SystemConfig.DATA_SCALE));
+			decimal = decimal.divide(dataScale);
 		}
-		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_LENGTH_UNIT[index];
+		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_SCALE_UNIT[index];
 	}
 	
 	/**
@@ -318,9 +319,10 @@ public final class FileUtils {
 		if(size == null || size == 0L) {
 			return 0D;
 		}
-		final BigDecimal decimal = new BigDecimal(size)
-			.divide(BigDecimal.valueOf(SystemConfig.ONE_MB));
-		return decimal.setScale(2, RoundingMode.HALF_UP).doubleValue();
+		return BigDecimal.valueOf(size)
+			.divide(BigDecimal.valueOf(SystemConfig.ONE_MB))
+			.setScale(2, RoundingMode.HALF_UP)
+			.doubleValue();
 	}
 	
 	/**
