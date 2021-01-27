@@ -1,6 +1,5 @@
 package com.acgist.snail.utils;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -15,9 +14,6 @@ import com.acgist.snail.config.SystemConfig;
  */
 public final class DateUtils {
 
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private DateUtils() {
 	}
 	
@@ -27,31 +23,29 @@ public final class DateUtils {
 	public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 	/**
 	 * <p>时间格式工具</p>
+	 * 
+	 * @see #DEFAULT_PATTERN
 	 */
 	private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_PATTERN);
 	/**
-	 * <p>Unix和Java时间戳倍数：{@value}</p>
-	 */
-	private static final int UNIX_JAVA_TIMESTAMP_SCALE = 1000;
-	/**
 	 * <p>Windows系统时间和Java系统时间相差毫秒数：{@value}</p>
-	 * <p>Java时间戳转Windows时间戳：{@value} + System.currentTimeMillis()</p>
+	 * <p>Java时间戳转Windows时间戳：System.currentTimeMillis() + {@value}</p>
+	 * <p>Windows开始时间：1601年01月01日</p>
+	 * <p>Windows北京开始时间（东八区）：1601-01-01 08:00:00</p>
 	 */
 	private static final long WINDOWS_JAVA_DIFF_TIMEMILLIS = 11644473600000L;
 	/**
-	 * <p>Windows开始时间（北京时间）</p>
-	 * <p>开始时间：（1601年1月1日）北京时间（东八区）</p>
-	 * 
-	 * TODO：通过时区优化
+	 * <p>Java和Unix时间戳倍数：{@value}</p>
 	 */
-	private static final LocalDateTime WINDOWS_BEIJIN_BEGIN_TIME = LocalDateTime.of(1601, 01, 01, 8, 00, 00);
+	private static final int UNIX_TIMESTAMP_SCALE = 1000;
 	/**
 	 * <p>Java和Windows时间戳倍数：{@value}</p>
 	 */
-	private static final int JAVA_WINDOWS_TIMESTAMP_SCALE = 10_000;
+	private static final int WINDOWS_TIMESTAMP_SCALE = 10_000;
 	
 	/**
-	 * <p>时间格式化：保留两个时间单位</p>
+	 * <p>格式化时间</p>
+	 * <p>保留两个时间单位</p>
 	 * 
 	 * @param value 时间（单位：秒）
 	 * 
@@ -85,7 +79,7 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>时间格式化</p>
+	 * <p>格式化时间</p>
 	 * <p>默认格式：{@value #DEFAULT_PATTERN}</p>
 	 * 
 	 * @param date 时间
@@ -99,12 +93,15 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>时间格式化</p>
+	 * <p>格式化时间</p>
+	 * <p>时间格式为空默认：{@value #DEFAULT_PATTERN}</p>
 	 * 
 	 * @param date 时间
-	 * @param pattern 格式（为空默认：{@value #DEFAULT_PATTERN}）
+	 * @param pattern 格式
 	 * 
 	 * @return 格式化字符串
+	 * 
+	 * @see #localDateTimeFormat(LocalDateTime, String)
 	 */
 	public static final String dateFormat(Date date, String pattern) {
 		if(date == null) {
@@ -114,7 +111,7 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>时间格式化</p>
+	 * <p>格式化时间</p>
 	 * <p>默认格式：{@value #DEFAULT_PATTERN}</p>
 	 * 
 	 * @param localDateTime 时间
@@ -128,10 +125,11 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>时间格式化</p>
+	 * <p>格式化时间</p>
+	 * <p>时间格式为空默认：{@value #DEFAULT_PATTERN}</p>
 	 * 
 	 * @param localDateTime 时间
-	 * @param pattern 格式（为空默认：{@value #DEFAULT_PATTERN}）
+	 * @param pattern 格式
 	 * 
 	 * @return 格式化字符串
 	 */
@@ -149,32 +147,25 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * <p>Java时间戳</p>
-	 * 
-	 * @return Java时间戳
-	 */
-	public static final long javaTimestamp() {
-		return System.currentTimeMillis();
-	}
-
-	/**
-	 * <p>Java时间戳转Unix时间戳</p>
-	 * 
-	 * @param javaTimestamp Java时间戳
+	 * <p>获取Unix时间戳</p>
 	 * 
 	 * @return Unix时间戳
+	 * 
+	 * @see #unixTimestamp(long)
 	 */
-	public static final long javaToUnixTimestamp(long javaTimestamp) {
-		return javaTimestamp / UNIX_JAVA_TIMESTAMP_SCALE;
+	public static final long unixTimestamp() {
+		return unixTimestamp(System.currentTimeMillis());
 	}
 	
 	/**
-	 * <p>Unix时间戳</p>
+	 * <p>获取Unix时间戳</p>
+	 * 
+	 * @param timestamp Java时间戳
 	 * 
 	 * @return Unix时间戳
 	 */
-	public static final long unixTimestamp() {
-		return javaToUnixTimestamp(javaTimestamp());
+	public static final long unixTimestamp(long timestamp) {
+		return timestamp / UNIX_TIMESTAMP_SCALE;
 	}
 
 	/**
@@ -185,7 +176,7 @@ public final class DateUtils {
 	 * @return Java时间戳
 	 */
 	public static final long unixToJavaTimestamp(long unixTimestamp) {
-		return unixTimestamp * UNIX_JAVA_TIMESTAMP_SCALE;
+		return unixTimestamp * UNIX_TIMESTAMP_SCALE;
 	}
 	
 	/**
@@ -194,48 +185,66 @@ public final class DateUtils {
 	 * @param unixTimestamp Unix时间戳
 	 * 
 	 * @return Java时间
+	 * 
+	 * @see #unixToJavaTimestamp(long)
 	 */
 	public static final Date unixToJavaDate(long unixTimestamp) {
 		return new Date(unixToJavaTimestamp(unixTimestamp));
 	}
 	
 	/**
-	 * <p>获取时间戳（微秒）</p>
-	 * 
-	 * @return 时间戳（微秒）
-	 */
-	public static final int timestampUs() {
-		return (int) (System.nanoTime() / 1000);
-	}
-
-	/**
 	 * <p>获取Windows时间戳</p>
 	 * 
 	 * @return Windows时间戳
+	 * 
+	 * @see #windowsTimestamp(long)
 	 */
 	public static final long windowsTimestamp() {
-		return (WINDOWS_JAVA_DIFF_TIMEMILLIS + System.currentTimeMillis()) * JAVA_WINDOWS_TIMESTAMP_SCALE;
+		return windowsTimestamp(System.currentTimeMillis());
 	}
 	
 	/**
-	 * <p>获取Windows时间戳（扩展）</p>
+	 * <p>获取Windows时间戳</p>
+	 * 
+	 * @param timestamp Java时间戳
 	 * 
 	 * @return Windows时间戳
 	 */
-	public static final long windowsTimestampEx() {
-		return DateUtils.diff(WINDOWS_BEIJIN_BEGIN_TIME, LocalDateTime.now()).toMillis() * JAVA_WINDOWS_TIMESTAMP_SCALE;
+	public static final long windowsTimestamp(long timestamp) {
+		return (timestamp + WINDOWS_JAVA_DIFF_TIMEMILLIS) * WINDOWS_TIMESTAMP_SCALE;
 	}
 	
 	/**
-	 * <p>计算时间差</p>
+	 * <p>Windows时间戳转Java时间戳</p>
 	 * 
-	 * @param begin 开始时间
-	 * @param end 结束时间
+	 * @param windowsTimestamp Windows时间戳
 	 * 
-	 * @return 时间差
+	 * @return Java时间戳
 	 */
-	public static final Duration diff(LocalDateTime begin, LocalDateTime end) {
-		return Duration.between(begin, end);
+	public static final long windowsToJavaTimestamp(long windowsTimestamp) {
+		return windowsTimestamp / WINDOWS_TIMESTAMP_SCALE - WINDOWS_JAVA_DIFF_TIMEMILLIS;
+	}
+	
+	/**
+	 * <p>Windows时间戳转Java时间</p>
+	 * 
+	 * @param windowsTimestamp Windows时间戳
+	 * 
+	 * @return Java时间
+	 * 
+	 * @see #windowsToJavaTimestamp(long)
+	 */
+	public static final Date windowsToJavaDate(long windowsTimestamp) {
+		return new Date(windowsToJavaTimestamp(windowsTimestamp));
+	}
+	
+	/**
+	 * <p>获取微秒时间戳</p>
+	 * 
+	 * @return 微秒时间戳
+	 */
+	public static final int timestampUs() {
+		return (int) (System.nanoTime() / 1000);
 	}
 	
 }
