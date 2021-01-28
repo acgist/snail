@@ -51,10 +51,7 @@ public final class InfoHash implements Serializable {
 	private InfoHash(byte[] infoHash) {
 		this.infoHash = infoHash;
 		this.infoHashHex = StringUtils.hex(this.infoHash);
-		// 标准编码
 		this.infoHashUrl = PeerUtils.urlEncode(this.infoHash);
-		// 全部编码
-//		this.infoHashUrl = PeerUtils.urlEncode(this.infoHashHex());
 	}
 
 	/**
