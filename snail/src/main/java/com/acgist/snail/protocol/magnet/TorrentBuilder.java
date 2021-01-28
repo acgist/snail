@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NodeContext;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -69,9 +69,10 @@ public final class TorrentBuilder {
 	 * @return 文件路径
 	 */
 	public String buildFile(String path) {
-		final String filePath = FileUtils.file(path, this.fileName());
+		final String fileName = this.buildFileName();
+		final String filePath = FileUtils.file(path, fileName);
 		final Map<String, Object> fileInfo = this.buildFileInfo();
-		this.createFile(filePath, fileInfo);
+		this.buildFile(filePath, fileInfo);
 		return filePath;
 	}
 
@@ -84,7 +85,6 @@ public final class TorrentBuilder {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		data.put(Torrent.ATTR_COMMENT, SystemConfig.getSource());
 		data.put(Torrent.ATTR_COMMENT_UTF8, SystemConfig.getSource());
-		// TODO：这里编码可能出现乱码
 		data.put(Torrent.ATTR_ENCODING, SystemConfig.DEFAULT_CHARSET);
 		data.put(Torrent.ATTR_CREATED_BY, SystemConfig.getNameEnAndVersion());
 		data.put(Torrent.ATTR_CREATION_DATE, DateUtils.unixTimestamp());
@@ -95,7 +95,7 @@ public final class TorrentBuilder {
 	}
 
 	/**
-	 * <p>设置Tracker服务器列表</p>
+	 * <p>设置Tracker服务器</p>
 	 * 
 	 * @param data 种子信息
 	 */
@@ -107,8 +107,9 @@ public final class TorrentBuilder {
 		if(this.trackers.size() > 1) {
 			data.put(
 				Torrent.ATTR_ANNOUNCE_LIST,
-				this.trackers.subList(1, this.trackers.size()).stream()
-					.map(value -> List.of(value))
+				this.trackers.stream()
+					.skip(1)
+					.map(List::of)
 					.collect(Collectors.toList())
 			);
 		}
@@ -123,8 +124,8 @@ public final class TorrentBuilder {
 		try {
 			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
 			data.put(Torrent.ATTR_INFO, decoder.nextMap());
-		} catch (NetException e) {
-			LOGGER.error("设置InfoHash异常", e);
+		} catch (PacketSizeException e) {
+			LOGGER.error("设置种子信息异常", e);
 		}
 	}
 
@@ -151,7 +152,7 @@ public final class TorrentBuilder {
 	 * 
 	 * @return 文件名称
 	 */
-	private String fileName() {
+	private String buildFileName() {
 		return this.infoHash.infoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
 	}
 
@@ -159,13 +160,12 @@ public final class TorrentBuilder {
 	 * <p>保存种子文件</p>
 	 * 
 	 * @param filePath 文件路径
-	 * @param fileInfo 种子数据
+	 * @param fileInfo 文件数据
 	 */
-	private void createFile(String filePath, Map<String, Object> fileInfo) {
+	private void buildFile(String filePath, Map<String, Object> fileInfo) {
 		final File file = new File(filePath);
-		// 文件已存在时不保存
 		if(file.exists()) {
-			LOGGER.debug("种子文件已存在：{}", filePath);
+			LOGGER.debug("种子文件已经存在：{}", filePath);
 			return;
 		}
 		LOGGER.debug("保存种子文件：{}", filePath);

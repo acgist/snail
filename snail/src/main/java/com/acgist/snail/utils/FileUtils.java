@@ -245,6 +245,7 @@ public final class FileUtils {
 	 * @param target 目标文件
 	 */
 	public static final void move(String source, String target) {
+		buildParentFolder(target);
 		final File sourceFile = new File(source);
 		final File targetFile = new File(target);
 		if(!sourceFile.renameTo(targetFile)) {
@@ -259,6 +260,7 @@ public final class FileUtils {
 	 * @param target 目标文件
 	 */
 	public static final void copy(String source, String target) {
+		buildParentFolder(target);
 		try(
 			final var input = new FileInputStream(source);
 			final var output = new FileOutputStream(target);

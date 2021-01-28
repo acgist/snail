@@ -52,6 +52,17 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
+	public void testMoveCopy() {
+		final String copy = "E:/snail/tmp/" + System.currentTimeMillis() + "/acgist.torrent";
+		final String move = "E:/snail/tmp/" + System.currentTimeMillis() + "/acgist.move.torrent";
+		FileUtils.copy("E:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent", copy);
+		assertTrue(new File(copy).exists());
+		FileUtils.move(copy, move);
+		assertTrue(new File(move).exists());
+		FileUtils.delete(new File(move).getParent());
+	}
+	
+	@Test
 	public void testFile() {
 		assertEquals("E:\\snail\\acgist", FileUtils.file("E:\\snail", "acgist"));
 		assertEquals("E:\\snail\\acgist", FileUtils.file("E:\\snail\\", "acgist"));
