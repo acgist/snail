@@ -82,6 +82,8 @@ public class MultifileEventAdapter extends GuiEventArgs {
 			taskSession.setDescription(files);
 		} catch (DownloadException e) {
 			LOGGER.error("设置选择下载文件异常：{}", files, e);
+		} finally {
+			GuiContext.getInstance().files(null);
 		}
 	}
 	

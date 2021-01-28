@@ -34,12 +34,7 @@ public final class HlsProtocol extends Protocol {
 	private M3u8 m3u8;
 	
 	private HlsProtocol() {
-		super(Type.HLS);
-	}
-
-	@Override
-	public String name() {
-		return "HLS";
+		super(Type.HLS, "HLS");
 	}
 
 	@Override

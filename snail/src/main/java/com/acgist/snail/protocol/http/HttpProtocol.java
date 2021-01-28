@@ -28,12 +28,7 @@ public final class HttpProtocol extends Protocol {
 	private HttpHeaderWrapper httpHeaderWrapper;
 	
 	private HttpProtocol() {
-		super(Type.HTTP);
-	}
-	
-	@Override
-	public String name() {
-		return "HTTP";
+		super(Type.HTTP, "HTTP");
 	}
 	
 	@Override

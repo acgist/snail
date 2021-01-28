@@ -305,6 +305,10 @@ public abstract class Protocol {
 	 */
 	protected final Type type;
 	/**
+	 * <p>协议名称</p>
+	 */
+	protected final String name;
+	/**
 	 * <p>下载链接</p>
 	 */
 	protected String url;
@@ -315,9 +319,11 @@ public abstract class Protocol {
 	
 	/**
 	 * @param type 协议类型
+	 * @param name 协议名称
 	 */
-	protected Protocol(Type type) {
+	protected Protocol(Type type, String name) {
 		this.type = type;
+		this.name = name;
 	}
 
 	/**
@@ -325,7 +331,7 @@ public abstract class Protocol {
 	 * 
 	 * @return 协议类型
 	 */
-	public Type type() {
+	public final Type type() {
 		return this.type;
 	}
 	
@@ -334,7 +340,9 @@ public abstract class Protocol {
 	 * 
 	 * @return 协议名称
 	 */
-	public abstract String name();
+	public final String name() {
+		return this.name;
+	}
 	
 	/**
 	 * <p>判断协议是否支持下载链接</p>
