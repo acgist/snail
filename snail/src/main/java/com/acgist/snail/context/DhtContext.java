@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.utils.NumberUtils;
@@ -44,6 +43,10 @@ public final class DhtContext implements IContext {
 	 * <p>消息ID最大值：{@value}</p>
 	 */
 	private static final int MAX_ID_VALUE = 2 << 15;
+	/**
+	 * <p>Token字符：{@value}</p>
+	 */
+	private static final String TOKEN_CHARACTER = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	/**
 	 * <p>当前客户端的Token</p>
@@ -97,7 +100,7 @@ public final class DhtContext implements IContext {
 	private byte[] buildToken() {
 		LOGGER.debug("生成系统Token");
 		final byte[] token = new byte[TOKEN_LENGTH];
-		final byte[] tokens = (SystemConfig.LETTER + SystemConfig.LETTER_UPPER + SystemConfig.DIGIT).getBytes();
+		final byte[] tokens = TOKEN_CHARACTER.getBytes();
 		final int length = tokens.length;
 		final Random random = NumberUtils.random();
 		for (int index = 0; index < TOKEN_LENGTH; index++) {

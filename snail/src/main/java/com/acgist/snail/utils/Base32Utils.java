@@ -11,7 +11,8 @@ public final class Base32Utils {
 	 * <p>编码字符</p>
 	 */
 	private static final char[] BASE_32_ENCODE = {
-		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+		'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 		'2', '3', '4', '5', '6', '7'
 	};
 	/**
@@ -32,41 +33,57 @@ public final class Base32Utils {
 		}
 	}
 	
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private Base32Utils() {
 	}
 	
 	/**
 	 * <p>数据编码</p>
 	 * 
-	 * @param bytes 原始数据
+	 * @param content 原始数据
 	 * 
-	 * @return 编码后字符串
+	 * @return 编码数据
+	 * 
+	 * @see #encode(byte[])
 	 */
-	public static final String encode(final byte[] bytes) {
-		if(bytes == null) {
+	public static final String encode(String content) {
+		if(content == null) {
+			return null;
+		}
+		return encode(content.getBytes());
+	}
+	
+	/**
+	 * <p>数据编码</p>
+	 * 
+	 * @param content 原始数据
+	 * 
+	 * @return 编码数据
+	 */
+	public static final String encode(final byte[] content) {
+		if(content == null) {
 			return null;
 		}
 		int value;
 		int index = 0;
-		final char[] chars = new char[((bytes.length * 8) / 5) + ((bytes.length % 5) != 0 ? 1 : 0)];
-		for (int i = 0, j = 0; i < chars.length; i++) {
+		int contentIndex = 0;
+		final int contentLength = content.length;
+		final char[] chars = new char[((contentLength * 8) / 5) + ((contentLength % 5) != 0 ? 1 : 0)];
+		final int charsLength = chars.length;
+		for (int charsIndex = 0; charsIndex < charsLength; charsIndex++) {
 			if (index > 3) {
-				value = (bytes[j] & 0xFF) & (0xFF >> index);
+				value = (content[contentIndex] & 0xFF) & (0xFF >> index);
 				index = (index + 5) % 8;
 				value <<= index;
-				if (j < bytes.length - 1) {
-					value |= (bytes[j + 1] & 0xFF) >> (8 - index);
+				if (contentIndex < contentLength - 1) {
+					value |= (content[contentIndex + 1] & 0xFF) >> (8 - index);
 				}
-				chars[i] = BASE_32_ENCODE[value];
-				j++;
+				chars[charsIndex] = BASE_32_ENCODE[value];
+				contentIndex++;
 			} else {
-				chars[i] = BASE_32_ENCODE[((bytes[j] >> (8 - (index + 5))) & 0x1F)];
+				chars[charsIndex] = BASE_32_ENCODE[((content[contentIndex] >> (8 - (index + 5))) & 0x1F)];
 				index = (index + 5) % 8;
 				if (index == 0) {
-					j++;
+					contentIndex++;
 				}
 			}
 		}
@@ -76,7 +93,23 @@ public final class Base32Utils {
 	/**
 	 * <p>数据解码</p>
 	 * 
-	 * @param content 编码后字符串
+	 * @param content 编码数据
+	 * 
+	 * @return 原始数据
+	 * 
+	 * @see #decode(String)
+	 */
+	public static final String decodeToString(final String content) {
+		if(content == null) {
+			return null;
+		}
+		return new String(decode(content));
+	}
+	
+	/**
+	 * <p>数据解码</p>
+	 * 
+	 * @param content 编码数据
 	 * 
 	 * @return 原始数据
 	 */
@@ -86,22 +119,25 @@ public final class Base32Utils {
 		}
 		int value;
 		int index = 0;
+		int bytesIndex = 0;
 		final char[] chars = content.toUpperCase().toCharArray();
-		final byte[] bytes = new byte[(chars.length * 5) / 8];
-		for (int i = 0, j = 0; i < chars.length; i++) {
-			value = BASE_32_DECODE[chars[i]];
+		final int charsLength = chars.length;
+		final byte[] bytes = new byte[(charsLength * 5) / 8];
+		final int bytesLength = bytes.length;
+		for (int charsIndex = 0; charsIndex < charsLength; charsIndex++) {
+			value = BASE_32_DECODE[chars[charsIndex]];
 			if (index <= 3) {
 				index = (index + 5) % 8;
 				if (index == 0) {
-					bytes[j++] |= value;
+					bytes[bytesIndex++] |= value;
 				} else {
-					bytes[j] |= value << (8 - index);
+					bytes[bytesIndex] |= value << (8 - index);
 				}
 			} else {
 				index = (index + 5) % 8;
-				bytes[j++] |= (value >> index);
-				if (j < bytes.length) {
-					bytes[j] |= value << (8 - index);
+				bytes[bytesIndex++] |= (value >> index);
+				if (bytesIndex < bytesLength) {
+					bytes[bytesIndex] |= value << (8 - index);
 				}
 			}
 		}
