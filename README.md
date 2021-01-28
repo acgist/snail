@@ -71,6 +71,8 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 final Snail snail = SnailBuilder.getInstance()
 	.enableAllProtocol()
 	.buildSync();
+// 注册文件选择事件（BT任务）
+// GuiContext.register(new MultifileEventAdapter());
 snail.download("https://www.acgist.com");
 snail.lockDownload();
 ```
