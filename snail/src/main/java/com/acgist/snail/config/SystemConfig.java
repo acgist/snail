@@ -51,11 +51,11 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>时间大小比例：{@value}</p>
 	 */
-	public static final int TIME_SCALE = 1000;
+	public static final int DATE_SCALE = 1000;
 	/**
 	 * <p>一秒钟（毫秒）：{@value}</p>
 	 */
-	public static final int ONE_SECOND_MILLIS = TIME_SCALE;
+	public static final int ONE_SECOND_MILLIS = DATE_SCALE;
 	/**
 	 * <p>一分钟（秒数）：{@value}</p>
 	 */
@@ -159,20 +159,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>系统默认编码（file.encoding）：{@value}</p>
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
-	/**
-	 * <p>数值：{@value}</p>
-	 */
-	public static final String DIGIT = "0123456789";
-	/**
-	 * <p>字符（小写）：{@value}</p>
-	 */
-	public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
-	/**
-	 * <p>字符（大写）</p>
-	 * 
-	 * @see #LETTER
-	 */
-	public static final String LETTER_UPPER = LETTER.toUpperCase();
 	/**
 	 * <p>任务列表刷新时间（秒）：{@value}</p>
 	 */
