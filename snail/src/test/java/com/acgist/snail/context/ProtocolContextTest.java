@@ -1,16 +1,15 @@
-package com.acgist.snail.protocol;
+package com.acgist.snail.context;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail.SnailBuilder;
-import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class ProtocolTest extends Performance {
+public class ProtocolContextTest extends Performance {
 
 	@Test
 	public void testSupport() {

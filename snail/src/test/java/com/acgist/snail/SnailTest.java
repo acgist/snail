@@ -30,22 +30,24 @@ public class SnailTest extends Performance {
 	
 	@Test
 	public void testTorrent() throws DownloadException {
+		final String torrentPath = "E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 		final var snail = SnailBuilder.newBuilder()
 			.enableTorrent()
 			.buildSync();
 		// 解析种子文件
-		final var torrent = TorrentContext.loadTorrent("E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent");
-		// 自行过滤下载文件
+		final var torrent = TorrentContext.loadTorrent(torrentPath);
+		// 过滤下载文件
 		final var list = torrent.getInfo().files().stream()
 			.filter(TorrentFile::isNotPaddingFile)
 			.map(TorrentFile::path)
+			.filter(path -> path.endsWith(".mkv"))
 			.collect(Collectors.toList());
-		// 设置需要下载文件
+		// 设置下载文件
 		GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
 		// 注册文件选择事件
 		GuiContext.register(new MultifileEventAdapter());
 		// 开始下载
-		snail.download("E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent").getStatusValue();
+		snail.download(torrentPath);
 		snail.lockDownload();
 	}
 	

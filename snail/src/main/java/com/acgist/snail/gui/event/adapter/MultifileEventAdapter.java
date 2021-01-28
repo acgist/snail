@@ -1,5 +1,6 @@
 package com.acgist.snail.gui.event.adapter;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -9,11 +10,10 @@ import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -57,26 +57,30 @@ public class MultifileEventAdapter extends GuiEventArgs {
 	 * @param taskSession 任务信息
 	 */
 	protected void executeExtendExtend(ITaskSession taskSession) {
-		final String files = GuiContext.getInstance().files();
-		if(StringUtils.isEmpty(files)) {
-			LOGGER.debug("选择下载文件没有文件信息：{}", files);
-			return;
-		}
+		String files = GuiContext.getInstance().files();
 		try {
-			final var decoder = BEncodeDecoder.newInstance(files);
+			List<String> selectFiles;
 			final var torrent = TorrentContext.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
-			// 选择文件列表
-			final var selectFiles = decoder.nextList().stream()
-				.map(StringUtils::getString)
-				.collect(Collectors.toList());
+			if(StringUtils.isEmpty(files)) {
+				// 没有选择文件默认下载所有文件
+				selectFiles = torrent.getInfo().files().stream()
+					.filter(TorrentFile::isNotPaddingFile)
+					.map(TorrentFile::path)
+					.collect(Collectors.toList());
+				files = MultifileSelectorWrapper.newEncoder(selectFiles).serialize();
+			} else {
+				// 选择文件列表
+				selectFiles = MultifileSelectorWrapper.newDecoder(files).deserialize().stream()
+					.map(StringUtils::getString)
+					.collect(Collectors.toList());
+			}
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
-				// 设置选择下载文件
 				.filter(file -> selectFiles.contains(file.path()))
 				.collect(Collectors.summingLong(TorrentFile::getLength));
 			taskSession.setSize(size);
 			taskSession.setDescription(files);
-		} catch (DownloadException | PacketSizeException e) {
+		} catch (DownloadException e) {
 			LOGGER.error("设置选择下载文件异常：{}", files, e);
 		}
 	}
