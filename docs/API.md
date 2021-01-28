@@ -87,23 +87,41 @@ snail.lockDownload();
 
 ### 添加BT任务
 
+#### 下载所有文件
+
 ```java
+final String torrentPath = "种子文件";
+final var snail = SnailBuilder.newBuilder()
+	.enableTorrent()
+	.buildSync();
+// 注册文件选择事件
+GuiContext.register(new MultifileEventAdapter());
+// 开始下载
+snail.download(torrentPath);
+snail.lockDownload();
+```
+
+#### 下载指定文件
+
+```java
+final String torrentPath = "种子文件";
 final var snail = SnailBuilder.newBuilder()
 	.enableTorrent()
 	.buildSync();
 // 解析种子文件
-final var torrent = TorrentContext.loadTorrent("种子文件");
-// 自行过滤下载文件
+final var torrent = TorrentContext.loadTorrent(torrentPath);
+// 过滤下载文件
 final var list = torrent.getInfo().files().stream()
 	.filter(TorrentFile::isNotPaddingFile)
 	.map(TorrentFile::path)
+	.filter(path -> path.endsWith(".mkv"))
 	.collect(Collectors.toList());
-// 设置需要下载文件
+// 设置下载文件
 GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
-// 注册选择下载文件事件
+// 注册文件选择事件
 GuiContext.register(new MultifileEventAdapter());
 // 开始下载
-snail.download("种子文件");
+snail.download(torrentPath);
 snail.lockDownload();
 ```
 
