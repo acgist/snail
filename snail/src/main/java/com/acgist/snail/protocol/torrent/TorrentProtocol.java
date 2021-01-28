@@ -116,11 +116,9 @@ public final class TorrentProtocol extends Protocol {
 	@Override
 	protected void release(boolean success) {
 		super.release(success);
-		if(!success) {
+		if(!success && this.torrentSession != null) {
 			// 清除种子信息
-			if(this.torrentSession != null) {
-				TorrentContext.getInstance().remove(this.torrentSession.infoHashHex());
-			}
+			TorrentContext.getInstance().remove(this.torrentSession.infoHashHex());
 		}
 		this.torrentFile = null;
 		this.torrentSession = null;
@@ -146,12 +144,9 @@ public final class TorrentProtocol extends Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	private void torrent() throws DownloadException {
-		final String torrentFile = this.url;
-		final TorrentSession torrentSession = TorrentContext.getInstance().newTorrentSession(torrentFile);
-		// 生成磁力链接
-		this.url = Protocol.Type.buildMagnet(torrentSession.infoHash().infoHashHex());
-		this.torrentFile = torrentFile;
-		this.torrentSession = torrentSession;
+		this.torrentFile = this.url;
+		this.torrentSession = TorrentContext.getInstance().newTorrentSession(this.torrentFile);
+		this.url = Protocol.Type.buildMagnet(this.torrentSession.infoHash().infoHashHex());
 	}
 	
 	/**

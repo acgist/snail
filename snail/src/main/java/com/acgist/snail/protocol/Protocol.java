@@ -474,13 +474,13 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	protected void buildName(String fileName) throws DownloadException {
-		String name = fileName;
+		String taskName = fileName;
 		// 去掉后缀
 		final int index = fileName.lastIndexOf(SymbolConfig.Symbol.DOT.toChar());
 		if(index != -1) {
-			name = fileName.substring(0, index);
+			taskName = fileName.substring(0, index);
 		}
-		this.taskEntity.setName(name);
+		this.taskEntity.setName(taskName);
 	}
 	
 	/**

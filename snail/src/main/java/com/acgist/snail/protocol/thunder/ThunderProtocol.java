@@ -54,11 +54,11 @@ public final class ThunderProtocol extends Protocol {
 	public synchronized ITaskSession buildTaskSession(final String url) throws DownloadException {
 		final String sourceUrl = this.sourceUrl(url);
 		LOGGER.debug("迅雷原始链接：{}", sourceUrl);
-		final var realProtocol = ProtocolContext.getInstance().protocol(sourceUrl);
-		if(realProtocol.isEmpty()) {
+		final var sourceProtocol = ProtocolContext.getInstance().protocol(sourceUrl);
+		if(sourceProtocol.isEmpty()) {
 			throw new DownloadException("不支持的下载链接：" + url);
 		}
-		return realProtocol.get().buildTaskSession(sourceUrl);
+		return sourceProtocol.get().buildTaskSession(sourceUrl);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public final class ThunderProtocol extends Protocol {
 	public String sourceUrl(String url) {
 		final String prefix = Protocol.Type.THUNDER.prefix(url);
 		String sourceUrl = url.substring(prefix.length());
-		sourceUrl = new String(Base64.getMimeDecoder().decode(sourceUrl)); // getMimeDecoder防止长度非4的整数倍导致的异常
+		sourceUrl = new String(Base64.getMimeDecoder().decode(sourceUrl));
 		sourceUrl = sourceUrl.substring(THUNDER_PREFIX.length(), sourceUrl.length() - THUNDER_SUFFIX.length());
 		return sourceUrl;
 	}
