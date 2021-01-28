@@ -10,16 +10,8 @@ import java.util.Random;
  */
 public final class ArrayUtils {
 
-	/**
-	 * <p>工具类禁止实例化</p>
-	 */
 	private ArrayUtils() {
 	}
-	
-	/**
-	 * <p>查找数组索引没有匹配索引：{@value}</p>
-	 */
-	public static final int NONE_INDEX = -1;
 	
 	/**
 	 * <p>异或运算</p>
@@ -36,53 +28,53 @@ public final class ArrayUtils {
 		if (length != targets.length) {
 			throw new IllegalArgumentException("异或运算参数错误（长度）");
 		} else {
-			final byte[] result = new byte[length];
+			final byte[] value = new byte[length];
 			for (int index = 0; index < length; index++) {
-				result[index] = (byte) (sources[index] ^ targets[index]);
+				value[index] = (byte) (sources[index] ^ targets[index]);
 			}
-			return result;
+			return value;
 		}
 	}
 	
 	/**
-	 * <p>数组是否为空</p>
+	 * <p>判断是否为空</p>
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return true-空；false-非空；
+	 * @return 是否为空
 	 */
 	public static final boolean isEmpty(Object[] objects) {
 		return objects == null || objects.length == 0;
 	}
 	
 	/**
-	 * <p>数组是否非空</p>
+	 * <p>判断是否非空</p>
 	 * 
 	 * @param objects 数组
 	 * 
-	 * @return true-非空；false-空；
+	 * @return 是否非空
 	 */
 	public static final boolean isNotEmpty(Object[] objects) {
 		return !isEmpty(objects);
 	}
 	
 	/**
-	 * <p>字节数组是否为空</p>
+	 * <p>判断是否为空</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return true-空；false-非空；
+	 * @return 是否为空
 	 */
 	public static final boolean isEmpty(byte[] bytes) {
 		return bytes == null || bytes.length == 0;
 	}
 
 	/**
-	 * <p>字节数组是否非空</p>
+	 * <p>判断是否非空</p>
 	 * 
 	 * @param bytes 字节数组
 	 * 
-	 * @return true-非空；false-空；
+	 * @return 是否非空
 	 */
 	public static final boolean isNotEmpty(byte[] bytes) {
 		return !isEmpty(bytes);
@@ -110,7 +102,6 @@ public final class ArrayUtils {
 	 * 
 	 * @return 数据索引
 	 * 
-	 * @see #NONE_INDEX
 	 * @see #indexOf(int[], int, int, int)
 	 */
 	public static final int indexOf(int[] values, int value) {
@@ -121,22 +112,20 @@ public final class ArrayUtils {
 	 * <p>查找数组索引</p>
 	 * 
 	 * @param values 查找数组
-	 * @param begin 开始位置
-	 * @param end 结束位置
+	 * @param fromIndex 开始位置
+	 * @param toIndex 结束位置
 	 * @param value 查找数据
 	 * 
 	 * @return 数据索引
-	 * 
-	 * @see #NONE_INDEX
 	 */
-	public static final int indexOf(int[] values, int begin, int end, int value) {
-		end = end > values.length ? values.length : end;
-		for (int index = begin; index < end; index++) {
+	public static final int indexOf(int[] values, int fromIndex, int toIndex, int value) {
+		toIndex = toIndex > values.length ? values.length : toIndex;
+		for (int index = fromIndex; index < toIndex; index++) {
 			if(values[index] == value) {
 				return index;
 			}
 		}
-		return ArrayUtils.NONE_INDEX;
+		return -1;
 	}
 	
 	/**
@@ -147,7 +136,6 @@ public final class ArrayUtils {
 	 * 
 	 * @return 数据索引
 	 * 
-	 * @see #NONE_INDEX
 	 * @see #indexOf(char[], int, int, char)
 	 */
 	public static final int indexOf(char[] values, char value) {
@@ -158,22 +146,20 @@ public final class ArrayUtils {
 	 * <p>查找数组索引</p>
 	 * 
 	 * @param values 查找数组
-	 * @param begin 开始位置
-	 * @param end 结束位置
+	 * @param fromIndex 开始位置
+	 * @param toIndex 结束位置
 	 * @param value 查找数据
 	 * 
 	 * @return 数据索引
-	 * 
-	 * @see #NONE_INDEX
 	 */
-	public static final int indexOf(char[] values, int begin, int end, char value) {
-		end = end > values.length ? values.length : end;
-		for (int index = begin; index < end; index++) {
+	public static final int indexOf(char[] values, int fromIndex, int toIndex, char value) {
+		toIndex = toIndex > values.length ? values.length : toIndex;
+		for (int index = fromIndex; index < toIndex; index++) {
 			if(values[index] == value) {
 				return index;
 			}
 		}
-		return ArrayUtils.NONE_INDEX;
+		return -1;
 	}
 	
 }
