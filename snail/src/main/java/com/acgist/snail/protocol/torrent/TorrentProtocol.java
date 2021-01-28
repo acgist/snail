@@ -33,9 +33,13 @@ public final class TorrentProtocol extends Protocol {
 	 */
 	public enum TorrentHandle {
 		
-		/** 拷贝：拷贝种子文件到下载目录（源文件不变） */
+		/**
+		 * <p>拷贝：拷贝种子文件到下载目录（源文件不变）</p>
+		 */
 		COPY,
-		/** 移动：移动种子文件到下载目录（源文件删除） */
+		/**
+		 * <p>移动：移动种子文件到下载目录（源文件删除）</p>
+		 */
 		MOVE;
 		
 	}
@@ -54,7 +58,7 @@ public final class TorrentProtocol extends Protocol {
 	private TorrentHandle handle = TorrentHandle.COPY;
 	
 	private TorrentProtocol() {
-		super(Type.TORRENT);
+		super(Type.TORRENT, "BitTorrent");
 	}
 
 	/**
@@ -64,11 +68,6 @@ public final class TorrentProtocol extends Protocol {
 	 */
 	public void torrentHandle(TorrentHandle handle) {
 		this.handle = handle;
-	}
-	
-	@Override
-	public String name() {
-		return "BitTorrent";
 	}
 	
 	@Override
@@ -83,7 +82,7 @@ public final class TorrentProtocol extends Protocol {
 
 	@Override
 	protected void prep() throws DownloadException {
-		this.exist();
+		this.checkExist();
 		this.torrent();
 	}
 
@@ -114,11 +113,6 @@ public final class TorrentProtocol extends Protocol {
 		this.selectFiles();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>注意：一定先检测BT任务是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
-	 */
 	@Override
 	protected void release(boolean success) {
 		super.release(success);
@@ -133,11 +127,12 @@ public final class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * <p>判断任务是否已经存在</p>
+	 * <p>检查任务是否已经存在</p>
+	 * <p>一定要先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除下载任务）</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
-	private void exist() throws DownloadException {
+	private void checkExist() throws DownloadException {
 		final Torrent torrent = TorrentContext.loadTorrent(this.url);
 		if(TorrentContext.getInstance().exist(torrent.infoHash().infoHashHex())) {
 			throw new DownloadException("任务已经存在");
@@ -153,7 +148,8 @@ public final class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		final String torrentFile = this.url;
 		final TorrentSession torrentSession = TorrentContext.getInstance().newTorrentSession(torrentFile);
-		this.url = Protocol.Type.buildMagnet(torrentSession.infoHash().infoHashHex()); // 生成磁力链接
+		// 生成磁力链接
+		this.url = Protocol.Type.buildMagnet(torrentSession.infoHash().infoHashHex());
 		this.torrentFile = torrentFile;
 		this.torrentSession = torrentSession;
 	}

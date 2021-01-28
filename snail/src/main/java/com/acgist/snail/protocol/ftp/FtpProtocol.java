@@ -22,12 +22,7 @@ public final class FtpProtocol extends Protocol {
 	}
 	
 	private FtpProtocol() {
-		super(Type.FTP);
-	}
-
-	@Override
-	public String name() {
-		return "FTP";
+		super(Type.FTP, "FTP");
 	}
 	
 	@Override

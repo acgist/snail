@@ -37,12 +37,7 @@ public final class ThunderProtocol extends Protocol {
 	private static final String THUNDER_SUFFIX = "ZZ";
 
 	private ThunderProtocol() {
-		super(Type.THUNDER);
-	}
-	
-	@Override
-	public String name() {
-		return "迅雷链接";
+		super(Type.THUNDER, "迅雷链接");
 	}
 	
 	@Override
