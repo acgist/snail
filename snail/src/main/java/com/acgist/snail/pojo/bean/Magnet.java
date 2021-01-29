@@ -72,17 +72,22 @@ public final class Magnet implements Serializable {
 	 */
 	private String dn;
 	/**
+	 * <p>文件大小</p>
+	 */
+	private Long xl;
+	/**
 	 * <p>资源URN</p>
+	 * <p>文件散列值URN</p>
 	 */
 	private String xt;
 	/**
-	 * <p>文件链接（经过编码）</p>
-	 * <p>BT磁力链接可以直接使用下载种子文件</p>
+	 * <p>文件链接</p>
+	 * <p>原始文件链接</p>
 	 */
 	private String as;
 	/**
-	 * <p>绝对资源（经过编码）</p>
-	 * <p>BT磁力链接可以直接使用下载种子文件</p>
+	 * <p>绝对资源</p>
+	 * <p>种子文件链接</p>
 	 */
 	private String xs;
 	/**
@@ -140,6 +145,24 @@ public final class Magnet implements Serializable {
 	 */
 	public void setDn(String dn) {
 		this.dn = dn;
+	}
+
+	/**
+	 * <p>获取文件大小</p>
+	 * 
+	 * @return 文件大小
+	 */
+	public Long getXl() {
+		return xl;
+	}
+
+	/**
+	 * <p>设置文件大小</p>
+	 * 
+	 * @param xl 文件大小
+	 */
+	public void setXl(Long xl) {
+		this.xl = xl;
 	}
 
 	/**

@@ -119,7 +119,7 @@ public final class PeerUtils {
 				builder.append(value);
 			} else {
 				// 需要编码字符
-				builder.append(SymbolConfig.Symbol.PERCENT_SIGN.toString());
+				builder.append(SymbolConfig.Symbol.PERCENT.toString());
 				valueHex = Integer.toHexString(value & 0xFF);
 				if(valueHex.length() < 2) {
 					builder.append(SymbolConfig.Symbol.ZERO.toString());
