@@ -10,14 +10,11 @@ import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>磁力链接协议</p>
  * <p>原理：磁力链接通过Tracker服务器和DHT网络获取Peer，然后使用{@linkplain MetadataMessageHandler 扩展协议}交换种子。</p>
- * <dl>
- * 	<dt>其他实现方式</dt>
- * 	<dd>使用第三方种子库（磁力链接转种子）</dd>
- * </dl>
  * 
  * @author acgist
  */
@@ -30,7 +27,7 @@ public final class MagnetProtocol extends Protocol {
 	}
 
 	/**
-	 * <p>磁力链接信息</p>
+	 * <p>磁力链接</p>
 	 */
 	private Magnet magnet;
 	
@@ -50,13 +47,17 @@ public final class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void prep() throws DownloadException {
-		final Magnet magnet = MagnetBuilder.newInstance(this.url).build();
-		this.checkExist(magnet);
-		this.magnet = magnet;
+		final Magnet magnetCheck = MagnetBuilder.newInstance(this.url).build();
+		this.checkExist(magnetCheck);
+		this.magnet = magnetCheck;
 	}
 	
 	@Override
 	protected String buildFileName() {
+		final String dn = this.magnet.getDn();
+		if(StringUtils.isNotEmpty(dn)) {
+			return dn;
+		}
 		return this.magnet.getHash();
 	}
 	
@@ -72,6 +73,7 @@ public final class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void buildSize() throws DownloadException {
+		// 磁力链接下载完成修改大小
 		this.taskEntity.setSize(0L);
 	}
 	
@@ -80,27 +82,21 @@ public final class MagnetProtocol extends Protocol {
 		this.buildFolder();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>注意：一定要先检测磁力链接是否已经存在（如果已经存在不能赋值：防止清除已下载任务）</p>
-	 */
 	@Override
 	protected void release(boolean success) {
 		super.release(success);
-		if(!success) {
+		if(!success && this.magnet != null) {
 			// 清除种子信息
-			if(this.magnet != null) {
-				TorrentContext.getInstance().remove(this.magnet.getHash());
-			}
+			TorrentContext.getInstance().remove(this.magnet.getHash());
 		}
 		this.magnet = null;
 	}
 	
 	/**
-	 * <p>是否已经存在下载任务</p>
+	 * <p>检查任务是否已经存在</p>
+	 * <p>一定要先检查BT任务是否已经存在（如果已经存在不能赋值：防止清除下载任务）</p>
 	 * 
-	 * @param magnet 磁力链接信息
+	 * @param magnet 磁力链接
 	 * 
 	 * @throws DownloadException 下载异常
 	 */

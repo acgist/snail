@@ -432,7 +432,7 @@ public final class StringUtils {
 		if(startsWith(value, key)) {
 			// 去掉键值
 			value = value.substring(key.length()).trim();
-			final String equalsSign = SymbolConfig.Symbol.EQUALS_SIGN.toString();
+			final String equalsSign = SymbolConfig.Symbol.EQUALS.toString();
 			if(startsWith(value, equalsSign)) {
 				// 去掉等号
 				return value.substring(equalsSign.length()).trim();

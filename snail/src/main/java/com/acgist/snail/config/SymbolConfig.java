@@ -15,6 +15,14 @@ public final class SymbolConfig {
 	public enum Symbol {
 		
 		/**
+		 * <p>或者</p>
+		 */
+		OR('|'),
+		/**
+		 * <p>并且</p>
+		 */
+		AND('&'),
+		/**
 		 * <p>点号</p>
 		 */
 		DOT('.'),
@@ -41,15 +49,15 @@ public final class SymbolConfig {
 		/**
 		 * <p>等号</p>
 		 */
-		EQUALS_SIGN('='),
+		EQUALS('='),
 		/**
 		 * <p>百分号</p>
 		 */
-		PERCENT_SIGN('%'),
+		PERCENT('%'),
 		/**
 		 * <p>问号</p>
 		 */
-		QUESTION_MARK('?'),
+		QUESTION('?'),
 		/**
 		 * <p>双引号</p>
 		 */

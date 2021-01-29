@@ -168,7 +168,7 @@ public final class FileUtils {
 			fileName = fileName.substring(index + 1);
 		}
 		// 过滤：参数
-		index = fileName.indexOf(SymbolConfig.Symbol.QUESTION_MARK.toChar());
+		index = fileName.indexOf(SymbolConfig.Symbol.QUESTION.toChar());
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
