@@ -87,13 +87,13 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public final boolean statusPause() {
-		return this.taskSession.statusPause();
+	public final boolean statusDownload() {
+		return this.taskSession.statusDownload();
 	}
 	
 	@Override
-	public final boolean statusDownload() {
-		return this.taskSession.statusDownload();
+	public final boolean statusPause() {
+		return this.taskSession.statusPause();
 	}
 	
 	@Override

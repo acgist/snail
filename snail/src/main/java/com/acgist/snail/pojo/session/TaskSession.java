@@ -33,9 +33,13 @@ import com.acgist.snail.utils.StringUtils;
 public final class TaskSession implements ITaskSession {
 	
 	/**
-	 * <p>时间格式</p>
+	 * <p>时间格式：{@value}</p>
 	 */
 	private static final String PATTERN = "yyyy-MM-dd HH:mm";
+	/**
+	 * <p>任务状态：{@value}</p>
+	 */
+	private static final String TASK_STATUS_VALUE = "statusValue";
 
 	/**
 	 * <p>下载器</p>
@@ -75,6 +79,8 @@ public final class TaskSession implements ITaskSession {
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		return new TaskSession(entity);
 	}
+	
+	//================任务信息================//
 	
 	@Override
 	public IDownloader downloader() {
@@ -116,11 +122,6 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
-	public IStatisticsSession statistics() {
-		return this.statistics;
-	}
-	
-	@Override
 	public long downloadSize() {
 		return this.statistics.downloadSize();
 	}
@@ -136,18 +137,36 @@ public final class TaskSession implements ITaskSession {
 	}
 	
 	@Override
+	public Map<String, Object> taskMessage() {
+		final Map<String, Object> data = BeanUtils.toMap(this.entity).entrySet().stream()
+			.filter(entry -> entry.getKey() != null && entry.getValue() != null)
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		data.put(TASK_STATUS_VALUE, this.getStatusValue());
+		return data;
+	}
+	
+	//================任务信息统计信息================//
+	
+	@Override
+	public IStatisticsSession statistics() {
+		return this.statistics;
+	}
+	
+	//================任务信息状态================//
+	
+	@Override
 	public boolean statusAwait() {
 		return this.getStatus() == Status.AWAIT;
 	}
 	
 	@Override
-	public boolean statusPause() {
-		return this.getStatus() == Status.PAUSE;
+	public boolean statusDownload() {
+		return this.getStatus() == Status.DOWNLOAD;
 	}
 	
 	@Override
-	public boolean statusDownload() {
-		return this.getStatus() == Status.DOWNLOAD;
+	public boolean statusPause() {
+		return this.getStatus() == Status.PAUSE;
 	}
 	
 	@Override
@@ -170,14 +189,7 @@ public final class TaskSession implements ITaskSession {
 		return this.statusAwait() || this.statusDownload();
 	}
 	
-	@Override
-	public Map<String, Object> taskMessage() {
-		return BeanUtils.toMap(this.entity).entrySet().stream()
-			.filter(entry -> entry.getKey() != null && entry.getValue() != null)
-			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-	}
-	
-	//================Gui面板数据绑定================//
+	//================任务信息面板数据绑定================//
 	
 	@Override
 	public String getNameValue() {
@@ -234,13 +246,22 @@ public final class TaskSession implements ITaskSession {
 		}
 	}
 	
-	//================实体操作================//
+	//================任务信息操作================//
 	
 	@Override
 	public void reset() {
-		// 非常重要：如果任务被错误的保存为下载状态需要重置为等待状态（否者不能正常下载）
 		if(this.statusDownload()) {
 			this.setStatus(Status.AWAIT);
+		}
+	}
+	
+	@Override
+	public void await() {
+		if(this.statusDownload()) {
+			// 下载中的任务修改等待
+			this.setStatus(Status.AWAIT);
+			// 直接调用解除下载：不用保存状态
+			this.unlockDownload();
 		}
 	}
 	
@@ -263,7 +284,7 @@ public final class TaskSession implements ITaskSession {
 	public void restart() throws DownloadException {
 		// 暂停任务
 		this.pause();
-		// 删除下载器
+		// 删除旧下载器
 		this.downloader = null;
 		if(this.statusCompleted()) {
 			// 已经完成任务：修改状态、清空完成时间
@@ -271,16 +292,6 @@ public final class TaskSession implements ITaskSession {
 			this.setEndDate(null);
 		}
 		this.start();
-	}
-	
-	@Override
-	public void await() {
-		if(this.statusDownload()) {
-			// 下载中的任务修改等待
-			this.setStatus(Status.AWAIT);
-			// 直接调用解除下载：不用保存状态
-			this.unlockDownload();
-		}
 	}
 	
 	@Override
@@ -320,7 +331,7 @@ public final class TaskSession implements ITaskSession {
 		}
 		// 删除下载任务
 		TaskContext.getInstance().remove(this);
-		// 删除下载器
+		// 删除旧下载器
 		this.downloader = null;
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
@@ -359,15 +370,18 @@ public final class TaskSession implements ITaskSession {
 			return;
 		}
 		if(status == Status.COMPLETED) {
-			this.setEndDate(new Date()); // 设置完成时间
+			// 设置完成时间
+			this.setEndDate(new Date());
 		}
 		this.setStatus(status);
 		this.update();
-		this.unlockDownload(); // 状态修改完成才能调用
-		TaskContext.getInstance().refresh(); // 刷新下载
+		// 释放下载锁：修改状态后再释放
+		this.unlockDownload();
+		// 刷新下载任务
+		TaskContext.getInstance().refresh();
 	}
 
-	//================实体================//
+	//================任务信息实体================//
 	
 	@Override
 	public String getId() {
@@ -446,7 +460,8 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public void setStatus(Status status) {
-		GuiContext.getInstance().refreshTaskStatus(); // 刷新状态
+		// 刷新状态
+		GuiContext.getInstance().refreshTaskStatus();
 		this.entity.setStatus(status);
 	}
 	

@@ -15,23 +15,24 @@ public interface ITaskSessionStatus {
 	public enum Status {
 		
 		/**
-		 * <p>任务添加到下载队列时</p>
+		 * <p>等待中任务：任务添加到下载队列还没有开始下载</p>
 		 */
 		AWAIT("等待中"),
 		/**
-		 * <p>任务下载状态：系统自动修改（不能直接设置为下载中状态）</p>
+		 * <p>下载中任务：任务开始下载</p>
+		 * <p>注意：添加任务不要设置该状态</p>
 		 */
 		DOWNLOAD("下载中"),
 		/**
-		 * <p>任务暂停</p>
+		 * <p>暂停任务</p>
 		 */
 		PAUSE("暂停"),
 		/**
-		 * <p>任务完成：完成状态不能转换为其他任何状态</p>
+		 * <p>完成任务</p>
 		 */
 		COMPLETED("完成"),
 		/**
-		 * <p>任务失败</p>
+		 * <p>失败任务</p>
 		 */
 		FAIL("失败"),
 		/**
@@ -70,18 +71,18 @@ public interface ITaskSessionStatus {
 	boolean statusAwait();
 	
 	/**
-	 * <p>判断任务是否处于暂停状态</p>
-	 * 
-	 * @return 是否处于暂停状态
-	 */
-	boolean statusPause();
-	
-	/**
 	 * <p>判断任务是否处于下载状态</p>
 	 * 
 	 * @return 是否处于下载状态
 	 */
 	boolean statusDownload();
+	
+	/**
+	 * <p>判断任务是否处于暂停状态</p>
+	 * 
+	 * @return 是否处于暂停状态
+	 */
+	boolean statusPause();
 	
 	/**
 	 * <p>判断任务是否处于完成状态</p>
@@ -106,7 +107,6 @@ public interface ITaskSessionStatus {
 	
 	/**
 	 * <p>判断任务是否处于执行状态</p>
-	 * <p>执行状态（在线程池中）：等待中、下载中</p>
 	 * 
 	 * @return 是否处于执行状态
 	 * 

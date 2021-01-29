@@ -234,8 +234,11 @@ B编码List&lt;Map&gt;
 |endDate|○|完成时间|
 |description|○|下载描述|
 |payload|○|任务负载|
+|statusValue|√|下载速度|
 
 *√=必要、○-可选*
+
+> 下载速度：下载中任务才返回速度，其他情况返回任务状态。
 
 ### 系统通知
 

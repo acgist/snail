@@ -21,23 +21,41 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	 */
 	public enum FileType {
 		
-		/** 图片 */
+		/**
+		 * <p>图片</p>
+		 */
 		IMAGE("图片"),
-		/** 视频 */
+		/**
+		 * <p>视频</p>
+		 */
 		VIDEO("视频"),
-		/** 音频 */
+		/**
+		 * <p>音频</p>
+		 */
 		AUDIO("音频"),
-		/** 脚本 */
+		/**
+		 * <p>脚本</p>
+		 */
 		SCRIPT("脚本"),
-		/** BT */
+		/**
+		 * <p>BT</p>
+		 */
 		TORRENT("BT"),
-		/** 压缩 */
+		/**
+		 * <p>压缩</p>
+		 */
 		COMPRESS("压缩"),
-		/** 文档 */
+		/**
+		 * <p>文档</p>
+		 */
 		DOCUMENT("文档"),
-		/** 安装包 */
-		INSTALL("安装包"),
-		/** 未知 */
+		/**
+		 * <p>安装</p>
+		 */
+		INSTALL("安装"),
+		/**
+		 * <p>未知</p>
+		 */
 		UNKNOWN("未知");
 		
 		/**
@@ -72,7 +90,6 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	
 	/**
 	 * <p>创建下载器</p>
-	 * <p>如果已经存在下载器直接返回，否者创建下载器。</p>
 	 * 
 	 * @return 下载器
 	 * 
@@ -95,9 +112,10 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	File downloadFolder();
 	
 	/**
-	 * <p>获取多文件下载任务选择下载文件列表</p>
+	 * <p>获取选择下载文件列表</p>
+	 * <p>注意：多文件下载任务</p>
 	 * 
-	 * @return 多文件下载任务选择下载文件列表
+	 * @return 选择下载文件列表
 	 */
 	List<String> multifileSelected();
 
@@ -121,7 +139,7 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	void buildDownloadSize();
 
 	/**
-	 * <p>获取任务信息（Map）</p>
+	 * <p>获取任务信息</p>
 	 * 
 	 * @return 任务信息
 	 */

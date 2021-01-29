@@ -76,7 +76,7 @@ public final class FileUtils {
 		FILE_TYPE_EXT.put(FileType.DOCUMENT, List.of(
 			"css", "csv", "doc", "docx", "htm", "html", "json", "log", "md", "pdf", "ppt", "pptx", "txt", "wps", "xls", "xlsx", "xml"
 		));
-		// 安装程序
+		// 安装文件
 		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
 			"apk", "com", "deb", "exe", "pkg", "rpm"
 		));

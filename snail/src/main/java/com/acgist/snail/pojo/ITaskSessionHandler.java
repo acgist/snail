@@ -12,30 +12,30 @@ public interface ITaskSessionHandler {
 
 	/**
 	 * <p>重置状态</p>
-	 * <p>如果软件没有正常关闭，重置任务状态。</p>
+	 * <p>如果软件没有正常关闭（任务状态被错误保存为下载中状态）：重置任务等待状态</p>
 	 */
 	void reset();
 	
 	/**
+	 * <p>等待任务</p>
+	 * <p>暂停已经开始下载的任务进入等待状态</p>
+	 * <p>注意：不是修改为暂停状态</p>
+	 */
+	void await();
+	
+	/**
 	 * <p>开始下载任务</p>
-	 * <p>添加下载任务并开始下载</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	void start() throws DownloadException;
 
 	/**
-	 * <p>重新添加下载</p>
-	 * <p>删除旧下载器，重新开始下载。</p>
+	 * <p>重新下载任务</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	void restart() throws DownloadException;
-	
-	/**
-	 * <p>等待下载</p>
-	 */
-	void await();
 	
 	/**
 	 * <p>暂停任务</p>
@@ -80,7 +80,7 @@ public interface ITaskSessionHandler {
 	void update();
 	
 	/**
-	 * <p>更新状态</p>
+	 * <p>更新任务状态</p>
 	 * <p>如果任务完成不会更新</p>
 	 * 
 	 * @param status 任务状态
