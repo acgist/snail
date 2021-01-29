@@ -20,8 +20,6 @@ import com.acgist.snail.utils.FileUtils;
  */
 public final class HlsProtocol extends Protocol {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(HlsProtocol.class);
-	
 	private static final HlsProtocol INSTANCE = new HlsProtocol();
 	
 	public static final HlsProtocol getInstance() {
@@ -78,14 +76,14 @@ public final class HlsProtocol extends Protocol {
 			.newInstance(this.url)
 			.get()
 			.responseToString();
-		final var m3u8 = M3u8Builder.newInstance(response, this.url).build();
-		if(m3u8.getType() == M3u8.Type.M3U8) {
-			this.url = m3u8.maxRateLink();
+		final var m3u8Check = M3u8Builder.newInstance(response, this.url).build();
+		if(m3u8Check.getType() == M3u8.Type.M3U8) {
+			this.url = m3u8Check.maxRateLink();
 			this.buildM3u8();
-		} else if(m3u8.getType() == M3u8.Type.STREAM) {
+		} else if(m3u8Check.getType() == M3u8.Type.STREAM) {
 			throw new DownloadException("不支持直播流媒体下载");
 		} else {
-			this.m3u8 = m3u8;
+			this.m3u8 = m3u8Check;
 		}
 	}
 	
@@ -100,6 +98,7 @@ public final class HlsProtocol extends Protocol {
 	 * <p>保持下载文件列表</p>
 	 */
 	private void selectFiles() {
+		// M3U8协议默认下载所有文件
 		this.taskEntity.setDescription(MultifileSelectorWrapper.newEncoder(this.m3u8.getLinks()).serialize());
 	}
 	
