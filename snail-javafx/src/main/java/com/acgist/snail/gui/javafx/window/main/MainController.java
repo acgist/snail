@@ -90,10 +90,6 @@ public final class MainController extends Controller {
 	@FXML
 	private HBox statuses;
 	@FXML
-	private Label downloadStatus;
-	@FXML
-	private Label downloadBuffer;
-	@FXML
 	private Label uploadStatus;
 	@FXML
 	private Label uploadBuffer;
@@ -116,8 +112,7 @@ public final class MainController extends Controller {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// 设置状态符号
-		this.downloadStatus.setText(SnailIcon.AS_CLOUD_DOWNLOAD.toString());
+		// 设置上传图标
 		this.uploadStatus.setText(SnailIcon.AS_CLOUD_UPLOAD.toString());
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -282,12 +277,9 @@ public final class MainController extends Controller {
 		// 刷新Table
 		this.taskTable.refresh();
 		Platform.runLater(() -> {
-			// 下载速度
-			final long downloadSpeed = StatisticsContext.getInstance().downloadSpeed();
-			this.downloadBuffer.setText(FileUtils.formatSize(downloadSpeed) + "/S");
 			// 上传速度
-			final long uploadSpeed = StatisticsContext.getInstance().uploadSpeed();
-			this.uploadBuffer.setText(FileUtils.formatSize(uploadSpeed) + "/S");
+			final String speed = FileUtils.formatSize(StatisticsContext.getInstance().uploadSpeed());
+			this.uploadBuffer.setText(speed + "/S");
 		});
 	}
 	

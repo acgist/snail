@@ -48,4 +48,14 @@ public final class StatisticsContext implements IContext, ISpeedGetter, IStatist
 		return this.statistics.downloadSpeed();
 	}
 
+	@Override
+	public void resetUploadSpeed() {
+		this.statistics.resetUploadSpeed();
+	}
+
+	@Override
+	public void resetDownloadSpeed() {
+		this.statistics.resetDownloadSpeed();
+	}
+
 }
