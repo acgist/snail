@@ -67,7 +67,7 @@ public final class Alerts {
 	public static final Optional<ButtonType> build(String title, String message, GuiContext.MessageType type) {
 		final Alert alert = new Alert(getAlertType(type));
 		final Scene scene = alert.getDialogPane().getScene();
-		Themes.applyTheme(scene);
+		Themes.applyStyle(scene);
 		final Stage stage = (Stage) scene.getWindow();
 		// 设置图标
 		Themes.applyLogo(stage.getIcons());

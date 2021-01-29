@@ -44,7 +44,7 @@ public final class Tooltips {
 		final Tooltip tooltip = new Tooltip(value);
 		tooltip.setShowDelay(Duration.millis(millis));
 		final Scene scene = tooltip.getScene();
-		Themes.applyTheme(scene);
+		Themes.applyStyle(scene);
 		return tooltip;
 	}
 	

@@ -155,7 +155,7 @@ public final class TrayMenu extends Menu {
 		trayPane.setBackground(Background.EMPTY);
 		Themes.applyClass(trayPane, Themes.CLASS_TRAY);
 		final Scene trayScene = new Scene(trayPane);
-		Themes.applyTheme(trayScene);
+		Themes.applyStyle(trayScene);
 		trayScene.setFill(Color.TRANSPARENT);
 		this.trayStage = new Stage();
 		// 隐藏状态栏图标

@@ -124,14 +124,32 @@ public final class Themes {
 	
 	private Themes() {
 	}
-
+	
 	/**
-	 * <p>创建Logo图标</p>
+	 * <p>获取Logo图标</p>
 	 * 
 	 * @return Logo图标
 	 */
-	public static final Image buildLogo() {
+	public static final Image getLogo() {
 		return new Image(Themes.LOGO_ICON_200);
+	}
+	
+	/**
+	 * <p>获取系统主题颜色</p>
+	 * 
+	 * @return 系统主题颜色
+	 */
+	public static final Color getColor() {
+		return SYSTEM_THEME_COLOR;
+	}
+	
+	/**
+	 * <p>获取系统主题样式</p>
+	 * 
+	 * @return 系统主题样式
+	 */
+	public static final String getStyle() {
+		return SYSTEM_THEME_STYLE;
 	}
 	
 	/**
@@ -140,16 +158,7 @@ public final class Themes {
 	 * @param icons 图标列表
 	 */
 	public static final void applyLogo(ObservableList<Image> icons) {
-		icons.add(buildLogo());
-	}
-	
-	/**
-	 * <p>获取系统主题样式</p>
-	 * 
-	 * @return 系统主题样式
-	 */
-	public static final String getThemeStyle() {
-		return SYSTEM_THEME_STYLE;
+		icons.add(getLogo());
 	}
 	
 	/**
@@ -157,10 +166,10 @@ public final class Themes {
 	 * 
 	 * @param scene 场景
 	 */
-	public static final void applyTheme(Scene scene) {
+	public static final void applyStyle(Scene scene) {
 		final Parent root = scene.getRoot();
 		// 设置主题样式
-		root.setStyle(Themes.getThemeStyle());
+		root.setStyle(Themes.getStyle());
 		// 设置样式文件
 		root.getStylesheets().add(Themes.FXML_STYLE);
 	}
@@ -170,8 +179,8 @@ public final class Themes {
 	 * 
 	 * @param node 节点
 	 */
-	public static final void applyTheme(Node node) {
-		node.setStyle(Themes.getThemeStyle());
+	public static final void applyStyle(Node node) {
+		node.setStyle(Themes.getStyle());
 	}
 	
 	/**
