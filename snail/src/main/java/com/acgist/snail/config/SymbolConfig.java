@@ -35,6 +35,10 @@ public final class SymbolConfig {
 		 */
 		COMMA(','),
 		/**
+		 * <p>井号</p>
+		 */
+		POUND('#'),
+		/**
 		 * <p>冒号</p>
 		 */
 		COLON(':'),
