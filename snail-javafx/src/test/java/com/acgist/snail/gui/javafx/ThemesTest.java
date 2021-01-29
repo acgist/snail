@@ -10,8 +10,8 @@ public class ThemesTest extends Performance {
 
 	@Test
 	public void testThemeStyle() throws Exception {
-		this.log(Themes.getThemeStyle());
-		assertNotNull(Themes.getThemeStyle());
+		this.log(Themes.getStyle());
+		assertNotNull(Themes.getStyle());
 	}
 
 }

@@ -90,9 +90,9 @@ public final class MainController extends Controller {
 	@FXML
 	private HBox statuses;
 	@FXML
-	private Label uploadStatus;
-	@FXML
 	private Label uploadBuffer;
+	@FXML
+	private Label uploadStatus;
 	@FXML
 	private TableView<ITaskSession> taskTable;
 	@FXML
@@ -114,6 +114,7 @@ public final class MainController extends Controller {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 设置上传图标
 		this.uploadStatus.setText(SnailIcon.AS_CLOUD_UPLOAD.toString());
+		this.uploadStatus.setTextFill(Themes.getColor());
 		// 设置多选
 		this.taskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.taskTable.setPlaceholder(this.buildPlaceholder());

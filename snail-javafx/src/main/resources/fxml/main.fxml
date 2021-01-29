@@ -86,8 +86,8 @@
 				<Button fx:id="completed" text="完成" onAction="#handleCompletedAction" />
 			</HBox>
 			<HBox fx:id="statuses" styleClass="statuses">
-				<Label fx:id="uploadStatus" styleClass="snail-icon" text="↑" />
 				<Label fx:id="uploadBuffer" text="0B/S" />
+				<Label fx:id="uploadStatus" styleClass="snail-icon" text="↑" />
 			</HBox>
 		</HBox>
 	</bottom>
