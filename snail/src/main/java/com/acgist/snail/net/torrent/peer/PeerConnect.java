@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerConnectSession;
@@ -21,7 +22,7 @@ import com.acgist.snail.utils.BeanUtils;
  * 
  * @author acgist
  */
-public abstract class PeerConnect {
+public abstract class PeerConnect implements IPeerConnect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConnect.class);
 
@@ -143,6 +144,11 @@ public abstract class PeerConnect {
 	 */
 	public final PeerConnectSession peerConnectSession() {
 		return this.peerConnectSession;
+	}
+	
+	@Override
+	public final IPeerConnect.ConnectType connectType() {
+		return this.peerSubMessageHandler.connectType();
 	}
 	
 	/**
