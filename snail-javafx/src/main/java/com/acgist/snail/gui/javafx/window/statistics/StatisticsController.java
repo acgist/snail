@@ -24,6 +24,7 @@ import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -443,8 +444,6 @@ public final class StatisticsController extends Controller {
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
 		final var availableCount = new AtomicInteger(0);
-		final var uploadCount = new AtomicInteger(0);
-		final var downloadCount = new AtomicInteger(0);
 		final var pexCount = new AtomicInteger(0);
 		final var dhtCount = new AtomicInteger(0);
 		final var lsdCount = new AtomicInteger(0);
@@ -454,12 +453,6 @@ public final class StatisticsController extends Controller {
 		peers.forEach(peer -> {
 			if(peer.available()) {
 				availableCount.incrementAndGet();
-			}
-			if(peer.uploading()) {
-				uploadCount.incrementAndGet();
-			}
-			if(peer.downloading()) {
-				downloadCount.incrementAndGet();
 			}
 			peer.sources().forEach(source -> {
 				switch (source) {
@@ -496,11 +489,9 @@ public final class StatisticsController extends Controller {
 			new PieChart.Data("Holepunch", holepunchCount.get())
 		);
 		final String title = String.format(
-				"总量：%d 可用：%d 下载：%d 上传：%d",
+				"总量：%d 可用数量：%d",
 				peers.size(),
-				availableCount.get(),
-				downloadCount.get(),
-				uploadCount.get()
+				availableCount.get()
 			);
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
@@ -519,6 +510,8 @@ public final class StatisticsController extends Controller {
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
 		// 分类：上传、下载
 		final List<String> categoriesPeer = new ArrayList<>();
+		final var utpCount = new AtomicInteger(0);
+		final var tcpCount = new AtomicInteger(0);
 		final var uploadCount = new AtomicInteger(0);
 		final var downloadCount = new AtomicInteger(0);
 		// 上传流量
@@ -537,6 +530,14 @@ public final class StatisticsController extends Controller {
 				downloadCount.incrementAndGet();
 			}
 			if(active) {
+				final IPeerConnect.ConnectType connectType = peer.connectType();
+				if(connectType == IPeerConnect.ConnectType.TCP) {
+					tcpCount.incrementAndGet();
+				} else if(connectType == IPeerConnect.ConnectType.UTP) {
+					tcpCount.incrementAndGet();
+				} else {
+					LOGGER.info("未知连接类型：{}", connectType);
+				}
 				int index = 0;
 				String name = peer.host();
 				while(categoriesPeer.contains(name)) {
@@ -555,7 +556,14 @@ public final class StatisticsController extends Controller {
 		});
 		// X轴
 		final CategoryAxis xAxis = new CategoryAxis();
-		xAxis.setLabel(String.format("上传数量：%d 下载数量：%d", uploadCount.get(), downloadCount.get()));
+		final String title = String.format(
+			"UTP连接：%d TCP连接：%d 上传数量：%d 下载数量：%d",
+			utpCount.get(),
+			tcpCount.get(),
+			uploadCount.get(),
+			downloadCount.get()
+		);
+		xAxis.setLabel(title);
 		xAxis.setCategories(FXCollections.observableArrayList(categoriesPeer));
 		// Y轴
 		final NumberAxis yAxis = new NumberAxis();

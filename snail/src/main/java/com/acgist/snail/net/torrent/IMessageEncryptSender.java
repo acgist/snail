@@ -1,15 +1,16 @@
-package com.acgist.snail.net;
+package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.IMessageSender;
 
 /**
  * <p>加密消息代理接口</p>
  * 
  * @author acgist
  */
-public interface IMessageEncryptSender extends IMessageSender {
+public interface IMessageEncryptSender extends IMessageSender, IPeerConnect {
 
 	/**
 	 * <p>消息加密发送</p>

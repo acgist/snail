@@ -14,8 +14,9 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.codec.IMessageDecoder;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -38,7 +39,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer> {
+public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>, IPeerConnect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
@@ -238,6 +239,11 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer> 
 	public PeerSubMessageHandler messageEncryptSender(IMessageEncryptSender messageEncryptSender) {
 		this.messageEncryptSender = messageEncryptSender;
 		return this;
+	}
+	
+	@Override
+	public final IPeerConnect.ConnectType connectType() {
+		return this.messageEncryptSender.connectType();
 	}
 	
 	@Override

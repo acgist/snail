@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.Source;
+import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerDownloader;
 import com.acgist.snail.net.torrent.peer.PeerUploader;
@@ -30,7 +31,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public final class PeerSession implements IStatisticsSessionGetter {
+public final class PeerSession implements IStatisticsSessionGetter, IPeerConnect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSession.class);
 	
@@ -159,6 +160,15 @@ public final class PeerSession implements IStatisticsSessionGetter {
 		return new PeerSession(parent, host, port);
 	}
 
+	@Override
+	public IPeerConnect.ConnectType connectType() {
+		final PeerConnect connect = this.peerConnect();
+		if(connect == null) {
+			return null;
+		}
+		return connect.connectType();
+	}
+	
 	@Override
 	public IStatisticsSession statistics() {
 		return this.statistics;

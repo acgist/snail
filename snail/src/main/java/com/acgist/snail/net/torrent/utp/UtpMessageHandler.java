@@ -13,9 +13,10 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
@@ -217,6 +218,11 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageEncoder.encode(buffer);
 		this.sendPacket(buffer);
+	}
+	
+	@Override
+	public IPeerConnect.ConnectType connectType() {
+		return IMessageEncryptSender.ConnectType.UTP;
 	}
 
 	/**

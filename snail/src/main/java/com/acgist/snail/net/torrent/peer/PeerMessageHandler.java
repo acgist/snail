@@ -3,9 +3,10 @@ package com.acgist.snail.net.torrent.peer;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.IMessageEncryptSender;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
+import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IPeerConnect;
 
 /**
  * <p>Peer消息代理</p>
@@ -43,6 +44,11 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageEncoder.encode(buffer);
 		this.send(buffer, timeout);
+	}
+	
+	@Override
+	public IPeerConnect.ConnectType connectType() {
+		return IMessageEncryptSender.ConnectType.TCP;
 	}
 
 }
