@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.IContext;
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.context.recycle.Recycle;
-import com.acgist.snail.context.recycle.windows.WindowsRecycle;
+import com.acgist.snail.context.recycle.WindowsRecycle;
 import com.acgist.snail.utils.StringUtils;
 
 /**
