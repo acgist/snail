@@ -1,4 +1,4 @@
-package com.acgist.snail.context.recycle.windows;
+package com.acgist.snail.context.recycle;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,7 +9,6 @@ import java.nio.ByteOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.recycle.Recycle;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NumberUtils;
