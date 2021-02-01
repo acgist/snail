@@ -16,7 +16,7 @@ import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
@@ -42,7 +42,7 @@ public class TorrentStreamTest extends Performance {
 			pos += file.getLength();
 		}
 		final List<String> list = new ArrayList<>();
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		final long pieceLength = session.torrent().getInfo().getPieceLength();

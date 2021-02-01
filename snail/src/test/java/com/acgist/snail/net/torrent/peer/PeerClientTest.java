@@ -14,7 +14,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
@@ -39,7 +39,7 @@ public class PeerClientTest extends Performance {
 		entity.setFile("E:/snail/tmp/download/");
 		entity.setType(Type.TORRENT);
 		// 设置下载文件
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		// 禁止自动加载Peer
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		final String host = "127.0.0.1";

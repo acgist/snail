@@ -2,14 +2,13 @@ package com.acgist.snail.pojo.wrapper;
 
 import java.net.URI;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>URI包装器</p>
  * 
  * @author acgist
- * 
- * TODO：协议、Authority
  */
 public final class URIWrapper {
 
@@ -29,6 +28,10 @@ public final class URIWrapper {
 	 * <p>默认密码</p>
 	 */
 	private String defaultPassword;
+	/**
+	 * <p>协议（Scheme）</p>
+	 */
+	private String scheme;
 	/**
 	 * <p>地址</p>
 	 */
@@ -53,6 +56,10 @@ public final class URIWrapper {
 	 * <p>参数</p>
 	 */
 	private String query;
+	/**
+	 * <p>标识</p>
+	 */
+	private String fragment;
 	
 	/**
 	 * @param uri 链接地址
@@ -88,7 +95,7 @@ public final class URIWrapper {
 	 * 
 	 * @param uri 链接地址
 	 * 
-	 * @return URIWrapper
+	 * @return {@link URIWrapper}
 	 */
 	public static final URIWrapper newInstance(String uri) {
 		return new URIWrapper(uri);
@@ -100,7 +107,7 @@ public final class URIWrapper {
 	 * @param uri 链接地址
 	 * @param defaultPort 默认端口
 	 * 
-	 * @return URIWrapper
+	 * @return {@link URIWrapper}
 	 */
 	public static final URIWrapper newInstance(String uri, int defaultPort) {
 		return new URIWrapper(uri, defaultPort);
@@ -114,7 +121,7 @@ public final class URIWrapper {
 	 * @param defaultUser 默认用户
 	 * @param defaultPassword 默认密码
 	 * 
-	 * @return URIWrapper
+	 * @return {@link URIWrapper}
 	 */
 	public static final URIWrapper newInstance(String uri, int defaultPort, String defaultUser, String defaultPassword) {
 		return new URIWrapper(uri, defaultPort, defaultUser, defaultPassword);
@@ -123,21 +130,23 @@ public final class URIWrapper {
 	/**
 	 * <p>解析链接地址</p>
 	 * 
-	 * @return URIWrapper
+	 * @return {@link URIWrapper}
 	 */
 	public URIWrapper decode() {
-		final URI uri = URI.create(this.uri);
+		final URI decodeUri = URI.create(this.uri);
+		// 解析协议
+		this.scheme = decodeUri.getScheme();
 		// 解析用户信息
-		final String userInfo = uri.getUserInfo();
+		final String userInfo = decodeUri.getUserInfo();
 		if(StringUtils.isEmpty(userInfo)) {
 			this.user = this.defaultUser;
 			this.password = this.defaultPassword;
 		} else {
-			final String[] userInfos = userInfo.split(":");
+			final String[] userInfos = userInfo.split(SymbolConfig.Symbol.COLON.toString());
 			if(userInfos.length == 1) {
 				this.user = userInfos[0];
 				this.password = this.defaultPassword;
-			} else if(userInfos.length == 2) {
+			} else if(userInfos.length > 1) {
 				this.user = userInfos[0];
 				this.password = userInfos[1];
 			} else {
@@ -146,19 +155,30 @@ public final class URIWrapper {
 			}
 		}
 		// 解析地址
-		this.host = uri.getHost();
+		this.host = decodeUri.getHost();
 		// 解析端口
-		final int port = uri.getPort();
-		if(port == -1) {
+		final int decodePort = decodeUri.getPort();
+		if(decodePort == -1) {
 			this.port = this.defaultPort;
 		} else {
-			this.port = port;
+			this.port = decodePort;
 		}
 		// 解析路径
-		this.path = uri.getPath();
+		this.path = decodeUri.getPath();
 		// 解析参数
-		this.query = uri.getQuery();
+		this.query = decodeUri.getQuery();
+		// 解析标识
+		this.fragment = decodeUri.getFragment();
 		return this;
+	}
+	
+	/**
+	 * <p>获取协议</p>
+	 * 
+	 * @return 协议
+	 */
+	public String scheme() {
+		return this.scheme;
 	}
 	
 	/**
@@ -213,6 +233,15 @@ public final class URIWrapper {
 	 */
 	public String query() {
 		return this.query;
+	}
+	
+	/**
+	 * <p>获取标识</p>
+	 * 
+	 * @return 标识
+	 */
+	public String fragment() {
+		return this.fragment;
 	}
 	
 }

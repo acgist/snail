@@ -14,55 +14,65 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>多文件选择包装器</p>
+ * <p>下载描述包装器</p>
  * 
  * @author acgist
  */
-public final class MultifileSelectorWrapper {
+public final class DescriptionWrapper {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileSelectorWrapper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionWrapper.class);
 
 	/**
 	 * <p>编码器</p>
 	 */
-	private BEncodeEncoder encoder;
+	private final BEncodeEncoder encoder;
 	/**
 	 * <p>解码器</p>
 	 */
-	private BEncodeDecoder decoder;
+	private final BEncodeDecoder decoder;
 
-	private MultifileSelectorWrapper() {
+	/**
+	 * @param encoder 编码器
+	 * @param decoder 解码器
+	 */
+	private DescriptionWrapper(BEncodeEncoder encoder, BEncodeDecoder decoder) {
+		this.encoder = encoder;
+		this.decoder = decoder;
 	}
 
 	/**
-	 * <p>创建编码器</p>
+	 * <p>创建下载描述包装器</p>
 	 * 
 	 * @param list 选择文件列表
 	 * 
-	 * @return 包装器
+	 * @return {@link DescriptionWrapper}
 	 */
-	public static final MultifileSelectorWrapper newEncoder(List<String> list) {
-		final MultifileSelectorWrapper wrapper = new MultifileSelectorWrapper();
+	public static final DescriptionWrapper newEncoder(List<String> list) {
+		BEncodeEncoder encoder;
 		if(CollectionUtils.isNotEmpty(list)) {
-			wrapper.encoder = BEncodeEncoder.newInstance();
-			wrapper.encoder.newList().put(list);
+			encoder = BEncodeEncoder.newInstance()
+				.newList().put(list);
+		} else {
+			encoder = null;
 		}
-		return wrapper;
+		return new DescriptionWrapper(encoder, null);
 	}
 	
 	/**
-	 * <p>解析器</p>
+	 * <p>创建下载描述包装器</p>
 	 * 
 	 * @param value 选择文件列表（B编码）
 	 * 
-	 * @return 包装器
+	 * @return {@link DescriptionWrapper}
 	 */
-	public static final MultifileSelectorWrapper newDecoder(String value) {
-		final MultifileSelectorWrapper wrapper = new MultifileSelectorWrapper();
+	public static final DescriptionWrapper newDecoder(String value) {
+		BEncodeDecoder decoder;
 		if(StringUtils.isNotEmpty(value)) {
-			wrapper.decoder = BEncodeDecoder.newInstance(value);
+			decoder = BEncodeDecoder.newInstance(value);
+		} else {
+			decoder = null;
 		}
-		return wrapper;
+		return new DescriptionWrapper(null, decoder);
 	}
 	
 	/**
@@ -89,7 +99,7 @@ public final class MultifileSelectorWrapper {
 		try {
 			return this.decoder.nextList().stream()
 				.filter(Objects::nonNull)
-				.map(object -> StringUtils.getString(object))
+				.map(StringUtils::getString)
 				.collect(Collectors.toList());
 		} catch (PacketSizeException e) {
 			LOGGER.error("解析选择文件异常", e);

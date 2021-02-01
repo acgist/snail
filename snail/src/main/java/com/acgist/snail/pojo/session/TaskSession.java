@@ -18,12 +18,11 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>任务信息</p>
@@ -113,12 +112,7 @@ public final class TaskSession implements ITaskSession {
 	
 	@Override
 	public List<String> multifileSelected() {
-		final String description = this.getDescription();
-		if(StringUtils.isEmpty(description)) {
-			return List.of();
-		} else {
-			return MultifileSelectorWrapper.newDecoder(description).deserialize();
-		}
+		return DescriptionWrapper.newDecoder(this.getDescription()).deserialize();
 	}
 	
 	@Override

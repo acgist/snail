@@ -15,7 +15,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.FileUtils;
@@ -33,7 +33,7 @@ public class TorrentDownloaderTest extends Performance {
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());
-		GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
@@ -59,7 +59,7 @@ public class TorrentDownloaderTest extends Performance {
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());
-		GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 		downloader.run();

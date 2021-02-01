@@ -14,7 +14,7 @@ import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 
 import javafx.event.ActionEvent;
@@ -125,7 +125,7 @@ public final class TorrentController extends Controller {
 			return;
 		}
 		this.taskSession.setSize(this.torrentSelector.size());
-		this.taskSession.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		this.taskSession.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		if(this.taskSession.getId() != null) {
 			// 已经保存实体：修改任务
 			try {

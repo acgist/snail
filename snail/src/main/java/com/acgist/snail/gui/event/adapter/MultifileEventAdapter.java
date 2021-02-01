@@ -13,7 +13,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -67,10 +67,10 @@ public class MultifileEventAdapter extends GuiEventArgs {
 					.filter(TorrentFile::isNotPaddingFile)
 					.map(TorrentFile::path)
 					.collect(Collectors.toList());
-				files = MultifileSelectorWrapper.newEncoder(selectFiles).serialize();
+				files = DescriptionWrapper.newEncoder(selectFiles).serialize();
 			} else {
 				// 选择文件列表
-				selectFiles = MultifileSelectorWrapper.newDecoder(files).deserialize().stream()
+				selectFiles = DescriptionWrapper.newDecoder(files).deserialize().stream()
 					.map(StringUtils::getString)
 					.collect(Collectors.toList());
 			}

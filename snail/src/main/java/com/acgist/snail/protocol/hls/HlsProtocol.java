@@ -8,7 +8,7 @@ import com.acgist.snail.downloader.hls.HlsDownloader;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
 
@@ -99,7 +99,7 @@ public final class HlsProtocol extends Protocol {
 	 */
 	private void selectFiles() {
 		// M3U8协议默认下载所有文件
-		this.taskEntity.setDescription(MultifileSelectorWrapper.newEncoder(this.m3u8.getLinks()).serialize());
+		this.taskEntity.setDescription(DescriptionWrapper.newEncoder(this.m3u8.getLinks()).serialize());
 	}
 	
 	@Override

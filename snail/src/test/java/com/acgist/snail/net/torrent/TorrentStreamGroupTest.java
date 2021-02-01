@@ -21,7 +21,7 @@ import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.Performance;
@@ -49,7 +49,7 @@ public class TorrentStreamGroupTest extends Performance {
 				list.add(file.path());
 			}
 		});
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		ThreadUtils.sleep(1000);
@@ -94,7 +94,7 @@ public class TorrentStreamGroupTest extends Performance {
 				file.selected(true);
 				list.add(file.path());
 			});
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		final BitSet peerPieces = new BitSet();
@@ -145,7 +145,7 @@ public class TorrentStreamGroupTest extends Performance {
 					list.add(file.path());
 				}
 			});
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		ThreadUtils.sleep(10000); // 等待任务准备完成
