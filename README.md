@@ -83,9 +83,9 @@ snail.lockDownload();
 
 [使用帮助](./docs/HELP.md)
 
-## 依赖项目
+## 依赖
 
-|软件|许可|
+|项目|许可|
 |:--|:--|
 |[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
@@ -93,11 +93,15 @@ snail.lockDownload();
 
 ## 其他
 
-### GIT
+### Git
 
 GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
 
 GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
+
+### 协议
+
+[协议信息](./docs/PROTOCOL.md)
 
 ### 界面
 
@@ -105,10 +109,6 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ![统计](./docs/gui/statistics-piece.png "统计")
 
 [界面操作](./docs/GUI.md)
-
-### 协议
-
-[协议信息](./docs/PROTOCOL.md)
 
 ### 贡献
 
@@ -123,7 +123,3 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 [捐赠](https://www.acgist.com/sponsor)
 
 [服务器](https://www.acgist.com/collect/server)
-
-### 更多
-
-[https://www.acgist.com/snail](https://www.acgist.com/snail)
