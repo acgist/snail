@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -19,13 +20,13 @@ public final class KeyValueWrapper {
 	 * 
 	 * @see #separator
 	 */
-	private static final char DEFAULT_SEPARATOR = '&';
+	private static final char DEFAULT_SEPARATOR = SymbolConfig.Symbol.AND.toChar();
 	/**
 	 * <p>默认kvSeparator</p>
 	 * 
 	 * @see #kvSeparator
 	 */
-	private static final char DEFAULT_KV_SEPARATOR = '=';
+	private static final char DEFAULT_KV_SEPARATOR = SymbolConfig.Symbol.EQUALS.toChar();
 
 	/**
 	 * <p>连接符</p>
@@ -55,7 +56,7 @@ public final class KeyValueWrapper {
 		this.kvSeparator = kvSeparator;
 		this.content = content;
 		if(data == null) {
-			this.data = new HashMap<String, String>();
+			this.data = new HashMap<>();
 		} else {
 			this.data = data;
 		}
@@ -64,7 +65,7 @@ public final class KeyValueWrapper {
 	/**
 	 * <p>创建工具</p>
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance() {
 		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, null);
@@ -75,7 +76,7 @@ public final class KeyValueWrapper {
 	 * 
 	 * @param content 解码数据
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance(String content) {
 		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, content, null);
@@ -86,7 +87,7 @@ public final class KeyValueWrapper {
 	 * 
 	 * @param data 编码数据
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance(Map<String, String> data) {
 		return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, data);
@@ -98,7 +99,7 @@ public final class KeyValueWrapper {
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator) {
 		return new KeyValueWrapper(separator, kvSeparator, null, null);
@@ -111,7 +112,7 @@ public final class KeyValueWrapper {
 	 * @param kvSeparator Key-Value连接符
 	 * @param content 编码数据
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator, String content) {
 		return new KeyValueWrapper(separator, kvSeparator, content, null);
@@ -124,7 +125,7 @@ public final class KeyValueWrapper {
 	 * @param kvSeparator Key-Value连接符
 	 * @param data 解码数据
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance(char separator, char kvSeparator, Map<String, String> data) {
 		return new KeyValueWrapper(separator, kvSeparator, null, data);
@@ -148,10 +149,12 @@ public final class KeyValueWrapper {
 	/**
 	 * <p>数据解码</p>
 	 * 
-	 * @return KeyValueWrapper
+	 * @return {@link KeyValueWrapper}
 	 */
 	public KeyValueWrapper decode() {
-		Objects.requireNonNull(this.content, "解码数据为空");
+		if(StringUtils.isEmpty(this.content)) {
+			return this;
+		}
 		int index;
 		String key;
 		String value;
@@ -163,18 +166,19 @@ public final class KeyValueWrapper {
 			}
 			index = keyValue.indexOf(this.kvSeparator);
 			if(index < 0) {
-				this.data.put(keyValue, null);
+				key = keyValue.trim();
+				value = null;
 			} else {
 				key = keyValue.substring(0, index).trim();
 				value = keyValue.substring(index + 1).trim();
-				this.data.put(key, value);
 			}
+			this.data.put(key, value);
 		}
 		return this;
 	}
 	
 	/**
-	 * <p>通过Key获取数据</p>
+	 * <p>获取数据</p>
 	 * 
 	 * @param key Key
 	 * 
@@ -185,9 +189,9 @@ public final class KeyValueWrapper {
 	}
 
 	/**
-	 * <p>通过Key获取数据（忽略大小写）</p>
+	 * <p>获取数据</p>
 	 * 
-	 * @param key Key
+	 * @param key Key（忽略大小写）
 	 * 
 	 * @return Value
 	 */
@@ -195,7 +199,8 @@ public final class KeyValueWrapper {
 		return this.data.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
-			.filter(Objects::nonNull) // 需要判断是否为空
+			// 需要判断是否为空：空值转换异常
+			.filter(Objects::nonNull)
 			.findFirst()
 			.orElse(null);
 	}

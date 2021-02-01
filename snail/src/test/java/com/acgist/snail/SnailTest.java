@@ -17,7 +17,7 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.pojo.bean.TorrentFile;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.utils.Performance;
 
 public class SnailTest extends Performance {
@@ -43,7 +43,7 @@ public class SnailTest extends Performance {
 			.filter(path -> path.endsWith(".mkv"))
 			.collect(Collectors.toList());
 		// 设置下载文件
-		GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
 		// 注册文件选择事件
 		GuiContext.register(new MultifileEventAdapter());
 		// 开始下载

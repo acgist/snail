@@ -15,7 +15,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.MultifileSelectorWrapper;
+import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
@@ -44,7 +44,7 @@ public class PeerServerTest extends Performance {
 		entity.setFile("E:\\snail\\server");
 		entity.setType(Type.TORRENT);
 		entity.setSize(size.get());
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		torrentSession.upload(TaskSession.newInstance(entity));
 		torrentSession.verify();
 		PeerServer.getInstance();
@@ -68,7 +68,7 @@ public class PeerServerTest extends Performance {
 		final var entity = new TaskEntity();
 		entity.setFile("E://snail/tmp/client");
 		entity.setType(Type.TORRENT);
-		entity.setDescription(MultifileSelectorWrapper.newEncoder(list).serialize());
+		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		// 禁止自动加载Peer
 		torrentSession.upload(TaskSession.newInstance(entity)).download(false);
 		torrentSession.verify();
