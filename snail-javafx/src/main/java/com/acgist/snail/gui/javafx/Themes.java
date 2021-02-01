@@ -34,9 +34,9 @@ public final class Themes {
 	 */
 	public static final String LOGO_ICON_16 = "/image/16/logo.png";
 	/**
-	 * <p>图标文件路径（200PX）：{@value}</p>
+	 * <p>图标文件路径（256PX）：{@value}</p>
 	 */
-	public static final String LOGO_ICON_200 = "/image/logo.png";
+	public static final String LOGO_ICON = "/image/logo.png";
 	/**
 	 * <p>红色：禁用</p>
 	 */
@@ -131,7 +131,7 @@ public final class Themes {
 	 * @return Logo图标
 	 */
 	public static final Image getLogo() {
-		return new Image(Themes.LOGO_ICON_200);
+		return new Image(Themes.LOGO_ICON);
 	}
 	
 	/**
