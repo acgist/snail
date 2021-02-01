@@ -43,6 +43,10 @@ public final class SymbolConfig {
 		 */
 		COLON(':'),
 		/**
+		 * <p>空格</p>
+		 */
+		SPACE(' '),
+		/**
 		 * <p>斜杠</p>
 		 */
 		SLASH('/'),
@@ -63,13 +67,17 @@ public final class SymbolConfig {
 		 */
 		QUESTION('?'),
 		/**
-		 * <p>双引号</p>
+		 * <p>分号</p>
 		 */
-		DOUBLE_QUOTE('\"'),
+		SEMICOLON(';'),
 		/**
 		 * <p>单引号</p>
 		 */
 		SINGLE_QUOTE('\''),
+		/**
+		 * <p>双引号</p>
+		 */
+		DOUBLE_QUOTE('\"'),
 		/**
 		 * <p>换行符</p>
 		 */
