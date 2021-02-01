@@ -77,6 +77,8 @@ snail.download("https://www.acgist.com");
 snail.lockDownload();
 ```
 
+### 帮助
+
 [开发帮助](./docs/API.md)
 
 [使用帮助](./docs/HELP.md)
