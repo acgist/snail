@@ -33,6 +33,8 @@
 |snail|下载核心|
 |snail-javafx|电脑界面|
 
+> 电脑界面只是方便操作，下载核心包含所有下载协议，可以完全独立使用。
+
 ## 使用
 
 稳定版本下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
@@ -71,7 +73,7 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 final Snail snail = SnailBuilder.getInstance()
 	.enableAllProtocol()
 	.buildSync();
-// 注册文件选择事件（BT任务）
+// BT任务需要注册文件选择事件
 // GuiContext.register(new MultifileEventAdapter());
 snail.download("https://www.acgist.com");
 snail.lockDownload();
