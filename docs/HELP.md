@@ -60,6 +60,14 @@
 
 软件完全免费使用，捐赠全是用户自愿。
 
+[捐赠](https://www.acgist.com/sponsor)
+
+> 扫码捐赠
+
+[服务器](https://www.acgist.com/collect/server)
+
+> 购买阿里云服务器
+
 ## 稳定版本
 
 [最新稳定版本下载](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
