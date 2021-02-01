@@ -39,7 +39,7 @@
 
 > 稳定版本提供`mac`、`linux`、`windows`三个版本
 
-#### 编译
+### 编译
 
 ```bash
 mvn clean package -P release -D skipTests
@@ -47,7 +47,7 @@ mvn clean package -P release -D skipTests
 
 > 推荐使用[稳定版](https://gitee.com/acgist/snail/releases)编译
 
-#### Gui
+### Gui
 
 ```bash
 # Linux
@@ -57,7 +57,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
-#### Maven
+### Maven
 
 ```xml
 <dependency>
@@ -104,27 +104,31 @@ snail.lockDownload();
 
 ## 其他
 
-#### GIT
+### GIT
 
 GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
 
 GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
-#### 界面
+### 界面
 
 ![蜗牛](./docs/gui/main.png "蜗牛")
 ![统计](./docs/gui/statistics-piece.png "统计")
 
 [界面操作](./docs/GUI.md)
 
-#### 更多
-
-[https://www.acgist.com/snail](https://www.acgist.com/snail)
-
-## 贡献
+### 贡献
 
 提交PR前请阅读[代码规范](./CODE_OF_CONDUCT.md)、[贡献规范](./CONTRIBUTING.md)
 
 问题和建议请提交到[Issues](https://gitee.com/acgist/snail/issues)，提交前请阅读[贡献规范](./CONTRIBUTING.md)。
 
 谢谢！
+
+### 捐赠
+
+[捐赠](https://www.acgist.com/sponsor)
+
+### 更多
+
+[https://www.acgist.com/snail](https://www.acgist.com/snail)
