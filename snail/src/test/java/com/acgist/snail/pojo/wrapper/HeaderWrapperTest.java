@@ -1,89 +1,58 @@
 package com.acgist.snail.pojo.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.http.HttpClient;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.Performance;
 
 public class HeaderWrapperTest extends Performance {
 
-	private static final String NEW_LINE = "\r\n";
-	
 	@Test
-	public void testBuild() {
+	public void testHeaderWrapper() {
 		final StringBuilder builder = new StringBuilder();
 		builder
-			.append("M-SEARCH * HTTP/1.1").append(NEW_LINE)
-			.append("HOST: ").append(UpnpServer.UPNP_HOST).append(":").append(UpnpServer.UPNP_PORT).append(NEW_LINE)
-			.append("MX: 3").append(NEW_LINE)
-			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(NEW_LINE)
-			.append("MAN: \"ssdp:discover\"").append(NEW_LINE)
-			.append(NEW_LINE);
-		this.log(builder.toString());
-		HeaderWrapper wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
+			.append("M-SEARCH * HTTP/1.1").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
+			.append("HOST: ").append(UpnpServer.UPNP_HOST).append(":").append(UpnpServer.UPNP_PORT).append(SymbolConfig.LINE_SEPARATOR_COMPAT)
+			.append("MX: 3").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
+			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
+			.append("MAN: \"ssdp:discover\"").append(SymbolConfig.LINE_SEPARATOR_COMPAT);
+		var wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
 		wrapper
 			.header("HOST", UpnpServer.UPNP_HOST + ":" + UpnpServer.UPNP_PORT)
 			.header("MX", "3")
 			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
 			.header("MAN", "\"ssdp:discover\"");
-		this.log(wrapper.build());
 		assertEquals(builder.toString(), wrapper.build());
-	}
-	
-	@Test
-	public void testHttp() throws NetException {
-//		HttpClient client = HttpClient.newInstance("https://www.acgist.com/demo/weixin/view");
-		HttpClient client = HttpClient.newInstance("https://youku.com-youku.com/20180122/OgFJZjkT/900kb/hls/BM3D1t5288298.ts");
-		var headers = client.head().responseHeader();
-		headers.allHeaders().forEach((key, value) -> {
-			this.log(key + "<==>" + value);
-		});
-		this.log(headers.header("SERVER"));
-		this.log(headers.header("Accept-Ranges"));
-		this.log(headers.header("Content-Range"));
-		this.log(headers.header("Content-Length"));
-	}
-	
-	@Test
-	public void testBuildMSearch() {
-		HeaderWrapper wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
-		wrapper
-			.header("HOST", "1234")
-			.header("MX", "3")
-			.header("MX", "4");
-		this.log(wrapper.build());
-	}
-
-	@Test
-	public void testWriter() {
-		HeaderWrapper wrapper = HeaderWrapper.newBuilder("GET /");
-		wrapper.header("test", null);
-		wrapper.header("test", "33 ");
+		wrapper = HeaderWrapper.newInstance(wrapper.build());
+		assertEquals(builder.toString(), wrapper.build());
+		assertNull(wrapper.header("acgist"));
+		assertEquals("3", wrapper.header("Mx"));
+		Map<String, List<String>> data = new HashMap<String, List<String>>(Map.of(
+			"b", List.of(),
+			"c", List.of("1"),
+			"d", List.of("1", "2")
+		));
+		data.put("a", null);
+		wrapper = HeaderWrapper.newBuilder("=", "$", "acgist", data);
 		this.log(wrapper.build());
 	}
 	
 	@Test
-	public void testReader() {
-		HeaderWrapper wrapper = HeaderWrapper.newInstance("GET /\n"
-			+ "TEST: TEST \n"
-			+ "TEST2: TEST2 \n"
-			+ "TEST3: TEST 1\n"
-			+ "TEST3:TEST 3 \n"
-			+ "TEST6: \n"
-		);
-		this.log(wrapper.protocol());
-		this.log(wrapper.header("test"));
-		this.log(wrapper.header("test2"));
-		this.log(wrapper.header("test3"));
-		this.log(wrapper.headerList("test3"));
-		this.log(wrapper.header("test4"));
-		this.log(wrapper.headerList("test5"));
-		this.log(wrapper.header("test6"));
-		this.log(wrapper.headerList("test6"));
+	public void testDecode() {
+		final var wrapper = HeaderWrapper.newInstance("acgist\na: b\n c : d\ne\nf:");
+		this.log(wrapper.allHeaders());
+		assertEquals("b", wrapper.header("a"));
+		assertEquals("d", wrapper.header("c"));
+		assertEquals("", wrapper.header("e"));
+		assertEquals("", wrapper.header("f"));
 	}
 	
 }

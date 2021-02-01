@@ -1,7 +1,8 @@
 package com.acgist.snail.pojo.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -9,26 +10,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.utils.Performance;
 
 public class HttpHeaderWrapperTest extends Performance {
 
 	@Test
-	public void testFileName() throws NetException {
-		final var header = HttpClient.newInstance("https://g18.gdl.netease.com/MY-1.246.1.apk").head().responseHeader();
-//		final var header = HttpClient.newInstance("http://share.qiniu.easepan.xyz/tool/7tt_setup.exe").head().responseHeader();
-//		final var header = HttpClient.newInstance("https://g37.gdl.netease.com/onmyoji_setup_9.4.0.zip").head().responseHeader();
-		this.log(header);
-		final String defaultName = "test";
-		final String fileName = header.fileName(defaultName);
-		this.log(fileName);
-		assertNotEquals(defaultName, fileName);
-	}
-	
-	@Test
-	public void testFileNameEx() throws UnsupportedEncodingException {
+	public void testFileName() throws UnsupportedEncodingException {
 		var headers = Map.of("Content-Disposition", List.of("attachment;filename='snail.jar'"));
 		var headerWrapper = HttpHeaderWrapper.newInstance(headers);
 		var fileName = headerWrapper.fileName("错误");
@@ -69,6 +56,31 @@ public class HttpHeaderWrapperTest extends Performance {
 		fileName = headerWrapper.fileName("错误");
 		this.log(fileName);
 		assertEquals("snail.jar", fileName);
+	}
+	
+	@Test
+	public void testFileSize() {
+		var headers = Map.of(
+			"Content-Length", List.of(" 10000 "),
+			"Content-Disposition", List.of("attachment;filename='snail.jar'")
+		);
+		var wrapper = HttpHeaderWrapper.newInstance(headers);
+		assertFalse(wrapper.range());
+		assertEquals(10000L, wrapper.fileSize());
+		headers = Map.of(
+			"Content-Range", List.of("bytes 0-100/100"),
+			"Content-Length", List.of(" 10000 "),
+			"Content-Disposition", List.of("attachment;filename='snail.jar'")
+		);
+		wrapper = HttpHeaderWrapper.newInstance(headers);
+		assertTrue(wrapper.range());
+		headers = Map.of(
+			"Accept-Ranges", List.of("bytes"),
+			"Content-Length", List.of(" 10000 "),
+			"Content-Disposition", List.of("attachment;filename='snail.jar'")
+		);
+		wrapper = HttpHeaderWrapper.newInstance(headers);
+		assertTrue(wrapper.range());
 	}
 	
 }

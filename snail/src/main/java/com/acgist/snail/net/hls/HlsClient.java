@@ -194,10 +194,6 @@ public final class HlsClient implements Runnable {
 			final var headers = client.responseHeader();
 			this.range = headers.range();
 			this.input = Channels.newChannel(client.response());
-			if(this.range) {
-				// 支持断点续传
-				headers.verifyBeginRange(downloadSize);
-			}
 		} else {
 			throw new NetException("HLS客户端输入流创建失败");
 		}

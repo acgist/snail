@@ -61,7 +61,6 @@ public final class HttpDownloader extends SingleFileDownloader {
 			final var headers = client.responseHeader();
 			this.input = Channels.newChannel(client.response());
 			if(headers.range()) { // 支持断点续传
-				headers.verifyBeginRange(downloadSize);
 				this.taskSession.downloadSize(downloadSize);
 			} else {
 				this.taskSession.downloadSize(0L);
