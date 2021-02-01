@@ -83,19 +83,6 @@ snail.lockDownload();
 
 [使用帮助](./docs/HELP.md)
 
-## 开发进度
-
-|功能|进度|
-|:--|:--:|
-|BT|√|
-|FTP|√|
-|HLS|√|
-|HTTP|√|
-
-*√=完成、○-进行中、×-未开始、?-待定*
-
-> [协议进度](./docs/PROTOCOL.md)
-
 ## 依赖项目
 
 |软件|许可|
@@ -118,6 +105,10 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ![统计](./docs/gui/statistics-piece.png "统计")
 
 [界面操作](./docs/GUI.md)
+
+### 协议
+
+[协议信息](./docs/PROTOCOL.md)
 
 ### 贡献
 
