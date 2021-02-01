@@ -131,6 +131,8 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 [捐赠](https://www.acgist.com/sponsor)
 
+[服务器](https://www.acgist.com/collect/server)
+
 ### 更多
 
 [https://www.acgist.com/snail](https://www.acgist.com/snail)
