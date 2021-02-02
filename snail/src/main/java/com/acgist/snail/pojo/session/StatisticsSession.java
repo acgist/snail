@@ -7,12 +7,10 @@ import com.acgist.snail.pojo.IStatisticsSession;
 /**
  * <p>统计信息</p>
  * <p>速度、限速、统计等</p>
- * <p>下载统计时大小必须统计有效下载数据，因为任务大小获取需要使用。</p>
- * <p>速度统计和速度限制使用实时下载数据，这样数据统计平滑和实时性。</p>
- * <p>由于下载数据大小是有效数据，但是速度统计时可能存在无效数据，所以下载时间预估不会非常准确。</p>
- * <p>无效数据：Piece安装Slice下载，速度统计按照Slice统计，但是Piece可能下载失败和验证失败，导致无效数据。</p>
- * 
- * TODO：伪共享
+ * <p>统计下载大小必须统计有效下载数据，因为任务大小获取需要使用。</p>
+ * <p>速度统计和速度限制使用实时下载数据，这样数据平滑具有实时性。</p>
+ * <p>由于下载大小统计有效数据，但是速度统计可能存在无效数据，所以下载时间预估不会非常准确。</p>
+ * <p>无效数据：Piece按照Slice下载和速度统计，但是Piece可能下载失败和验证失败，导致产生无效数据。</p>
  * 
  * @author acgist
  */
@@ -28,6 +26,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	private final boolean speed;
 	/**
 	 * <p>上级统计信息</p>
+	 * <p>统计信息时如果存在上级需要优先更新上级</p>
 	 */
 	private final IStatisticsSession parent;
 	/**
@@ -101,11 +100,6 @@ public final class StatisticsSession implements IStatisticsSession {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>更新上级信息</p>
-	 */
 	@Override
 	public void upload(int buffer) {
 		if(this.parent != null) {
@@ -114,11 +108,6 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.uploadSize.addAndGet(buffer);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>更新上级信息</p>
-	 */
 	@Override
 	public void download(int buffer) {
 		if(this.parent != null) {
@@ -127,11 +116,6 @@ public final class StatisticsSession implements IStatisticsSession {
 		this.downloadSize.addAndGet(buffer);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>更新上级信息</p>
-	 */
 	@Override
 	public void uploadLimit(int buffer) {
 		if(this.parent != null) {
@@ -145,11 +129,6 @@ public final class StatisticsSession implements IStatisticsSession {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>更新上级信息</p>
-	 */
 	@Override
 	public void downloadLimit(int buffer) {
 		if(this.parent != null) {
