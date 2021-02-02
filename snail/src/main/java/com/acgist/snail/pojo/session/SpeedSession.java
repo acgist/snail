@@ -17,9 +17,9 @@ public final class SpeedSession {
 	private static final byte SAMPLE_SIZE = 10;
 	/**
 	 * <p>速度采样时间</p>
-	 * <p>小于刷新时间：防止统计误差</p>
+	 * <p>不能大于刷新时间：防止统计误差</p>
 	 */
-	private static final long SAMPLE_TIME = 4L * SystemConfig.ONE_SECOND_MILLIS;
+	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>速度</p>
@@ -36,14 +36,14 @@ public final class SpeedSession {
 	/**
 	 * <p>最后一次采样时间</p>
 	 */
-	private long bufferSampleTime = System.currentTimeMillis();
+	private volatile long bufferSampleTime = System.currentTimeMillis();
 	/**
 	 * <p>速度采样集合</p>
 	 * <p>每次计算速度时采样一次放入到集合</p>
 	 */
 	private final int[] bufferSamples = new int[SAMPLE_SIZE];
 	/**
-	 * <p>速度采样时间</p>
+	 * <p>采样时间集合</p>
 	 */
 	private final long[] bufferSampleTimes = new long[SAMPLE_SIZE];
 	
@@ -57,18 +57,22 @@ public final class SpeedSession {
 	}
 
 	/**
-	 * <p>计算速度</p>
-	 * <p>超过采样时间：计算速度</p>
+	 * <p>获取速度</p>
+	 * <p>超过采样时间：重新计算速度</p>
 	 * <p>小于采样时间：返回上次速度</p>
 	 * 
 	 * @return 速度
 	 */
-	public synchronized long speed() {
+	public long speed() {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.bufferSampleTime;
 		if(interval >= SAMPLE_TIME) {
-			this.speed = this.calculateSpeed(interval);
-			this.bufferSampleTime = time;
+			synchronized (this) {
+				if(time - this.bufferSampleTime == interval) {
+					this.bufferSampleTime = time;
+					this.speed = this.calculateSpeed(interval);
+				}
+			}
 		}
 		return this.speed;
 	}
@@ -88,9 +92,9 @@ public final class SpeedSession {
 		}
 		long buffer = 0L;
 		long bufferTime = 0L;
-		for (int index = 0; index < SAMPLE_SIZE; index++) {
-			buffer += this.bufferSamples[index];
-			bufferTime += this.bufferSampleTimes[index];
+		for (int jndex = 0; jndex < SAMPLE_SIZE; jndex++) {
+			buffer += this.bufferSamples[jndex];
+			bufferTime += this.bufferSampleTimes[jndex];
 		}
 		if(bufferTime <= 0L) {
 			return 0L;
@@ -103,9 +107,9 @@ public final class SpeedSession {
 	 * <p>重置速度统计</p>
 	 */
 	public void reset() {
-		for (int index = 0; index < SAMPLE_SIZE; index++) {
-			this.bufferSamples[index] = 0;
-			this.bufferSampleTimes[index] = 0;
+		for (int jndex = 0; jndex < SAMPLE_SIZE; jndex++) {
+			this.bufferSamples[jndex] = 0;
+			this.bufferSampleTimes[jndex] = 0;
 		}
 	}
 	
