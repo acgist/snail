@@ -534,7 +534,7 @@ public final class StatisticsController extends Controller {
 				if(connectType == IPeerConnect.ConnectType.TCP) {
 					tcpCount.incrementAndGet();
 				} else if(connectType == IPeerConnect.ConnectType.UTP) {
-					tcpCount.incrementAndGet();
+					utpCount.incrementAndGet();
 				} else {
 					LOGGER.info("未知连接类型：{}", connectType);
 				}

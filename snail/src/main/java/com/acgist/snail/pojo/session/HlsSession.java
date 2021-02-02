@@ -207,7 +207,7 @@ public final class HlsSession {
 	 */
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {
-			this.taskSession.unlockDownload(); // 释放下载锁
+			this.taskSession.unlockDownload();
 		}
 	}
 	
