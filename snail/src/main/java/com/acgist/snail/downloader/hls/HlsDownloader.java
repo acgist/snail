@@ -67,7 +67,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	public void delete() {
 		super.delete();
 		if(this.hlsSession != null) {
-			this.hlsSession.delete(); // 删除任务信息
+			this.hlsSession.delete();
 		}
 	}
 	

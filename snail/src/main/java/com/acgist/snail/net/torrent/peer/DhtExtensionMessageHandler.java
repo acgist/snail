@@ -84,7 +84,7 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 		final String host = this.peerSession.host();
 		LOGGER.debug("处理DHT消息：{}-{}", host, port);
 		this.peerSession.dhtPort(port);
-		this.torrentSession.newDhtNode(host, port);
+		this.torrentSession.newNode(host, port);
 	}
 
 }

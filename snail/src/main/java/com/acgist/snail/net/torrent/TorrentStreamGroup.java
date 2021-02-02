@@ -140,7 +140,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>重新加载</p>
+	 * <p>重新加载下载文件</p>
 	 * 
 	 * @param folder 任务下载目录
 	 * @param files 任务文件

@@ -34,7 +34,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	@Override
 	public void release() {
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseMagnet(); // 释放磁力链接资源
+			this.torrentSession.releaseMagnet();
 			// 任务没有删除：留着任务信息转为BT任务继续使用
 			if(this.statusDelete()) {
 				this.delete();
@@ -47,7 +47,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	public void delete() {
 		super.delete();
 		if(this.torrentSession != null) {
-			this.torrentSession.delete(); // 删除任务信息
+			this.torrentSession.delete();
 		}
 	}
 	

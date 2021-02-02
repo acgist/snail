@@ -94,9 +94,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	public void release() {
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseDownload(); // 释放下载资源
-			this.statistics.resetDownloadSpeed(); // 重置下载速度
-			this.torrentSession.updatePieces(true); // 更新Piece
+			this.torrentSession.releaseDownload();
+			this.statistics.resetDownloadSpeed();
+			this.torrentSession.updatePieces(true);
 			// 任务没有删除：做种
 			if(this.statusDelete()) {
 				this.delete();
@@ -109,9 +109,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void delete() {
 		super.delete();
 		if(this.torrentSession != null) {
-			this.torrentSession.releaseUpload(); // 释放上传资源
-			this.statistics.resetUploadSpeed(); // 重置上传速度
-			this.torrentSession.delete(); // 删除任务信息
+			this.torrentSession.releaseUpload();
+			this.statistics.resetUploadSpeed();
+			this.torrentSession.delete();
 		}
 	}
 	
