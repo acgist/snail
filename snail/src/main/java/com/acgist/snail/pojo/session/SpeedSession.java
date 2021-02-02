@@ -19,7 +19,7 @@ public final class SpeedSession {
 	 * <p>速度采样时间</p>
 	 * <p>不能大于刷新时间：防止统计误差</p>
 	 */
-	private static final long SAMPLE_TIME = SystemConfig.TASK_REFRESH_INTERVAL * SystemConfig.ONE_SECOND_MILLIS;
+	private static final long SAMPLE_TIME = 1L * SystemConfig.TASK_REFRESH_INTERVAL * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>速度</p>
@@ -28,7 +28,7 @@ public final class SpeedSession {
 	/**
 	 * <p>当前采样位置</p>
 	 */
-	private byte index = 0;
+	private byte bufferSampleIndex = 0;
 	/**
 	 * <p>速度累计采样</p>
 	 */
@@ -85,16 +85,16 @@ public final class SpeedSession {
 	 * @return 速度
 	 */
 	private long calculateSpeed(long interval) {
-		this.bufferSamples[this.index] = this.bufferSample.getAndSet(0);
-		this.bufferSampleTimes[this.index] = interval;
-		if(++this.index >= SAMPLE_SIZE) {
-			this.index = 0;
+		this.bufferSamples[this.bufferSampleIndex] = this.bufferSample.getAndSet(0);
+		this.bufferSampleTimes[this.bufferSampleIndex] = interval;
+		if(++this.bufferSampleIndex >= SAMPLE_SIZE) {
+			this.bufferSampleIndex = 0;
 		}
 		long buffer = 0L;
 		long bufferTime = 0L;
-		for (int jndex = 0; jndex < SAMPLE_SIZE; jndex++) {
-			buffer += this.bufferSamples[jndex];
-			bufferTime += this.bufferSampleTimes[jndex];
+		for (int index = 0; index < SAMPLE_SIZE; index++) {
+			buffer += this.bufferSamples[index];
+			bufferTime += this.bufferSampleTimes[index];
 		}
 		if(bufferTime <= 0L) {
 			return 0L;
@@ -107,9 +107,9 @@ public final class SpeedSession {
 	 * <p>重置速度统计</p>
 	 */
 	public void reset() {
-		for (int jndex = 0; jndex < SAMPLE_SIZE; jndex++) {
-			this.bufferSamples[jndex] = 0;
-			this.bufferSampleTimes[jndex] = 0;
+		for (int index = 0; index < SAMPLE_SIZE; index++) {
+			this.bufferSamples[index] = 0;
+			this.bufferSampleTimes[index] = 0;
 		}
 	}
 	

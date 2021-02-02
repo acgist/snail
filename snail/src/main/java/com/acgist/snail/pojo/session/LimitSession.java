@@ -60,15 +60,15 @@ public final class LimitSession {
 	 */
 	public void limit(long buffer) {
 		final long interval = System.currentTimeMillis() - this.limitBufferTime;
-		final long limitBuffer = this.limitBuffer.addAndGet(buffer);
 		final long maxLimitBuffer = this.maxLimitBuffer();
-		if(limitBuffer >= maxLimitBuffer || interval >= SystemConfig.ONE_SECOND_MILLIS) {
+		final long limitBufferValue = this.limitBuffer.addAndGet(buffer);
+		if(limitBufferValue >= maxLimitBuffer || interval >= SystemConfig.ONE_SECOND_MILLIS) {
 			// 限速控制
 			synchronized (this.limitBuffer) {
 				// 双重验证
-				if(limitBuffer == this.limitBuffer.get()) {
+				if(limitBufferValue == this.limitBuffer.get()) {
 					// 通过实际下载大小计算：不能直接使用一秒如果缓存较大就会出现误差
-					final long expectTime = limitBuffer * SystemConfig.ONE_SECOND_MILLIS / maxLimitBuffer;
+					final long expectTime = limitBufferValue * SystemConfig.ONE_SECOND_MILLIS / maxLimitBuffer;
 					if(interval < expectTime) {
 						// 限速时间
 						ThreadUtils.sleep(expectTime - interval);
