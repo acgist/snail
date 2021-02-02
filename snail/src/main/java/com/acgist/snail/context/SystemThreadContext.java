@@ -53,10 +53,6 @@ public final class SystemThreadContext implements IContext {
 	 */
 	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD_BT + "-Timer";
 	/**
-	 * <p>JavaFX平台线程：{@value}</p>
-	 */
-	public static final String SNAIL_THREAD_PLATFORM = SNAIL_THREAD + "-Platform";
-	/**
 	 * <p>UTP队列线程：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_UTP_QUEUE = SNAIL_THREAD + "-UTP-Queue";

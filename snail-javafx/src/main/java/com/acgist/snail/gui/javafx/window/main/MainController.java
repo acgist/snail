@@ -277,10 +277,8 @@ public final class MainController extends Controller {
 	public void refreshTaskStatus() {
 		// 刷新Table
 		this.taskTable.refresh();
-		Platform.runLater(() -> {
-			// 上传速度
-			this.uploadBuffer.setText(FileUtils.formatSpeed(StatisticsContext.getInstance().uploadSpeed()));
-		});
+		// 上传速度
+		Platform.runLater(() -> this.uploadBuffer.setText(FileUtils.formatSpeed(StatisticsContext.getInstance().uploadSpeed())));
 	}
 	
 	/**

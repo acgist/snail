@@ -3,7 +3,6 @@ package com.acgist.snail.gui.javafx.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
 import com.acgist.snail.gui.javafx.menu.TrayMenu;
@@ -32,11 +31,7 @@ public final class BuildEvent extends BuildEventAdapter {
 	@Override
 	protected void executeNative(Object ... args) {
 		LOGGER.debug("创建GUI窗口");
-		final Thread javaFxThread = new Thread();
-		javaFxThread.setName(SystemThreadContext.SNAIL_THREAD_PLATFORM);
-		javaFxThread.setDaemon(true);
-		// 阻塞线程防止关闭
-		Platform.startup(javaFxThread);
+		Platform.startup(() -> {});
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();
 			MainWindow.getInstance().show();
