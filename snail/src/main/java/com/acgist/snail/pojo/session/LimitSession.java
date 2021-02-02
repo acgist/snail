@@ -20,9 +20,13 @@ public final class LimitSession {
 	 */
 	public enum Type {
 		
-		/** 上传 */
+		/**
+		 * <p>上传</p>
+		 */
 		UPLOAD,
-		/** 下载 */
+		/**
+		 * <p>下载</p>
+		 */
 		DOWNLOAD;
 		
 	}
@@ -36,9 +40,9 @@ public final class LimitSession {
 	 */
 	private final AtomicLong limitBuffer;
 	/**
-	 * <p>限速最后一次采样时间</p>
+	 * <p>最后一次采样时间</p>
 	 */
-	private volatile long lastLimitTime;
+	private volatile long limitBufferTime;
 	
 	/**
 	 * @param type 限制类型
@@ -46,7 +50,7 @@ public final class LimitSession {
 	public LimitSession(Type type) {
 		this.type = type;
 		this.limitBuffer = new AtomicLong(0);
-		this.lastLimitTime = System.currentTimeMillis();
+		this.limitBufferTime = System.currentTimeMillis();
 	}
 	
 	/**
@@ -55,27 +59,25 @@ public final class LimitSession {
 	 * @param buffer 数据大小
 	 */
 	public void limit(long buffer) {
-		final long interval = System.currentTimeMillis() - this.lastLimitTime;
+		final long interval = System.currentTimeMillis() - this.limitBufferTime;
 		final long limitBuffer = this.limitBuffer.addAndGet(buffer);
 		final long maxLimitBuffer = this.maxLimitBuffer();
-		if(limitBuffer >= maxLimitBuffer || interval >= SystemConfig.ONE_SECOND_MILLIS) { // 限速控制
-			synchronized (this.limitBuffer) { // 阻塞其他线程
-				if(limitBuffer == this.limitBuffer.get()) { // 验证
-					// 直接使用一秒：如果缓存较大就会出现误差
-//					final long expectTime = SystemConfig.ONE_SECOND_MILLIS;
-					// 通过实际下载大小计算
-//					final long expectTime = BigDecimal.valueOf(limitBuffer)
-//						.multiply(BigDecimal.valueOf(SystemConfig.ONE_SECOND_MILLIS))
-//						.divide(BigDecimal.valueOf(maxLimitBuffer), RoundingMode.HALF_UP)
-//						.longValue();
-					// 通过实际下载大小计算
+		if(limitBuffer >= maxLimitBuffer || interval >= SystemConfig.ONE_SECOND_MILLIS) {
+			// 限速控制
+			synchronized (this.limitBuffer) {
+				// 双重验证
+				if(limitBuffer == this.limitBuffer.get()) {
+					// 通过实际下载大小计算：不能直接使用一秒如果缓存较大就会出现误差
 					final long expectTime = limitBuffer * SystemConfig.ONE_SECOND_MILLIS / maxLimitBuffer;
-					if(interval < expectTime) { // 限速时间
+					if(interval < expectTime) {
+						// 限速时间
 						ThreadUtils.sleep(expectTime - interval);
 					}
-					this.limitBuffer.set(0); // 清零：不能在休眠前清零
-					this.lastLimitTime = System.currentTimeMillis();
-				} else { // 防止误差
+					// 清零：不能在休眠前清零
+					this.limitBuffer.set(0);
+					this.limitBufferTime = System.currentTimeMillis();
+				} else {
+					// 防止误差：阻塞后再计算
 					this.limitBuffer.addAndGet(buffer);
 				}
 			}
@@ -84,7 +86,7 @@ public final class LimitSession {
 	
 	/**
 	 * <p>获取限制速度</p>
-	 * <p>不能初始化成常量，否者设置限速后需要重启才生效。</p>
+	 * <p>不能初始化成常量：设置限速实时生效</p>
 	 * 
 	 * @return 限制速度
 	 */
