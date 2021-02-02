@@ -169,9 +169,9 @@ public abstract class Downloader implements IDownloader {
 				// 加锁：保证资源加载和释放原子性
 				if(this.statusAwait()) {
 					LOGGER.debug("开始下载任务：{}", name);
-					this.fail = false; // 重置下载失败状态
-					this.completed = false; // 重置下载成功状态
-					this.taskSession.setStatus(Status.DOWNLOAD); // 修改任务状态：不能保存
+					this.fail = false;
+					this.completed = false;
+					this.taskSession.setStatus(Status.DOWNLOAD);
 					try {
 						this.open();
 						this.download();
@@ -179,8 +179,9 @@ public abstract class Downloader implements IDownloader {
 						LOGGER.error("任务下载异常", e);
 						this.fail(e.getMessage());
 					}
-					this.checkAndMarkCompleted(); // 标记完成
-					this.release(); // 释放资源
+					this.checkAndMarkCompleted();
+					this.release();
+					this.taskSession.unlockDelete();
 					LOGGER.debug("任务下载结束：{}", name);
 				} else {
 					LOGGER.warn("任务状态错误：{}-{}", name, this.taskSession.getStatus());

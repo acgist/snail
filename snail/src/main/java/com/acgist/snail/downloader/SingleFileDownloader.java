@@ -18,14 +18,13 @@ import com.acgist.snail.utils.IoUtils;
 /**
  * <p>单文件任务下载器</p>
  * 
- * TODO：分段下载技术（断点续传支持：突破网盘限速）
- * 
  * @author acgist
  */
 public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>快速失败时间</p>
+	 * <p>注意：不建议超过任务删除锁等待时间</p>
 	 */
 	private static final long FAST_CHECK_TIME = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	

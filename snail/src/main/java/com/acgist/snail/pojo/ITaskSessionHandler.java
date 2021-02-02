@@ -54,6 +54,11 @@ public interface ITaskSessionHandler {
 	void delete();
 	
 	/**
+	 * <p>解除删除锁</p>
+	 */
+	void unlockDelete();
+	
+	/**
 	 * <p>刷新任务</p>
 	 * 
 	 * @throws DownloadException 下载异常

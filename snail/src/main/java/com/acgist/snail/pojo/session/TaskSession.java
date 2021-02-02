@@ -5,14 +5,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.StatisticsContext;
-import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
@@ -32,6 +36,8 @@ import com.acgist.snail.utils.FileUtils;
  */
 public final class TaskSession implements ITaskSession {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskSession.class);
+	
 	/**
 	 * <p>时间格式：{@value}</p>
 	 */
@@ -40,6 +46,10 @@ public final class TaskSession implements ITaskSession {
 	 * <p>任务状态：{@value}</p>
 	 */
 	private static final String TASK_STATUS_VALUE = "statusValue";
+	/**
+	 * <p>删除等待时间</p>
+	 */
+	private static final long DELETE_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>下载器</p>
@@ -49,6 +59,10 @@ public final class TaskSession implements ITaskSession {
 	 * <p>任务</p>
 	 */
 	private final TaskEntity entity;
+	/**
+	 * <p>删除锁</p>
+	 */
+	private final AtomicBoolean deleteLock;
 	/**
 	 * <p>统计</p>
 	 */
@@ -64,6 +78,7 @@ public final class TaskSession implements ITaskSession {
 			throw new DownloadException("创建TaskSession失败（entity）");
 		}
 		this.entity = entity;
+		this.deleteLock = new AtomicBoolean(false);
 		this.statistics = new StatisticsSession(true, StatisticsContext.getInstance().statistics());
 	}
 	
@@ -321,11 +336,13 @@ public final class TaskSession implements ITaskSession {
 			return;
 		}
 		if(this.statusDownload()) {
+			this.deleteLock.set(true);
 			// 正在下载：标记删除下载结束自动释放
 			this.updateStatus(Status.DELETE);
+			this.lockDelete();
 		} else if(this.downloader != null) {
-			// 没有下载：异步删除
-			SystemThreadContext.submit(this.downloader::delete);
+			// 没有下载：直接删除
+			this.downloader.delete();
 		}
 		// 删除下载任务
 		TaskContext.getInstance().remove(this);
@@ -333,6 +350,33 @@ public final class TaskSession implements ITaskSession {
 		this.downloader = null;
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
+	}
+	
+	/**
+	 * <p>添加删除锁</p>
+	 * <p>下载中任务删除时需要等待文件释放：防止删除文件失败</p>
+	 */
+	private void lockDelete() {
+		if(this.deleteLock.get()) {
+			synchronized (this.deleteLock) {
+				if(this.deleteLock.get()) {
+					try {
+						this.deleteLock.wait(DELETE_TIMEOUT);
+					} catch (InterruptedException e) {
+						LOGGER.debug("线程等待异常", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void unlockDelete() {
+		synchronized (this.deleteLock) {
+			this.deleteLock.set(false);
+			this.deleteLock.notifyAll();
+		}
 	}
 
 	@Override
