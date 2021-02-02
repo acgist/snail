@@ -179,7 +179,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 	
 	@Override
-	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload) {
+	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId); // connection_id
 		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id()); // action

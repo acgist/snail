@@ -136,7 +136,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 	
 	@Override
-	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload) {
+	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left) {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&") // InfoHash

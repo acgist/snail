@@ -15,8 +15,7 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Tracker信息</p>
- * <p>基本协议：TCP（HTTP）、UDP</p>
- * <p>sid：{@link TrackerLauncher#id()}</p>
+ * <p>基本协议：HTTP、UDP</p>
  * 
  * @author acgist
  */
@@ -25,18 +24,13 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerSession.class);
 	
 	/**
-	 * <p>想要获取的Peer数量：{@value}</p>
+	 * <p>想要获取Peer数量：{@value}</p>
 	 */
 	protected static final int WANT_PEER_SIZE = 50;
 	
 	/**
-	 * <p>权重</p>
-	 * <p>查询成功会使权重增加、查询失败会使权重减少</p>
-	 */
-	protected int weight;
-	/**
 	 * <p>客户端ID</p>
-	 * <p>ID与Tracker服务器一一对应</p>
+	 * <p>对应Tracker服务器</p>
 	 */
 	protected final Integer id;
 	/**
@@ -52,24 +46,29 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 */
 	protected final String announceUrl;
 	/**
-	 * <p>失败次数</p>
-	 * <p>请求处理成功后清零，超过{@linkplain TrackerConfig#MAX_FAIL_TIMES 最大失败次数}设置为不可用。</p>
+	 * <p>权重</p>
+	 * <p>查询成功会使权重增加</p>
+	 * <p>查询失败会使权重减少</p>
 	 */
-	private int failTimes = 0;
+	protected int weight;
+	/**
+	 * <p>失败次数</p>
+	 * <p>查询成功会使失败次数增加</p>
+	 * <p>查询失败会使失败次数减少</p>
+	 * 
+	 * @see TrackerConfig#MAX_FAIL_TIMES
+	 */
+	protected int failTimes = 0;
 	/**
 	 * <p>是否可用</p>
 	 */
-	private boolean available = true;
-	/**
-	 * <p>失败原因</p>
-	 */
-	private String failMessage;
+	protected boolean available = true;
 	
 	/**
-	 * <p>Tracker客户端</p>
+	 * <p>Tracker信息</p>
 	 * 
-	 * @param scrapeUrl 刮擦URL
-	 * @param announceUrl 声明URL
+	 * @param scrapeUrl 刮擦地址
+	 * @param announceUrl 声明地址
 	 * @param type 协议类型
 	 * 
 	 * @throws NetException 网络异常
@@ -89,7 +88,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * <p>查找Peer</p>
 	 * <p>查找到的结果放入Peer列表</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 */
 	public void findPeers(Integer sid, TorrentSession torrentSession) {
@@ -97,16 +96,18 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 			return;
 		}
 		try {
-			this.started(sid, torrentSession); // 发送声明消息
+			// 发送声明消息
+			this.started(sid, torrentSession);
 			this.weight++;
-			this.failTimes = 0; // 成功直接清空失败次数
+			this.failTimes = 0;
 		} catch (Exception e) {
-			LOGGER.error("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			this.weight--;
-			if(++this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
-				LOGGER.warn("TrackerSession停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl);
+			this.failTimes++;
+			if(this.failTimes >= TrackerConfig.MAX_FAIL_TIMES) {
 				this.available = false;
-				this.failMessage = e.getMessage();
+				LOGGER.error("Tracker停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
+			} else {
+				LOGGER.error("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			}
 		}
 	}
@@ -114,7 +115,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	/**
 	 * <p>声明：开始</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @throws NetException 网络异常
@@ -125,7 +126,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * <p>声明：完成</p>
 	 * <p>任务完成时发送</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @throws NetException 网络异常
@@ -136,7 +137,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * <p>声明：停止</p>
 	 * <p>任务暂停时发送</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @throws NetException 网络异常
@@ -146,7 +147,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	/**
 	 * <p>刮檫</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @throws NetException 网络异常
@@ -156,37 +157,42 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	/**
 	 * <p>创建声明消息</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * @param event 事件
 	 * 
 	 * @return 声明消息
 	 */
 	protected Object buildAnnounceMessage(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
-		long download = 0L, left = 0L, upload = 0L;
+		// 剩余下载大小
+		long left = 0L;
+		// 已上传大小
+		long upload = 0L;
+		// 已下载大小
+		long download = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
 			final var statistics = taskSession.statistics();
-			download = statistics.downloadSize(); // 已下载
-			left = taskSession.getSize() - download; // 剩余下载
-			upload = statistics.uploadSize(); // 已上传
+			upload = statistics.uploadSize();
+			download = statistics.downloadSize();
+			left = taskSession.getSize() - download;
 		}
-		return this.buildAnnounceMessageEx(sid, torrentSession, event, download, left, upload);
+		return this.buildAnnounceMessageEx(sid, torrentSession, event, upload, download, left);
 	}
 	
 	/**
 	 * <p>创建声明消息</p>
 	 * 
-	 * @param sid sid
+	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * @param event 事件
-	 * @param download 已下载大小
-	 * @param left 剩余大小
 	 * @param upload 已上传大小
+	 * @param download 已下载大小
+	 * @param left 剩余下载大小
 	 * 
 	 * @return 声明消息
 	 */
-	protected abstract Object buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long download, long left, long upload);
+	protected abstract Object buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left);
 	
 	/**
 	 * <p>获取客户端ID</p>
@@ -198,27 +204,27 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	}
 	
 	/**
-	 * <p>获取客户端类型</p>
+	 * <p>获取协议类型</p>
 	 * 
-	 * @return 客户端类型
+	 * @return 协议类型
 	 */
 	public Protocol.Type type() {
 		return this.type;
 	}
 	
 	/**
-	 * <p>获取刮擦URL</p>
+	 * <p>获取刮擦地址</p>
 	 * 
-	 * @return 刮擦URL
+	 * @return 刮擦地址
 	 */
 	public String scrapeUrl() {
 		return this.scrapeUrl;
 	}
 	
 	/**
-	 * <p>获取客户端声明URL</p>
+	 * <p>获取声明地址</p>
 	 * 
-	 * @return 客户端声明URL
+	 * @return 声明地址
 	 */
 	public String announceUrl() {
 		return this.announceUrl;
@@ -227,27 +233,18 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	/**
 	 * <p>判断是否可用</p>
 	 * 
-	 * @return true-可用；false-禁用；
+	 * @return 是否可用
 	 */
 	public boolean available() {
 		return this.available;
 	}
 	
 	/**
-	 * <p>获取失败原因</p>
-	 * 
-	 * @return 失败原因
-	 */
-	public String failMessage() {
-		return this.failMessage;
-	}
-	
-	/**
-	 * <p>判断当前客户端的声明URL和声明URL是否相同</p>
+	 * <p>判断当前Tracker声明地址和声明地址是否相同</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return true-相同；fasle-不同；
+	 * @return 是否相同
 	 */
 	public boolean equalsAnnounceUrl(String announceUrl) {
 		return this.announceUrl.equals(announceUrl);
@@ -263,13 +260,6 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 		return Objects.hash(this.announceUrl);
 	}
 	
-	/**
-	 * <p>客户端声明地址相同时相等</p>
-	 * 
-	 * @param object 客户端
-	 * 
-	 * @return true-相等；false-不等；
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if(this == object) {
@@ -284,7 +274,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	
 	@Override
 	public String toString() {
-		return BeanUtils.toString(this, this.id, this.type, this.failTimes, this.announceUrl);
+		return BeanUtils.toString(this, this.id, this.type, this.scrapeUrl, this.announceUrl);
 	}
 	
 }
