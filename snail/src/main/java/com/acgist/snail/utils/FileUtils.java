@@ -328,6 +328,15 @@ public final class FileUtils {
 	}
 	
 	/**
+	 * <p>格式化速度</p>
+	 * 
+	 * @return 速度
+	 */
+	public static final String formatSpeed(Long size) {
+		return formatSize(size) + "/S";
+	}
+	
+	/**
 	 * <p>获取文件大小</p>
 	 * <p>目录文件：统计所有文件大小</p>
 	 * 

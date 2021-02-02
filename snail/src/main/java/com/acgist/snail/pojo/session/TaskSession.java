@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.ProtocolContext;
@@ -60,7 +61,7 @@ public final class TaskSession implements ITaskSession {
 	 */
 	private TaskSession(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
-			throw new DownloadException("创建TaskSession失败（任务不存在）");
+			throw new DownloadException("创建TaskSession失败（entity）");
 		}
 		this.entity = entity;
 		this.statistics = new StatisticsSession(true, StatisticsContext.getInstance().statistics());
@@ -193,7 +194,7 @@ public final class TaskSession implements ITaskSession {
 	@Override
 	public String getStatusValue() {
 		if(this.statusDownload()) {
-			return FileUtils.formatSize(this.statistics.downloadSpeed()) + "/S";
+			return FileUtils.formatSpeed(this.statistics.downloadSpeed());
 		} else {
 			return this.getStatus().getValue();
 		}
@@ -204,14 +205,17 @@ public final class TaskSession implements ITaskSession {
 		if(this.statusCompleted()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
-			return FileUtils.formatSize(this.downloadSize()) + "/" + FileUtils.formatSize(this.getSize());
+			return
+				FileUtils.formatSize(this.downloadSize()) +
+				SymbolConfig.Symbol.SLASH.toString() +
+				FileUtils.formatSize(this.getSize());
 		}
 	}
 
 	@Override
 	public String getCreateDateValue() {
 		if(this.entity.getCreateDate() == null) {
-			return "-";
+			return SymbolConfig.Symbol.MINUS.toString();
 		} else {
 			return DateUtils.dateFormat(this.entity.getCreateDate(), PATTERN);
 		}
@@ -223,7 +227,7 @@ public final class TaskSession implements ITaskSession {
 			if(this.statusDownload()) {
 				final long downloadSpeed = this.statistics.downloadSpeed();
 				if(downloadSpeed == 0L) {
-					return "-";
+					return SymbolConfig.Symbol.MINUS.toString();
 				} else {
 					// 剩余下载时间
 					long second = (this.getSize() - this.downloadSize()) / downloadSpeed;
@@ -233,7 +237,7 @@ public final class TaskSession implements ITaskSession {
 					return DateUtils.format(second);
 				}
 			} else {
-				return "-";
+				return SymbolConfig.Symbol.MINUS.toString();
 			}
 		} else {
 			return DateUtils.dateFormat(this.getEndDate(), PATTERN);
