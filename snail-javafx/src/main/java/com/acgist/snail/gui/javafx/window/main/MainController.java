@@ -279,8 +279,7 @@ public final class MainController extends Controller {
 		this.taskTable.refresh();
 		Platform.runLater(() -> {
 			// 上传速度
-			final String speed = FileUtils.formatSize(StatisticsContext.getInstance().uploadSpeed());
-			this.uploadBuffer.setText(speed + "/S");
+			this.uploadBuffer.setText(FileUtils.formatSpeed(StatisticsContext.getInstance().uploadSpeed()));
 		});
 	}
 	

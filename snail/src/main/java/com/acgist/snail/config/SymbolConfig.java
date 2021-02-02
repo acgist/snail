@@ -31,6 +31,14 @@ public final class SymbolConfig {
 		 */
 		ZERO('0'),
 		/**
+		 * <p>加号</p>
+		 */
+		PLUS('+'),
+		/**
+		 * <p>减号</p>
+		 */
+		MINUS('-'),
+		/**
 		 * <p>逗号</p>
 		 */
 		COMMA(','),
