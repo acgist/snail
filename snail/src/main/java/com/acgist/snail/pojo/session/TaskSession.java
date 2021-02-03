@@ -20,8 +20,8 @@ import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.pojo.StatisticsGetter;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
@@ -34,7 +34,7 @@ import com.acgist.snail.utils.FileUtils;
  * 
  * @author acgist
  */
-public final class TaskSession implements ITaskSession {
+public final class TaskSession extends StatisticsGetter implements ITaskSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskSession.class);
 	
@@ -63,23 +63,14 @@ public final class TaskSession implements ITaskSession {
 	 * <p>删除锁</p>
 	 */
 	private final AtomicBoolean deleteLock;
-	/**
-	 * <p>统计</p>
-	 */
-	private final IStatisticsSession statistics;
 	
 	/**
 	 * @param entity 任务
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	private TaskSession(TaskEntity entity) throws DownloadException {
-		if(entity == null) {
-			throw new DownloadException("创建TaskSession失败（entity）");
-		}
+	private TaskSession(TaskEntity entity) {
+		super(new StatisticsSession(true, StatisticsContext.getInstance().statistics()));
 		this.entity = entity;
 		this.deleteLock = new AtomicBoolean(false);
-		this.statistics = new StatisticsSession(true, StatisticsContext.getInstance().statistics());
 	}
 	
 	/**
@@ -92,10 +83,11 @@ public final class TaskSession implements ITaskSession {
 	 * @throws DownloadException 下载异常
 	 */
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
+		if(entity == null) {
+			throw new DownloadException("创建TaskSession失败（entity）");
+		}
 		return new TaskSession(entity);
 	}
-	
-	//================任务信息================//
 	
 	@Override
 	public IDownloader downloader() {
@@ -130,12 +122,7 @@ public final class TaskSession implements ITaskSession {
 	public List<String> multifileSelected() {
 		return DescriptionWrapper.newDecoder(this.getDescription()).deserialize();
 	}
-	
-	@Override
-	public long downloadSize() {
-		return this.statistics.downloadSize();
-	}
-	
+
 	@Override
 	public void downloadSize(long size) {
 		this.statistics.downloadSize(size);
@@ -154,15 +141,6 @@ public final class TaskSession implements ITaskSession {
 		data.put(TASK_STATUS_VALUE, this.getStatusValue());
 		return data;
 	}
-	
-	//================任务信息统计信息================//
-	
-	@Override
-	public IStatisticsSession statistics() {
-		return this.statistics;
-	}
-	
-	//================任务信息状态================//
 	
 	@Override
 	public boolean statusAwait() {
@@ -198,8 +176,6 @@ public final class TaskSession implements ITaskSession {
 	public boolean statusRunning() {
 		return this.statusAwait() || this.statusDownload();
 	}
-	
-	//================任务信息面板数据绑定================//
 	
 	@Override
 	public String getNameValue() {
@@ -258,8 +234,6 @@ public final class TaskSession implements ITaskSession {
 			return DateUtils.dateFormat(this.getEndDate(), PATTERN);
 		}
 	}
-	
-	//================任务信息操作================//
 	
 	@Override
 	public void reset() {
@@ -423,8 +397,6 @@ public final class TaskSession implements ITaskSession {
 		TaskContext.getInstance().refresh();
 	}
 
-	//================任务信息实体================//
-	
 	@Override
 	public String getId() {
 		return this.entity.getId();

@@ -52,8 +52,6 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 */
 	public static final String ATTR_PATH_UTF8 = "path.utf-8";
 	
-	//================种子文件自带信息================//
-	
 	/**
 	 * <p>路径</p>
 	 */
@@ -62,9 +60,6 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 * <p>路径UTF8</p>
 	 */
 	private List<String> pathUtf8;
-	
-	//================种子文件临时信息================//
-	
 	/**
 	 * <p>是否选择下载</p>
 	 */
@@ -171,8 +166,6 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 			.collect(Collectors.toList());
 	}
 
-	// ==============GETTER SETTER============== //
-	
 	/**
 	 * <p>获取路径</p>
 	 * 

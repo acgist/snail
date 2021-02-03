@@ -99,6 +99,11 @@ public final class StatisticsSession implements IStatisticsSession {
 			this.downloadSpeed = null;
 		}
 	}
+	
+	@Override
+	public IStatisticsSession statistics() {
+		return this;
+	}
 
 	@Override
 	public void upload(int buffer) {

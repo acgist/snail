@@ -40,12 +40,8 @@ open module com.acgist.snail {
 	exports com.acgist.snail.protocol;
 	exports com.acgist.snail.utils;
 	
-	//================Java================//
 	requires java.base;
-	// XML依赖
 	requires transitive java.xml;
-	
-	//================依赖================//
 	requires transitive org.slf4j;
 
 }

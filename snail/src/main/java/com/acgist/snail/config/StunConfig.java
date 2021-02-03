@@ -178,13 +178,14 @@ public final class StunConfig {
 	
 	/**
 	 * <p>属性类型</p>
-	 * <p>0x0000：保留</p>
+	 * <p>保留：0x0000</p>
+	 * <p>强制解析：0x0000-0x7FFF</p>
+	 * <p>可选解析：0x8000-0xFFFF</p>
 	 * 
 	 * @author acgist
 	 */
 	public enum AttributeType {
 		
-		//================强制解析：0x0000-0x7FFF================//
 		/**
 		 * <p>端口映射：明文</p>
 		 */
@@ -208,7 +209,6 @@ public final class StunConfig {
 		 * <p>端口映射：异或处理数据</p>
 		 */
 		XOR_MAPPED_ADDRESS((short) 0x0020),
-		//================可选解析：0x8000-0xFFFF================//
 		SOFTWARE((short) 0x8022),
 		ALTERNATE_SERVER((short) 0x8023),
 		FINGERPRINT((short) 0x8028);

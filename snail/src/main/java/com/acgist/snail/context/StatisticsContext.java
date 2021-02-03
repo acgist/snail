@@ -2,8 +2,7 @@ package com.acgist.snail.context;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.pojo.ISpeedGetter;
-import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.pojo.IStatisticsSessionGetter;
+import com.acgist.snail.pojo.StatisticsGetter;
 import com.acgist.snail.pojo.session.StatisticsSession;
 
 /**
@@ -13,7 +12,7 @@ import com.acgist.snail.pojo.session.StatisticsSession;
  * 
  * @author acgist
  */
-public final class StatisticsContext implements IContext, ISpeedGetter, IStatisticsSessionGetter {
+public final class StatisticsContext extends StatisticsGetter implements IContext, ISpeedGetter {
 	
 	private static final StatisticsContext INSTANCE = new StatisticsContext();
 	
@@ -21,21 +20,8 @@ public final class StatisticsContext implements IContext, ISpeedGetter, IStatist
 		return INSTANCE;
 	}
 	
-	/**
-	 * <p>系统全局统计</p>
-	 */
-	private IStatisticsSession statistics;
-	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private StatisticsContext() {
-		this.statistics = new StatisticsSession();
-	}
-	
-	@Override
-	public IStatisticsSession statistics() {
-		return this.statistics;
+		super(new StatisticsSession());
 	}
 	
 	@Override

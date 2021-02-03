@@ -184,14 +184,22 @@ public final class PeerConfig extends PropertiesConfig {
 	 * </table>
 	 */
 	private static final Map<String, String> PEER_NAMES = new HashMap<>();
+	/**
+	 * <p>Piece最小索引：{@value}</p>
+	 */
+	private static final int PIECE_MIN = 0;
+	/**
+	 * <p>Piece最大索引（2^15）：{@value}</p>
+	 */
+	private static final int PIECE_MAX = 32768;
 
 	static {
-		//================保留位================//
+		// 保留位
 		RESERVED[7] |= RESERVED_DHT_PROTOCOL;
 		RESERVED[7] |= RESERVED_PEER_EXCHANGE;
 		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
 		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
-		//================初始化================//
+		// 初始化
 		LOGGER.debug("初始化Peer配置：{}", CLIENT_NAME_CONFIG);
 		INSTANCE.init();
 		INSTANCE.release();
@@ -746,6 +754,21 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	private void init() {
 		this.properties.forEach((key, value) -> PEER_NAMES.put(key.toString(), value.toString()));
+	}
+	
+	/**
+	 * <p>判断Piece索引是否正确</p>
+	 * <p>防止索引长度过大导致内存溢出</p>
+	 * 
+	 * @param index Piece索引
+	 * 
+	 * @return 是否正确
+	 * 
+	 * @see #PIECE_MIN
+	 * @see #PIECE_MAX
+	 */
+	public static final boolean checkPiece(int index) {
+		return index >= PIECE_MIN && index <= PIECE_MAX;
 	}
 	
 }
