@@ -65,13 +65,13 @@ public final class NodeSession implements Comparable<NodeSession> {
 	}
 	
 	/**
-	 * <p>创建节点</p>
+	 * <p>创建DHT节点信息</p>
 	 * 
 	 * @param id 节点ID
 	 * @param host 节点地址
 	 * @param port 节点端口
 	 * 
-	 * @return 节点
+	 * @return {@link NodeSession}
 	 */
 	public static final NodeSession newInstance(byte[] id, String host, int port) {
 		return new NodeSession(id, host, port);
@@ -86,15 +86,6 @@ public final class NodeSession implements Comparable<NodeSession> {
 		return this.status != Status.VERIFY;
 	}
 
-	/**
-	 * <p>判断节点是否有效</p>
-	 * 
-	 * @return 是否有效
-	 */
-	public boolean available() {
-		return this.status == Status.AVAILABLE;
-	}
-	
 	/**
 	 * <p>标记验证状态</p>
 	 * 
