@@ -8,11 +8,11 @@ import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Entity - 基类</p>
+ * <p>Entity - 实体</p>
  * 
  * @author acgist
  */
-public class Entity implements Serializable {
+public abstract class Entity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
