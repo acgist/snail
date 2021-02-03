@@ -226,7 +226,7 @@ public abstract class PeerConnect implements IPeerConnect {
 	}
 	
 	/**
-	 * <p>Peer上传评分</p>
+	 * <p>获取Peer上传评分</p>
 	 * 
 	 * @return Peer上传评分
 	 */
@@ -245,7 +245,7 @@ public abstract class PeerConnect implements IPeerConnect {
 	}
 	
 	/**
-	 * <p>Peer下载评分</p>
+	 * <p>获取Peer下载评分</p>
 	 * 
 	 * @return Peer下载评分
 	 */
@@ -261,7 +261,7 @@ public abstract class PeerConnect implements IPeerConnect {
 			synchronized (this) {
 				if(!this.downloading) {
 					this.downloading = true;
-					this.torrentSession.submit(() -> this.requests());
+					this.torrentSession.submit(this::requests);
 				}
 			}
 		}

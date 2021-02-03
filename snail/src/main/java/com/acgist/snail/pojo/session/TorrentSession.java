@@ -518,7 +518,7 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>检测任务是否下载完成</p>
-	 * <p>注意：需要实现幂等，文件完成会被多次调用，非幂等操作请在{@link #releaseDownload()}方法中执行。</p>
+	 * <p>注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）</p>
 	 */
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {

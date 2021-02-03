@@ -112,7 +112,7 @@ public final class HlsClient implements Runnable {
 						this.output.write(buffer);
 						buffer.clear();
 						downloadSize += length;
-						this.hlsSession.download(length); // 设置下载速度
+						this.hlsSession.download(length);
 					}
 					if(Downloader.checkFinish(length, downloadSize, this.size)) {
 						this.completed = true;
@@ -127,7 +127,7 @@ public final class HlsClient implements Runnable {
 		if(this.completed) {
 			LOGGER.debug("HLS文件下载完成：{}", this.link);
 			this.hlsSession.remove(this);
-			this.hlsSession.downloadSize(downloadSize); // 设置下载大小
+			this.hlsSession.downloadSize(downloadSize);
 			this.hlsSession.checkCompletedAndDone();
 		} else {
 			LOGGER.debug("HLS文件下载失败：{}", this.link);

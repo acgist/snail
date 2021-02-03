@@ -10,7 +10,9 @@ import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>Peer连接信息</p>
- * <p>每个Peer连接独立保存连接信息，不能放在PeerSession里面，因为每个Peer可能存在多个连接。</p>
+ * <p>PeerConnect独立保存连接信息：PeerSession可能存在多个连接</p>
+ * <p>Peer：远程连接客户端</p>
+ * <p>客户端：软件本身</p>
  * 
  * @author acgist
  */
@@ -24,19 +26,29 @@ public final class PeerConnectSession {
 	private static final long MIN_MARK_INTERVAL = 60L * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
-	 * <p>客户端将Peer阻塞：阻塞-1（true）、非阻塞-0</p>
+	 * <p>客户端将Peer阻塞</p>
+	 * <p>1：阻塞</p>
+	 * <p>0：非阻塞</p>
+	 * <p>阻塞后不允许上传数据</p>
 	 */
 	private volatile boolean amChoked;
 	/**
-	 * <p>客户端对Peer感兴趣：感兴趣-1（true）、不感兴趣-0</p>
+	 * <p>客户端对Peer感兴趣</p>
+	 * <p>1：感兴趣</p>
+	 * <p>0：不感兴趣</p>
 	 */
 	private volatile boolean amInterested;
 	/**
-	 * <p>Peer将客户阻塞：阻塞-1（true）、非阻塞-0</p>
+	 * <p>Peer将客户阻塞</p>
+	 * <p>1：阻塞</p>
+	 * <p>0：非阻塞</p>
+	 * <p>阻塞后不允许下载数据</p>
 	 */
 	private volatile boolean peerChoked;
 	/**
-	 * <p>Peer对客户端感兴趣：感兴趣-1（true）、不感兴趣-0</p>
+	 * <p>Peer对客户端感兴趣</p>
+	 * <p>1：感兴趣</p>
+	 * <p>0：不感兴趣</p>
 	 */
 	private volatile boolean peerInterested;
 	/**
@@ -47,14 +59,6 @@ public final class PeerConnectSession {
 	 * <p>下载评分</p>
 	 */
 	private volatile long downloadMark;
-	/**
-	 * <p>上次累计上传大小</p>
-	 */
-	private long lastUploadSize;
-	/**
-	 * <p>上次累计下载大小</p>
-	 */
-	private long lastDownloadSize;
 	/**
 	 * <p>累计上传大小</p>
 	 */
@@ -69,14 +73,14 @@ public final class PeerConnectSession {
 	private volatile long lastRefreshMarkTime = System.currentTimeMillis();
 	
 	/**
-	 * <p>默认：阻塞、不感兴趣</p>
+	 * <p>初始：阻塞、不感兴趣</p>
+	 * <p>初始下载评分：不能设置为零，防止连接首次评分就被剔除。</p>
 	 */
 	public PeerConnectSession() {
 		this.amChoked = true;
 		this.amInterested = false;
 		this.peerChoked = true;
 		this.peerInterested = false;
-		// 初始积分不能为零：初始连接开始没有数据
 		this.uploadMark = DownloadConfig.getUploadBufferByte();
 		this.downloadMark = DownloadConfig.getDownloadBufferByte();
 	}
@@ -96,49 +100,7 @@ public final class PeerConnectSession {
 	}
 	
 	/**
-	 * <p>客户端对Peer感兴趣</p>
-	 */
-	public void amInterested() {
-		this.amInterested = true;
-	}
-	
-	/**
-	 * <p>客户端对Peer不感兴趣</p>
-	 */
-	public void amNotInterested() {
-		this.amInterested = false;
-	}
-	
-	/**
-	 * <p>Peer将客户端阻塞</p>
-	 */
-	public void peerChoked() {
-		this.peerChoked = true;
-	}
-	
-	/**
-	 * <p>Peer解除客户端阻塞</p>
-	 */
-	public void peerUnchoked() {
-		this.peerChoked = false;
-	}
-
-	/**
-	 * <p>客户端被Peer感兴趣</p>
-	 */
-	public void peerInterested() {
-		this.peerInterested = true;
-	}
-	
-	/**
-	 * <p>客户端被Peer不感兴趣</p>
-	 */
-	public void peerNotInterested() {
-		this.peerInterested = false;
-	}
-	
-	/**
-	 * <p>客户端是否阻塞Peer</p>
+	 * <p>客户端是否将Peer阻塞</p>
 	 * 
 	 * @return 是否阻塞
 	 */
@@ -153,6 +115,20 @@ public final class PeerConnectSession {
 	 */
 	public boolean isAmUnchoked() {
 		return !this.amChoked;
+	}
+	
+	/**
+	 * <p>客户端对Peer感兴趣</p>
+	 */
+	public void amInterested() {
+		this.amInterested = true;
+	}
+	
+	/**
+	 * <p>客户端对Peer不感兴趣</p>
+	 */
+	public void amNotInterested() {
+		this.amInterested = false;
 	}
 	
 	/**
@@ -174,7 +150,21 @@ public final class PeerConnectSession {
 	}
 	
 	/**
-	 * <p>Peer是否阻塞客户端</p>
+	 * <p>Peer将客户端阻塞</p>
+	 */
+	public void peerChoked() {
+		this.peerChoked = true;
+	}
+	
+	/**
+	 * <p>Peer解除客户端阻塞</p>
+	 */
+	public void peerUnchoked() {
+		this.peerChoked = false;
+	}
+
+	/**
+	 * <p>Peer是否将客户端阻塞</p>
 	 * 
 	 * @return 是否阻塞
 	 */
@@ -189,6 +179,20 @@ public final class PeerConnectSession {
 	 */
 	public boolean isPeerUnchoked() {
 		return !this.peerChoked;
+	}
+	
+	/**
+	 * <p>Peer对客户端感兴趣</p>
+	 */
+	public void peerInterested() {
+		this.peerInterested = true;
+	}
+	
+	/**
+	 * <p>Peer对客户端不感兴趣</p>
+	 */
+	public void peerNotInterested() {
+		this.peerInterested = false;
 	}
 	
 	/**
@@ -211,7 +215,7 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>判断是否可以上传</p>
-	 * <p>可以上传：Peer对客户端感兴趣并且客户端未阻塞Peer</p>
+	 * <p>可以上传：Peer对客户端感兴趣并且客户端解除Peer阻塞</p>
 	 * 
 	 * @return 是否可以上传
 	 */
@@ -221,7 +225,7 @@ public final class PeerConnectSession {
 	
 	/**
 	 * <p>判断是否可以下载</p>
-	 * <p>可以下载：客户端对Peer感兴趣并且Peer未阻塞客户端</p>
+	 * <p>可以下载：客户端对Peer感兴趣并且Peer解除客户阻塞</p>
 	 * 
 	 * @return 是否可以下载
 	 */
@@ -232,7 +236,7 @@ public final class PeerConnectSession {
 	/**
 	 * <p>上传计分</p>
 	 * 
-	 * @param buffer 上次大小
+	 * @param buffer 上传大小
 	 */
 	public final void upload(int buffer) {
 		this.uploadSize.addAndGet(buffer);
@@ -275,13 +279,9 @@ public final class PeerConnectSession {
 		final long interval = nowTime - this.lastRefreshMarkTime;
 		if(interval > MIN_MARK_INTERVAL) {
 			this.lastRefreshMarkTime = nowTime;
-			final long uploadSize = this.uploadSize.get();
-			this.uploadMark = uploadSize - this.lastUploadSize;
-			this.lastUploadSize = uploadSize;
-			final long downloadSize = this.downloadSize.get();
-			this.downloadMark = downloadSize - this.lastDownloadSize;
-			this.lastDownloadSize = downloadSize;
-			LOGGER.debug("刷新评分：{}-{}", uploadSize, downloadSize);
+			this.uploadMark = this.uploadSize.getAndSet(0L);
+			this.downloadMark = this.downloadSize.getAndSet(0L);
+			LOGGER.debug("刷新评分：{}-{}", this.uploadMark, this.downloadMark);
 		}
 	}
 	

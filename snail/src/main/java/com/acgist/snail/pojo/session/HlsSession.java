@@ -53,14 +53,14 @@ public final class HlsSession {
 	 */
 	private final ITaskSession taskSession;
 	/**
-	 * <p>HLS下载客户端</p>
-	 * <p>如果客户端下载成功移除列表，否者重新添加继续下载。</p>
-	 */
-	private final List<HlsClient> clients;
-	/**
 	 * <p>统计信息</p>
 	 */
 	private final IStatisticsSession statistics;
+	/**
+	 * <p>HLS客户端</p>
+	 * <p>HLS客户端下载成功移除列表，否者重新添加继续下载。</p>
+	 */
+	private final List<HlsClient> clients;
 	/**
 	 * <p>线程池</p>
 	 */
@@ -71,12 +71,12 @@ public final class HlsSession {
 	 * @param taskSession 任务信息
 	 */
 	private HlsSession(M3u8 m3u8, ITaskSession taskSession) {
+		final var links = taskSession.multifileSelected();
 		this.m3u8 = m3u8;
+		this.fileSize = links.size();
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.statistics = taskSession.statistics();
-		final var links = taskSession.multifileSelected();
-		this.fileSize = links.size();
 		this.clients = new ArrayList<>(this.fileSize);
 		for (String link : links) {
 			final var client = new HlsClient(link, taskSession, this);
@@ -90,7 +90,7 @@ public final class HlsSession {
 	 * @param m3u8 M3U8
 	 * @param taskSession 任务信息
 	 * 
-	 * @return HLS任务信息
+	 * @return {@link HlsSession}
 	 */
 	public static final HlsSession newInstance(M3u8 m3u8, ITaskSession taskSession) {
 		return new HlsSession(m3u8, taskSession);
@@ -110,13 +110,12 @@ public final class HlsSession {
 	
 	/**
 	 * <p>开始下载</p>
-	 * <p>任务全部下载结束后，如果任务可以下载并且没有完成将继续下载。</p>
 	 * 
 	 * @return 是否下载完成
 	 */
 	public boolean download() {
 		if(this.downloadable) {
-			LOGGER.debug("HLS任务已经开始下载");
+			LOGGER.debug("任务已经开始下载");
 			return false;
 		}
 		// 修改开始下载：提交client需要判断
@@ -151,9 +150,9 @@ public final class HlsSession {
 	}
 	
 	/**
-	 * <p>设置下载速度</p>
+	 * <p>统计下载数据</p>
 	 * 
-	 * @param buffer 速度
+	 * @param buffer 下载大小
 	 */
 	public void download(int buffer) {
 		this.statistics.download(buffer);
@@ -162,21 +161,21 @@ public final class HlsSession {
 	
 	/**
 	 * <p>设置已下载大小</p>
-	 * <p>文件可能存在下载失败，这里重新计算累计下载大小。</p>
+	 * <p>注意：下载大小通过计算预计得出</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param size 下载文件大小
 	 */
 	public void downloadSize(long size) {
 		// 设置已下载大小
-		final long downloadSize = this.downloadSize.addAndGet(size);
-		this.taskSession.downloadSize(downloadSize);
+		final long newDownloadSize = this.downloadSize.addAndGet(size);
+		this.taskSession.downloadSize(newDownloadSize);
 		// 已下载文件数量
 		int downloadFileSize;
 		synchronized (this.clients) {
 			downloadFileSize = this.fileSize - this.clients.size();
 		}
 		// 预测文件总大小：存在误差
-		final long taskFileSize = downloadSize * this.fileSize / downloadFileSize;
+		final long taskFileSize = newDownloadSize * this.fileSize / downloadFileSize;
 		this.taskSession.setSize(taskFileSize);
 	}
 	
@@ -202,8 +201,7 @@ public final class HlsSession {
 	
 	/**
 	 * <p>校验是否完成</p>
-	 * <p>如果完成解锁任务下载锁</p>
-	 * <p>注意：需要实现幂等，文件完成会被多次调用，非幂等操作请在{@link #release()}方法中执行。</p>
+	 * <p>注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）</p>
 	 */
 	public void checkCompletedAndDone() {
 		if(this.checkCompleted()) {

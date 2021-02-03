@@ -133,18 +133,19 @@ public final class NodeContext implements IContext {
 			NodeSession session;
 			while(iterator.hasNext()) {
 				session = iterator.next();
-				if(session.available()) {
-					continue;
-				} else if(session.useable()) {
+				switch (session.getStatus()) {
+				case UNUSE:
 					// 随机均匀剔除
-					if(random.nextInt(size) < DhtConfig.MAX_NODE_SIZE) {
-						continue;
-					} else {
+					if(random.nextInt(size) >= DhtConfig.MAX_NODE_SIZE) {
 						iterator.remove();
 					}
-				} else {
-					// 无效节点：删除
+					break;
+				case VERIFY:
 					iterator.remove();
+					break;
+				default:
+					// 可用状态保存
+					break;
 				}
 			}
 			return this.nodes();
