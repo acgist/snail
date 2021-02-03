@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
@@ -271,7 +272,7 @@ public final class TorrentStreamGroup {
 	 */
 	public void piecePos(int index) {
 		if(
-			index >= 0 &&
+			PeerConfig.checkPiece(index) &&
 			// 没有下载
 			!this.pieces.get(index) &&
 			// 选择下载

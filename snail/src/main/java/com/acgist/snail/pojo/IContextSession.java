@@ -1,4 +1,4 @@
-package com.acgist.snail;
+package com.acgist.snail.pojo;
 
 /**
  * <p>上下文Session接口</p>

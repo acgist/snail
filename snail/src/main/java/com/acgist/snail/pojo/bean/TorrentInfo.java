@@ -77,8 +77,6 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	 */
 	public static final String ATTR_FILES = "files";
 	
-	//================种子文件自带信息================//
-	
 	/**
 	 * <p>名称</p>
 	 * <p>单文件种子使用</p>
@@ -221,8 +219,6 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 			.map(value -> TorrentFile.valueOf(value, encoding))
 			.collect(Collectors.toList());
 	}
-	
-	// ============== GETTER SETTER ============== //
 	
 	/**
 	 * <p>获取名称</p>

@@ -63,8 +63,6 @@ public final class Torrent implements Serializable {
 	 */
 	public static final String ATTR_NODES = "nodes";
 	
-	// ============== 种子文件自带信息 ============== //
-	
 	/**
 	 * <p>注释</p>
 	 */
@@ -101,9 +99,6 @@ public final class Torrent implements Serializable {
 	 * <p>DHT节点</p>
 	 */
 	private Map<String, Integer> nodes;
-	
-	// ============== 种子文件临时信息 ============== //
-	
 	/**
 	 * <p>InfoHash</p>
 	 * <p>种子文件加载完成时保存InfoHash，防止重复计算导致错误。</p>
@@ -233,8 +228,6 @@ public final class Torrent implements Serializable {
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 
-	// ============== GETTER SETTER ============== //
-	
 	/**
 	 * <p>获取注释</p>
 	 * 

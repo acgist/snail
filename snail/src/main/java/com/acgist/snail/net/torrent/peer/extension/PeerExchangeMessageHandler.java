@@ -36,7 +36,6 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerExchangeMessageHandler.class);
 	
-	//================IPv4================//
 	/**
 	 * <p>地址：{@value}</p>
 	 */
@@ -49,8 +48,6 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 * <p>删除地址：{@value}</p>
 	 */
 	private static final String DROPPED = "dropped";
-	
-	//================IPv6================//
 	/**
 	 * <p>地址：{@value}</p>
 	 */

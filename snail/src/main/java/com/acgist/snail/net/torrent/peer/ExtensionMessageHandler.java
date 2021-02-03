@@ -278,11 +278,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 获取端口
 		final Long port = decoder.getLong(EX_P);
 		if(port != null) {
+			final int newPort = port.intValue();
 			final Integer oldPort = this.peerSession.port();
 			if(oldPort == null) {
-				this.peerSession.port(port.intValue());
-			} else if(oldPort.intValue() != port.intValue()) {
-				LOGGER.debug("处理扩展消息-握手（端口不一致）：{}-{}", oldPort, port);
+				this.peerSession.port(newPort);
+			} else if(oldPort.intValue() != newPort) {
+				LOGGER.debug("处理扩展消息-握手（端口不一致）：{}-{}", oldPort, newPort);
 			}
 		}
 		// 偏爱加密
@@ -301,10 +302,12 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			this.infoHash.size(metadataSize.intValue());
 		}
 		// 设置客户端名称
-		if(this.peerSession.clientName() == null) {
+		if(this.peerSession.unknownClientName()) {
 			final String clientName = decoder.getString(EX_V);
-			LOGGER.debug("设置客户端名称：{}", clientName);
-			this.peerSession.clientName(clientName);
+			if(StringUtils.isNotEmpty(clientName)) {
+				LOGGER.debug("设置客户端名称：{}", clientName);
+				this.peerSession.clientName(clientName);
+			}
 		}
 		// 支持的扩展协议：扩展协议名称=扩展协议标识
 		final Map<String, Object> supportTypes = decoder.getMap(EX_M);
@@ -318,7 +321,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 				}
 				if(extensionType != null && extensionType.support()) {
 					LOGGER.debug("处理扩展协议-握手（添加）：{}-{}", extensionType, typeId);
-					this.peerSession.addExtensionType(extensionType, typeId.byteValue());
+					this.peerSession.supportExtensionType(extensionType, typeId.byteValue());
 				} else {
 					LOGGER.debug("处理扩展协议-握手（未知协议）：{}-{}", typeValue, typeId);
 				}
