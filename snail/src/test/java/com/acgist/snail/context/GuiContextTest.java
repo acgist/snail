@@ -106,7 +106,7 @@ public class GuiContextTest extends Performance {
 			} else if(message.equalsIgnoreCase(Type.TASK_DELETE.name())) {
 				client.send(ApplicationMessage.message(Type.TASK_DELETE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else {
-				client.send(ApplicationMessage.text(message));
+				client.send(ApplicationMessage.message(Type.TEXT, message));
 			}
 		}
 		scanner.close();

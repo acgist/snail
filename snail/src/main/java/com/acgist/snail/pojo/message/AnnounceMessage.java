@@ -21,7 +21,8 @@ public final class AnnounceMessage {
 	 */
 	private Integer id;
 	/**
-	 * <p>TrackerId：HTTP Tracker</p>
+	 * <p>TrackerId</p>
+	 * <p>HTTP Tracker使用</p>
 	 */
 	private String trackerId;
 	/**
@@ -37,7 +38,7 @@ public final class AnnounceMessage {
 	 */
 	private Integer leecher;
 	/**
-	 * <p>Peers数据</p>
+	 * <p>Peer数据</p>
 	 * <p>IP=端口</p>
 	 */
 	private Map<String, Integer> peers;

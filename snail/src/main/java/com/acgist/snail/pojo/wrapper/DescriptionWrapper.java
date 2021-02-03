@@ -51,7 +51,8 @@ public final class DescriptionWrapper {
 		BEncodeEncoder encoder;
 		if(CollectionUtils.isNotEmpty(list)) {
 			encoder = BEncodeEncoder.newInstance()
-				.newList().put(list);
+				.newList()
+				.put(list);
 		} else {
 			encoder = null;
 		}

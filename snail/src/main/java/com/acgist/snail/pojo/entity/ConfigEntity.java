@@ -1,5 +1,9 @@
 package com.acgist.snail.pojo.entity;
 
+import java.util.Objects;
+
+import com.acgist.snail.utils.StringUtils;
+
 /**
  * <p>Entity - 配置</p>
  * 
@@ -53,5 +57,22 @@ public final class ConfigEntity extends Entity {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof ConfigEntity) {
+			final ConfigEntity entity = (ConfigEntity) object;
+			return StringUtils.equals(this.id, entity.id);
+		}
+		return false;
+	}
+	
 }

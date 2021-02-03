@@ -1,11 +1,13 @@
 package com.acgist.snail.pojo.entity;
 
 import java.util.Date;
+import java.util.Objects;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 import com.acgist.snail.pojo.ITaskSessionEntity;
 import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Entity - 任务</p>
@@ -30,16 +32,18 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private FileType fileType;
 	/**
 	 * <p>文件路径或目录路径</p>
+	 * <p>单文件下载：文件路径</p>
+	 * <p>多文件下载：目录路径</p>
 	 */
 	private String file;
 	/**
-	 * <p>下载链接：FTP、HTTP、磁力链接、BT任务</p>
-	 * <p>需要转换协议的下载链接（例如：迅雷链接）会直接转换为实际下载链接保存</p>
+	 * <p>下载链接</p>
+	 * <p>种子文件：保存磁力链接</p>
+	 * <p>迅雷链接：保存实际下载链接</p>
 	 */
 	private String url;
 	/**
 	 * <p>BT任务种子文件路径</p>
-	 * <p>BT任务下载时默认复制一份种子文件到下载目录</p>
 	 */
 	private String torrent;
 	/**
@@ -56,14 +60,14 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private Date endDate;
 	/**
 	 * <p>下载描述</p>
-	 * <p>多文件下载时保持下载文件列表（B编码）</p>
-	 * <p>BT任务文件列表</p>
-	 * <p>HLS任务文件链接</p>
+	 * <p>多文件下载：保持下载文件列表（B编码）</p>
+	 * <p>BT任务：下载文件路径列表</p>
+	 * <p>HLS任务：下载文件链接列表</p>
 	 */
 	private String description;
 	/**
 	 * <p>任务负载</p>
-	 * <p>BT任务已下载Piece位图</p>
+	 * <p>BT任务：已下载Piece位图</p>
 	 */
 	private byte[] payload;
 	
@@ -175,6 +179,23 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	@Override
 	public void setPayload(byte[] payload) {
 		this.payload = payload;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof TaskEntity) {
+			final TaskEntity entity = (TaskEntity) object;
+			return StringUtils.equals(this.id, entity.id);
+		}
+		return false;
 	}
 	
 }

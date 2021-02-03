@@ -9,7 +9,6 @@ import com.acgist.snail.format.BEncodeEncoder;
 
 /**
  * <p>Application消息</p>
- * <p>通过系统消息可以实现系统管理和任务管理</p>
  * 
  * @author acgist
  */
@@ -105,9 +104,9 @@ public class ApplicationMessage {
 		RESPONSE;
 
 		/**
-		 * <p>消息类型转换（忽略大小写）</p>
+		 * <p>通过类型名称获取消息类型</p>
 		 * 
-		 * @param name 类型名称
+		 * @param name 类型名称（忽略大小写）
 		 * 
 		 * @return 消息类型
 		 */
@@ -126,11 +125,11 @@ public class ApplicationMessage {
 	/**
 	 * <p>消息类型</p>
 	 */
-	private Type type;
+	private final Type type;
 	/**
 	 * <p>消息内容</p>
 	 */
-	private String body;
+	private final String body;
 
 	/**
 	 * @param type 消息类型
@@ -150,7 +149,7 @@ public class ApplicationMessage {
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		try {
-			final var decoder = BEncodeDecoder.newInstance(content.getBytes());
+			final var decoder = BEncodeDecoder.newInstance(content);
 			decoder.nextMap();
 			if(decoder.isEmpty()) {
 				return null;
@@ -159,17 +158,18 @@ public class ApplicationMessage {
 			final String body = decoder.getString("body");
 			final Type messageType = Type.of(type);
 			if(messageType == null) {
+				LOGGER.debug("系统消息类型错误：{}", type);
 				return null;
 			}
 			return ApplicationMessage.message(messageType, body);
 		} catch (NetException e) {
-			LOGGER.error("读取系统消息异常：{}", content, e);
+			LOGGER.error("读取系统文本消息异常：{}", content, e);
 		}
 		return null;
 	}
 	
 	/**
-	 * <p>消息</p>
+	 * <p>创建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * 
@@ -180,7 +180,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>消息</p>
+	 * <p>创建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param body 消息内容
@@ -192,18 +192,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>文本</p>
-	 * 
-	 * @param body 消息内容
-	 * 
-	 * @return 系统消息
-	 */
-	public static final ApplicationMessage text(String body) {
-		return message(Type.TEXT, body);
-	}
-	
-	/**
-	 * <p>响应</p>
+	 * <p>创建响应消息</p>
 	 * 
 	 * @param body 消息内容
 	 * 
@@ -223,15 +212,6 @@ public class ApplicationMessage {
 	}
 
 	/**
-	 * <p>设置消息类型</p>
-	 * 
-	 * @param type 消息类型
-	 */
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	/**
 	 * <p>获取消息内容</p>
 	 * 
 	 * @return 消息内容
@@ -240,24 +220,11 @@ public class ApplicationMessage {
 		return this.body;
 	}
 
-	/**
-	 * <p>设置消息内容</p>
-	 * 
-	 * @param body 消息内容
-	 */
-	public void setBody(String body) {
-		this.body = body;
-	}
-	
-	/**
-	 * <p>转为系统文本消息（B编码）</p>
-	 * 
-	 * @return 系统文本消息
-	 */
 	@Override
 	public String toString() {
-		final var encoder = BEncodeEncoder.newInstance();
-		encoder.newMap().put("type", this.type.name());
+		final var encoder = BEncodeEncoder.newInstance()
+			.newMap()
+			.put("type", this.type.name());
 		if(this.body != null) {
 			encoder.put("body", this.body);
 		}
