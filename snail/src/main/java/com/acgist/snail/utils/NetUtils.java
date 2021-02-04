@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.StandardProtocolFamily;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Objects;
@@ -52,6 +53,10 @@ public final class NetUtils {
 	 * <p>本机默认物理网卡</p>
 	 */
 	public static final NetworkInterface DEFAULT_NETWORK_INTERFACE;
+	/**
+	 * <p>本机IP地址协议</p>
+	 */
+	public static final StandardProtocolFamily LOCAL_PROTOCOL_FAMILY;
 	/**
 	 * <p>最大端口号：{@value}</p>
 	 */
@@ -115,12 +120,14 @@ public final class NetUtils {
 		LOOPBACK_HOST_NAME = buildLoopbackHostName();
 		LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
+		LOCAL_PROTOCOL_FAMILY = ipv4(LOCAL_HOST_ADDRESS) ? StandardProtocolFamily.INET : StandardProtocolFamily.INET6;
 		LOGGER.debug("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.debug("本机地址：{}", LOCAL_HOST_ADDRESS);
 		LOGGER.debug("本机子网前缀：{}", LOCAL_PREFIX_LENGTH);
 		LOGGER.debug("本机环回名称：{}", LOOPBACK_HOST_NAME);
 		LOGGER.debug("本机环回地址：{}", LOOPBACK_HOST_ADDRESS);
 		LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
+		LOGGER.debug("本机IP地址协议：{}", LOCAL_PROTOCOL_FAMILY);
 	}
 	
 	private NetUtils() {
@@ -228,13 +235,33 @@ public final class NetUtils {
 	 * 
 	 * @return 是否是IP地址
 	 * 
-	 * @see #IPV4_REGEX
-	 * @see #IPV6_REGEX
+	 * @see #ipv4(String)
+	 * @see #ipv6(String)
 	 */
 	public static final boolean ip(String host) {
-		return
-			StringUtils.regex(host, IPV4_REGEX, true) ||
-			StringUtils.regex(host, IPV6_REGEX, true);
+		return ipv4(host) || ipv6(host);
+	}
+	
+	/**
+	 * <p>判断是否是IPv4地址</p>
+	 * 
+	 * @param host IP地址
+	 * 
+	 * @return 是否是IPv4地址
+	 */
+	public static final boolean ipv4(String host) {
+		return StringUtils.regex(host, IPV4_REGEX, true);
+	}
+	
+	/**
+	 * <p>判断是否是IPv6地址</p>
+	 * 
+	 * @param host IP地址
+	 * 
+	 * @return 是否是IPv6地址
+	 */
+	public static final boolean ipv6(String host) {
+		return StringUtils.regex(host, IPV6_REGEX, true);
 	}
 	
 	/**

@@ -17,23 +17,22 @@ public abstract class UdpAcceptHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpAcceptHandler.class);
 
 	/**
-	 * <p>消息代理</p>
-	 * <p>使用消息代理处理消息</p>
+	 * <p>接收消息</p>
 	 * 
 	 * @param channel 通道
 	 * @param buffer 消息
 	 * @param socketAddress 地址
 	 */
-	public void handle(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void receive(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = this.messageHandler(buffer, socketAddress);
 		try {
-			handler.handle(channel, socketAddress); // 设置代理
+			handler.handle(channel, socketAddress);
 			if(handler.available()) {
 				buffer.flip();
 				handler.onReceive(buffer, socketAddress);
 			}
 		} catch (Exception e) {
-			LOGGER.error("UDP消息接收异常：{}", socketAddress, e);
+			LOGGER.error("UDP接收消息异常：{}", socketAddress, e);
 		}
 	}
 	

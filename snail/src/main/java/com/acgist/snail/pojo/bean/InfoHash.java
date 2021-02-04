@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.Base32Utils;
+import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -61,7 +62,7 @@ public final class InfoHash implements Serializable {
 	 * @return {@link InfoHash}
 	 */
 	public static final InfoHash newInstance(byte[] data) {
-		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
+		final InfoHash infoHash = new InfoHash(DigestUtils.sha1(data));
 		infoHash.info = data;
 		infoHash.size = data.length;
 		return infoHash;

@@ -7,7 +7,7 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
 /**
- * <p>本地发现接收器</p>
+ * <p>本地发现消息接收代理</p>
  * 
  * @author acgist
  */

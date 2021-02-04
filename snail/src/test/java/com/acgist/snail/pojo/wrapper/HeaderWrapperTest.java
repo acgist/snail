@@ -20,13 +20,13 @@ public class HeaderWrapperTest extends Performance {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("M-SEARCH * HTTP/1.1").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
-			.append("HOST: ").append(UpnpServer.UPNP_HOST).append(":").append(UpnpServer.UPNP_PORT).append(SymbolConfig.LINE_SEPARATOR_COMPAT)
+			.append("HOST: ").append(UpnpServer.upnpHost()).append(":").append(UpnpServer.UPNP_PORT).append(SymbolConfig.LINE_SEPARATOR_COMPAT)
 			.append("MX: 3").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
 			.append("ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
 			.append("MAN: \"ssdp:discover\"").append(SymbolConfig.LINE_SEPARATOR_COMPAT);
 		var wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
 		wrapper
-			.header("HOST", UpnpServer.UPNP_HOST + ":" + UpnpServer.UPNP_PORT)
+			.header("HOST", UpnpServer.upnpHost() + ":" + UpnpServer.UPNP_PORT)
 			.header("MX", "3")
 			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
 			.header("MAN", "\"ssdp:discover\"");

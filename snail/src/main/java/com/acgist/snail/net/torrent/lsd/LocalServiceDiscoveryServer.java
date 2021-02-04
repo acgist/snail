@@ -1,5 +1,6 @@
 package com.acgist.snail.net.torrent.lsd;
 
+import java.net.StandardProtocolFamily;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.UdpServer;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>本地发现服务端</p>
@@ -26,19 +28,15 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	}
 
 	/**
-	 * <p>TTL：{@value}</p>
-	 */
-	private static final int LSD_TTL = 2;
-	/**
-	 * <p>端口：{@value}</p>
+	 * <p>LSD组播端口：{@value}</p>
 	 */
 	public static final int LSD_PORT = 6771;
 	/**
-	 * <p>IPv4组播地址：{@value}</p>
+	 * <p>LSD组播地址（IPv4）：{@value}</p>
 	 */
 	public static final String LSD_HOST = "239.192.152.143";
 	/**
-	 * <p>IPv6组播地址：{@value}</p>
+	 * <p>LSD组播地址（IPv6）：{@value}</p>
 	 */
 	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
@@ -47,7 +45,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	private LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
-		this.join(LSD_TTL, LSD_HOST);
+		this.join(UDP_TTL, lsdHost());
 		this.handle();
 		this.register();
 	}
@@ -80,6 +78,19 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 				client.localSearch(session.infoHashHex());
 			}
 		});
+	}
+	
+	/**
+	 * <p>获取LSD组播地址</p>
+	 * 
+	 * @return LSD组播地址
+	 */
+	public static final String lsdHost() {
+		if(NetUtils.LOCAL_PROTOCOL_FAMILY == StandardProtocolFamily.INET) {
+			return LSD_HOST;
+		} else {
+			return LSD_HOST_IPV6;
+		}
 	}
 	
 }

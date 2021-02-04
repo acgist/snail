@@ -3,7 +3,7 @@ package com.acgist.snail.pojo.bean;
 import java.util.Arrays;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.utils.StringUtils;
+import com.acgist.snail.utils.DigestUtils;
 
 /**
  * <p>Piece下载信息</p>
@@ -226,9 +226,6 @@ public final class TorrentPiece {
 		}
 		// 读取数据真实长度
 		final int length = endPos - beginPos;
-		if(length <= 0) {
-			return null;
-		}
 		final byte[] bytes = new byte[length];
 		System.arraycopy(this.data, beginPos, bytes, 0, length);
 		return bytes;
@@ -241,8 +238,7 @@ public final class TorrentPiece {
 	 */
 	public boolean verify() {
 		if(this.verify) {
-			final var hash = StringUtils.sha1(this.data);
-			return Arrays.equals(hash, this.hash);
+			return Arrays.equals(DigestUtils.sha1(this.data), this.hash);
 		}
 		return true;
 	}

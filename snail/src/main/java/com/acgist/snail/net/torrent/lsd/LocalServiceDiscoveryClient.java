@@ -39,7 +39,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 * <p>创建本地发现客户端</p>
 	 */
 	public static final LocalServiceDiscoveryClient newInstance() {
-		return new LocalServiceDiscoveryClient(NetUtils.buildSocketAddress(LocalServiceDiscoveryServer.LSD_HOST, LocalServiceDiscoveryServer.LSD_PORT));
+		return new LocalServiceDiscoveryClient(NetUtils.buildSocketAddress(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT));
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, LocalServiceDiscoveryServer.LSD_HOST + ":" + LocalServiceDiscoveryServer.LSD_PORT)
+			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, LocalServiceDiscoveryServer.lsdHost() + ":" + LocalServiceDiscoveryServer.LSD_PORT)
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_PORT, String.valueOf(SystemConfig.getTorrentPort()))
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_COOKIE, peerId);
 		for (String infoHash : infoHashs) {
