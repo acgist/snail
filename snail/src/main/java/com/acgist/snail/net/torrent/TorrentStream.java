@@ -276,30 +276,34 @@ public final class TorrentStream {
 			final BitSet pickPieces = this.pickPieces(peerPieces, suggestPieces);
 			final int indexPos = Math.max(piecePos, this.fileBeginPieceIndex);
 			final int index = pickPieces.nextSetBit(indexPos);
-			if(
-				index < 0 || // 没有匹配Piece
-				index > this.fileEndPieceIndex // 超过文件范围
-			) {
+			// 没有匹配Piece或者超过文件范围
+			if(index < 0 || index > this.fileEndPieceIndex) {
 				LOGGER.debug("选择Piece（没有匹配）：{}-{}-{}-{}", index, piecePos, this.fileBeginPieceIndex, this.fileEndPieceIndex);
 				return null;
 			}
 			LOGGER.debug("选择Piece（选中）：{}-{}", index, this.downloadPieces);
-			this.downloadPieces.set(index); // 设置下载中
-			int begin = 0; // Piece开始内偏移
-			boolean verify = true; // 是否验证
+			// 设置下载中
+			this.downloadPieces.set(index);
+			// Piece开始内偏移
+			int begin = 0;
+			// 是否验证：第一块和最后一块不用校验
+			boolean verify = true;
 			// 第一块获取开始偏移
 			if(index == this.fileBeginPieceIndex) {
 				verify = false;
 				begin = this.firstPiecePos();
 			}
-			int end = (int) this.pieceLength; // Piece结束内偏移
+			// Piece结束内偏移
+			int end = (int) this.pieceLength;
 			// 最后一块获取结束偏移
 			if(index == this.fileEndPieceIndex) {
 				verify = false;
 				end = this.lastPiecePos();
 			}
+			// 交易Hash数据
+			final byte[] hash = this.torrentStreamGroup.pieceHash(index);
 			// 快速循环挑选Piece时：创建Piece数据块消耗性能
-			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, this.torrentStreamGroup.pieceHash(index), verify);
+			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, hash, verify);
 		}
 	}
 
