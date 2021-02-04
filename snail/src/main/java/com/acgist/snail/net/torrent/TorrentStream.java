@@ -492,9 +492,6 @@ public final class TorrentStream {
 		if(endPos >= this.fileEndPos) {
 			size = (int) (size - (endPos - this.fileEndPos));
 		}
-		if(size <= 0) {
-			return null;
-		}
 		try {
 			final byte[] bytes = new byte[size];
 			this.fileStream.seek(seek); // 注意线程安全
@@ -691,9 +688,6 @@ public final class TorrentStream {
 		if(endPos >= this.fileEndPos) {
 			// Piece包含文件结束
 			length = (int) (length - (endPos - this.fileEndPos));
-		}
-		if(length <= 0) {
-			return;
 		}
 		try {
 			final byte[] bytes = piece.getData();

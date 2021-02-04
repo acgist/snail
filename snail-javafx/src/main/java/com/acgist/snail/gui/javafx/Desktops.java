@@ -3,6 +3,7 @@ package com.acgist.snail.gui.javafx;
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.SwingUtilities;
@@ -39,7 +40,7 @@ public final class Desktops {
 			SwingUtilities.invokeLater(() -> {
 				try {
 					Desktop.getDesktop().open(file);
-				} catch (Exception e) {
+				} catch (IOException e) {
 					LOGGER.error("打开文件异常", e);
 				}
 			});
@@ -62,7 +63,7 @@ public final class Desktops {
 			SwingUtilities.invokeLater(() -> {
 				try {
 					Desktop.getDesktop().browse(URI.create(url));
-				} catch (Exception e) {
+				} catch (IOException e) {
 					LOGGER.error("打开网页链接异常：{}", url, e);
 				}
 			});

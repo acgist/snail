@@ -14,8 +14,7 @@ import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**
  * <p>UDP消息代理</p>
- * <p>非线程安全：使用需要保证每一个消息处理器对应的{@linkplain #socketAddress 远程地址}唯一</p>
- * <p>注：重写请注意避免循环调用</p>
+ * <p>注意：重写避免循环调用</p>
  * 
  * @author acgist
  */
@@ -68,10 +67,6 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	public boolean available() {
 		// 不用判断状态：使用服务通道
 		return !this.close && this.channel != null;
-		// 只能判断通道是否打开：bind
-//		return !this.close && this.channel != null && this.channel.isOpen();
-		// 不能判断通道是否连接：connect
-//		return !this.close && this.channel != null && this.channel.isConnected();
 	}
 	
 	@Override
@@ -96,7 +91,6 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	
 	/**
 	 * <p>发送消息</p>
-	 * <p>不允许重写，请直接重写{@link #send(ByteBuffer, int)}方法。</p>
 	 * 
 	 * @param buffer 消息
 	 * @param socketAddress 地址

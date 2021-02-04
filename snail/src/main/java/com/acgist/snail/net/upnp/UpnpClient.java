@@ -32,7 +32,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	public static final UpnpClient newInstance() {
-		return new UpnpClient(NetUtils.buildSocketAddress(UpnpServer.UPNP_HOST, UpnpServer.UPNP_PORT));
+		return new UpnpClient(NetUtils.buildSocketAddress(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private String buildMSearch() {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header("HOST", UpnpServer.UPNP_HOST + ":" + UpnpServer.UPNP_PORT)
+			.header("HOST", UpnpServer.upnpHost() + ":" + UpnpServer.UPNP_PORT)
 			.header("ST", UpnpServer.UPNP_ROOT_DEVICE)
 			.header("MAN", "\"ssdp:discover\"")
 			.header("MX", "3");

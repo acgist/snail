@@ -60,4 +60,26 @@ public final class DigestUtils {
 		}
 	}
 	
+	/**
+	 * <p>计算字节数组的MD5散列值</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return MD5散列值
+	 */
+	public static final byte[] md5(byte[] bytes) {
+		return md5().digest(bytes);
+	}
+	
+	/**
+	 * <p>计算字节数组的SHA-1散列值</p>
+	 * 
+	 * @param bytes 字节数组
+	 * 
+	 * @return SHA-1散列值
+	 */
+	public static final byte[] sha1(byte[] bytes) {
+		return sha1().digest(bytes);
+	}
+	
 }

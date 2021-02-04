@@ -6,11 +6,8 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.exception.NetException;
-
 /**
  * <p>UDP客户端</p>
- * <p>UDP客户端、服务端通道都是公用一个，程序关闭时关闭服务才关闭通道。</p>
  * <ul>
  * 	<li>单例</li>
  * 	<li>UDP通道使用服务器通道</li>
@@ -20,7 +17,7 @@ import com.acgist.snail.context.exception.NetException;
  * 
  * @author acgist
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> implements IUdpChannel {
+public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 
@@ -34,10 +31,10 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	protected final InetSocketAddress socketAddress;
 	
 	/**
-	 * <p>创建客户端时自动打开客户端</p>
+	 * <p>创建客户端时自动打开通道</p>
 	 * 
 	 * @param name 客户端名称
-	 * @param handler 消息处理器
+	 * @param handler 消息代理
 	 * @param socketAddress 远程地址
 	 */
 	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
@@ -48,31 +45,14 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	}
 
 	/**
-	 * <p>打开客户端</p>
+	 * <p>打开通道</p>
 	 * 
 	 * @return 打开状态
 	 */
 	public abstract boolean open();
 	
 	/**
-	 * <p>打开客户端</p>
-	 * 
-	 * @param port 端口
-	 * 
-	 * @return 打开状态
-	 */
-	public boolean open(final int port) {
-		DatagramChannel channel = null;
-		try {
-			channel = this.buildUdpChannel(port);
-		} catch (NetException e) {
-			LOGGER.error("打开UDP客户端异常", e);
-		}
-		return this.open(channel);
-	}
-
-	/**
-	 * <p>打开客户端</p>
+	 * <p>打开通道</p>
 	 * 
 	 * @param channel 通道
 	 * 

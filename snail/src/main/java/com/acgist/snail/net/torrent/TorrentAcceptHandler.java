@@ -11,7 +11,7 @@ import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpService;
 
 /**
- * <p>Torrent（UTP、DHT、STUN）消息接收器</p>
+ * <p>Torrent（UTP、DHT、STUN）消息接收代理</p>
  * <p>DHT和STUN消息都使用头一个字符验证：STUN需要进一步验证MagicCookie</p>
  * <p>如果不是DHT和STUN消息则属于UTP消息</p>
  * 

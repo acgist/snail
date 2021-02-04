@@ -174,7 +174,7 @@ public final class Torrent implements Serializable {
 		}
 		return announceList.stream()
 			.flatMap(value -> ((List<?>) value).stream())
-			.map(value -> StringUtils.getString(value))
+			.map(StringUtils::getString)
 			.collect(Collectors.toList());
 	}
 	

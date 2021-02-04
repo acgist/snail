@@ -162,7 +162,7 @@ public class TorrentStreamGroupTest extends Performance {
 				index++;
 				continue;
 			}
-			if(!Arrays.equals(StringUtils.sha1(piece), group.pieceHash(index))) {
+			if(!Arrays.equals(DigestUtils.sha1(piece), group.pieceHash(index))) {
 				this.log("Piece校验失败：{}->{}={}", index, StringUtils.sha1Hex(piece), StringUtils.hex(group.pieceHash(index)));
 			}
 			index++;

@@ -87,7 +87,7 @@ public final class PeerUtils {
 		final int length = Math.min(ALLOWED_FAST_K, pieceSize);
 		final int[] seqs = new int[length];
 		while(size < length) {
-			buffer = ByteBuffer.wrap(StringUtils.sha1(buffer.array()));
+			buffer = ByteBuffer.wrap(DigestUtils.sha1(buffer.array()));
 			for (int index = 0; index < ALLOWED_FAST_LOOP_LENGTH && size < length; index++) {
 				final int seq = (int) (Integer.toUnsignedLong(buffer.getInt()) % pieceSize);
 				if(ArrayUtils.indexOf(seqs, 0, size, seq) <= -1) {

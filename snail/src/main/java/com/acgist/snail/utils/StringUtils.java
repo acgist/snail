@@ -169,17 +169,6 @@ public final class StringUtils {
 	}
 
 	/**
-	 * <p>计算字节数组的SHA-1散列值</p>
-	 * 
-	 * @param bytes 字节数组
-	 * 
-	 * @return SHA-1散列值
-	 */
-	public static final byte[] sha1(byte[] bytes) {
-		return DigestUtils.sha1().digest(bytes);
-	}
-	
-	/**
 	 * <p>计算字节数组的十六进制SHA-1散列值字符串</p>
 	 * 
 	 * @param bytes 字节数组
@@ -187,7 +176,7 @@ public final class StringUtils {
 	 * @return 十六进制SHA-1散列值字符串
 	 */
 	public static final String sha1Hex(byte[] bytes) {
-		return StringUtils.hex(sha1(bytes));
+		return StringUtils.hex(DigestUtils.sha1(bytes));
 	}
 	
 	/**

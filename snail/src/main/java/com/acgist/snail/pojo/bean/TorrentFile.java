@@ -163,7 +163,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		} else if(CollectionUtils.isNotEmpty(pathList)) {
 			fileName = pathList.get(pathList.size() - 1);
 		}
-		return fileName == null ? false : fileName.startsWith(PADDING_FILE_PREFIX);
+		return fileName != null && fileName.startsWith(PADDING_FILE_PREFIX);
 	}
 	
 	/**

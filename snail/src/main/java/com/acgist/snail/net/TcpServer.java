@@ -1,5 +1,6 @@
 package com.acgist.snail.net;
 
+import java.io.IOException;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 
@@ -29,7 +30,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		try {
 			final var executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_TCP_SERVER);
 			group = AsynchronousChannelGroup.withThreadPool(executor);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("启动TCP Server Group异常");
 		}
 		GROUP = group;
@@ -92,14 +93,15 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 			this.server = AsynchronousServerSocketChannel.open(GROUP);
 			this.server.bind(NetUtils.buildSocketAddress(host, port));
 			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
 			success = false;
 		}
 		if(success) {
-//			GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS); // 阻止线程关闭
+			// 系统自动阻塞
+			// 阻止线程关闭：GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} else {
-			close();
+			this.close();
 		}
 		return success;
 	}

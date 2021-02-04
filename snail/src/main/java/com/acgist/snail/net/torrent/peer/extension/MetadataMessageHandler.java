@@ -21,8 +21,8 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>Extension for Peers to Send Metadata Files</p>
@@ -199,7 +199,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final byte[] x = decoder.oddBytes(); // 剩余数据作为Slice数据
 		System.arraycopy(x, 0, bytes, pos, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
-		final byte[] targetHash = StringUtils.sha1(bytes);
+		final byte[] targetHash = DigestUtils.sha1(bytes);
 		// 判断Hash值是否相等（相等表示已经下载完成：完成后保存种子文件）
 		if(Arrays.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrent();

@@ -7,7 +7,7 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
 /**
- * <p>UDP Tracker接收器</p>
+ * <p>UDP Tracker消息接收代理</p>
  * 
  * @author acgist
  */
