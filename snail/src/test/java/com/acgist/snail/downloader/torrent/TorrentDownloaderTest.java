@@ -29,7 +29,7 @@ public class TorrentDownloaderTest extends Performance {
 		ProtocolContext.getInstance().register(TorrentProtocol.getInstance()).available(true);
 		final var torrent = TorrentContext.loadTorrent(url);
 		final var list = torrent.getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());
@@ -55,7 +55,7 @@ public class TorrentDownloaderTest extends Performance {
 		ProtocolContext.getInstance().register(TorrentProtocol.getInstance()).available(true);
 		final var torrent = TorrentContext.loadTorrent(url);
 		final var list = torrent.getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());

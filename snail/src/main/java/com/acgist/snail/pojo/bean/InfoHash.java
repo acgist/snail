@@ -32,14 +32,13 @@ public final class InfoHash implements Serializable {
 	 */
 	private final byte[] infoHash;
 	/**
-	 * <p>种子info数据Hash（HEX）</p>
-	 * <p>40位小写</p>
+	 * <p>种子info数据Hash（HEX小写）</p>
 	 * 
 	 * @see #infoHash
 	 */
 	private final String infoHashHex;
 	/**
-	 * <p>种子info数据Hash（HTTP传输编码）</p>
+	 * <p>种子info数据Hash（HTTP编码）</p>
 	 * 
 	 * @see #infoHash
 	 */
@@ -59,7 +58,7 @@ public final class InfoHash implements Serializable {
 	 * 
 	 * @param data 种子Info
 	 * 
-	 * @return InfoHash
+	 * @return {@link InfoHash}
 	 */
 	public static final InfoHash newInstance(byte[] data) {
 		final InfoHash infoHash = new InfoHash(StringUtils.sha1(data));
@@ -73,7 +72,7 @@ public final class InfoHash implements Serializable {
 	 * 
 	 * @param hash 种子info数据Hash
 	 * 
-	 * @return InfoHash
+	 * @return {@link InfoHash}
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -137,18 +136,18 @@ public final class InfoHash implements Serializable {
 	}
 	
 	/**
-	 * <p>获取种子info数据Hash（HEX）</p>
+	 * <p>获取种子info数据Hash（HEX小写）</p>
 	 * 
-	 * @return 种子info数据Hash（HEX）
+	 * @return 种子info数据Hash（HEX小写）
 	 */
 	public String infoHashHex() {
 		return this.infoHashHex;
 	}
 	
 	/**
-	 * <p>获取种子info数据Hash（HTTP传输编码）</p>
+	 * <p>获取种子info数据Hash（HTTP编码）</p>
 	 * 
-	 * @return 种子info数据Hash（HTTP传输编码）
+	 * @return 种子info数据Hash（HTTP编码）
 	 */
 	public String infoHashUrl() {
 		return this.infoHashUrl;

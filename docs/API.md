@@ -112,7 +112,7 @@ final var snail = SnailBuilder.newBuilder()
 final var torrent = TorrentContext.loadTorrent(torrentPath);
 // 过滤下载文件
 final var list = torrent.getInfo().files().stream()
-	.filter(TorrentFile::isNotPaddingFile)
+	.filter(TorrentFile::notPaddingFile)
 	.map(TorrentFile::path)
 	.filter(path -> path.endsWith(".mkv"))
 	.collect(Collectors.toList());

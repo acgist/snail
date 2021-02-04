@@ -40,7 +40,7 @@ public final class PeerService {
 	 */
 	private final byte[] peerId;
 	/**
-	 * <p>HTTP传输编码PeerId</p>
+	 * <p>PeerId（HTTP编码）</p>
 	 */
 	private final String peerIdUrl;
 

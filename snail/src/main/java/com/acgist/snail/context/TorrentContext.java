@@ -185,7 +185,7 @@ public final class TorrentContext implements IContext {
 			}
 			final var torrent = Torrent.valueOf(decoder);
 			// 直接转储原始信息：防止顺序不对导致种子Hash计算错误
-			final var info = decoder.getMap("info");
+			final var info = decoder.getMap(Torrent.ATTR_INFO);
 			final var infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.infoHash(infoHash);
 			return torrent;

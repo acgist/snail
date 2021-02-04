@@ -55,8 +55,7 @@ public final class TorrentPiece {
 	 */
 	private int size;
 	/**
-	 * <p>请求内偏移</p>
-	 * <p>当前选择下载Piece数据的内偏移</p>
+	 * <p>Piece数据内偏移</p>
 	 */
 	private int position;
 	
@@ -155,9 +154,9 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>获取Piece内开始偏移</p>
+	 * <p>获取整个Piece内偏移</p>
 	 * 
-	 * @return Piece内开始偏移
+	 * @return 整个Piece内偏移
 	 */
 	public int position() {
 		return this.begin + this.position;

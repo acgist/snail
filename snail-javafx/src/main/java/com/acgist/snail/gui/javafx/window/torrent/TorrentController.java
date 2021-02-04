@@ -94,7 +94,7 @@ public final class TorrentController extends Controller {
 		if(torrent != null) {
 			this.torrentSelector = TorrentSelector.newInstance(torrent.name(), this.download, tree);
 			torrent.getInfo().files().stream()
-				.filter(TorrentFile::isNotPaddingFile)
+				.filter(TorrentFile::notPaddingFile)
 				.forEach(this.torrentSelector::build);
 			this.torrentSelector.select(taskSession);
 		}

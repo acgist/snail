@@ -31,7 +31,7 @@ public class PeerClientTest extends Performance {
 		final List<String> list = new ArrayList<>();
 		// 选择下载文件
 		torrentSession.torrent().getInfo().files().forEach(file -> {
-			if(file.isNotPaddingFile()) {
+			if(file.notPaddingFile()) {
 				list.add(file.path());
 			}
 		});

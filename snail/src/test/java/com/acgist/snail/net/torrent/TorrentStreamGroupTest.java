@@ -39,7 +39,7 @@ public class TorrentStreamGroupTest extends Performance {
 		entity.setType(Type.TORRENT);
 		entity.setStatus(Status.COMPLETED);
 		final var files = session.torrent().getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.collect(Collectors.toList());
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件
@@ -89,7 +89,7 @@ public class TorrentStreamGroupTest extends Performance {
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件
 		session.torrent().getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
 				file.selected(true);
 				list.add(file.path());
@@ -138,7 +138,7 @@ public class TorrentStreamGroupTest extends Performance {
 		final List<String> list = new ArrayList<>();
 		// 加载MKV文件
 		session.torrent().getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
 				if(file.path().endsWith("mkv")) {
 					file.selected(true);
