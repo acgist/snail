@@ -33,7 +33,7 @@ public class PeerServerTest extends Performance {
 		final List<String> list = new ArrayList<>();
 		final AtomicLong size = new AtomicLong();
 		torrentSession.torrent().getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
 				if(file.path().contains("Vol.1")) {
 					list.add(file.path());
@@ -59,7 +59,7 @@ public class PeerServerTest extends Performance {
 		final List<String> list = new ArrayList<>();
 		// 选择下载文件
 		torrentSession.torrent().getInfo().files().stream()
-			.filter(TorrentFile::isNotPaddingFile)
+			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
 				if(file.path().contains("Vol.1")) {
 					list.add(file.path());

@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>文件信息</p>
- * <p>种子文件包含多个下载文件时使用</p>
  * 
  * @author acgist
  */
@@ -22,33 +22,20 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>文件路径拼接时分隔符：{@value}</p>
+	 * <p>文件路径分隔符：{@value}</p>
 	 */
-	public static final String SEPARATOR = "/";
+	public static final String SEPARATOR = SymbolConfig.Symbol.SLASH.toString();
 	/**
 	 * <p>填充文件前缀：{@value}</p>
-	 * <p>不用显示和下载</p>
-	 * <p>注意：初始化时不能直接排除填充文件（文件位置计算出错）</p>
+	 * <p>注意：不用显示（不能直接排除防止计算文件偏移错误）</p>
 	 */
 	public static final String PADDING_FILE_PREFIX = "_____padding_file";
-	/**
-	 * <p>文件大小：{@value}</p>
-	 */
-	public static final String ATTR_LENGTH = "length";
-	/**
-	 * <p>文件ED2K：{@value}</p>
-	 */
-	public static final String ATTR_ED2K = "ed2k";
-	/**
-	 * <p>文件Hash：{@value}</p>
-	 */
-	public static final String ATTR_FILEHASH = "filehash";
 	/**
 	 * <p>文件路径：{@value}</p>
 	 */
 	public static final String ATTR_PATH = "path";
 	/**
-	 * <p>文件路径UTF8：{@value}</p>
+	 * <p>文件路径（UTF8）：{@value}</p>
 	 */
 	public static final String ATTR_PATH_UTF8 = "path.utf-8";
 	
@@ -57,7 +44,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 */
 	private List<String> path;
 	/**
-	 * <p>路径UTF8</p>
+	 * <p>路径（UTF8）</p>
 	 */
 	private List<String> pathUtf8;
 	/**
@@ -73,18 +60,18 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	}
 	
 	/**
-	 * <p>读取种子文件信息</p>
+	 * <p>读取文件信息</p>
 	 * 
-	 * @param map 种子文件信息
+	 * @param map 文件信息
 	 * @param encoding 编码
 	 * 
-	 * @return 种子文件信息
+	 * @return 文件信息
 	 */
 	public static final TorrentFile valueOf(Map<?, ?> map, String encoding) {
-		Objects.requireNonNull(map, "种子文件信息为空");
+		Objects.requireNonNull(map, "文件信息为空");
 		final TorrentFile file = new TorrentFile();
-		file.setLength(BEncodeDecoder.getLong(map, ATTR_LENGTH));
 		file.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
+		file.setLength(BEncodeDecoder.getLong(map, ATTR_LENGTH));
 		file.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
 		final List<Object> path = BEncodeDecoder.getList(map, ATTR_PATH);
 		final List<String> pathList = readPath(path, encoding);
@@ -92,11 +79,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, ATTR_PATH_UTF8);
 		final List<String> pathUtf8List = readPath(pathUtf8, null);
 		file.setPathUtf8(pathUtf8List);
-		if(CollectionUtils.isNotEmpty(pathUtf8List)) {
-			file.paddingFile = pathUtf8List.get(pathUtf8List.size() - 1).startsWith(PADDING_FILE_PREFIX);
-		} else if(CollectionUtils.isNotEmpty(path)) {
-			file.paddingFile = pathList.get(pathList.size() - 1).startsWith(PADDING_FILE_PREFIX);
-		}
+		file.paddingFile = readPaddingFile(pathList, pathUtf8List);
 		return file;
 	}
 
@@ -135,7 +118,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 * 
 	 * @return 是否是填充文件
 	 */
-	public boolean isPaddingFile() {
+	public boolean paddingFile() {
 		return this.paddingFile;
 	}
 	
@@ -144,13 +127,12 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	 * 
 	 * @return 是否不是填充文件
 	 */
-	public boolean isNotPaddingFile() {
-		return !this.isPaddingFile();
+	public boolean notPaddingFile() {
+		return !this.paddingFile();
 	}
 	
 	/**
-	 * <p>获取文件路径</p>
-	 * <p>每个元素都是一个字节数组</p>
+	 * <p>读取文件路径</p>
 	 * 
 	 * @param path 文件路径信息
 	 * @param encoding 编码
@@ -166,6 +148,24 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 			.collect(Collectors.toList());
 	}
 
+	/**
+	 * <p>判断文件是否是填充文件</p>
+	 * 
+	 * @param pathList 路径
+	 * @param pathUtf8List 路径（UTF-8）
+	 * 
+	 * @return 是否是填充文件
+	 */
+	private static final boolean readPaddingFile(List<String> pathList, List<String> pathUtf8List) {
+		String fileName = null;
+		if(CollectionUtils.isNotEmpty(pathUtf8List)) {
+			fileName = pathUtf8List.get(pathUtf8List.size() - 1);
+		} else if(CollectionUtils.isNotEmpty(pathList)) {
+			fileName = pathList.get(pathList.size() - 1);
+		}
+		return fileName == null ? false : fileName.startsWith(PADDING_FILE_PREFIX);
+	}
+	
 	/**
 	 * <p>获取路径</p>
 	 * 
@@ -185,18 +185,18 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	}
 
 	/**
-	 * <p>获取路径UTF8</p>
+	 * <p>获取路径（UTF8）</p>
 	 * 
-	 * @return 路径UTF8
+	 * @return 路径（UTF8）
 	 */
 	public List<String> getPathUtf8() {
 		return this.pathUtf8;
 	}
 
 	/**
-	 * <p>设置路径UTF8</p>
+	 * <p>设置路径（UTF8）</p>
 	 * 
-	 * @param pathUtf8 路径UTF8
+	 * @param pathUtf8 路径（UTF8）
 	 */
 	public void setPathUtf8(List<String> pathUtf8) {
 		this.pathUtf8 = pathUtf8;

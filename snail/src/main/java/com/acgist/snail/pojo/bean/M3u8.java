@@ -20,11 +20,17 @@ public final class M3u8 {
 	 */
 	public enum Type {
 		
-		/** 文件列表 */
+		/**
+		 * <p>文件列表</p>
+		 */
 		FILE,
-		/** M3U8列表 */
+		/**
+		 * <p>M3U8列表</p>
+		 */
 		M3U8,
-		/** 流媒体列表 */
+		/**
+		 * <p>流媒体列表</p>
+		 */
 		STREAM;
 		
 	}
@@ -36,11 +42,17 @@ public final class M3u8 {
 	 */
 	public enum Protocol {
 		
-		/** 明文 */
+		/**
+		 * <p>明文</p>
+		 */
 		NONE("NONE"),
-		/** AES-128 */
+		/**
+		 * <p>AES-128</p>
+		 */
 		AES_128("AES-128"),
-		/** SAMPLE-AES */
+		/**
+		 * <p>SAMPLE-AES</p>
+		 */
 		SAMPLE_AES("SAMPLE-AES");
 		
 		/**
@@ -80,7 +92,7 @@ public final class M3u8 {
 	private final Type type;
 	/**
 	 * <p>加密套件</p>
-	 * <p>为空时表示不加密</p>
+	 * <p>为空：明文</p>
 	 */
 	private final Cipher cipher;
 	/**
@@ -133,7 +145,6 @@ public final class M3u8 {
 	 * @return 码率最大的链接
 	 */
 	public String maxRateLink() {
-		// 码率排序
 		return this.links.get(this.links.size() - 1);
 	}
 

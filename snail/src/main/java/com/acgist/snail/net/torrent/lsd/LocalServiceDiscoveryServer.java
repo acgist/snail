@@ -73,7 +73,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		LOGGER.debug("发送本地发现消息");
 		final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
 		TorrentContext.getInstance().allTorrentSession().forEach(session -> {
-			if(session.isPrivateTorrent()) {
+			if(session.privateTorrent()) {
 				LOGGER.debug("私有种子（禁止发送本地发现消息）：{}", session.infoHashHex());
 			} else {
 				LOGGER.debug("发送本地发现消息：{}", session.infoHashHex());

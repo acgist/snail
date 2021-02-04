@@ -99,12 +99,12 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * <p>HTTP传输编码（PeerId、InfoHash）</p>
+	 * <p>HTTP编码（PeerId、InfoHash）</p>
 	 * <p>协议链接：https://wiki.theory.org/index.php/BitTorrentSpecification#Tracker_HTTP.2FHTTPS_Protocol</p>
 	 * 
 	 * @param bytes PeerId、InfoHash
 	 * 
-	 * @return HTTP传输编码
+	 * @return HTTP编码
 	 * 
 	 * @see #needEncode(char)
 	 */

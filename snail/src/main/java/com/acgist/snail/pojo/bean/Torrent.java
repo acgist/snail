@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -24,14 +21,12 @@ public final class Torrent implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(Torrent.class);
-	
 	/**
 	 * <p>注释：{@value}</p>
 	 */
 	public static final String ATTR_COMMENT = "comment";
 	/**
-	 * <p>注释UTF8：{@value}</p>
+	 * <p>注释（UTF8）：{@value}</p>
 	 */
 	public static final String ATTR_COMMENT_UTF8 = "comment.utf-8";
 	/**
@@ -62,13 +57,17 @@ public final class Torrent implements Serializable {
 	 * <p>DHT节点：{@value}</p>
 	 */
 	public static final String ATTR_NODES = "nodes";
+	/**
+	 * <p>DHT节点列表长度：{@value}</p>
+	 */
+	private static final int NODE_LIST_LENGTH = 2;
 	
 	/**
 	 * <p>注释</p>
 	 */
 	private String comment;
 	/**
-	 * <p>注释UTF8</p>
+	 * <p>注释（UTF8）</p>
 	 */
 	private String commentUtf8;
 	/**
@@ -96,12 +95,12 @@ public final class Torrent implements Serializable {
 	 */
 	private TorrentInfo info;
 	/**
-	 * <p>DHT节点</p>
+	 * <p>DHT节点列表</p>
 	 */
 	private Map<String, Integer> nodes;
 	/**
 	 * <p>InfoHash</p>
-	 * <p>种子文件加载完成时保存InfoHash，防止重复计算导致错误。</p>
+	 * <p>种子文件加载完成保存InfoHash：防止重复计算导致错误</p>
 	 */
 	private transient InfoHash infoHash;
 
@@ -111,14 +110,13 @@ public final class Torrent implements Serializable {
 	/**
 	 * <p>读取种子信息</p>
 	 * 
-	 * @param decoder 种子编码
+	 * @param decoder 种子信息
 	 * 
 	 * @return 种子信息
 	 */
 	public static final Torrent valueOf(BEncodeDecoder decoder) {
 		Objects.requireNonNull(decoder, "种子信息为空");
 		final Torrent torrent = new Torrent();
-		// 原始编码
 		final String encoding = decoder.getString(ATTR_ENCODING);
 		torrent.setEncoding(encoding);
 		torrent.setComment(decoder.getString(ATTR_COMMENT, encoding));
@@ -126,21 +124,14 @@ public final class Torrent implements Serializable {
 		torrent.setCreatedBy(decoder.getString(ATTR_CREATED_BY));
 		torrent.setCreationDate(decoder.getLong(ATTR_CREATION_DATE));
 		torrent.setAnnounce(decoder.getString(ATTR_ANNOUNCE));
-		// 读取Tracker服务器列表
-		final List<Object> announceList = decoder.getList(ATTR_ANNOUNCE_LIST);
-		torrent.setAnnounceList(readAnnounceList(announceList));
-		// 读取文件信息
-		final Map<String, Object> info = decoder.getMap(ATTR_INFO);
-		torrent.setInfo(TorrentInfo.valueOf(info, encoding));
-		// 读取DHT节点
-		final List<Object> nodes = decoder.getList(ATTR_NODES);
-		torrent.setNodes(readNodes(nodes));
+		torrent.setAnnounceList(readAnnounceList(decoder.getList(ATTR_ANNOUNCE_LIST)));
+		torrent.setInfo(TorrentInfo.valueOf(decoder.getMap(ATTR_INFO), encoding));
+		torrent.setNodes(readNodes(decoder.getList(ATTR_NODES)));
 		return torrent;
 	}
 	
 	/**
 	 * <p>获取任务名称</p>
-	 * <p>优先使用{@link TorrentInfo#getNameUtf8()}，如果获取失败，然后使用{@link TorrentInfo#getName()}。</p>
 	 * 
 	 * @return 任务名称
 	 */
@@ -171,8 +162,7 @@ public final class Torrent implements Serializable {
 	}
 	
 	/**
-	 * <p>获取Tracker服务器列表</p>
-	 * <p>每个元素都是一个list，每个list里面包含一个Tracker服务器地址。</p>
+	 * <p>读取Tracker服务器列表</p>
 	 * 
 	 * @param announceList Tracker服务器数据
 	 * 
@@ -183,51 +173,50 @@ public final class Torrent implements Serializable {
 			return new ArrayList<>(0);
 		}
 		return announceList.stream()
-			.flatMap(value -> {
-				final List<?> values = (List<?>) value;
-				return values.stream();
-			})
+			.flatMap(value -> ((List<?>) value).stream())
 			.map(value -> StringUtils.getString(value))
 			.collect(Collectors.toList());
 	}
 	
 	/**
-	 * <p>获取DHT节点</p>
-	 * <p>每个元素都是一个list，每个list里面包含节点的IP和端口。</p>
+	 * <p>读取DHT节点列表</p>
 	 * 
-	 * @param nodes DHT节点数据
+	 * @param nodes DHT节点列表数据
 	 * 
-	 * @return DHT节点
+	 * @return DHT节点列表
 	 */
 	private static final Map<String, Integer> readNodes(List<Object> nodes) {
 		if(nodes == null) {
 			return new LinkedHashMap<>();
 		}
 		return nodes.stream()
-			.map(value -> {
-				final List<?> values = (List<?>) value;
-				if(values.size() == 2) {
-					final String host = StringUtils.getString(values.get(0));
-					final Long port = (Long) values.get(1);
-					if(StringUtils.isNumeric(host)) {
-						// 紧凑型
-						return Map.entry(
-							NetUtils.intToIP(Integer.parseInt(host)),
-							NetUtils.portToInt(port.shortValue())
-						);
-					} else {
-						// 字符串
-						return Map.entry(host, port.intValue());
-					}
-				} else {
-					LOGGER.warn("DHT节点错误：{}", value);
-					return null;
-				}
-			})
+			.map(Torrent::readNode)
 			.filter(Objects::nonNull)
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 
+	/**
+	 * <p>读取节点信息</p>
+	 * 
+	 * @param value 节点信息
+	 * 
+	 * @return 节点
+	 */
+	private static Map.Entry<String, Integer> readNode(Object value) {
+		final List<?> values = (List<?>) value;
+		if(values.size() == NODE_LIST_LENGTH) {
+			String host = StringUtils.getString(values.get(0));
+			if(StringUtils.isNumeric(host)) {
+				// 紧凑型地址
+				host = NetUtils.intToIP(Integer.parseInt(host));
+			}
+			final Long port = (Long) values.get(1);
+			return Map.entry(host, port.intValue());
+		} else {
+			return null;
+		}
+	}
+	
 	/**
 	 * <p>获取注释</p>
 	 * 
@@ -247,18 +236,18 @@ public final class Torrent implements Serializable {
 	}
 
 	/**
-	 * <p>获取注释UTF8</p>
+	 * <p>获取注释（UTF8）</p>
 	 * 
-	 * @return 注释UTF8
+	 * @return 注释（UTF8）
 	 */
 	public String getCommentUtf8() {
 		return this.commentUtf8;
 	}
 
 	/**
-	 * <p>设置注释UTF8</p>
+	 * <p>设置注释（UTF8）</p>
 	 * 
-	 * @param commentUtf8 注释UTF8
+	 * @param commentUtf8 注释（UTF8）
 	 */
 	public void setCommentUtf8(String commentUtf8) {
 		this.commentUtf8 = commentUtf8;
@@ -373,18 +362,18 @@ public final class Torrent implements Serializable {
 	}
 
 	/**
-	 * <p>获取DHT节点</p>
+	 * <p>获取DHT节点列表</p>
 	 * 
-	 * @return DHT节点
+	 * @return DHT节点列表
 	 */
 	public Map<String, Integer> getNodes() {
 		return this.nodes;
 	}
 
 	/**
-	 * <p>设置DHT节点</p>
+	 * <p>设置DHT节点列表</p>
 	 * 
-	 * @param nodes DHT节点
+	 * @param nodes DHT节点列表
 	 */
 	public void setNodes(Map<String, Integer> nodes) {
 		this.nodes = nodes;

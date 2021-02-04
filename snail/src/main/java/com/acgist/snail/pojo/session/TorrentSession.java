@@ -260,7 +260,7 @@ public final class TorrentSession {
 			return true;
 		}
 		this.loadExecutor();
-		final boolean privateTorrent = this.isPrivateTorrent();
+		final boolean privateTorrent = this.privateTorrent();
 		if(findPeer) {
 			this.loadTrackerLauncherGroup();
 			this.loadTrackerLauncherGroupTimer();
@@ -729,11 +729,11 @@ public final class TorrentSession {
 	 * 
 	 * @return 是否是私有种子
 	 */
-	public boolean isPrivateTorrent() {
+	public boolean privateTorrent() {
 		if(this.torrent == null) {
 			return false;
 		}
-		return this.torrent.getInfo().isPrivateTorrent();
+		return this.torrent.getInfo().privateTorrent();
 	}
 	
 	/**

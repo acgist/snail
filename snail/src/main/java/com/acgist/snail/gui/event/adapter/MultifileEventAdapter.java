@@ -64,7 +64,7 @@ public class MultifileEventAdapter extends GuiEventArgs {
 			if(StringUtils.isEmpty(files)) {
 				// 没有选择文件默认下载所有文件
 				selectFiles = torrent.getInfo().files().stream()
-					.filter(TorrentFile::isNotPaddingFile)
+					.filter(TorrentFile::notPaddingFile)
 					.map(TorrentFile::path)
 					.collect(Collectors.toList());
 				files = DescriptionWrapper.newEncoder(selectFiles).serialize();
