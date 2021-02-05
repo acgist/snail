@@ -318,12 +318,11 @@ public abstract class PeerConnect implements IPeerConnect {
 				success = false;
 			}
 		}
-		this.completedLock.set(true); // 设置完成
+		this.completedLock.set(true);
 		this.releaseDownload();
-		// 验证任务是否完成
 		this.torrentSession.checkCompletedAndDone();
 		// 验证最后选择的Piece是否下载完成
-		if(this.downloadPiece != null && !this.downloadPiece.completed()) {
+		if(this.downloadPiece != null && !this.downloadPiece.completedAndVerify()) {
 			this.undone();
 		}
 		LOGGER.debug("结束请求下载：{}", this.peerSession);
@@ -387,9 +386,7 @@ public abstract class PeerConnect implements IPeerConnect {
 		if(this.downloadPiece == null) {
 			// 没有Piece
 		} else if(this.downloadPiece.completed()) {
-			// 下载完成
 			if(this.downloadPiece.verify()) {
-				// 验证数据：保存数据
 				final boolean success = this.torrentSession.write(this.downloadPiece);
 				if(success) {
 					// 统计下载有效数据
@@ -403,15 +400,14 @@ public abstract class PeerConnect implements IPeerConnect {
 				this.peerSession.badPieces(this.downloadPiece.getIndex());
 				this.undone();
 			}
-		} else { // Piece没有下载完成
+		} else {
 			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
 			this.undone();
 		}
-		// 挑选Piece
-		if(this.peerConnectSession.isPeerUnchoked()) { // 解除阻塞
+		if(this.peerConnectSession.isPeerUnchoked()) {
 			LOGGER.debug("选择下载Piece：解除阻塞");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.availablePieces(), this.peerSession.suggestPieces());
-		} else { // 快速允许
+		} else {
 			LOGGER.debug("选择下载Piece：快速允许");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.allowedPieces(), this.peerSession.allowedPieces());
 		}
@@ -435,18 +431,13 @@ public abstract class PeerConnect implements IPeerConnect {
 	 * <p>PeerConnect释放下载</p>
 	 */
 	protected final void releaseDownload() {
-		try {
-			if(this.downloading) {
-				LOGGER.debug("PeerConnect释放下载：{}-{}", this.peerSession.host(), this.peerSession.port());
-				this.downloading = false;
-				// 没有完成：等待下载完成
-				if(!this.completedLock.get()) {
-					// 添加释放锁
-					this.lockRelease();
-				}
+		if(this.downloading) {
+			LOGGER.debug("PeerConnect释放下载：{}-{}", this.peerSession.host(), this.peerSession.port());
+			this.downloading = false;
+			// 没有完成：等待下载完成
+			if(!this.completedLock.get()) {
+				this.lockRelease();
 			}
-		} catch (Exception e) {
-			LOGGER.error("PeerConnect释放下载异常", e);
 		}
 	}
 	

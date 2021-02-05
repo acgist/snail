@@ -139,23 +139,25 @@ public final class PeerDownloaderGroup {
 	private void buildPeerDownloaders() {
 		LOGGER.debug("创建PeerDownloader");
 		int size = 0;
-		this.build.set(true); // 重置创建状态
-		this.buildSemaphore.drainPermits(); // 重置信号量
+		// 重置创建状态
+		this.build.set(true);
+		// 重置信号量
+		this.buildSemaphore.drainPermits();
 		this.buildSemaphore.release(BUILD_SIZE);
 		while(this.build.get()) {
-			this.acquire(); // 获取信号量
-			if(!this.build.get()) { // 再次判断状态
+			this.acquire();
+			if(!this.build.get()) {
 				LOGGER.debug("不能继续创建PeerDownloader：退出循环");
 				break;
 			}
 			this.torrentSession.submit(() -> {
-				boolean success = true; // 是否继续创建
+				boolean success = true;
 				try {
 					success = this.buildPeerDownloader();
 				} catch (Exception e) {
 					LOGGER.error("创建PeerDownloader异常", e);
 				} finally {
-					this.release(success); // 释放信号量
+					this.release(success);
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
@@ -300,7 +302,7 @@ public final class PeerDownloaderGroup {
 	/**
 	 * <p>释放信号量：设置创建状态</p>
 	 * 
-	 * @param build 创建状态：true-继续；false-停止；
+	 * @param build 是否继续创建
 	 */
 	private void release(boolean build) {
 		this.build.set(build);

@@ -198,7 +198,6 @@ public final class TorrentStream {
 	 * @throws DownloadException 下载异常
 	 */
 	private RandomAccessFile buildFileStream() throws DownloadException {
-		// 创建文件上级目录：上级目录不存在会抛出FileNotFoundException
 		FileUtils.buildParentFolder(this.filePath);
 		try {
 			return new RandomAccessFile(this.filePath, STREAM_MODE);
@@ -494,7 +493,8 @@ public final class TorrentStream {
 		}
 		try {
 			final byte[] bytes = new byte[size];
-			this.fileStream.seek(seek); // 注意线程安全
+			// 注意线程安全
+			this.fileStream.seek(seek);
 			this.fileStream.read(bytes);
 			return bytes;
 		} catch (IOException e) {
@@ -691,7 +691,8 @@ public final class TorrentStream {
 		}
 		try {
 			final byte[] bytes = piece.getData();
-			this.fileStream.seek(seek); // 注意线程安全
+			// 注意线程安全
+			this.fileStream.seek(seek);
 			this.fileStream.write(bytes, offset, length);
 		} catch (IOException e) {
 			LOGGER.error("Piece写入文件异常：{}-{}-{}-{}", index, seek, offset, length, e);

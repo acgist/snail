@@ -89,11 +89,11 @@ public final class UtpRequestQueue {
 				try {
 					final var request = queue.take();
 					request.execute();
-				} catch (NetException e) {
-					LOGGER.error("UTP处理请求异常", e);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					LOGGER.debug("UTP处理请求异常", e);
+				} catch (NetException e) {
+					LOGGER.error("UTP处理请求异常", e);
 				} catch (Exception e) {
 					LOGGER.error("UTP处理请求异常", e);
 				}

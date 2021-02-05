@@ -145,9 +145,9 @@ public final class TorrentPiece {
 	}
 	
 	/**
-	 * <p>判断下载是否完成</p>
+	 * <p>判断是否下载完成</p>
 	 * 
-	 * @return 是否完成
+	 * @return 是否下载完成
 	 */
 	public boolean completed() {
 		return this.size >= this.length;
@@ -188,7 +188,7 @@ public final class TorrentPiece {
 	 * @param begin Piece内开始偏移
 	 * @param bytes Slice数据
 	 * 
-	 * @return 是否完成
+	 * @return 是否下载完成
 	 */
 	public boolean write(final int begin, final byte[] bytes) {
 		synchronized (this) {
@@ -242,7 +242,19 @@ public final class TorrentPiece {
 		}
 		return true;
 	}
-
+	
+	/**
+	 * <p>判断是否下载完成并且校验成功</p>
+	 * 
+	 * @return 是否下载完成并且校验成功
+	 * 
+	 * @see #completed()
+	 * @see #verify()
+	 */
+	public boolean completedAndVerify() {
+		return this.completed() && this.verify();
+	}
+	
 	/**
 	 * <p>获取Piece索引</p>
 	 * 
