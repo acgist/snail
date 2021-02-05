@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent;
 
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageSender;
 
@@ -20,7 +21,7 @@ public interface IMessageEncryptSender extends IMessageSender, IPeerConnect {
 	 * @throws NetException 网络异常
 	 */
 	default void sendEncrypt(ByteBuffer buffer) throws NetException {
-		this.sendEncrypt(buffer, TIMEOUT_NONE);
+		this.sendEncrypt(buffer, SystemConfig.NONE_TIMEOUT);
 	}
 	
 	/**

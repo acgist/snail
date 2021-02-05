@@ -361,11 +361,16 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	@Override
-	public boolean verify() throws DownloadException {
+	public boolean verify() {
 		if(this.downloader == null) {
 			return this.downloadFile().exists();
 		}
-		return this.downloader.verify();
+		try {
+			return this.downloader.verify();
+		} catch (DownloadException e) {
+			LOGGER.error("校验下载文件异常", e);
+		}
+		return false;
 	}
 	
 	@Override

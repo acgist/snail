@@ -69,10 +69,8 @@ public interface ITaskSessionHandler {
 	 * <p>校验下载文件</p>
 	 * 
 	 * @return 校验结果
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	boolean verify() throws DownloadException;
+	boolean verify();
 	
 	/**
 	 * <p>释放下载锁</p>

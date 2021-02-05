@@ -73,8 +73,8 @@ public final class BuildController extends Controller {
 			TaskContext.getInstance().download(url);
 		} catch (Exception e) {
 			LOGGER.error("新建下载任务异常：{}", url, e);
-			success = false;
 			Alerts.warn("下载失败", e.getMessage());
+			success = false;
 		}
 		if(success) {
 			BuildWindow.getInstance().hide();
