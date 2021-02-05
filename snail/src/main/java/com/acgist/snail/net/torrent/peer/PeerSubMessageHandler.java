@@ -415,7 +415,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		// 发送扩展消息：优先交换扩展
 		this.extension();
 		this.dht();
-		this.exchangeBitfield();
+		this.fastBitfield();
 		this.unchoke();
 		return true;
 	}
@@ -434,7 +434,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>格式：len=0001 id=0x00</p>
 	 * <p>阻塞后Peer不能进行下载</p>
 	 */
-	public void choke() {
+	private void choke() {
 		LOGGER.debug("发送阻塞消息");
 		this.peerConnectSession.amChoked();
 		this.pushMessage(PeerConfig.Type.CHOKE, null);
@@ -789,13 +789,13 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	
 	/**
 	 * <dl>
-	 * 	<dt>交换Piece位图</dt>
+	 * 	<dt>快速交换Piece位图</dt>
 	 * 	<dd>如果任务已经下载所有Piece，Peer支持FAST扩展，发送haveAll代替交换Piece位图。</dd>
 	 * 	<dd>如果任务没有下载任何Piece，Peer支持FAST扩展，发送haveNone代替交换Piece位图。</dd>
 	 * 	<dd>其他情况发送交换Piece位图</dd>
 	 * <dl>
 	 */
-	private void exchangeBitfield() {
+	private void fastBitfield() {
 		if(!this.torrentSession.uploadable()) {
 			LOGGER.debug("交换Piece位图：任务不可上传");
 			return;
@@ -804,15 +804,16 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			LOGGER.debug("交换Piece位图：Peer只上传不下载");
 			return;
 		}
-		if(this.peerSession.supportFastExtensionProtocol()) { // 支持FAST扩展
-			final var pieces = this.torrentSession.pieces(); // 已下载Pieces
+		if(this.peerSession.supportFastExtensionProtocol()) {
+			// 支持FAST扩展
+			final var pieces = this.torrentSession.pieces();
 			if(pieces.isEmpty()) {
 				this.haveNone();
 				return;
 			}
 			// 任务已经完成
 			if(this.torrentSession.completed()) {
-				final var allPieces = this.torrentSession.allPieces(); // 所有Pieces
+				final var allPieces = this.torrentSession.allPieces();
 				allPieces.andNot(pieces);
 				if(allPieces.isEmpty()) {
 					this.haveAll();
