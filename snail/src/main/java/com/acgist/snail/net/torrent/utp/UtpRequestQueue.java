@@ -87,8 +87,7 @@ public final class UtpRequestQueue {
 		this.executor.submit(() -> {
 			while(true) {
 				try {
-					final var request = queue.take();
-					request.execute();
+					queue.take().execute();
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					LOGGER.debug("UTP处理请求异常", e);

@@ -315,7 +315,6 @@ public abstract class PeerConnect implements IPeerConnect {
 				success = this.request();
 			} catch (Exception e) {
 				LOGGER.error("Peer请求异常", e);
-				success = false;
 			}
 		}
 		this.completedLock.set(true);
