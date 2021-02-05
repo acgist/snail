@@ -78,7 +78,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			try {
 				int size;
 				final Future<Integer> future = this.socket.write(buffer);
-				if(timeout <= TIMEOUT_NONE) {
+				if(timeout <= SystemConfig.NONE_TIMEOUT) {
 					size = future.get();
 				} else {
 					size = future.get(timeout, TimeUnit.SECONDS);

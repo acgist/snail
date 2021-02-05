@@ -3,6 +3,7 @@ package com.acgist.snail.net;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
@@ -12,11 +13,6 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public interface IMessageSender {
-	
-	/**
-	 * <p>没有超时时间（一直等待）：{@value}</p>
-	 */
-	int TIMEOUT_NONE = 0;
 	
 	/**
 	 * <p>判断是否可用</p>
@@ -67,7 +63,7 @@ public interface IMessageSender {
 	 * @throws NetException 网络异常
 	 */
 	default void send(ByteBuffer buffer) throws NetException {
-		this.send(buffer, TIMEOUT_NONE);
+		this.send(buffer, SystemConfig.NONE_TIMEOUT);
 	}
 	
 	/**

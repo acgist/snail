@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;
@@ -151,21 +150,16 @@ public final class TaskMenu extends Menu {
 	 */
 	private EventHandler<ActionEvent> verifyEvent = event -> Platform.runLater(() -> {
 		MainWindow.getInstance().controller().selected().forEach(session -> {
-			try {
-				if(session.verify()) {
-					Alerts.info("校验成功", session.getName());
-				} else if(session.statusCompleted()) {
-					// 任务完成：判断是否需要重新下载
-					final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
-					if(Alerts.ok(optional)) {
-						session.repause();
-					}
-				} else {
-					Alerts.warn("校验失败", "开始下载自动修复");
+			if(session.verify()) {
+				Alerts.info("校验成功", session.getName());
+			} else if(session.statusCompleted()) {
+				// 任务完成：判断是否需要重新下载
+				final Optional<ButtonType> optional = Alerts.build("校验失败", "是否重新下载任务？", GuiContext.MessageType.CONFIRM);
+				if(Alerts.ok(optional)) {
+					session.repause();
 				}
-			} catch (DownloadException e) {
-				LOGGER.error("文件校验异常", e);
-				Alerts.warn("校验失败", e.getMessage());
+			} else {
+				Alerts.warn("校验失败", "开始下载自动修复");
 			}
 		});
 	});

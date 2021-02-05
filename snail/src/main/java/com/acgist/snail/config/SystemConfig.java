@@ -107,6 +107,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = MIN_DOWNLOAD_BUFFER_KB * ONE_KB;
 	/**
+	 * <p>没有超时时间：{@value}</p>
+	 */
+	public static final int NONE_TIMEOUT = 0;
+	/**
 	 * <p>连接超时时间（秒）：{@value}</p>
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
