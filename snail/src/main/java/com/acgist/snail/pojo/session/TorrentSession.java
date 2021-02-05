@@ -434,6 +434,8 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>加载HAVE定时任务</p>
+	 * 
+	 * TODO：调小定时时间或者固定长度通知
 	 */
 	private void loadHaveTimer() {
 		final int haveInterval = SystemConfig.getHaveInterval();
