@@ -32,7 +32,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 * @param socketAddress 地址
 	 */
 	private LocalServiceDiscoveryClient(InetSocketAddress socketAddress) {
-		super("LSD Client", new LocalServiceDiscoveryMessageHandler(), socketAddress);
+		super("LSD Client", new LocalServiceDiscoveryMessageHandler(socketAddress));
 	}
 
 	/**

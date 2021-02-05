@@ -249,6 +249,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 			LOGGER.warn("UDP Server通道已经关闭：{}", this.name);
 			return;
 		}
+		this.handler.handle(this.channel);
 		EXECUTOR.submit(this::loopMessage);
 	}
 	
@@ -296,7 +297,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 					// 服务器多例：selectionKey.channel()
 					// 服务端单例：客户端通道=服务端通道
 					final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
-					this.handler.receive(this.channel, buffer, socketAddress);
+					this.handler.receive(buffer, socketAddress);
 				}
 			}
 		}

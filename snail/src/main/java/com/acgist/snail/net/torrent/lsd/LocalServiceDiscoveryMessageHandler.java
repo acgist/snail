@@ -48,7 +48,20 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	 */
 	public static final String HEADER_INFOHASH = "Infohash";
 
+	/**
+	 * <p>服务端</p>
+	 */
 	public LocalServiceDiscoveryMessageHandler() {
+		this(null);
+	}
+	
+	/**
+	 * <p>客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
+	public LocalServiceDiscoveryMessageHandler(InetSocketAddress socketAddress) {
+		super(socketAddress);
 		this.messageDecoder = new StringMessageCodec(this);
 	}
 	

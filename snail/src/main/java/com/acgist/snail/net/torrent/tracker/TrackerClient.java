@@ -15,7 +15,7 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 	 * @param socketAddress 地址
 	 */
 	private TrackerClient(InetSocketAddress socketAddress) {
-		super("Tracker Client", new TrackerMessageHandler(), socketAddress);
+		super("Tracker Client", new TrackerMessageHandler(socketAddress));
 	}
 	
 	/**
@@ -33,5 +33,5 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 	public boolean open() {
 		return this.open(TrackerServer.getInstance().channel());
 	}
-
+	
 }

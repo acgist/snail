@@ -28,18 +28,18 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	 * @param socketAddress 地址
 	 */
 	private UpnpClient(InetSocketAddress socketAddress) {
-		super("UPNP Client", new UpnpMessageHandler(), socketAddress);
+		super("UPNP Client", new UpnpMessageHandler(socketAddress));
 	}
 	
 	public static final UpnpClient newInstance() {
 		return new UpnpClient(NetUtils.buildSocketAddress(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT));
 	}
-
+	
 	@Override
 	public boolean open() {
 		return this.open(UpnpServer.getInstance().channel());
 	}
-	
+
 	/**
 	 * <p>发送M-SEARCH消息</p>
 	 */

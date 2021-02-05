@@ -39,6 +39,22 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 */
 	private static final int ERROR_MIN_LENGTH = 4;
 	
+	/**
+	 * <p>服务端</p>
+	 */
+	public TrackerMessageHandler() {
+		this(null);
+	}
+	
+	/**
+	 * <p>客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
+	public TrackerMessageHandler(InetSocketAddress socketAddress) {
+		super(socketAddress);
+	}
+	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final int id = buffer.getInt();

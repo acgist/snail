@@ -82,15 +82,15 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 */
 	protected boolean connect(final String host, final int port) {
 		boolean success = true;
-		AsynchronousSocketChannel socket = null;
+		AsynchronousSocketChannel channel = null;
 		try {
-			socket = AsynchronousSocketChannel.open(GROUP);
-//			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
-			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-			final Future<Void> future = socket.connect(NetUtils.buildSocketAddress(host, port));
+			channel = AsynchronousSocketChannel.open(GROUP);
+//			channel.setOption(StandardSocketOptions.TCP_NODELAY, true);
+			channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			channel.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
+			final Future<Void> future = channel.connect(NetUtils.buildSocketAddress(host, port));
 			future.get(this.timeout, TimeUnit.SECONDS);
-			this.handler.handle(socket);
+			this.handler.handle(channel);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
@@ -100,7 +100,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			success = false;
 		} finally {
 			if(!success) {
-				IoUtils.close(socket);
+				IoUtils.close(channel);
 				this.close();
 			}
 		}

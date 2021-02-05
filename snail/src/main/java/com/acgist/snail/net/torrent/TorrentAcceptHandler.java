@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.net.UdpAcceptHandler;
@@ -38,9 +39,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	 */
 	private static final byte STUN_HEADER_RECV = 0x01;
 	
-	private TorrentAcceptHandler() {
-	}
-	
 	/**
 	 * <p>UTP Service</p>
 	 */
@@ -53,6 +51,16 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	 * <p>STUN消息代理</p>
 	 */
 	private final StunMessageHandler stunMessageHandler = new StunMessageHandler();
+	
+	private TorrentAcceptHandler() {
+	}
+	
+	@Override
+	public void handle(DatagramChannel channel) {
+		this.utpService.handle(channel);
+		this.dhtMessageHandler.handle(channel);
+		this.stunMessageHandler.handle(channel);
+	}
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {

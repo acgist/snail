@@ -23,7 +23,7 @@ import com.acgist.snail.utils.IoUtils;
  * 
  * @author acgist
  */
-public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageSender, IMessageReceiver {
+public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageSender, IMessageReceiver, IChannelHandler<AsynchronousSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 	
@@ -34,7 +34,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	/**
 	 * <p>Socket</p>
 	 */
-	protected AsynchronousSocketChannel socket;
+	protected AsynchronousSocketChannel channel;
 	/**
 	 * <p>消息处理器</p>
 	 */
@@ -48,20 +48,15 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 		this.messageDecoder.decode(buffer);
 	}
 	
-	/**
-	 * <p>消息代理</p>
-	 * <p>开始消息轮询</p>
-	 * 
-	 * @param socket 通道
-	 */
-	public void handle(AsynchronousSocketChannel socket) {
-		this.socket = socket;
+	@Override
+	public void handle(AsynchronousSocketChannel channel) {
+		this.channel = channel;
 		this.loopMessage();
 	}
 	
 	@Override
 	public boolean available() {
-		return !this.close && this.socket != null && this.socket.isOpen();
+		return !this.close && this.channel != null && this.channel.isOpen();
 	}
 	
 	/**
@@ -74,17 +69,17 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.check(buffer);
-		synchronized (this.socket) {
+		synchronized (this.channel) {
 			try {
 				int size;
-				final Future<Integer> future = this.socket.write(buffer);
+				final Future<Integer> future = this.channel.write(buffer);
 				if(timeout <= SystemConfig.NONE_TIMEOUT) {
 					size = future.get();
 				} else {
 					size = future.get(timeout, TimeUnit.SECONDS);
 				}
 				if(size <= 0) {
-					LOGGER.warn("TCP消息发送失败：{}-{}", this.socket, size);
+					LOGGER.warn("TCP消息发送失败：{}-{}", this.channel, size);
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
@@ -98,7 +93,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	@Override
 	public InetSocketAddress remoteSocketAddress() {
 		try {
-			return (InetSocketAddress) this.socket.getRemoteAddress();
+			return (InetSocketAddress) this.channel.getRemoteAddress();
 		} catch (IOException e) {
 			LOGGER.error("TCP获取远程服务地址异常", e);
 		}
@@ -108,7 +103,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	@Override
 	public void close() {
 		this.close = true;
-		IoUtils.close(this.socket);
+		IoUtils.close(this.channel);
 	}
 	
 	@Override
@@ -145,7 +140,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	private void loopMessage() {
 		if(this.available()) {
 			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.TCP_BUFFER_LENGTH);
-			this.socket.read(buffer, buffer, this);
+			this.channel.read(buffer, buffer, this);
 		} else {
 			LOGGER.debug("TCP消息代理退出消息轮询");
 		}

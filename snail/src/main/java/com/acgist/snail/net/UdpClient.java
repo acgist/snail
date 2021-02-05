@@ -1,6 +1,5 @@
 package com.acgist.snail.net;
 
-import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
 
 import org.slf4j.Logger;
@@ -24,25 +23,19 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * <p>客户端名称</p>
 	 */
 	private final String name;
-	/**
-	 * <p>远程地址</p>
-	 */
-	protected final InetSocketAddress socketAddress;
 	
 	/**
 	 * <p>创建客户端时自动打开通道</p>
 	 * 
 	 * @param name 客户端名称
 	 * @param handler 消息代理
-	 * @param socketAddress 远程地址
 	 */
-	public UdpClient(String name, T handler, InetSocketAddress socketAddress) {
+	public UdpClient(String name, T handler) {
 		super(handler);
 		this.name = name;
-		this.socketAddress = socketAddress;
 		this.open();
 	}
-
+	
 	/**
 	 * <p>打开通道</p>
 	 * 
@@ -57,14 +50,14 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * 
 	 * @return 打开状态
 	 */
-	public boolean open(DatagramChannel channel) {
+	protected boolean open(DatagramChannel channel) {
 		if(channel == null) {
 			return false;
 		}
-		this.handler.handle(channel, this.socketAddress);
+		this.handler.handle(channel);
 		return true;
 	}
-	
+
 	@Override
 	public void close() {
 		LOGGER.debug("关闭UDP Client：{}", this.name);

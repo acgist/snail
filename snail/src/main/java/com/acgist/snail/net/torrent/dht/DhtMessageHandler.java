@@ -42,6 +42,22 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 */
 	private static final Predicate<DhtResponse> RESPONSE_SUCCESS = response -> response != null && response.success();
 	
+	/**
+	 * <p>服务端</p>
+	 */
+	public DhtMessageHandler() {
+		this(null);
+	}
+	
+	/**
+	 * <p>客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
+	public DhtMessageHandler(InetSocketAddress socketAddress) {
+		super(socketAddress);
+	}
+	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		final var decoder = BEncodeDecoder.newInstance(buffer);
@@ -146,20 +162,18 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * <p>发送请求：ping</p>
 	 * <p>检测节点是否可达，该方法同步阻塞，收到响应后添加系统节点。</p>
 	 * 
-	 * @param socketAddress 地址
-	 * 
 	 * @return 节点信息
 	 */
-	public NodeSession ping(InetSocketAddress socketAddress) {
+	public NodeSession ping() {
 		LOGGER.debug("发送DHT请求：ping");
 		final PingRequest request = PingRequest.newRequest();
-		this.pushRequest(request, socketAddress);
+		this.pushRequest(request, this.socketAddress);
 		request.lockResponse();
 		final DhtResponse response = request.getResponse();
 		if(RESPONSE_SUCCESS.test(response)) {
-			return NodeContext.getInstance().newNodeSession(response.getNodeId(), socketAddress.getHostString(), socketAddress.getPort());
+			return NodeContext.getInstance().newNodeSession(response.getNodeId(), this.socketAddress.getHostString(), this.socketAddress.getPort());
 		} else {
-			LOGGER.warn("发送Ping请求失败：{}-{}", socketAddress, response);
+			LOGGER.warn("发送Ping请求失败：{}-{}", this.socketAddress, response);
 		}
 		return null;
 	}
@@ -188,13 +202,12 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>发送请求：findNode</p>
 	 * 
-	 * @param socketAddress 地址
 	 * @param target NodeId或者InfoHash
 	 */
-	public void findNode(InetSocketAddress socketAddress, byte[] target) {
+	public void findNode(byte[] target) {
 		LOGGER.debug("发送DHT请求：findNode");
 		final FindNodeRequest request = FindNodeRequest.newRequest(target);
-		this.pushRequest(request, socketAddress);
+		this.pushRequest(request, this.socketAddress);
 	}
 	
 	/**
@@ -221,13 +234,12 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>发送请求：getPeers</p>
 	 * 
-	 * @param socketAddress 地址
 	 * @param infoHash InfoHash
 	 */
-	public void getPeers(InetSocketAddress socketAddress, byte[] infoHash) {
+	public void getPeers(byte[] infoHash) {
 		LOGGER.debug("发送DHT请求：getPeers");
 		final GetPeersRequest request = GetPeersRequest.newRequest(infoHash);
-		this.pushRequest(request, socketAddress);
+		this.pushRequest(request, this.socketAddress);
 	}
 
 	/**
@@ -265,7 +277,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		if(token != null) {
 			final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 			if(torrentSession != null && torrentSession.uploadable()) {
-				this.announcePeer(request.getSocketAddress(), token, infoHash);
+				this.announcePeer(token, infoHash, request.getSocketAddress());
 			}
 		}
 	}
@@ -273,11 +285,21 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	/**
 	 * <p>发送请求：announcePeer</p>
 	 * 
-	 * @param socketAddress 地址
 	 * @param token Token
 	 * @param infoHash InfoHash
 	 */
-	public void announcePeer(InetSocketAddress socketAddress, byte[] token, byte[] infoHash) {
+	public void announcePeer(byte[] token, byte[] infoHash) {
+		this.announcePeer(token, infoHash, this.socketAddress);
+	}
+	
+	/**
+	 * <p>发送请求：announcePeer</p>
+	 * 
+	 * @param token Token
+	 * @param infoHash InfoHash
+	 * @param socketAddress 地址
+	 */
+	private void announcePeer(byte[] token, byte[] infoHash, InetSocketAddress socketAddress) {
 		LOGGER.debug("发送DHT请求：announcePeer");
 		final AnnouncePeerRequest request = AnnouncePeerRequest.newRequest(token, infoHash);
 		this.pushRequest(request, socketAddress);

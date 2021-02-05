@@ -30,7 +30,20 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	 */
 	private static final String HEADER_LOCATION = "location";
 	
+	/**
+	 * <p>服务端</p>
+	 */
 	public UpnpMessageHandler() {
+		this(null);
+	}
+	
+	/**
+	 * <p>客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
+	public UpnpMessageHandler(InetSocketAddress socketAddress) {
+		super(socketAddress);
 		this.messageDecoder = new StringMessageCodec(this);
 	}
 	
