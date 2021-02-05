@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -58,21 +56,6 @@ public final class PeerContext implements IContext {
 		this.haves = new ConcurrentHashMap<>();
 		this.peers = new ConcurrentHashMap<>();
 		this.storagePeers = new ConcurrentHashMap<>();
-		this.register();
-	}
-	
-	/**
-	 * <p>注册Have消息服务</p>
-	 */
-	private void register() {
-		LOGGER.debug("注册Have消息服务：定时任务");
-		final int interval = SystemConfig.getHaveInterval();
-		SystemThreadContext.timerFixedDelay(
-			interval,
-			interval,
-			TimeUnit.SECONDS,
-			this::flushHave
-		);
 	}
 	
 	/**
@@ -244,28 +227,16 @@ public final class PeerContext implements IContext {
 	}
 
 	/**
-	 * <p>发送所有have消息</p>
-	 */
-	private void flushHave() {
-		LOGGER.debug("发送所有have消息");
-		final List<String> keys;
-		synchronized (this.haves) {
-			keys = new ArrayList<>(this.haves.keySet());
-		}
-		keys.forEach(this::flushHave);
-	}
-	
-	/**
 	 * <p>发送have消息</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
-	public void flushHave(String infoHashHex) {
+	public void have(String infoHashHex) {
 		Integer[] indexArray;
 		final var haveList = this.listHave(infoHashHex);
 		synchronized (haveList) {
 			indexArray = haveList.toArray(Integer[]::new);
-			haveList.clear(); // 清空数据
+			haveList.clear();
 		}
 		if(ArrayUtils.isNotEmpty(indexArray)) {
 			final var sessions = this.listConnectPeerSession(infoHashHex);

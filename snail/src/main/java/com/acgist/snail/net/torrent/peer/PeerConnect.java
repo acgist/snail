@@ -299,7 +299,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	public void release() {
 		this.available = false;
 		this.releaseDownload();
-		this.peerSubMessageHandler.choke();
 		this.peerSubMessageHandler.close();
 	}
 	
@@ -420,6 +419,8 @@ public abstract class PeerConnect implements IPeerConnect {
 	
 	/**
 	 * <p>下载失败</p>
+	 * 
+	 * TODO：发送cancel
 	 */
 	private void undone() {
 		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());

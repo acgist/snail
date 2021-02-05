@@ -116,6 +116,10 @@ public final class TorrentSession {
 	 */
 	private ScheduledFuture<?> pexTimer;
 	/**
+	 * <p>HAVE定时器</p>
+	 */
+	private ScheduledFuture<?> haveTimer;
+	/**
 	 * <p>DHT定时器</p>
 	 */
 	private ScheduledFuture<?> dhtLauncherTimer;
@@ -279,6 +283,7 @@ public final class TorrentSession {
 		} else {
 			this.loadPexTimer();
 		}
+		this.loadHaveTimer();
 		this.downloadable = true;
 		return false;
 	}
@@ -428,6 +433,19 @@ public final class TorrentSession {
 	}
 	
 	/**
+	 * <p>加载HAVE定时任务</p>
+	 */
+	private void loadHaveTimer() {
+		final int haveInterval = SystemConfig.getHaveInterval();
+		this.haveTimer = this.timerFixedDelay(
+			haveInterval,
+			haveInterval,
+			TimeUnit.SECONDS,
+			() -> PeerContext.getInstance().have(this.infoHashHex())
+		);
+	}
+	
+	/**
 	 * <p>异步执行</p>
 	 * 
 	 * @param runnable 任务
@@ -545,6 +563,7 @@ public final class TorrentSession {
 		if(this.completed()) {
 			PeerContext.getInstance().uploadOnly(this.infoHashHex());
 		}
+		SystemThreadContext.shutdownNow(this.haveTimer);
 		SystemThreadContext.shutdownNow(this.pexTimer);
 		SystemThreadContext.shutdownNow(this.peerDownloaderGroupTimer);
 		if(this.peerDownloaderGroup != null) {
