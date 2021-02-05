@@ -445,8 +445,8 @@ public final class UtpWindow {
 				LOGGER.debug("信号量获取失败");
 			}
 		} catch (InterruptedException e) {
-			LOGGER.debug("信号量获取异常", e);
 			Thread.currentThread().interrupt();
+			LOGGER.debug("信号量获取异常", e);
 		}
 	}
 	

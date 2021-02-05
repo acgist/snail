@@ -8,14 +8,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>UDP客户端</p>
- * <ul>
- * 	<li>单例</li>
- * 	<li>UDP通道使用服务器通道</li>
- * </ul>
+ * <p>UDP客户端通道使用UDP服务端通道</p>
  * 
- * @param <T> UDP消息代理
+ * @param <T> UDP消息代理类型
  * 
  * @author acgist
+ * 
+ * @see UdpServer#channel()
  */
 public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> {
 	
@@ -66,11 +65,6 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 		return true;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
-	 */
 	@Override
 	public void close() {
 		LOGGER.debug("关闭UDP Client：{}", this.name);

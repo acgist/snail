@@ -19,6 +19,8 @@ import com.acgist.snail.utils.NetUtils;
 /**
  * <p>TCP客户端</p>
  * 
+ * @param <T> TCP消息代理类型
+ * 
  * @author acgist
  */
 public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessageHandlerAdapter<T> {
@@ -83,7 +85,6 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 		AsynchronousSocketChannel socket = null;
 		try {
 			socket = AsynchronousSocketChannel.open(GROUP);
-			// TODO：参数调优：TCP_NODELAY
 //			socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
 			socket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
@@ -91,18 +92,16 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 			future.get(this.timeout, TimeUnit.SECONDS);
 			this.handler.handle(socket);
 		} catch (InterruptedException e) {
-			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
 			Thread.currentThread().interrupt();
+			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
 			success = false;
 		} catch (IOException | ExecutionException | TimeoutException e) {
 			LOGGER.error("TCP客户端连接异常：{}-{}", host, port, e);
 			success = false;
 		} finally {
-			if(success) {
-				// 连接成功
-			} else {
+			if(!success) {
 				IoUtils.close(socket);
-				this.handler.close();
+				this.close();
 			}
 		}
 		return success;

@@ -1,6 +1,7 @@
 package com.acgist.snail.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public final class BeanUtils {
 		Objects.requireNonNull(clazz);
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			LOGGER.error("通过反射生成实例异常：{}", clazz, e);
 		}
 		return null;

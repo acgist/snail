@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>Client消息代理适配器</p>
- * <p>发送方法全部重写（调用消息代理发送方法）不重写将会导致发送失败</p>
+ * <p>Client消息发送代理</p>
+ * <p>发送方法全部调用消息代理发送方法：否者子类重写将会导致发送失败</p>
  * 
  * @param <T> 消息代理类型
  * 

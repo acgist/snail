@@ -92,8 +92,8 @@ public final class UtpRequestQueue {
 				} catch (NetException e) {
 					LOGGER.error("UTP处理请求异常", e);
 				} catch (InterruptedException e) {
-					LOGGER.debug("UTP处理请求异常", e);
 					Thread.currentThread().interrupt();
+					LOGGER.debug("UTP处理请求异常", e);
 				} catch (Exception e) {
 					LOGGER.error("UTP处理请求异常", e);
 				}

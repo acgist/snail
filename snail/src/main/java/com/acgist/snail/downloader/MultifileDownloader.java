@@ -46,8 +46,8 @@ public abstract class MultifileDownloader extends Downloader {
 					// 防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
 					this.downloadLock.wait(Long.MAX_VALUE);
 				} catch (InterruptedException e) {
-					LOGGER.debug("线程等待异常", e);
 					Thread.currentThread().interrupt();
+					LOGGER.debug("线程等待异常", e);
 				}
 				// 完成状态必须在同步块中检测
 				this.completed = this.checkCompleted();

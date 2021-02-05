@@ -25,8 +25,8 @@ public final class ThreadUtils {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
-			LOGGER.debug("线程休眠异常", e);
 			Thread.currentThread().interrupt();
+			LOGGER.debug("线程休眠异常", e);
 		}
 	}
 	

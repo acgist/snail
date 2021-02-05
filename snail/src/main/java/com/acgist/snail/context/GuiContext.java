@@ -398,8 +398,8 @@ public final class GuiContext implements IContext {
 			try {
 				this.lock.wait(Long.MAX_VALUE);
 			} catch (InterruptedException e) {
-				LOGGER.debug("线程等待异常", e);
 				Thread.currentThread().interrupt();
+				LOGGER.debug("线程等待异常", e);
 			}
 		}
 	}

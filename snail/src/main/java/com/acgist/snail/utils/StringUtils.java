@@ -289,6 +289,27 @@ public final class StringUtils {
 			return source.equalsIgnoreCase(target);
 		}
 	}
+	
+	/**
+	 * <p>字符串转为对应编码的字符数组</p>
+	 * 
+	 * @param message 字符串
+	 * @param charset 编码
+	 * 
+	 * @return 字符数组
+	 */
+	public static final byte[] toBytes(String message, String charset) {
+		if (charset == null) {
+			return message.getBytes();
+		} else {
+			try {
+				return message.getBytes(charset);
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("字符编码异常:{}-{}", charset, message, e);
+			}
+			return message.getBytes();
+		}
+	}
 
 	/**
 	 * <p>将字符串转换为Unicode字符串</p>

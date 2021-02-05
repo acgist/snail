@@ -250,8 +250,8 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 					try {
 						this.lock.wait(SystemConfig.RECEIVE_TIMEOUT_MILLIS);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 				}
 			}

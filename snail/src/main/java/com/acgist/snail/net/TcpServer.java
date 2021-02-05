@@ -14,6 +14,8 @@ import com.acgist.snail.utils.NetUtils;
 /**
  * <p>TCP服务端</p>
  * 
+ * @param <T> TCP消息代理类型
+ * 
  * @author acgist
  */
 public abstract class TcpServer<T extends TcpMessageHandler> {
@@ -74,7 +76,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * 
 	 * @return 开启状态
 	 */
-	public boolean listen(int port) {
+	protected boolean listen(int port) {
 		return this.listen(null, port);
 	}
 	
@@ -96,12 +98,10 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 		} catch (IOException e) {
 			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
 			success = false;
-		}
-		if(success) {
-			// 系统自动阻塞
-			// 阻止线程关闭：GROUP.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		} else {
-			this.close();
+		} finally {
+			if(!success) {
+				this.close();
+			}
 		}
 		return success;
 	}

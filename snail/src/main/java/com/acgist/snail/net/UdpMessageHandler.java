@@ -14,7 +14,6 @@ import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**
  * <p>UDP消息代理</p>
- * <p>注意：重写避免循环调用</p>
  * 
  * @author acgist
  */
@@ -39,15 +38,10 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	 */
 	protected IMessageDecoder<ByteBuffer> messageDecoder;
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>设置{@link #messageDecoder}或者重写{@link #onReceive(ByteBuffer, InetSocketAddress)}方法</p>
-	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
 		if(this.messageDecoder == null) {
-			throw new NetException("请设置消息处理器");
+			throw new NetException("请设置消息处理器或重新接收消息方法");
 		}
 		this.messageDecoder.decode(buffer, socketAddress);
 	}
