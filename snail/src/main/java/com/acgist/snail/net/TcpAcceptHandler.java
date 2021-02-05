@@ -46,10 +46,10 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	}
 	
 	@Override
-	public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel channel) {
+	public void completed(AsynchronousSocketChannel channel, AsynchronousServerSocketChannel server) {
 		LOGGER.debug("TCP客户端连接成功");
-		this.accept(channel);
-		this.handle(result);
+		server.accept(server, this);
+		BeanUtils.newInstance(this.clazz).handle(channel);
 	}
 	
 	@Override
@@ -57,22 +57,4 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 		LOGGER.error("TCP客户端连接异常", throwable);
 	}
 	
-	/**
-	 * <p>接收连接</p>
-	 * 
-	 * @param channel 通道
-	 */
-	private void accept(AsynchronousServerSocketChannel channel) {
-		channel.accept(channel, this);
-	}
-
-	/**
-	 * <p>消息代理</p>
-	 * 
-	 * @param channel 通道
-	 */
-	private void handle(AsynchronousSocketChannel channel) {
-		BeanUtils.newInstance(this.clazz).handle(channel);
-	}
-
 }

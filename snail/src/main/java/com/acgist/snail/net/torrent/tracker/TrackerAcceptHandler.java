@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.tracker;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -23,7 +24,7 @@ public final class TrackerAcceptHandler extends UdpAcceptHandler {
 	}
 	
 	/**
-	 * <p>重复使用消息代理</p>
+	 * <p>消息代理</p>
 	 */
 	private final TrackerMessageHandler trackerMessageHandler = new TrackerMessageHandler();
 	
@@ -32,4 +33,9 @@ public final class TrackerAcceptHandler extends UdpAcceptHandler {
 		return this.trackerMessageHandler;
 	}
 
+	@Override
+	public void handle(DatagramChannel channel) {
+		this.trackerMessageHandler.handle(channel);
+	}
+	
 }

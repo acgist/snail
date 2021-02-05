@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.utp;
 
 import java.net.InetSocketAddress;
+import java.nio.channels.DatagramChannel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.net.IChannelHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
 /**
@@ -18,7 +20,7 @@ import com.acgist.snail.net.UdpMessageHandler;
  * 
  * @author acgist
  */
-public final class UtpService {
+public final class UtpService implements IChannelHandler<DatagramChannel> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpService.class);
 	
@@ -37,6 +39,10 @@ public final class UtpService {
 	 * <p>连接ID</p>
 	 */
 	private int connectionId = 0;
+	/**
+	 * <p>UDP通道</p>
+	 */
+	private DatagramChannel channel;
 	/**
 	 * <p>UTP消息代理</p>
 	 * <p>{@link #buildKey(short, InetSocketAddress)}=消息代理</p>
@@ -58,6 +64,11 @@ public final class UtpService {
 			TimeUnit.SECONDS,
 			this::timeout
 		);
+	}
+
+	@Override
+	public void handle(DatagramChannel channel) {
+		this.channel = channel;
 	}
 	
 	/**
@@ -83,11 +94,13 @@ public final class UtpService {
 	 */
 	public UdpMessageHandler get(short connectionId, InetSocketAddress socketAddress) {
 		final String key = this.buildKey(connectionId, socketAddress);
-		final UtpMessageHandler utpMessageHandler = this.utpMessageHandlers.get(key);
+		UtpMessageHandler utpMessageHandler = this.utpMessageHandlers.get(key);
 		if(utpMessageHandler != null) {
 			return utpMessageHandler;
 		}
-		return new UtpMessageHandler(connectionId, socketAddress);
+		utpMessageHandler = new UtpMessageHandler(connectionId, socketAddress);
+		utpMessageHandler.handle(this.channel);
+		return utpMessageHandler;
 	}
 	
 	/**

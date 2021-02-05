@@ -14,21 +14,19 @@ import com.acgist.snail.context.exception.NetException;
  * 
  * @author acgist
  */
-public abstract class UdpAcceptHandler {
+public abstract class UdpAcceptHandler implements IChannelHandler<DatagramChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpAcceptHandler.class);
 
 	/**
 	 * <p>接收消息</p>
 	 * 
-	 * @param channel 通道
 	 * @param buffer 消息
 	 * @param socketAddress 地址
 	 */
-	public void receive(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
+	public void receive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = this.messageHandler(buffer, socketAddress);
 		try {
-			handler.handle(channel, socketAddress);
 			if(handler.available()) {
 				buffer.flip();
 				handler.onReceive(buffer, socketAddress);

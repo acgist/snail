@@ -69,6 +69,22 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private static final short STUN_ATTRIBUTE_PADDING_LENGTH = 4;
 
 	/**
+	 * <p>服务端</p>
+	 */
+	public StunMessageHandler() {
+		this(null);
+	}
+	
+	/**
+	 * <p>客户端</p>
+	 * 
+	 * @param socketAddress 地址
+	 */
+	public StunMessageHandler(InetSocketAddress socketAddress) {
+		super(socketAddress);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * <p>只处理响应消息（不处理请求和指示消息）</p>

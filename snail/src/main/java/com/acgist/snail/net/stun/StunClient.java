@@ -16,10 +16,10 @@ import com.acgist.snail.utils.NetUtils;
 public final class StunClient extends UdpClient<StunMessageHandler> {
 	
 	/**
-	 * @param socketAddress 服务器地址
+	 * @param socketAddress 地址
 	 */
 	private StunClient(final InetSocketAddress socketAddress) {
-		super("STUN Client", new StunMessageHandler(), socketAddress);
+		super("STUN Client", new StunMessageHandler(socketAddress));
 	}
 	
 	/**
@@ -58,9 +58,9 @@ public final class StunClient extends UdpClient<StunMessageHandler> {
 
 	@Override
 	public boolean open() {
-		return open(TorrentServer.getInstance().channel());
+		return this.open(TorrentServer.getInstance().channel());
 	}
-
+	
 	/**
 	 * <p>发送映射消息</p>
 	 */

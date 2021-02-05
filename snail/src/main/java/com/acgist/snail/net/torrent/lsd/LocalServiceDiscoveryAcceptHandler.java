@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.lsd;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -20,15 +21,17 @@ public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
 	}
 	
 	/**
-	 * <p>禁止创建实例</p>
-	 */
-	private LocalServiceDiscoveryAcceptHandler() {
-	}
-
-	/**
-	 * <p>本地发现消息代理</p>
+	 * <p>消息代理</p>
 	 */
 	private final LocalServiceDiscoveryMessageHandler localServiceDiscoveryMessageHandler = new LocalServiceDiscoveryMessageHandler();
+	
+	private LocalServiceDiscoveryAcceptHandler() {
+	}
+	
+	@Override
+	public void handle(DatagramChannel channel) {
+		this.localServiceDiscoveryMessageHandler.handle(channel);
+	}
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {

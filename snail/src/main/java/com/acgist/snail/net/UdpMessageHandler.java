@@ -17,7 +17,7 @@ import com.acgist.snail.net.codec.IMessageDecoder;
  * 
  * @author acgist
  */
-public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver {
+public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver, IChannelHandler<DatagramChannel> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
@@ -31,12 +31,47 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	protected DatagramChannel channel;
 	/**
 	 * <p>远程地址</p>
+	 * <table border="1">
+	 * 	<caption>远程地址管理</caption>
+	 * 	<tr>
+	 * 		<th>类型</th>
+	 * 		<th>描述</th>
+	 * 		<th>参考</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>客户端</td>
+	 * 		<td>初始化固定地址</td>
+	 * 		<td>UdpClient子类</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>服务端（只要接收）</td>
+	 * 		<td>不用管理地址</td>
+	 * 		<td>LSD/Stun/UPNP/Tracker</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>服务端（需要发送）</td>
+	 * 		<td>单独管理消息代理</td>
+	 * 		<td>UTP</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>服务端（需要发送）</td>
+	 * 		<td>没有管理消息代理：直接使用消息地址</td>
+	 * 		<td>DHT</td>
+	 * 	</tr>
+	 * </table>
 	 */
-	protected InetSocketAddress socketAddress;
+	protected final InetSocketAddress socketAddress;
 	/**
 	 * <p>消息处理器</p>
 	 */
 	protected IMessageDecoder<ByteBuffer> messageDecoder;
+	
+	/**
+	 * @param socketAddress 远程地址
+	 */
+	protected UdpMessageHandler(InetSocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
+	}
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
@@ -46,17 +81,11 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 		this.messageDecoder.decode(buffer, socketAddress);
 	}
 	
-	/**
-	 * <p>消息代理</p>
-	 * 
-	 * @param channel 通道
-	 * @param socketAddress 地址
-	 */
-	public void handle(DatagramChannel channel, InetSocketAddress socketAddress) {
+	@Override
+	public void handle(DatagramChannel channel) {
 		this.channel = channel;
-		this.socketAddress = socketAddress;
 	}
-
+	
 	@Override
 	public boolean available() {
 		// 不用判断状态：使用服务通道

@@ -127,6 +127,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * @param server 是否服务端
 	 */
 	private UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress, short connectionId, boolean server) {
+		super(socketAddress);
 		peerSubMessageHandler.messageEncryptSender(this);
 		final var peerUnpackMessageCodec = new PeerUnpackMessageCodec(peerSubMessageHandler);
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
@@ -137,11 +138,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.recvWindow = UtpWindow.newRecvInstance(this.messageDecoder);
 		this.ackLossTimes = new AtomicInteger(0);
 		this.connectLock = new AtomicBoolean(false);
-		this.socketAddress = socketAddress;
-		if(server) { // 服务端
+		if(server) {
 			this.sendId = connectionId;
 			this.recvId = (short) (this.sendId + 1);
-		} else { // 客户端
+		} else {
 			this.recvId = this.utpService.connectionId();
 			this.sendId = (short) (this.recvId + 1);
 		}
