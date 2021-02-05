@@ -79,6 +79,8 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	private byte[] reserved;
 	/**
 	 * <p>已下载Piece位图</p>
+	 * 
+	 * TODO：不是线程安全：是否加锁
 	 */
 	private final BitSet pieces;
 	/**
