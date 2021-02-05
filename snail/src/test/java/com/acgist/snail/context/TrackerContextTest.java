@@ -13,4 +13,9 @@ public class TrackerContextTest extends Performance {
 		assertNotNull(TrackerContext.getInstance());
 	}
 	
+	@Test
+	public void testError() {
+		assertNotNull(TrackerContext.getInstance().sessions("acgist://www.acgist.com"));
+	}
+	
 }

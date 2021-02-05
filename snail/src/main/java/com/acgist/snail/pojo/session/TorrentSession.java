@@ -367,10 +367,8 @@ public final class TorrentSession {
 	
 	/**
 	 * <p>加载Tracker</p>
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	private void loadTrackerLauncherGroup() throws DownloadException {
+	private void loadTrackerLauncherGroup() {
 		this.trackerLauncherGroup = TrackerLauncherGroup.newInstance(this);
 		this.trackerLauncherGroup.loadTracker();
 	}

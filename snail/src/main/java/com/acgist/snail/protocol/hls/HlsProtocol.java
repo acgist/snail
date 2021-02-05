@@ -103,13 +103,15 @@ public final class HlsProtocol extends Protocol {
 	}
 	
 	@Override
+	protected void success() {
+		// 成功添加管理
+		HlsContext.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
+	}
+	
+	@Override
 	protected void release(boolean success) {
-		if(success) {
-			// 成功添加管理
-			HlsContext.getInstance().m3u8(this.taskEntity.getId(), this.m3u8);
-		}
-		super.release(success);
 		this.m3u8 = null;
+		super.release(success);
 	}
 
 }

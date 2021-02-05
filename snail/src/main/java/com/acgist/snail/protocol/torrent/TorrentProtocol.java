@@ -115,13 +115,15 @@ public final class TorrentProtocol extends Protocol {
 	
 	@Override
 	protected void release(boolean success) {
-		super.release(success);
 		if(!success && this.torrentSession != null) {
+			// 删除创建文件
+			FileUtils.delete(this.taskEntity.getFile());
 			// 清除种子信息
 			TorrentContext.getInstance().remove(this.torrentSession.infoHashHex());
 		}
 		this.torrentFile = null;
 		this.torrentSession = null;
+		super.release(success);
 	}
 	
 	/**
@@ -186,8 +188,6 @@ public final class TorrentProtocol extends Protocol {
 			throw new DownloadException("选择下载文件错误", e);
 		}
 		if(taskSession.multifileSelected().isEmpty()) {
-			// 没有选择下载文件：删除已经创建文件
-			FileUtils.delete(this.taskEntity.getFile());
 			throw new DownloadException("没有选择下载文件");
 		}
 	}

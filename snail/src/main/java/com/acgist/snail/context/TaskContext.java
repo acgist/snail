@@ -171,7 +171,7 @@ public final class TaskContext implements IContext {
 					final var taskSession = TaskSession.newInstance(entity);
 					taskSession.reset();
 					this.submit(taskSession);
-				} catch (DownloadException e) {
+				} catch (Exception e) {
 					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
 					entityContext.delete(entity);
 				}
@@ -187,14 +187,10 @@ public final class TaskContext implements IContext {
 	 */
 	public void shutdown() {
 		LOGGER.debug("关闭任务上下文");
-		try {
-			synchronized (this.tasks) {
-				this.tasks.stream()
-					.filter(ITaskSession::statusRunning)
-					.forEach(ITaskSession::pause);
-			}
-		} catch (Exception e) {
-			LOGGER.error("关闭任务上下文异常", e);
+		synchronized (this.tasks) {
+			this.tasks.stream()
+				.filter(ITaskSession::statusRunning)
+				.forEach(ITaskSession::pause);
 		}
 		SystemThreadContext.shutdown(this.executor);
 	}
