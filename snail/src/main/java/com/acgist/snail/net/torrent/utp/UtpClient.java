@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.utp;
 
+import java.net.InetSocketAddress;
+
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
@@ -23,10 +25,11 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	
 	/**
 	 * @param peerSession Peer信息
+	 * @param socketAddress 地址
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
-	private UtpClient(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		super("UTP Client", new UtpMessageHandler(peerSubMessageHandler, peerSession.peerSocketAddress()), peerSession.peerSocketAddress());
+	private UtpClient(PeerSession peerSession, InetSocketAddress socketAddress, PeerSubMessageHandler peerSubMessageHandler) {
+		super("UTP Client", new UtpMessageHandler(peerSubMessageHandler, socketAddress), socketAddress);
 		this.peerSession = peerSession;
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
@@ -40,7 +43,7 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	 * @return UTP客户端
 	 */
 	public static final UtpClient newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
-		return new UtpClient(peerSession, peerSubMessageHandler);
+		return new UtpClient(peerSession, peerSession.peerSocketAddress(), peerSubMessageHandler);
 	}
 	
 	@Override
