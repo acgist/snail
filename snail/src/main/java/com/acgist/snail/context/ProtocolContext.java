@@ -147,8 +147,8 @@ public final class ProtocolContext implements IContext {
 					try {
 						this.availableLock.wait(Short.MAX_VALUE);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 				}
 			}

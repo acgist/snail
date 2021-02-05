@@ -83,8 +83,8 @@ public final class TaskDisplay {
 					try {
 						this.lock.wait(SystemConfig.ONE_SECOND_MILLIS);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 				}
 			}

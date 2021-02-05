@@ -20,7 +20,6 @@ import com.acgist.snail.utils.IoUtils;
 
 /**
  * <p>TCP消息代理</p>
- * <p>注意：需要提供无参构造方法</p>
  * 
  * @author acgist
  */
@@ -41,15 +40,10 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	protected IMessageDecoder<ByteBuffer> messageDecoder;
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>设置{@link #messageDecoder}或者重写{@link #onReceive(ByteBuffer)}方法</p>
-	 */
 	@Override
 	public void onReceive(ByteBuffer buffer) throws NetException {
 		if(this.messageDecoder == null) {
-			throw new NetException("请设置消息处理器");
+			throw new NetException("请设置消息处理器或重新接收消息方法");
 		}
 		this.messageDecoder.decode(buffer);
 	}
@@ -67,16 +61,15 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	
 	@Override
 	public boolean available() {
-//		return !this.close && this.socket != null;
 		return !this.close && this.socket != null && this.socket.isOpen();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>阻塞线程：等待发送完成，防止多线程同时写导致WritePendingException。</p>
-	 * <p>超时时间：超时异常会导致数据并没有发送完成而释放了锁，从而引起一连串的WritePendingException异常。</p>
-	 * <p>建议：除了第一条消息（连接）以外的所有消息都不要使用超时时间。</p>
+	 * <p>阻塞线程（等待发送完成）：防止多线程同时写导致WritePendingException</p>
+	 * <p>超时时间：超时异常会导致数据并没有发送完成而释放了锁从而引起一连串的WritePendingException异常</p>
+	 * <p>超时建议：除了第一条消息（连接消息）以外的所有消息都不要使用超时时间</p>
 	 */
 	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
@@ -122,9 +115,11 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	public void completed(Integer result, ByteBuffer buffer) {
 		if (result == null) {
 			this.close();
-		} else if(result == -1) { // 服务端关闭
+		} else if(result == -1) {
+			// 服务端关闭
 			this.close();
-		} else if(result == 0) { // 空轮询
+		} else if(result == 0) {
+			// 空轮询
 			LOGGER.debug("TCP消息接收失败（长度）：{}", result);
 		} else {
 			try {
@@ -147,7 +142,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	 */
 	private void loopMessage() {
 		if(this.available()) {
-//			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.TCP_BUFFER_LENGTH);
 			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.TCP_BUFFER_LENGTH);
 			this.socket.read(buffer, buffer, this);
 		} else {

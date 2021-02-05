@@ -701,8 +701,8 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 					try {
 						this.holepunchConnect.wait(PeerConfig.HOLEPUNCH_TIMEOUT);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 					this.holepunchWait = false;
 				}

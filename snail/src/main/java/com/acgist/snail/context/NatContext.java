@@ -142,8 +142,8 @@ public final class NatContext implements IContext {
 			try {
 				this.upnpLock.wait(UPNP_TIMEOUT);
 			} catch (InterruptedException e) {
-				LOGGER.debug("线程等待异常", e);
 				Thread.currentThread().interrupt();
+				LOGGER.debug("线程等待异常", e);
 			}
 		}
 	}

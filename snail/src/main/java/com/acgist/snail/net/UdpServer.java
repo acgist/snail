@@ -26,6 +26,8 @@ import com.acgist.snail.utils.NetUtils;
  * <p>UDP服务端</p>
  * <p>全部使用单例：初始化时立即开始监听（客户端和服务端使用同一个通道）</p>
  * 
+ * @param <T> UDP消息接收代理类型
+ * 
  * @author acgist
  */
 public abstract class UdpServer<T extends UdpAcceptHandler> {
@@ -53,7 +55,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 */
 	public static final boolean ADDR_UNREUSE = false;
 	/**
-	 * <p>UDP服务端消息处理器线程</p>
+	 * <p>UDP服务端消息处理线程</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	
@@ -207,11 +209,9 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 			success = false;
 			throw new NetException("创建UDP通道失败", e);
 		} finally {
-			if(success) {
-				// 成功
-			} else {
+			if(!success) {
 				IoUtils.close(udpChannel);
-				udpChannel = null;
+				this.close();
 			}
 		}
 		return udpChannel;
@@ -223,7 +223,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 * @param ttl TTL
 	 * @param group 分组
 	 */
-	public void join(int ttl, String group) {
+	protected void join(int ttl, String group) {
 		if(this.channel == null) {
 			LOGGER.warn("UDP多播失败（通道没有创建）：{}-{}", this.name, group);
 			return;

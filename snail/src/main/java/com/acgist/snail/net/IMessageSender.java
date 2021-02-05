@@ -1,28 +1,27 @@
 package com.acgist.snail.net;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>消息接收代理接口</p>
+ * <p>消息发送代理接口</p>
  * 
  * @author acgist
  */
 public interface IMessageSender {
 	
 	/**
-	 * <p>没有超时时间：{@value}</p>
-	 * <p>一直等待</p>
+	 * <p>没有超时时间（一直等待）：{@value}</p>
 	 */
 	int TIMEOUT_NONE = 0;
 	
 	/**
-	 * <p>可用状态</p>
+	 * <p>判断是否可用</p>
 	 * 
-	 * @return true-可用；false-无用；
+	 * @return 是否可用
 	 */
 	boolean available();
 	
@@ -46,7 +45,7 @@ public interface IMessageSender {
 	 * @throws NetException 网络异常
 	 */
 	default void send(String message, String charset) throws NetException {
-		this.send(this.charset(message, charset));
+		this.send(StringUtils.toBytes(message, charset));
 	}
 	
 	/**
@@ -73,7 +72,7 @@ public interface IMessageSender {
 	
 	/**
 	 * <p>消息发送</p>
-	 * <p>所有其他消息发送均使用此方法发送</p>
+	 * <p>所有消息发送都使用此方法发送</p>
 	 * 
 	 * @param buffer 消息内容
 	 * @param timeout 超时时间
@@ -96,7 +95,6 @@ public interface IMessageSender {
 	
 	/**
 	 * <p>数据验证</p>
-	 * <p>验证发送状态，如果消息没有被重置为发送状态重置。</p>
 	 * 
 	 * @param buffer 消息内容
 	 * 
@@ -108,29 +106,6 @@ public interface IMessageSender {
 		}
 		if(buffer.position() != 0) {
 			buffer.flip();
-		}
-	}
-	
-	/**
-	 * <p>字符编码</p>
-	 * 
-	 * @param message 消息
-	 * @param charset 编码
-	 * 
-	 * @return 编码后的数据
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	default byte[] charset(String message, String charset) throws NetException {
-		if(charset == null) {
-			return message.getBytes();
-		} else {
-			try {
-				return message.getBytes(charset);
-			} catch (UnsupportedEncodingException e) {
-				// TODO：多行文本
-				throw new NetException(String.format("字符编码失败，编码：%s，内容：%s", charset, message), e);
-			}
 		}
 	}
 	

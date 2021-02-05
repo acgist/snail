@@ -292,8 +292,8 @@ public final class PeerDownloaderGroup {
 		try {
 			this.buildSemaphore.acquire();
 		} catch (InterruptedException e) {
-			LOGGER.debug("信号量获取异常", e);
 			Thread.currentThread().interrupt();
+			LOGGER.debug("信号量获取异常", e);
 		}
 	}
 	

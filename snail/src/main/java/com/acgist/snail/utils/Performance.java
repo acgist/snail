@@ -141,8 +141,8 @@ public abstract class Performance {
 		try {
 			latch.await();
 		} catch (InterruptedException e) {
-			LOGGER.error("线程等待异常", e);
 			Thread.currentThread().interrupt();
+			LOGGER.error("线程等待异常", e);
 		}
 		final long costed = this.costed();
 		SystemThreadContext.shutdownNow(executor);
@@ -157,8 +157,8 @@ public abstract class Performance {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
-				LOGGER.error("线程等待异常", e);
 				Thread.currentThread().interrupt();
+				LOGGER.error("线程等待异常", e);
 			}
 		}
 	}

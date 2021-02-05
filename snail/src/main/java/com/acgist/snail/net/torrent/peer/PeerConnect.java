@@ -458,8 +458,8 @@ public abstract class PeerConnect implements IPeerConnect {
 			try {
 				this.sliceLock.wait(SLICE_TIMEOUT);
 			} catch (InterruptedException e) {
-				LOGGER.debug("线程等待异常", e);
 				Thread.currentThread().interrupt();
+				LOGGER.debug("线程等待异常", e);
 			}
 		}
 	}
@@ -487,8 +487,8 @@ public abstract class PeerConnect implements IPeerConnect {
 					try {
 						this.completedLock.wait(COMPLETED_TIMEOUT);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 				}
 			}
@@ -517,8 +517,8 @@ public abstract class PeerConnect implements IPeerConnect {
 					try {
 						this.releaseLock.wait(RELEASE_TIMEOUT);
 					} catch (InterruptedException e) {
-						LOGGER.debug("线程等待异常", e);
 						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
 					}
 				}
 			}
