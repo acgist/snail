@@ -119,7 +119,7 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			// 服务端关闭
 			this.close();
 		} else if(result == 0) {
-			// 空轮询
+			// 消息空轮询
 			LOGGER.debug("TCP消息接收失败（长度）：{}", result);
 		} else {
 			try {

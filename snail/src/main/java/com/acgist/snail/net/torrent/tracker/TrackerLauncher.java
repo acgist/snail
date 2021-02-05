@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TrackerContext;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
@@ -165,17 +164,18 @@ public final class TrackerLauncher {
 			this.available = false;
 			this.needRelease = false;
 			try {
-				if(this.torrentSession.completed()) { // 任务完成
+				if(this.torrentSession.completed()) {
 					LOGGER.debug("Tracker完成通知：{}", this.announceUrl());
 					this.session.completed(this.id, this.torrentSession);
-				} else { // 任务暂停
+				} else {
 					LOGGER.debug("Tracker暂停通知：{}", this.announceUrl());
 					this.session.stopped(this.id, this.torrentSession);
 				}
-			} catch (NetException e) {
+			} catch (Exception e) {
 				LOGGER.error("TrackerLauncher关闭异常", e);
+			} finally {
+				TrackerContext.getInstance().removeTrackerLauncher(this.id);
 			}
-			TrackerContext.getInstance().removeTrackerLauncher(this.id);
 		}
 	}
 	

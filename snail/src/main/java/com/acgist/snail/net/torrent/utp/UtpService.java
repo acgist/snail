@@ -136,14 +136,15 @@ public final class UtpService {
 			try {
 				this.utpMessageHandlers.values().stream()
 					.filter(handler -> {
-						if(handler.available()) { // 消息代理可用：重试
+						if(handler.available()) {
 							handler.timeoutRetry();
 							return false;
-						} else { // 消息代理不可用：关闭
+						} else {
 							return true;
 						}
 					})
-					.collect(Collectors.toList()) // 转换List再关闭：防止关闭时删除消息代理产生异常
+					// 转换List关闭：防止关闭删除消息代理产生异常
+					.collect(Collectors.toList())
 					.forEach(value -> value.close());
 			} catch (Exception e) {
 				LOGGER.error("处理超时UTP消息异常", e);
