@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.context.exception.NetException;
 
 /**
  * <p>UTP请求队列</p>
@@ -91,8 +90,6 @@ public final class UtpRequestQueue {
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					LOGGER.debug("UTP处理请求异常", e);
-				} catch (NetException e) {
-					LOGGER.error("UTP处理请求异常", e);
 				} catch (Exception e) {
 					LOGGER.error("UTP处理请求异常", e);
 				}

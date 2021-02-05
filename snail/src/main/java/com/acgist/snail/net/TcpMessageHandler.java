@@ -120,8 +120,6 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 			try {
 				buffer.flip();
 				this.onReceive(buffer);
-			} catch (NetException e) {
-				LOGGER.error("TCP消息接收异常", e);
 			} catch (Exception e) {
 				LOGGER.error("TCP消息接收异常", e);
 			}

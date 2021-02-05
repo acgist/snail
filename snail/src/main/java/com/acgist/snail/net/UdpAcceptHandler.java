@@ -7,8 +7,6 @@ import java.nio.channels.DatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.exception.NetException;
-
 /**
  * <p>UDP消息接收代理</p>
  * 
@@ -31,8 +29,6 @@ public abstract class UdpAcceptHandler implements IChannelHandler<DatagramChanne
 				buffer.flip();
 				handler.onReceive(buffer, socketAddress);
 			}
-		} catch (NetException e) {
-			LOGGER.error("UDP接收消息异常：{}", socketAddress, e);
 		} catch (Exception e) {
 			LOGGER.error("UDP接收消息异常：{}", socketAddress, e);
 		}
