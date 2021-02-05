@@ -221,7 +221,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			}
 			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
-			LOGGER.debug("新建任务异常：{}", body, e);
 			this.send(ApplicationMessage.response(e.getMessage()));
 		}
 	}

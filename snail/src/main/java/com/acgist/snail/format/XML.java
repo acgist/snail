@@ -109,7 +109,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建{@link DocumentBuilderFactory}</p>
+	 * <p>创建文档创建工厂</p>
 	 * 
 	 * @return {@link DocumentBuilderFactory}
 	 */

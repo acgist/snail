@@ -3,6 +3,7 @@ package com.acgist.snail.context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
-import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.torrent.tracker.HttpTrackerSession;
 import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
@@ -162,11 +162,9 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession列表
 	 * 
-	 * @throws DownloadException 下载异常
-	 * 
 	 * @see #sessions(String, List)
 	 */
-	public List<TrackerSession> sessions(String announceUrl) throws DownloadException {
+	public List<TrackerSession> sessions(String announceUrl) {
 		return this.sessions(announceUrl, null);
 	}
 	
@@ -177,11 +175,9 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession列表
 	 * 
-	 * @throws DownloadException 下载异常
-	 * 
 	 * @see #sessions(String, List)
 	 */
-	public List<TrackerSession> sessions(List<String> announceUrls) throws DownloadException {
+	public List<TrackerSession> sessions(List<String> announceUrls) {
 		return this.sessions(null, announceUrls);
 	}
 	
@@ -193,11 +189,9 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession列表
 	 * 
-	 * @throws DownloadException 下载异常
-	 * 
 	 * @see #sessions(String, List, boolean)
 	 */
-	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls) throws DownloadException {
+	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls) {
 		return this.sessions(announceUrl, announceUrls, false);
 	}
 
@@ -210,10 +204,8 @@ public final class TrackerContext implements IContext {
 	 * @param privateTorrent 是否是私有种子
 	 * 
 	 * @return TrackerSession列表
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls, boolean privateTorrent) throws DownloadException {
+	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls, boolean privateTorrent) {
 		final List<TrackerSession> sessions = this.buildTrackerSession(announceUrl, announceUrls);
 		if(privateTorrent) {
 			LOGGER.debug("私有种子：不补充Tracker");
@@ -252,11 +244,7 @@ public final class TrackerContext implements IContext {
 	 * @return TrackerSession列表
 	 */
 	private void register() {
-		try {
-			this.buildTrackerSession(TrackerConfig.getInstance().announces());
-		} catch (DownloadException e) {
-			LOGGER.error("注册默认Tracker异常", e);
-		}
+		this.buildTrackerSession(TrackerConfig.getInstance().announces());
 	}
 	
 	/**
@@ -267,11 +255,9 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession列表
 	 * 
-	 * @throws DownloadException 下载异常
-	 * 
 	 * @see #buildTrackerSession(List)
 	 */
-	private List<TrackerSession> buildTrackerSession(String announceUrl, List<String> announceUrls) throws DownloadException {
+	private List<TrackerSession> buildTrackerSession(String announceUrl, List<String> announceUrls) {
 		final List<String> announces = new ArrayList<>();
 		if(StringUtils.isNotEmpty(announceUrl)) {
 			announces.add(announceUrl);
@@ -288,10 +274,8 @@ public final class TrackerContext implements IContext {
 	 * @param announceUrls 声明地址集合
 	 * 
 	 * @return TrackerSession列表
-	 * 
-	 * @throws DownloadException 下载异常
 	 */
-	private List<TrackerSession> buildTrackerSession(List<String> announceUrls) throws DownloadException {
+	private List<TrackerSession> buildTrackerSession(List<String> announceUrls) {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
@@ -299,14 +283,15 @@ public final class TrackerContext implements IContext {
 			.map(announceUrl -> {
 				try {
 					return this.buildTrackerSession(announceUrl.trim());
-				} catch (DownloadException e) {
+				} catch (NetException e) {
 					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
 				} catch (Exception e) {
 					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
 				}
 				return null;
 			})
-			.filter(client -> client != null && client.available())
+			.filter(Objects::nonNull)
+			.filter(TrackerSession::available)
 			.collect(Collectors.toList());
 	}
 	
@@ -318,9 +303,9 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession
 	 * 
-	 * @throws DownloadException 下载异常
+	 * @throws NetException 网络异常
 	 */
-	private TrackerSession buildTrackerSession(String announceUrl) throws DownloadException {
+	private TrackerSession buildTrackerSession(String announceUrl) throws NetException {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
@@ -344,15 +329,16 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession
 	 * 
-	 * @throws DownloadException 下载异常
+	 * @throws NetException 网络异常
 	 */
-	private TrackerSession buildSessionProxy(final String announceUrl) throws DownloadException {
+	private TrackerSession buildSessionProxy(final String announceUrl) throws NetException {
 		TrackerSession session = this.buildSession(announceUrl);
 		if(session == null) {
-			session = this.buildSession(UrlUtils.decode(announceUrl)); // URL解码
+			// URL解码
+			session = this.buildSession(UrlUtils.decode(announceUrl));
 		}
 		if(session == null) {
-			throw new DownloadException("创建TrackerSession失败（未知Tracker协议）：" + announceUrl);
+			throw new NetException("未知Tracker协议：" + announceUrl);
 		}
 		return session;
 	}
@@ -364,21 +350,13 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession
 	 * 
-	 * @throws DownloadException 下载异常
+	 * @throws NetException 网络异常
 	 */
-	private TrackerSession buildSession(final String announceUrl) throws DownloadException {
+	private TrackerSession buildSession(final String announceUrl) throws NetException {
 		if(Protocol.Type.HTTP.verify(announceUrl)) {
-			try {
-				return HttpTrackerSession.newInstance(announceUrl);
-			} catch (NetException e) {
-				throw new DownloadException(e);
-			}
+			return HttpTrackerSession.newInstance(announceUrl);
 		} else if(Protocol.Type.UDP.verify(announceUrl)) {
-			try {
-				return UdpTrackerSession.newInstance(announceUrl);
-			} catch (NetException e) {
-				throw new DownloadException(e);
-			}
+			return UdpTrackerSession.newInstance(announceUrl);
 		}
 		return null;
 	}

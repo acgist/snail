@@ -84,12 +84,12 @@ public final class MagnetProtocol extends Protocol {
 	
 	@Override
 	protected void release(boolean success) {
-		super.release(success);
 		if(!success && this.magnet != null) {
 			// 清除种子信息
 			TorrentContext.getInstance().remove(this.magnet.getHash());
 		}
 		this.magnet = null;
+		super.release(success);
 	}
 	
 	/**

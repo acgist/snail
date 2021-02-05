@@ -396,6 +396,9 @@ public abstract class Protocol {
 			success = false;
 			throw new DownloadException("下载失败", e);
 		} finally {
+			if(success) {
+				this.success();
+			}
 			this.release(success);
 		}
 	}
@@ -533,6 +536,12 @@ public abstract class Protocol {
 	 */
 	protected void persistentTaskEntity() throws DownloadException {
 		EntityContext.getInstance().save(this.taskEntity);
+	}
+	
+	/**
+	 * <p>成功处理</p>
+	 */
+	protected void success() {
 	}
 	
 	/**
