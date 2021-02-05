@@ -185,7 +185,11 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		}
 		switch (type) {
 		case DATA:
-			this.data(timestamp, seqnr, acknr, buffer);
+			if(this.connect) {
+				this.data(timestamp, seqnr, acknr, buffer);
+			} else {
+				this.close();
+			}
 			break;
 		case STATE:
 			this.state(timestamp, seqnr, acknr, wndSize);
@@ -314,7 +318,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
 		// TODO：处理acknr
-		// TODO：验证是否连接
 		LOGGER.debug("处理数据消息：{}", seqnr);
 		try {
 			this.recvWindow.receive(timestamp, seqnr, buffer);
