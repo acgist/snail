@@ -261,6 +261,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.lockConnect();
 		// 连接失败移除
 		if(!this.connect) {
+			this.closeWindow();
 			this.closeAll();
 		}
 		return this.connect;
@@ -313,6 +314,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
 		// TODO：处理acknr
+		// TODO：验证是否连接
 		LOGGER.debug("处理数据消息：{}", seqnr);
 		try {
 			this.recvWindow.receive(timestamp, seqnr, buffer);
@@ -409,6 +411,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(this.connect) {
 			this.state(timestamp, seqnr);
 		}
+		this.closeWindow();
 		this.closeAll();
 	}
 	
@@ -440,6 +443,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(this.connect) {
 			this.state(timestamp, seqnr);
 		}
+		this.closeWindow();
 		this.closeAll();
 	}
 	
@@ -564,26 +568,15 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.utpService.remove(this);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>发送结束消息：标记关闭</p>
-	 */
 	@Override
 	public void close() {
 		LOGGER.debug("关闭UTP");
 		this.closeWindow();
-		this.fin();
-		this.closeAll();
-	}
-	
-	/**
-	 * <p>发送重置消息：标记关闭</p>
-	 */
-	public void resetAndClose() {
-		LOGGER.debug("重置UTP");
-		this.closeWindow();
-		this.reset();
+		if(this.connect) {
+			this.fin();
+		} else {
+			this.reset();
+		}
 		this.closeAll();
 	}
 	
