@@ -28,7 +28,6 @@ public abstract class UdpAcceptHandler {
 	public void receive(DatagramChannel channel, ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final UdpMessageHandler handler = this.messageHandler(buffer, socketAddress);
 		try {
-			// TODO：优化获取连接时设置
 			handler.handle(channel, socketAddress);
 			if(handler.available()) {
 				buffer.flip();

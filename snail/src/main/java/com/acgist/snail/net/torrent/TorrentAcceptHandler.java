@@ -58,17 +58,15 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		// 区分类型：DHT、UTP、STUN
 		final byte header = buffer.get(0);
-		if(DHT_HEADER == header) { // DHT
+		if(DHT_HEADER == header) {
 			return this.dhtMessageHandler;
-		} else if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) { // STUN
+		} else if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) {
 			final int magicCookie = buffer.getInt(4);
-			// 验证：MAGIC_COOKIE
 			if(magicCookie == StunConfig.MAGIC_COOKIE) {
 				return this.stunMessageHandler;
 			}
 		}
-		// UTP
-		final short connectionId = buffer.getShort(2); // 连接ID
+		final short connectionId = buffer.getShort(2);
 		return this.utpService.get(connectionId, socketAddress);
 	}
 	
