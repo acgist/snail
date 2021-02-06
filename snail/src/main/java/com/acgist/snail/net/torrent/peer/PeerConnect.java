@@ -299,6 +299,9 @@ public abstract class PeerConnect implements IPeerConnect {
 	public void release() {
 		this.available = false;
 		this.releaseDownload();
+		if(this.peerSubMessageHandler.available()) {
+			this.peerSubMessageHandler.choke();
+		}
 		this.peerSubMessageHandler.close();
 	}
 	
