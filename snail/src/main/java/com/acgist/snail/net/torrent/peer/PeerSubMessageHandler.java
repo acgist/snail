@@ -434,7 +434,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>格式：len=0001 id=0x00</p>
 	 * <p>阻塞后Peer不能进行下载</p>
 	 */
-	private void choke() {
+	public void choke() {
 		LOGGER.debug("发送阻塞消息");
 		this.peerConnectSession.amChoked();
 		this.pushMessage(PeerConfig.Type.CHOKE, null);
