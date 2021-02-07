@@ -72,9 +72,15 @@ public final class TcpMessageHandlerContext implements IContext {
 			final Iterator<TcpMessageHandler> iterator = this.handlers.iterator();
 			while(iterator.hasNext()) {
 				handler = iterator.next();
-				if(handler.useless()) {
+				if(handler.available()) {
+					if(handler.useless()) {
+						// 移除没有使用连接
+						iterator.remove();
+						uselessList.add(handler);
+					}
+				} else {
+					// 移除无效连接
 					iterator.remove();
-					uselessList.add(handler);
 				}
 			}
 			LOGGER.debug("处理完成TCP无效连接：{}", this.handlers.size());
