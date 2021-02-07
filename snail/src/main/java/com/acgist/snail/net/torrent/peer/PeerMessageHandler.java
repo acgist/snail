@@ -16,10 +16,6 @@ import com.acgist.snail.net.torrent.IPeerConnect;
 public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
 
 	/**
-	 * <p>是否已经检查</p>
-	 */
-	private boolean uselessCheck = false;
-	/**
 	 * <p>消息编码器</p>
 	 */
 	private final IMessageEncoder<ByteBuffer> messageEncoder;
@@ -50,6 +46,11 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	}
 	
 	@Override
+	public boolean useless() {
+		return this.peerSubMessageHandler.useless();
+	}
+	
+	@Override
 	public void sendEncrypt(ByteBuffer buffer, int timeout) throws NetException {
 		this.messageEncoder.encode(buffer);
 		this.send(buffer, timeout);
@@ -58,19 +59,6 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	@Override
 	public IPeerConnect.ConnectType connectType() {
 		return IMessageEncryptSender.ConnectType.TCP;
-	}
-	
-	@Override
-	public boolean useless() {
-		final boolean handshake = this.peerSubMessageHandler.handshakeRecv();
-		if(handshake) {
-			return false;
-		}
-		if(this.uselessCheck) {
-			return true;
-		}
-		this.uselessCheck = true;
-		return false;
 	}
 
 }

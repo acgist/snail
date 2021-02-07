@@ -26,15 +26,6 @@ public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocke
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
 
-	/**
-	 * <p>判断是否没有使用</p>
-	 * 
-	 * @return 是否没有使用
-	 */
-	public boolean useless() {
-		return false;
-	}
-	
 	@Override
 	public void handle(AsynchronousSocketChannel channel) {
 		this.channel = channel;

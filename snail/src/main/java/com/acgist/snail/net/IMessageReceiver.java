@@ -13,6 +13,15 @@ import com.acgist.snail.context.exception.NetException;
 public interface IMessageReceiver {
 
 	/**
+	 * <p>判断是否没有使用</p>
+	 * 
+	 * @return 是否没有使用
+	 */
+	default boolean useless() {
+		return false;
+	}
+	
+	/**
 	 * <p>消息接收</p>
 	 * 
 	 * @param buffer 消息

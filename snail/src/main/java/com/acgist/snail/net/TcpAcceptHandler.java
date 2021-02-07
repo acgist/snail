@@ -7,7 +7,8 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.TcpMessageHandlerContext;
+import com.acgist.snail.context.MessageHanlderContext;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>TCP消息接收代理</p>
@@ -25,16 +26,16 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	 */
 	private final Class<T> clazz;
 	/**
-	 * <p>TCP消息代理上下文</p>
+	 * <p>消息代理上下文</p>
 	 */
-	private final TcpMessageHandlerContext context;
+	private final MessageHanlderContext context;
 	
 	/**
 	 * @param clazz 消息代理类型
 	 */
 	private TcpAcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;
-		this.context = TcpMessageHandlerContext.getInstance();
+		this.context = MessageHanlderContext.getInstance();
 	}
 	
 	/**
@@ -54,7 +55,9 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	public void completed(AsynchronousSocketChannel channel, AsynchronousServerSocketChannel server) {
 		LOGGER.debug("TCP连接成功：{}", channel);
 		server.accept(server, this);
-		this.context.newInstance(this.clazz).handle(channel);
+		final T handler = BeanUtils.newInstance(this.clazz);
+		handler.handle(channel);
+		this.context.newInstance(handler);
 	}
 	
 	@Override
