@@ -25,6 +25,15 @@ import com.acgist.snail.utils.IoUtils;
 public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocketChannel> implements CompletionHandler<Integer, ByteBuffer> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
+
+	/**
+	 * <p>判断是否无效</p>
+	 * 
+	 * @return 是否无效
+	 */
+	public boolean useless() {
+		return false;
+	}
 	
 	@Override
 	public void handle(AsynchronousSocketChannel channel) {
@@ -72,6 +81,7 @@ public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocke
 	
 	@Override
 	public void close() {
+		LOGGER.debug("TCP连接关闭：{}", this.channel);
 		this.close = true;
 		IoUtils.close(this.channel);
 	}
@@ -94,7 +104,8 @@ public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocke
 	
 	@Override
 	public void failed(Throwable throwable, ByteBuffer buffer) {
-		LOGGER.error("TCP消息处理异常", throwable);
+		LOGGER.error("TCP消息处理异常：{}", this.channel, throwable);
+		this.close();
 	}
 	
 	/**

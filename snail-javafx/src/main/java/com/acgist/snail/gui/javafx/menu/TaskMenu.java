@@ -3,9 +3,6 @@ package com.acgist.snail.gui.javafx.menu;
 import java.io.File;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
@@ -30,8 +27,6 @@ import javafx.stage.WindowEvent;
  */
 public final class TaskMenu extends Menu {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskMenu.class);
-	
 	private static final TaskMenu INSTANCE;
 	
 	public static final TaskMenu getInstance() {
@@ -52,7 +47,6 @@ public final class TaskMenu extends Menu {
 	private MenuItem exportTorrentMenu;
 	
 	private TaskMenu() {
-		LOGGER.debug("初始化任务菜单");
 		this.buildMenus();
 	}
 	

@@ -473,7 +473,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * @param acknr 响应编号
 	 */
 	private void syn(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理握手消息");
+		LOGGER.debug("处理握手消息：{}", this.socketAddress);
 		if(!this.connect) {
 			this.connect = true;
 			this.recvWindow.connect(timestamp, seqnr);
@@ -485,7 +485,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>发送握手消息</p>
 	 */
 	private void syn() {
-		LOGGER.debug("发送握手消息");
+		LOGGER.debug("发送握手消息：{}", this.socketAddress);
 		final UtpWindowData windowData = this.sendWindow.build();
 		final ByteBuffer buffer = buildHeader(UtpConfig.Type.SYN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.recvId);

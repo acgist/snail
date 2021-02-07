@@ -43,7 +43,7 @@ public final class PeerService {
 	 * <p>PeerId（HTTP编码）</p>
 	 */
 	private final String peerIdUrl;
-
+	
 	private PeerService() {
 		this.peerId = this.buildPeerId();
 		this.peerIdUrl = this.buildPeerIdUrl();
