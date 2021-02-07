@@ -47,11 +47,15 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>握手超时时间：{@value}</p>
 	 */
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
+	/**
+	 * <p>最大检查是否使用次数</p>
+	 */
+	private static final int MAX_USELESS_CHECK = 3;
 	
 	/**
-	 * <p>是否已经检查没有使用</p>
+	 * <p>检查是否使用次数</p>
 	 */
-	private boolean uselessCheck = false;
+	private int uselessCheck = 0;
 	/**
 	 * <p>是否可用</p>
 	 */
@@ -209,11 +213,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		if(this.handshakeRecv) {
 			return false;
 		}
-		if(this.uselessCheck) {
-			return true;
-		}
-		this.uselessCheck = true;
-		return false;
+		return ++this.uselessCheck > MAX_USELESS_CHECK;
 	}
 	
 	/**
