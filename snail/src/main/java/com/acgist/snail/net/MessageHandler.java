@@ -14,7 +14,7 @@ import com.acgist.snail.net.codec.IMessageDecoder;
  * 
  * @author acgist
  */
-public abstract class MessageHandler<T extends Channel> implements IMessageSender, IMessageReceiver, IChannelHandler<T> {
+public abstract class MessageHandler<T extends Channel> implements IMessageHandler, IChannelHandler<T> {
 
 	/**
 	 * <p>是否关闭</p>

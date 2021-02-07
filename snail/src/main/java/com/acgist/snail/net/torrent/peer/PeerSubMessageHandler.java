@@ -49,6 +49,10 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	
 	/**
+	 * <p>是否已经检查没有使用</p>
+	 */
+	private boolean uselessCheck = false;
+	/**
 	 * <p>是否可用</p>
 	 */
 	private volatile boolean available = false;
@@ -194,6 +198,22 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			this.init(peerSession, torrentSession);
 			return true;
 		}
+	}
+
+	/**
+	 * <p>判断是否没有使用</p>
+	 * 
+	 * @return 是否没有使用
+	 */
+	public boolean useless() {
+		if(this.handshakeRecv) {
+			return false;
+		}
+		if(this.uselessCheck) {
+			return true;
+		}
+		this.uselessCheck = true;
+		return false;
 	}
 	
 	/**

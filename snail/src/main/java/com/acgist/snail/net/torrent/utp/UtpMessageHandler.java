@@ -99,6 +99,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 * <p>消息编码器</p>
 	 */
 	private final IMessageEncoder<ByteBuffer> messageEncoder;
+	/**
+	 * <p>Peer消息代理</p>
+	 */
+	private final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
 	 * <p>服务端</p>
@@ -133,6 +137,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		final var peerCryptMessageCodec = new PeerCryptMessageCodec(peerUnpackMessageCodec, peerSubMessageHandler);
 		this.messageDecoder = peerCryptMessageCodec;
 		this.messageEncoder = peerCryptMessageCodec;
+		this.peerSubMessageHandler = peerSubMessageHandler;
 		this.utpService = UtpService.getInstance();
 		this.sendWindow = UtpWindow.newSendInstance();
 		this.recvWindow = UtpWindow.newRecvInstance(this.messageDecoder);
@@ -155,6 +160,11 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	 */
 	public String key() {
 		return this.utpService.buildKey(this.recvId, this.socketAddress);
+	}
+	
+	@Override
+	public boolean useless() {
+		return this.peerSubMessageHandler.useless();
 	}
 	
 	@Override

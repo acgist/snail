@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.context.MessageHanlderContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.IChannelHandler;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -44,12 +45,17 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 */
 	private DatagramChannel channel;
 	/**
+	 * <p>消息代理上下文</p>
+	 */
+	private final MessageHanlderContext context;
+	/**
 	 * <p>UTP消息代理</p>
 	 * <p>{@link #buildKey(short, InetSocketAddress)}=消息代理</p>
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
+		this.context = MessageHanlderContext.getInstance();
 		this.register();
 	}
 	
@@ -100,6 +106,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 		}
 		utpMessageHandler = new UtpMessageHandler(connectionId, socketAddress);
 		utpMessageHandler.handle(this.channel);
+		this.context.newInstance(utpMessageHandler);
 		return utpMessageHandler;
 	}
 	
