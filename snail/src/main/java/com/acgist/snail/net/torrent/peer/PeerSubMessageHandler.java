@@ -176,22 +176,23 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			LOGGER.warn("Peer接入失败：远程客户端获取失败");
 			return false;
 		}
+		// 禁止自动获取端口：通过PEX消息获取端口
 		final PeerSession peerSession = PeerContext.getInstance().newPeerSession(
 			infoHashHex,
 			torrentSession.statistics(),
 			socketAddress.getHostString(),
-			null, // 禁止自动获取端口：通过PEX消息获取端口
+			null,
 			PeerConfig.Source.CONNECT
 		);
 		final PeerUploader peerUploader = torrentSession.newPeerUploader(peerSession, this);
-		if(peerUploader != null) {
+		if(peerUploader == null) {
+			return false;
+		} else {
 			this.peerConnect = peerUploader;
 			this.peerConnectSession = peerUploader.peerConnectSession();
 			peerSession.peerUploader(peerUploader);
 			this.init(peerSession, torrentSession);
 			return true;
-		} else {
-			return false;
 		}
 	}
 	
@@ -249,7 +250,6 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	@Override
 	public void onMessage(final ByteBuffer buffer) throws NetException {
 		if(this.handshakeRecv) {
-			// 已经握手
 			final byte typeId = buffer.get();
 			final PeerConfig.Type type = PeerConfig.Type.of(typeId);
 			if(type == null) {
@@ -319,11 +319,12 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 				break;
 			}
 		} else {
-			// 没有握手
 			this.handshakeRecv = true;
 			final boolean success = this.handshake(buffer);
-			if(!success) {
-				// 握手失败关闭连接
+			if(success) {
+				LOGGER.debug("Peer握手成功：{}", this.peerSession);
+			} else {
+				LOGGER.debug("Peer握手失败：{}", this.peerSession);
 				this.close();
 			}
 		}

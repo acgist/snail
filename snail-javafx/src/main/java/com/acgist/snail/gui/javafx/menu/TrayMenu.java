@@ -75,7 +75,6 @@ public final class TrayMenu extends Menu {
 	private TrayIcon trayIcon;
 
 	private TrayMenu() {
-		LOGGER.debug("初始化托盘菜单");
 		this.support = SystemTray.isSupported();
 		if(this.support) {
 			this.buildMenus();

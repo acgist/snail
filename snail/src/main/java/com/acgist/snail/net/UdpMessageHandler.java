@@ -77,6 +77,7 @@ public abstract class UdpMessageHandler extends MessageHandler<DatagramChannel> 
 
 	@Override
 	public void close() {
+		LOGGER.debug("UDP连接关闭：{}", this.socketAddress);
 		// 标记关闭：不能关闭通道（UDP通道单例复用）
 		this.close = true;
 	}

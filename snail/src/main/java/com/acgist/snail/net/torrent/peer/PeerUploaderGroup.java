@@ -86,20 +86,14 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>判断是否允许连接</dt>
-	 * 	<dd>Peer当前正在下载</dd>
-	 * 	<dd>当前连接小于最大连接数量</dd>
-	 * </dl>
+	 * <p>判断是否允许连接</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * 
-	 * @return true-允许；false-不允许；
-	 * 
-	 * TODO：通常大多数数据都是从接入Peer下载获得，是否考虑放大接入限制
+	 * @return 是否允许连接
 	 */
 	private boolean connectable(PeerSession peerSession) {
-		if(peerSession != null && peerSession.downloading()) {
+		if(peerSession.downloading()) {
 			return true;
 		} else {
 			return this.peerUploaders.size() < SystemConfig.getPeerSize();
