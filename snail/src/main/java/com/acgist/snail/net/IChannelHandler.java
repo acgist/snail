@@ -1,5 +1,7 @@
 package com.acgist.snail.net;
 
+import java.nio.channels.Channel;
+
 /**
  * <p>通道代理</p>
  * 
@@ -7,7 +9,7 @@ package com.acgist.snail.net;
  * 
  * @author acgist
  */
-public interface IChannelHandler<T> {
+public interface IChannelHandler<T extends Channel> {
 
 	/**
 	 * <p>通道代理</p>

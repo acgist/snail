@@ -23,7 +23,7 @@ import com.acgist.snail.utils.NetUtils;
  * 
  * @author acgist
  */
-public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessageHandlerAdapter<T> {
+public abstract class TcpClient<T extends TcpMessageHandler> extends Client<T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
 	
@@ -44,13 +44,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	}
 	
 	/**
-	 * <p>客户端名称</p>
-	 */
-	private String name;
-	/**
 	 * <p>超时时间</p>
 	 */
-	private int timeout;
+	private final int timeout;
 	
 	/**
 	 * <p>TCP客户端</p>
@@ -60,8 +56,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 * @param handler 消息代理
 	 */
 	protected TcpClient(String name, int timeout, T handler) {
-		super(handler);
-		this.name = name;
+		super(name, handler);
 		this.timeout = timeout;
 	}
 	
@@ -69,6 +64,8 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends ClientMessa
 	 * <p>连接服务端</p>
 	 * 
 	 * @return 连接状态
+	 * 
+	 * @see #connect(String, int)
 	 */
 	public abstract boolean connect();
 	

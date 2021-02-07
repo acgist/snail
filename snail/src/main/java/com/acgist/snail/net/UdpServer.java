@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
 
@@ -30,32 +28,12 @@ import com.acgist.snail.utils.NetUtils;
  * 
  * @author acgist
  */
-public abstract class UdpServer<T extends UdpAcceptHandler> {
+public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<DatagramChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
-	
+
 	/**
-	 * <p>TTL：{@value}</p>
-	 */
-	public static final int UDP_TTL = 2;
-	/**
-	 * <p>随机端口：{@value}</p>
-	 */
-	public static final int PORT_AUTO = -1;
-	/**
-	 * <p>本机地址：{@value}</p>
-	 */
-	public static final String ADDR_LOCAL = null;
-	/**
-	 * <p>重用地址：{@value}</p>
-	 */
-	public static final boolean ADDR_REUSE = true;
-	/**
-	 * <p>不重用地址：{@value}</p>
-	 */
-	public static final boolean ADDR_UNREUSE = false;
-	/**
-	 * <p>UDP服务端消息处理线程</p>
+	 * <p>服务端线程池</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	
@@ -64,157 +42,95 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	}
 	
 	/**
-	 * <p>服务端名称</p>
-	 */
-	private String name;
-	/**
 	 * <p>消息接收代理</p>
 	 */
 	private final T handler;
 	/**
 	 * <p>Selector：每个服务端独立</p>
 	 */
-	private final Selector selector;
-	/**
-	 * <p>UDP通道</p>
-	 */
-	protected final DatagramChannel channel;
+	private Selector selector;
 
 	/**
 	 * <p>UDP服务端</p>
-	 * <p>通道属性：随机端口、本地地址、不重用地址</p>
 	 * 
 	 * @param name 服务端名称
 	 * @param handler 消息接收代理
+	 * 
+	 * @see Server#PORT_AUTO
+	 * @see Server#ADDR_LOCAL
+	 * @see Server#ADDR_UNREUSE
 	 */
 	protected UdpServer(String name, T handler) {
-		this(PORT_AUTO, ADDR_LOCAL, ADDR_UNREUSE, name, handler);
+		this(ADDR_LOCAL, PORT_AUTO, ADDR_UNREUSE, name, handler);
 	}
 	
 	/**
 	 * <p>UDP服务端</p>
-	 * <p>通道属性：本地地址、不重用地址</p>
 	 * 
 	 * @param port 端口
 	 * @param name 服务端名称
 	 * @param handler 消息接收代理
+	 * 
+	 * @see Server#ADDR_LOCAL
+	 * @see Server#ADDR_UNREUSE
 	 */
 	protected UdpServer(int port, String name, T handler) {
-		this(port, ADDR_LOCAL, ADDR_UNREUSE, name, handler);
+		this(ADDR_LOCAL, port, ADDR_UNREUSE, name, handler);
 	}
 	
 	/**
 	 * <p>UDP服务端</p>
-	 * <p>通道属性：不重用地址</p>
-	 * 
-	 * @param port 端口
-	 * @param host 地址
-	 * @param name 服务端名称
-	 * @param handler 消息接收代理
-	 */
-	protected UdpServer(int port, String host, String name, T handler) {
-		this(port, host, ADDR_UNREUSE, name, handler);
-	}
-	
-	/**
-	 * <p>UDP服务端</p>
-	 * <p>通道属性：本地地址</p>
 	 * 
 	 * @param port 端口
 	 * @param reuse 是否重用地址
 	 * @param name 服务端名称
 	 * @param handler 消息接收代理
+	 * 
+	 * @see Server#ADDR_LOCAL
 	 */
 	protected UdpServer(int port, boolean reuse, String name, T handler) {
-		this(port, ADDR_LOCAL, reuse, name, handler);
+		this(ADDR_LOCAL, port, reuse, name, handler);
 	}
 	
 	/**
 	 * <p>UDP服务端</p>
 	 * 
-	 * @param port 端口
 	 * @param host 地址
+	 * @param port 端口
 	 * @param reuse 是否重用地址
 	 * @param name 服务端名称
 	 * @param handler 消息接收代理
 	 */
-	protected UdpServer(int port, String host, boolean reuse, String name, T handler) {
-		this.name = name;
+	protected UdpServer(String host, int port, boolean reuse, String name, T handler) {
+		super(name);
 		this.handler = handler;
-		this.selector = this.buildSelector();
-		this.channel = this.buildChannel(port, host, reuse);
+		this.listen(host, port, reuse);
 	}
 	
-	/**
-	 * <p>创建Selector</p>
-	 * 
-	 * @return Selector
-	 */
-	private Selector buildSelector() {
-		try {
-			return Selector.open();
-		} catch (IOException e) {
-			LOGGER.error("创建Selector异常：{}", this.name, e);
-		}
-		return null;
-	}
-	
-	/**
-	 * <p>创建UDP通道</p>
-	 * 
-	 * @param port 端口
-	 * @param host 地址
-	 * @param reuse 是否重用地址
-	 * 
-	 * @return UDP通道
-	 * 
-	 * @see #buildUdpChannel(int, String, boolean)
-	 */
-	private DatagramChannel buildChannel(int port, String host, boolean reuse) {
-		try {
-			return this.buildUdpChannel(port, host, reuse);
-		} catch (NetException e) {
-			LOGGER.error("创建UDP通道异常：{}", this.name, e);
-		}
-		return null;
-	}
-	
-	/**
-	 * <p>创建UDP通道</p>
-	 * <p>通道绑定：bind：receive、send</p>
-	 * <p>通道连接：connect：read、write</p>
-	 * 
-	 * @param port 端口
-	 * @param host 地址
-	 * @param reuse 是否重用地址
-	 * 
-	 * @return UDP通道
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	private DatagramChannel buildUdpChannel(int port, String host, boolean reuse) throws NetException {
+	@Override
+	protected boolean listen(String host, int port, boolean reuse) {
+		LOGGER.debug("启动UDP服务端：{}", this.name);
 		boolean success = true;
-		DatagramChannel udpChannel = null;
 		try {
-			udpChannel = DatagramChannel.open(NetUtils.LOCAL_PROTOCOL_FAMILY);
-			// 不阻塞
-			udpChannel.configureBlocking(false);
+			this.channel = DatagramChannel.open(NetUtils.LOCAL_PROTOCOL_FAMILY);
+			// 不要阻塞
+			this.channel.configureBlocking(false);
 			if(reuse) {
-				udpChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+				this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			}
-			if(port >= 0) {
-				udpChannel.bind(NetUtils.buildSocketAddress(host, port));
-			}
+			this.channel.bind(NetUtils.buildSocketAddress(host, port));
 		} catch (IOException e) {
+			LOGGER.error("启动UDP服务端异常：{}", this.name, e);
 			success = false;
-			throw new NetException("创建UDP通道失败", e);
 		} finally {
-			if(!success) {
-				IoUtils.close(udpChannel);
+			if(success) {
+				LOGGER.debug("启动UDP服务端成功：{}", this.name);
+			} else {
+				IoUtils.close(this.channel);
 				this.close();
 			}
 		}
-		return udpChannel;
+		return success;
 	}
 	
 	/**
@@ -224,8 +140,8 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 * @param group 分组
 	 */
 	protected void join(int ttl, String group) {
-		if(this.channel == null) {
-			LOGGER.warn("UDP多播失败（通道没有创建）：{}-{}", this.name, group);
+		if(!this.available()) {
+			LOGGER.warn("UDP多播失败：{}-{}-{}", this.name, group, this.channel);
 			return;
 		}
 		try {
@@ -241,24 +157,32 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 	 * <p>消息代理</p>
 	 */
 	protected void handle() {
-		if(this.channel == null) {
-			LOGGER.warn("UDP Server通道没有创建：{}", this.name);
-			return;
-		}
-		if(!this.channel.isOpen()) {
-			LOGGER.warn("UDP Server通道已经关闭：{}", this.name);
+		if(!this.available()) {
+			LOGGER.warn("UDP消息代理失败：{}-{}", this.name, this.channel);
 			return;
 		}
 		this.handler.handle(this.channel);
+		this.selector();
 		EXECUTOR.submit(this::loopMessage);
+	}
+	
+	/**
+	 * <p>注册消息读取事件</p>
+	 */
+	private void selector() {
+		try {
+			this.selector = Selector.open();
+			this.channel.register(this.selector, SelectionKey.OP_READ);
+		} catch (IOException e) {
+			LOGGER.error("注册消息读取事件异常：{}", this.name, e);
+		}
 	}
 	
 	/**
 	 * <p>消息轮询</p>
 	 */
 	private void loopMessage() {
-		this.selector();
-		while (this.channel.isOpen()) {
+		while (this.available()) {
 			try {
 				this.receive();
 			} catch (Exception e) {
@@ -266,17 +190,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 			}
 		}
 		LOGGER.debug("UDP Server退出消息轮询：{}", this.name);
-	}
-	
-	/**
-	 * <p>注册Selector消息读取事件</p>
-	 */
-	private void selector() {
-		try {
-			this.channel.register(this.selector, SelectionKey.OP_READ);
-		} catch (ClosedChannelException e) {
-			LOGGER.error("注册Selector消息读取事件异常：{}", this.name, e);
-		}
 	}
 	
 	/**
@@ -301,15 +214,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * <p>获取UDP通道</p>
-	 * 
-	 * @return UDP通道
-	 */
-	public DatagramChannel channel() {
-		return this.channel;
 	}
 	
 	/**

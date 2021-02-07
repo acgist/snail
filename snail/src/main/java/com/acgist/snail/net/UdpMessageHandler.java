@@ -10,25 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**
  * <p>UDP消息代理</p>
  * 
  * @author acgist
  */
-public abstract class UdpMessageHandler implements IMessageSender, IMessageReceiver, IChannelHandler<DatagramChannel> {
+public abstract class UdpMessageHandler extends MessageHandler<DatagramChannel> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
-	/**
-	 * <p>是否关闭</p>
-	 */
-	protected volatile boolean close = false;
-	/**
-	 * <p>UDP通道</p>
-	 */
-	protected DatagramChannel channel;
 	/**
 	 * <p>远程地址</p>
 	 * <table border="1">
@@ -61,10 +52,6 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	 * </table>
 	 */
 	protected final InetSocketAddress socketAddress;
-	/**
-	 * <p>消息处理器</p>
-	 */
-	protected IMessageDecoder<ByteBuffer> messageDecoder;
 	
 	/**
 	 * @param socketAddress 远程地址
@@ -74,22 +61,8 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 	}
 	
 	@Override
-	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		if(this.messageDecoder == null) {
-			throw new NetException("请设置消息处理器或重新接收消息方法");
-		}
-		this.messageDecoder.decode(buffer, socketAddress);
-	}
-	
-	@Override
 	public void handle(DatagramChannel channel) {
 		this.channel = channel;
-	}
-	
-	@Override
-	public boolean available() {
-		// 不用判断状态：使用服务通道
-		return !this.close && this.channel != null;
 	}
 	
 	@Override
@@ -102,13 +75,9 @@ public abstract class UdpMessageHandler implements IMessageSender, IMessageRecei
 		return this.socketAddress;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>标记关闭：不能关闭通道（UDP通道单例复用）</p>
-	 */
 	@Override
 	public void close() {
+		// 标记关闭：不能关闭通道（UDP通道单例复用）
 		this.close = true;
 	}
 	

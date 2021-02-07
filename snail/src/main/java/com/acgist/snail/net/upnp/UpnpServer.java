@@ -38,7 +38,7 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	private UpnpServer() {
 		// 不监听UPNP端口：防止收到很多其他应用消息
 		super("UPNP Server", UpnpAcceptHandler.getInstance());
-		this.join(UDP_TTL, upnpHost());
+		this.join(TTL, upnpHost());
 		this.handle();
 	}
 
