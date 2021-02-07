@@ -1,6 +1,7 @@
 package com.acgist.snail.net;
 
 import java.io.IOException;
+import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 
@@ -18,7 +19,7 @@ import com.acgist.snail.utils.NetUtils;
  * 
  * @author acgist
  */
-public abstract class TcpServer<T extends TcpMessageHandler> {
+public abstract class TcpServer<T extends TcpMessageHandler> extends Server<AsynchronousServerSocketChannel> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
@@ -39,17 +40,9 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	}
 	
 	/**
-	 * <p>服务端名称</p>
-	 */
-	private final String name;
-	/**
 	 * <p>消息代理类型</p>
 	 */
 	private final Class<T> clazz;
-	/**
-	 * <p>TCP Server</p>
-	 */
-	private AsynchronousServerSocketChannel server;
 	
 	/**
 	 * <p>TCP服务端</p>
@@ -58,14 +51,14 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * @param clazz 消息代理类型
 	 */
 	protected TcpServer(String name, Class<T> clazz) {
-		this.name = name;
+		super(name);
 		this.clazz = clazz;
 	}
 
 	/**
 	 * <p>开启监听</p>
 	 * 
-	 * @return 开启状态
+	 * @return 是否监听成功
 	 */
 	public abstract boolean listen();
 	
@@ -74,32 +67,30 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 * 
 	 * @param port 端口
 	 * 
-	 * @return 开启状态
+	 * @return 是否监听成功
 	 */
 	protected boolean listen(int port) {
-		return this.listen(null, port);
+		return this.listen(ADDR_LOCAL, port, ADDR_UNREUSE);
 	}
 	
-	/**
-	 * <p>开启监听</p>
-	 * 
-	 * @param host 地址
-	 * @param port 端口
-	 * 
-	 * @return 开启状态
-	 */
-	protected boolean listen(String host, int port) {
+	@Override
+	protected boolean listen(String host, int port, boolean reuse) {
 		LOGGER.debug("启动TCP服务端：{}", this.name);
 		boolean success = true;
 		try {
-			this.server = AsynchronousServerSocketChannel.open(GROUP);
-			this.server.bind(NetUtils.buildSocketAddress(host, port));
-			this.server.accept(this.server, TcpAcceptHandler.newInstance(this.clazz));
+			this.channel = AsynchronousServerSocketChannel.open(GROUP);
+			if(reuse) {
+				this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			}
+			this.channel.bind(NetUtils.buildSocketAddress(host, port));
+			this.channel.accept(this.channel, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (IOException e) {
 			LOGGER.error("启动TCP服务端异常：{}", this.name, e);
 			success = false;
 		} finally {
-			if(!success) {
+			if(success) {
+				LOGGER.debug("启动TCP服务端成功：{}", this.name);
+			} else {
 				this.close();
 			}
 		}
@@ -111,7 +102,7 @@ public abstract class TcpServer<T extends TcpMessageHandler> {
 	 */
 	public void close() {
 		LOGGER.debug("关闭TCP Server：{}", this.name);
-		IoUtils.close(this.server);
+		IoUtils.close(this.channel);
 	}
 	
 	/**

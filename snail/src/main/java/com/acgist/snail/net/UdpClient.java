@@ -7,22 +7,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>UDP客户端</p>
- * <p>UDP客户端通道使用UDP服务端通道</p>
  * 
  * @param <T> UDP消息代理类型
  * 
  * @author acgist
- * 
- * @see UdpServer#channel()
  */
-public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessageHandlerAdapter<T> {
+public abstract class UdpClient<T extends UdpMessageHandler> extends Client<T> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
-
-	/**
-	 * <p>客户端名称</p>
-	 */
-	private final String name;
 	
 	/**
 	 * <p>创建客户端时自动打开通道</p>
@@ -31,15 +23,18 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends ClientMessa
 	 * @param handler 消息代理
 	 */
 	public UdpClient(String name, T handler) {
-		super(handler);
-		this.name = name;
+		super(name, handler);
 		this.open();
 	}
 	
 	/**
 	 * <p>打开通道</p>
+	 * <p>UDP客户端通道使用UDP服务端通道</p>
 	 * 
 	 * @return 打开状态
+	 * 
+	 * @see UdpServer#channel()
+	 * @see #open(DatagramChannel)
 	 */
 	public abstract boolean open();
 	

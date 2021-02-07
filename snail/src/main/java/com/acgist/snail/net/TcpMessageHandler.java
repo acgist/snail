@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.utils.IoUtils;
 
 /**
@@ -23,30 +22,9 @@ import com.acgist.snail.utils.IoUtils;
  * 
  * @author acgist
  */
-public abstract class TcpMessageHandler implements CompletionHandler<Integer, ByteBuffer>, IMessageSender, IMessageReceiver, IChannelHandler<AsynchronousSocketChannel> {
+public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocketChannel> implements CompletionHandler<Integer, ByteBuffer> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TcpMessageHandler.class);
-	
-	/**
-	 * <p>是否关闭</p>
-	 */
-	private volatile boolean close = false;
-	/**
-	 * <p>Socket</p>
-	 */
-	protected AsynchronousSocketChannel channel;
-	/**
-	 * <p>消息处理器</p>
-	 */
-	protected IMessageDecoder<ByteBuffer> messageDecoder;
-
-	@Override
-	public void onReceive(ByteBuffer buffer) throws NetException {
-		if(this.messageDecoder == null) {
-			throw new NetException("请设置消息处理器或重新接收消息方法");
-		}
-		this.messageDecoder.decode(buffer);
-	}
 	
 	@Override
 	public void handle(AsynchronousSocketChannel channel) {
@@ -55,27 +33,19 @@ public abstract class TcpMessageHandler implements CompletionHandler<Integer, By
 	}
 	
 	@Override
-	public boolean available() {
-		return !this.close && this.channel != null && this.channel.isOpen();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>阻塞线程（等待发送完成）：防止多线程同时写导致WritePendingException</p>
-	 * <p>超时时间：超时异常会导致数据并没有发送完成而释放了锁从而引起一连串的WritePendingException异常</p>
-	 * <p>超时建议：除了第一条消息（连接消息）以外的所有消息都不要使用超时时间</p>
-	 */
-	@Override
 	public void send(ByteBuffer buffer, int timeout) throws NetException {
 		this.check(buffer);
+		// 阻塞线程（等待发送完成）：防止多线程同时写导致WritePendingException
 		synchronized (this.channel) {
 			try {
 				int size;
 				final Future<Integer> future = this.channel.write(buffer);
+				// 超时时间：超时异常导致数据没有发送完成但释放了锁从而引起一连串的WritePendingException
 				if(timeout <= SystemConfig.NONE_TIMEOUT) {
+					// 没有超时：除了连接消息（首条消息）以外所有消息都不使用超时时间
 					size = future.get();
 				} else {
+					// 超时时间：连接消息（首条消息）使用超时时间
 					size = future.get(timeout, TimeUnit.SECONDS);
 				}
 				if(size <= 0) {

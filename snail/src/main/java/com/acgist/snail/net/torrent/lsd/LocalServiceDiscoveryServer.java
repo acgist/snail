@@ -45,7 +45,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	private LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
-		this.join(UDP_TTL, lsdHost());
+		this.join(TTL, lsdHost());
 		this.handle();
 		this.register();
 	}
