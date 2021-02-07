@@ -7,7 +7,7 @@ import java.nio.channels.CompletionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.MessageHanlderContext;
+import com.acgist.snail.context.MessageHandlerContext;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
@@ -28,14 +28,14 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	/**
 	 * <p>消息代理上下文</p>
 	 */
-	private final MessageHanlderContext context;
+	private final MessageHandlerContext context;
 	
 	/**
 	 * @param clazz 消息代理类型
 	 */
 	private TcpAcceptHandler(Class<T> clazz) {
 		this.clazz = clazz;
-		this.context = MessageHanlderContext.getInstance();
+		this.context = MessageHandlerContext.getInstance();
 	}
 	
 	/**

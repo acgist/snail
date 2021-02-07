@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.MessageHanlderContext;
+import com.acgist.snail.context.MessageHandlerContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.net.IChannelHandler;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -47,7 +47,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	/**
 	 * <p>消息代理上下文</p>
 	 */
-	private final MessageHanlderContext context;
+	private final MessageHandlerContext context;
 	/**
 	 * <p>UTP消息代理</p>
 	 * <p>{@link #buildKey(short, InetSocketAddress)}=消息代理</p>
@@ -55,7 +55,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
 	private UtpService() {
-		this.context = MessageHanlderContext.getInstance();
+		this.context = MessageHandlerContext.getInstance();
 		this.register();
 	}
 	
@@ -155,17 +155,11 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 		synchronized (this.utpMessageHandlers) {
 			try {
 				this.utpMessageHandlers.values().stream()
-					.filter(handler -> {
-						if(handler.available()) {
-							handler.timeoutRetry();
-							return false;
-						} else {
-							return true;
-						}
-					})
+					.filter(UtpMessageHandler::timeoutRetry)
 					// 转换List关闭：防止关闭删除消息代理产生异常
 					.collect(Collectors.toList())
-					.forEach(value -> value.close());
+					// 直接移除不用关闭
+					.forEach(this::remove);
 			} catch (Exception e) {
 				LOGGER.error("处理超时UTP消息异常", e);
 			}

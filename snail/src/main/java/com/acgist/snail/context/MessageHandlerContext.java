@@ -18,13 +18,13 @@ import com.acgist.snail.net.IMessageHandler;
  * 
  * @author acgist
  */
-public final class MessageHanlderContext implements IContext {
+public final class MessageHandlerContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageHanlderContext.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandlerContext.class);
 
-	private static final MessageHanlderContext INSTANCE = new MessageHanlderContext();
+	private static final MessageHandlerContext INSTANCE = new MessageHandlerContext();
 	
-	public static final MessageHanlderContext getInstance() {
+	public static final MessageHandlerContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -33,7 +33,7 @@ public final class MessageHanlderContext implements IContext {
 	 */
 	private final List<IMessageHandler> handlers;
 	
-	private MessageHanlderContext() {
+	private MessageHandlerContext() {
 		this.handlers = new ArrayList<>();
 		final int interval = SystemConfig.getPeerOptimizeInterval();
 		SystemThreadContext.timerFixedDelay(

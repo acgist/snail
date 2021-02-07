@@ -275,8 +275,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		this.lockConnect();
 		// 连接失败移除
 		if(!this.connect) {
-			this.closeWindow();
-			this.closeAll();
+			this.close();
 		}
 		return this.connect;
 	}
@@ -284,16 +283,19 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	/**
 	 * <p>超时数据包重新发送</p>
 	 * 
-	 * @return true-丢包；false-正常；
+	 * @return 连接是否已经关闭
 	 */
 	public boolean timeoutRetry() {
-		final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
-		if(CollectionUtils.isNotEmpty(windowDatas)) {
-			this.data(windowDatas);
-			LOGGER.debug("超时数据包重新发送：{}-{}", this.sendId, windowDatas.size());
+		if(this.available()) {
+			final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
+			if(CollectionUtils.isNotEmpty(windowDatas)) {
+				this.data(windowDatas);
+				LOGGER.debug("超时数据包重新发送：{}-{}", this.sendId, windowDatas.size());
+			}
+			return false;
+		} else {
 			return true;
 		}
-		return false;
 	}
 	
 	/**
@@ -424,8 +426,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(this.connect) {
 			this.state(timestamp, seqnr);
 		}
-		this.closeWindow();
-		this.closeAll();
+		this.closeRemote();
 	}
 	
 	/**
@@ -456,8 +457,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		if(this.connect) {
 			this.state(timestamp, seqnr);
 		}
-		this.closeWindow();
-		this.closeAll();
+		this.closeRemote();
 	}
 	
 	/**
@@ -564,8 +564,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * <p>关闭窗口：释放信号量</p>
-	 * <p>释放信号量才能发送关闭和重置消息，否者可能存在一直等待情况。</p>
+	 * <p>关闭窗口</p>
+	 * <p>释放信号量才能发送关闭和重置消息（否者可能一直等待）</p>
 	 */
 	private void closeWindow() {
 		this.sendWindow.close();
@@ -573,12 +573,20 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	}
 	
 	/**
-	 * <p>关闭所有资源：关闭窗口、设置连接关闭、移除消息代理</p>
+	 * <p>关闭资源</p>
 	 */
-	private void closeAll() {
+	private void closeConnect() {
 		super.close();
 		this.connect = false;
 		this.utpService.remove(this);
+	}
+
+	/**
+	 * <p>远程关闭</p>
+	 */
+	private void closeRemote() {
+		this.closeWindow();
+		this.closeConnect();
 	}
 	
 	@Override
@@ -593,7 +601,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 		} else {
 			this.reset();
 		}
-		this.closeAll();
+		this.closeConnect();
 	}
 	
 }

@@ -13,6 +13,8 @@ public class PeerMessageHandlerTest extends Performance {
 	public void testUseless() {
 		final PeerMessageHandler handler = new PeerMessageHandler();
 		assertFalse(handler.useless());
+		assertFalse(handler.useless());
+		assertFalse(handler.useless());
 		assertTrue(handler.useless());
 		this.costed(100000, () -> handler.useless());
 	}
