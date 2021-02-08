@@ -619,7 +619,7 @@ public final class TorrentSession {
 			this.torrent = TorrentContext.loadTorrent(torrentFilePath);
 			this.infoHash = this.torrent.infoHash();
 		} catch (DownloadException e) {
-			LOGGER.error("加载种子异常", e);
+			LOGGER.error("加载种子异常：{}", torrentFilePath, e);
 		}
 		final long torrentFileSize = FileUtils.fileSize(torrentFilePath);
 		this.taskSession.setTorrent(torrentFilePath);
