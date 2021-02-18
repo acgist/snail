@@ -22,6 +22,7 @@ jobs:
       run: |
         echo ${{ matrix.runs-on }}
         echo ${{ github.ref }}
+        echo ${{ steps.get_version.outputs.VERSION }}
         mkdir -p ./build/snail/
         cp -v ./LICENSE ./build/
         cp -v ./docs/logo.ico ./build/
