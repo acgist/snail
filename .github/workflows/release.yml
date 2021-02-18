@@ -21,11 +21,11 @@ jobs:
     - name: Package Snail
       run: |
         mkdir -p ./build/snail/
-        cp -v ./LICENSE ./build/
-        cp -v ./docs/logo.ico ./build/
-        cp -r ./snail-javafx/target/lib ./build/snail/
-        cp -v ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
-        tar -cvf snail-${{ matrix.runs-on }}.tar ./build/snail/
+        cp -v -r ./LICENSE ./build/
+        cp -v -r ./docs/logo.ico ./build/
+        cp -v -r ./snail-javafx/target/lib ./build/snail/
+        cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
+        tar -zcvf snail-${{ matrix.runs-on }}.tar.gz ./build/snail/
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
