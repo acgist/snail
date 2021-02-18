@@ -25,10 +25,16 @@ jobs:
         cp -v -r ./docs/logo.ico ./build/
         cp -v -r ./snail-javafx/target/lib ./build/snail/
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
-        tar -zcvf snail-${{ matrix.runs-on }}.tar.gz ./build/snail/*
+        tar -cvf snail-${{ matrix.runs-on }}.tar -C ./build/ snail/* # windows必须使用星号结尾
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
         name: snail
         path: |
-          snail-*.tar.gz
+          snail-*.msi
+          snail-*.exe
+          snail-*.pkg
+          snail-*.dmg
+          snail-*.rpm
+          snail-*.deb
+          snail-*.tar
