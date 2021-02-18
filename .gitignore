@@ -3,6 +3,7 @@
 .classpath
 
 /logs/
+/build/
 /target/
 /config/
 /download/
