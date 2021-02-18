@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        runs-on: [macos-latest, ubuntu-latest, windows-latest]
+        runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v2
@@ -25,6 +25,21 @@ jobs:
         cp -v -r ./docs/logo.ico ./build/
         cp -v -r ./snail-javafx/target/lib ./build/snail/
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
+        jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
+        jpackage \
+          --name snail \
+          --app-version ${version} \
+          --vendor acgist \
+          --copyright acgist \
+          --description "acgist snail" \
+          --input ./build/snail/ \
+          --main-jar snail.javafx-${version}.jar \
+          --runtime-image ./build/runtime \
+          --icon ./build/logo.ico \
+          --license-file ./build/LICENSE \
+          --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
+          --dest ./build/ \
+          $args
         tar -cvf snail-${{ matrix.runs-on }}.tar -C ./build/ snail
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
@@ -38,3 +53,4 @@ jobs:
           snail-*.rpm
           snail-*.deb
           snail-*.tar
+# 版本号截取、系统类型判断
