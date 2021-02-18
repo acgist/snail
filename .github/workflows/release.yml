@@ -21,6 +21,7 @@ jobs:
     - name: Package Snail
       run: |
         mkdir -p ./build/snail/
+        chmod -R u+r ./build/
         cp -v -r ./LICENSE ./build/
         cp -v -r ./docs/logo.ico ./build/
         cp -v -r ./snail-javafx/target/lib ./build/snail/
@@ -31,4 +32,4 @@ jobs:
       with:
         name: snail
         path: |
-          snail-*.tar
+          snail-*.tar.gz
