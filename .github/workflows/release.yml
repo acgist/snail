@@ -41,7 +41,7 @@ jobs:
           --dest ./build/ \
           $args
         tar -cvf snail-${{ matrix.runs-on }}-without-jre.tar -C ./build/ snail
-    - name: Upload Release Asset
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: snail
