@@ -40,7 +40,7 @@ jobs:
           --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
           --dest ./build/ \
           $args
-        tar -cvf snail-${{ matrix.runs-on }}.tar -C ./build/ snail
+        tar -cvf snail-${{ matrix.runs-on }}-without-jre.tar -C ./build/ snail
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
