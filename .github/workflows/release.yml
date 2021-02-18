@@ -20,18 +20,15 @@ jobs:
       run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
     - name: Package Snail
       run: |
-        echo ${{ matrix.runs-on }}
-        echo ${{ github.ref }}
-        echo ${{ steps.get_version.outputs.VERSION }}
         mkdir -p ./build/snail/
         cp -v ./LICENSE ./build/
         cp -v ./docs/logo.ico ./build/
         cp -vr ./snail-javafx/target/lib ./build/snail/
-        cp -v ./snail-javafx/target/snail.javafx-${{ github.ref }}.jar ./build/snail/
-        tar -cvf snail-${{ matrix.runs-on }}-${{ github.ref }}.tar ./build/snail/
+        cp -v ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
+        tar -cvf snail-${{ matrix.runs-on }}.tar ./build/snail/
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
         name: snail
         path: |
-          snail.*.tar
+          snail-*.tar
