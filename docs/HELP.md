@@ -68,14 +68,14 @@
 
 |文件|描述|
 |:--|:--|
-|snail-mac-vx.x.x.pkg|Mac稳定版|
-|snail-linux-vx.x.x.rpm|Linux稳定版|
-|snail-windows-vx.x.x.msi|Windows稳定版|
-|snail-mac-vx.x.x-without-jre.zip|Mac稳定版|
-|snail-linux-vx.x.x-without-jre.zip|Linux稳定版|
-|snail-windows-vx.x.x-without-jre.zip|Windows稳定版|
+|snail-mac-vx.x.x.pkg|Mac安装版|
+|snail-linux-vx.x.x.rpm|Linux安装版|
+|snail-windows-vx.x.x.msi|Windows安装版|
+|snail-mac-vx.x.x-without-jre.zip|Mac绿色版|
+|snail-linux-vx.x.x-without-jre.zip|Linux绿色版|
+|snail-windows-vx.x.x-without-jre.zip|Windows绿色版|
 
-* 带有`-without-jre`字样版本需要自己安装`Java`运行环境
+* 带有`-without-jre`绿色版需要自己安装`Java`运行环境
 
 ## 使用
 
