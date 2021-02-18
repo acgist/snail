@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -29,8 +28,6 @@ public class VerifyTest extends Performance {
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
 		final String snailJavaFXPomPath = basePath + "snail-javafx/pom.xml";
-		final String builderConfigPath = basePath + "builder/config.bat";
-		final String launcherConfigPath = basePath + "SnailLauncher/src/snail.ini";
 		final String systemConfigPath = basePath + "snail/src/main/resources/config/system.properties";
 		final String parentPomVersion = xml(parentPomPath, "version");
 		this.log("当前版本：{}", parentPomVersion);
@@ -40,10 +37,6 @@ public class VerifyTest extends Performance {
 		assertEquals(parentPomVersion, snailPomVersion);
 		final String snailJavaFXPomVersion = xml(snailJavaFXPomPath, "version");
 		assertEquals(parentPomVersion, snailJavaFXPomVersion);
-		final String builderConfigVersion = contain(builderConfigPath, acgistVersion);
-		assertEquals(parentPomVersion, builderConfigVersion);
-		final String launcherConfigVersion = contain(launcherConfigPath, acgistVersion);
-		assertEquals(parentPomVersion, launcherConfigVersion);
 		final String systemConfigVersion = property(systemConfigPath, "acgist.system.version");
 		assertEquals(parentPomVersion, systemConfigVersion);
 	}
@@ -51,14 +44,6 @@ public class VerifyTest extends Performance {
 	private String xml(String path, String name) {
 		final XML xml = XML.loadFile(path);
 		return xml.elementValue(name);
-	}
-	
-	private String contain(String path, String version) throws IOException {
-		final String content = Files.readString(Paths.get(path));
-		if(content.contains(version)) {
-			return version;
-		}
-		return content;
 	}
 	
 	private String property(String path, String name) throws IOException {

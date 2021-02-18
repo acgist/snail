@@ -9,8 +9,6 @@
 		pom.xml
 		snail/pom.xml
 		snail-javafx/pom.xml
-		builder/config.bat
-		SnailLauncher/src/snail.ini
 		snail/src/main/resources/config/system.properties
 	编译命令：mvn -e clean package|install|deploy
 	编译系统：-D javafx.platform=win|mac|linux

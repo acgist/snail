@@ -68,14 +68,13 @@
 
 |文件|描述|
 |:--|:--|
-|SnailLauncher.exe|Windows启动器|
-|SnailIcon-v1.0.zip|图标字体|
-|snail-mac-vx.x.x.zip|Mac稳定版|
-|snail-linux-vx.x.x.zip|Linux稳定版|
-|snail-windows-vx.x.x.zip|Windows稳定版|
+|snail-mac-vx.x.x.pkg|Mac稳定版|
+|snail-linux-vx.x.x.rpm|Linux稳定版|
+|snail-windows-vx.x.x.msi|Windows稳定版|
+|snail-mac-vx.x.x-without-jre.zip|Mac稳定版|
+|snail-linux-vx.x.x-without-jre.zip|Linux稳定版|
+|snail-windows-vx.x.x-without-jre.zip|Windows稳定版|
 
-* 下载对应系统稳定版解压即可运行
-* 不用下载Windows启动器和图标字体
 * 带有`-without-jre`字样版本需要自己安装`Java`运行环境
 
 ## 使用
