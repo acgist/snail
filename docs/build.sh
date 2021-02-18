@@ -22,10 +22,10 @@ rm -rf "./build/"
 
 mvn package -P release -D "javafx.platform=$os" -D skipTests
 mkdir -p "./build/snail/"
-cp -v "./LICENSE" "./build/"
-cp -v "./docs/logo.ico" "./build/"
+cp -vr "./LICENSE" "./build/"
+cp -vr "./docs/logo.ico" "./build/"
 cp -vr "./snail-javafx/target/lib" "./build/snail/"
-cp -v "./snail-javafx/target/snail.javafx-${version}.jar" "./build/snail/"
+cp -vr "./snail-javafx/target/snail.javafx-${version}.jar" "./build/snail/"
 
 # 打包项目
 
