@@ -21,7 +21,7 @@ jobs:
       if: matrix.runs-on == 'windows-latest'
       run: echo "system=win" >> $GITHUB_ENV
     - name: Set Version
-      run: echo "version=${github.ref#refs/*/}" >> $GITHUB_ENV
+      run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v1
