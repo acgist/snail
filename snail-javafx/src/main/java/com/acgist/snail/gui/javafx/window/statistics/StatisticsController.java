@@ -350,7 +350,7 @@ public final class StatisticsController extends Controller {
 		final var runtime = Runtime.getRuntime();
 		final VBox systemInfo = new VBox(
 			this.buildTextFlow("本机IP：", NetUtils.LOCAL_HOST_ADDRESS),
-			this.buildTextFlow("外网IP：", SystemConfig.getExternalIpAddress()),
+			this.buildTextFlow("外网IP：", SystemConfig.getExternalIPAddress()),
 			this.buildTextFlow("外网端口：", SystemConfig.getTorrentPortExt()),
 			this.buildTextFlow("内网穿透：", NatContext.getInstance().type()),
 			this.buildTextFlow("软件版本：", SystemConfig.getVersion()),

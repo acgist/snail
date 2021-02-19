@@ -240,7 +240,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		message.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
 		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT); // 偏爱加密
 		// 外网IP地址：TODO：IPv6
-		final String yourip = SystemConfig.getExternalIpAddress();
+		final String yourip = SystemConfig.getExternalIPAddress();
 		if(StringUtils.isNotEmpty(yourip)) {
 			message.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.ipToInt(yourip)));
 		}

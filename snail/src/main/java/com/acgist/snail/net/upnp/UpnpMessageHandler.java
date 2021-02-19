@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>UPNP消息代理</p>
  * <p>协议链接：https://www.rfc-editor.org/rfc/rfc6970.txt</p>
  * <p>协议链接：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
- * <p>注：固定IP有时不能正确获取UPNP设置（请设置自动获取IP地址）</p>
+ * <p>注：固定IP有时不能正确获取UPNP设置（需要设置自动获取IP地址）</p>
  * 
  * @author acgist
  */
@@ -60,13 +60,13 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 			return;
 		}
 		final String location = headers.header(HEADER_LOCATION);
+		if(StringUtils.isEmpty(location)) {
+			LOGGER.warn("UPNP设置失败（没有描述文件地址）：{}", message);
+			return;
+		}
 		final UpnpService upnpService = UpnpService.getInstance();
 		try {
-			if(StringUtils.isNotEmpty(location)) {
-				upnpService.load(location).mapping();
-			} else {
-				LOGGER.debug("UPNP没有描述文件地址：{}", message);
-			}
+			upnpService.load(location).mapping();
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {

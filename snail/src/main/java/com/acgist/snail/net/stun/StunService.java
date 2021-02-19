@@ -49,14 +49,14 @@ public final class StunService {
 	/**
 	 * <p>设置端口映射信息</p>
 	 * 
-	 * @param externalIpAddress 外网IP地址
+	 * @param externalIPAddress 外网IP地址
 	 * @param port 外网端口
 	 */
-	public void mapping(String externalIpAddress, int port) {
-		LOGGER.debug("STUN端口映射：{}-{}", externalIpAddress, port);
+	public void mapping(String externalIPAddress, int port) {
+		LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
 		PeerConfig.nat(); // 设置使用NAT穿透
 		NatContext.getInstance().stun(); // 设置STUN穿透类型
-		SystemConfig.setExternalIpAddress(externalIpAddress);
+		SystemConfig.setExternalIPAddress(externalIPAddress);
 		SystemConfig.setTorrentPortExt(port);
 	}
 

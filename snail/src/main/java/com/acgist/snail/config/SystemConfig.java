@@ -305,7 +305,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>外网IP地址</p>
 	 */
-	private String externalIpAddress;
+	private String externalIPAddress;
 	
 	/**
 	 * <p>禁止创建实例</p>
@@ -636,11 +636,11 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>设置外网IP地址</p>
 	 * 
-	 * @param externalIpAddress 外网IP地址
+	 * @param externalIPAddress 外网IP地址
 	 */
-	public static final void setExternalIpAddress(String externalIpAddress) {
-		LOGGER.debug("设置外网IP地址：{}", externalIpAddress);
-		INSTANCE.externalIpAddress = externalIpAddress;
+	public static final void setExternalIPAddress(String externalIPAddress) {
+		LOGGER.debug("设置外网IP地址：{}", externalIPAddress);
+		INSTANCE.externalIPAddress = externalIPAddress;
 	}
 	
 	/**
@@ -648,8 +648,8 @@ public final class SystemConfig extends PropertiesConfig {
 	 * 
 	 * @return 外网IP地址
 	 */
-	public static final String getExternalIpAddress() {
-		return INSTANCE.externalIpAddress;
+	public static final String getExternalIPAddress() {
+		return INSTANCE.externalIPAddress;
 	}
 	
 }

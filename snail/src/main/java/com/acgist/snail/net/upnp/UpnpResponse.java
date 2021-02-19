@@ -9,6 +9,9 @@ import com.acgist.snail.utils.StringUtils;
  * @author acgist
  */
 public final class UpnpResponse {
+	
+	private UpnpResponse() {
+	}
 
 	/**
 	 * <p>外网IP地址</p>
@@ -33,8 +36,7 @@ public final class UpnpResponse {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		final XML xml = XML.load(body);
-		return xml.elementValue("NewExternalIPAddress");
+		return XML.load(body).elementValue("NewExternalIPAddress");
 	}
 	
 	/**
@@ -64,8 +66,7 @@ public final class UpnpResponse {
 		if(StringUtils.isEmpty(body)) {
 			return null;
 		}
-		final XML xml = XML.load(body);
-		return xml.elementValue("NewInternalClient");
+		return XML.load(body).elementValue("NewInternalClient");
 	}
 
 }
