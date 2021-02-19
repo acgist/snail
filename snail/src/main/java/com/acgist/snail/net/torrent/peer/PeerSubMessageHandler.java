@@ -15,7 +15,7 @@ import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.codec.IMessageDecoder;
-import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
@@ -91,7 +91,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	/**
 	 * <p>消息代理</p>
 	 */
-	private IMessageEncryptSender messageEncryptSender;
+	private IEncryptMessageSender messageEncryptSender;
 	/**
 	 * <p>扩展消息代理</p>
 	 */
@@ -257,7 +257,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * 
 	 * @return Peer消息代理
 	 */
-	public PeerSubMessageHandler messageEncryptSender(IMessageEncryptSender messageEncryptSender) {
+	public PeerSubMessageHandler messageEncryptSender(IEncryptMessageSender messageEncryptSender) {
 		this.messageEncryptSender = messageEncryptSender;
 		return this;
 	}
@@ -1187,7 +1187,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	/**
 	 * <p>释放Peer</p>
 	 * 
-	 * @see IMessageEncryptSender#close()
+	 * @see IEncryptMessageSender#close()
 	 */
 	public void close() {
 		this.messageEncryptSender.close();
@@ -1198,7 +1198,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * 
 	 * @return 是否可用
 	 * 
-	 * @see IMessageEncryptSender#available()
+	 * @see IEncryptMessageSender#available()
 	 */
 	public boolean available() {
 		return this.messageEncryptSender.available();
@@ -1209,7 +1209,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see IMessageEncryptSender#send(ByteBuffer)
+	 * @see IEncryptMessageSender#send(ByteBuffer)
 	 */
 	public void send(ByteBuffer buffer) {
 		try {
@@ -1225,7 +1225,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * @param buffer 消息
 	 * @param timeout 超时时间
 	 * 
-	 * @see IMessageEncryptSender#send(ByteBuffer, int)
+	 * @see IEncryptMessageSender#send(ByteBuffer, int)
 	 */
 	public void send(ByteBuffer buffer, int timeout) {
 		try {
@@ -1240,7 +1240,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * 
 	 * @param buffer 消息
 	 * 
-	 * @see IMessageEncryptSender#sendEncrypt(ByteBuffer)
+	 * @see IEncryptMessageSender#sendEncrypt(ByteBuffer)
 	 */
 	public void sendEncrypt(ByteBuffer buffer) {
 		try {
@@ -1256,7 +1256,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * @param buffer 消息
 	 * @param timeout 超时时间
 	 * 
-	 * @see IMessageEncryptSender#sendEncrypt(ByteBuffer, int)
+	 * @see IEncryptMessageSender#sendEncrypt(ByteBuffer, int)
 	 */
 	public void sendEncrypt(ByteBuffer buffer, int timeout) {
 		try {
@@ -1269,7 +1269,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	/**
 	 * <p>获取远程服务地址</p>
 	 * 
-	 * @see IMessageEncryptSender#remoteSocketAddress()
+	 * @see IEncryptMessageSender#remoteSocketAddress()
 	 */
 	private InetSocketAddress remoteSocketAddress() {
 		return this.messageEncryptSender.remoteSocketAddress();

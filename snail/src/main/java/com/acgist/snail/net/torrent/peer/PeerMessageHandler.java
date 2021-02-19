@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
-import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;
 
 /**
@@ -13,7 +13,7 @@ import com.acgist.snail.net.torrent.IPeerConnect;
  * 
  * @author acgist
  */
-public final class PeerMessageHandler extends TcpMessageHandler implements IMessageEncryptSender {
+public final class PeerMessageHandler extends TcpMessageHandler implements IEncryptMessageSender {
 
 	/**
 	 * <p>消息编码器</p>
@@ -58,7 +58,7 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IMess
 	
 	@Override
 	public IPeerConnect.ConnectType connectType() {
-		return IMessageEncryptSender.ConnectType.TCP;
+		return IEncryptMessageSender.ConnectType.TCP;
 	}
 
 }
