@@ -11,7 +11,7 @@ import com.acgist.snail.net.IMessageSender;
  * 
  * @author acgist
  */
-public interface IMessageEncryptSender extends IMessageSender, IPeerConnect {
+public interface IEncryptMessageSender extends IMessageSender, IPeerConnect {
 
 	/**
 	 * <p>消息加密发送</p>

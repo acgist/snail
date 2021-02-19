@@ -15,7 +15,7 @@ import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
-import com.acgist.snail.net.torrent.IMessageEncryptSender;
+import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
@@ -45,7 +45,7 @@ import com.acgist.snail.utils.DateUtils;
  * 
  * @author acgist
  */
-public final class UtpMessageHandler extends UdpMessageHandler implements IMessageEncryptSender {
+public final class UtpMessageHandler extends UdpMessageHandler implements IEncryptMessageSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
@@ -236,7 +236,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IMessa
 	
 	@Override
 	public IPeerConnect.ConnectType connectType() {
-		return IMessageEncryptSender.ConnectType.UTP;
+		return IEncryptMessageSender.ConnectType.UTP;
 	}
 
 	/**
