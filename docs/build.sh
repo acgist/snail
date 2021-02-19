@@ -11,6 +11,21 @@ if [[ $version == "" ]] || [[ $system == "" ]]; then
     exit
 fi
 
+# 系统参数
+
+if [[ $system == "win" ]]; then
+    args="--type msi --win-shortcut --win-dir-chooser" # win:msi|exe
+elif [[ $system == "mac" ]]; then
+    args="--type pkg" # mac:pkg|dmg
+elif [[ $system == "linux" ]]; then
+    args="--type rpm --linux-shortcut" # linux:rpm|deb
+else
+    echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [pack]"
+    exit
+fi
+
+# 开始构建
+
 echo "Snail $version $system building..."
 
 # 删除文件
@@ -29,22 +44,11 @@ cp -vr ./snail-javafx/target/snail.javafx-${version}.jar ./build/snail/
 
 # 打包项目
 
+tar -cvf ./build/snail-${system}-v${version}-without-jre.tar -C ./build/ snail
+
 if [[ $pack == "pack" ]]; then
 # 运行环境
     jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
-# 系统参数
-    if [[ $system == "win" ]]; then
-#       win:msi|exe
-        args="--type msi --win-shortcut --win-dir-chooser"
-    elif [[ $system == "mac" ]]; then
-#       mac:pkg|dmg
-        args="--type pkg"
-    elif [[ $system == "linux" ]]; then
-#       linux:rpm|deb
-        args="--type rpm --linux-shortcut"
-    else
-        echo "unknown system"
-    fi
 # 打包软件
     jpackage \
         --name snail \
