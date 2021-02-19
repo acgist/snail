@@ -17,14 +17,17 @@ jobs:
       if: ${{ matrix.runs-on }} == "macos-latest"
       env:
         os: mac
+      run: echo ${{ os }}
     - name: Linux Setting
       if: ${{ matrix.runs-on }} == "ubuntu-latest"
       env:
         os: linux
+      run: echo ${{ os }}
     - name: Windows Setting
       if: ${{ matrix.runs-on }} == "windows-latest"
       env:
         os: win
+      run: echo ${{ os }}
     - uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v1
