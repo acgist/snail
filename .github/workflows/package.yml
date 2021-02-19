@@ -19,7 +19,9 @@ jobs:
       run: echo "system=linux" >> $GITHUB_ENV
     - name: Windows Setting
       if: matrix.runs-on == 'windows-latest'
-      run: echo "system=win" >> $GITHUB_ENV
+      run: |
+        echo "system=win" >> $GITHUB_ENV
+        echo "version=${GITHUB_REF##*/}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
     - name: Set Version
       run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
