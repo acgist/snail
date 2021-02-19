@@ -15,18 +15,18 @@ jobs:
     - name: Mac Setting
       if: ${{ matrix.runs-on }} == "macos-latest"
       env:
-        os: mac
-      run: echo ${{ env.os }}
+        system: mac
+      run: echo ${{ env.system }}
     - name: Linux Setting
       if: ${{ matrix.runs-on }} == "ubuntu-latest"
       env:
-        os: linux
-      run: echo ${{ env.os }}
+        system: linux
+      run: echo ${{ env.system }}
     - name: Windows Setting
       if: ${{ matrix.runs-on }} == "windows-latest"
       env:
-        os: win
-      run: echo ${{ env.os }}
+        system: win
+      run: echo ${{ env.system }}
     - uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v1
@@ -36,7 +36,7 @@ jobs:
       run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
     - name: Package Snail
       run: |
-        echo ${{ os }}
+        echo ${{ env.system }}
         mkdir -p ./build/snail/
         cp -v -r ./LICENSE ./build/
         cp -v -r ./docs/logo.ico ./build/

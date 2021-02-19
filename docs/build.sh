@@ -2,16 +2,16 @@
 
 # 配置参数
 
-os=$2
 pack=$3
+system=$2
 version=$1
 
-if [[ $version == "" ]] || [[ $os == "" ]]; then
-    echo "setting version and os：build.sh 1.0.0 [win|mac|linux] [pack]"
+if [[ $version == "" ]] || [[ $system == "" ]]; then
+    echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [pack]"
     exit
 fi
 
-echo "Snail $version $os building..."
+echo "Snail $version $system building..."
 
 # 删除文件
 
@@ -20,7 +20,7 @@ rm -rf ./build/
 
 # 编译项目
 
-mvn package -P release -D javafx.platform=$os -D skipTests
+mvn package -P release -D javafx.platform=$system -D skipTests
 mkdir -p ./build/snail/
 cp -vr ./LICENSE ./build/
 cp -vr ./docs/logo.ico ./build/
@@ -33,17 +33,17 @@ if [[ $pack == "pack" ]]; then
 # 运行环境
     jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
 # 系统参数
-    if [[ $os == "win" ]]; then
+    if [[ $system == "win" ]]; then
 #       win:msi|exe
         args="--type msi --win-shortcut --win-dir-chooser"
-    elif [[ $os == "mac" ]]; then
+    elif [[ $system == "mac" ]]; then
 #       mac:pkg|dmg
         args="--type pkg"
-    elif [[ $os == "linux" ]]; then
+    elif [[ $system == "linux" ]]; then
 #       linux:rpm|deb
         args="--type rpm --linux-shortcut"
     else
-        echo "unknown os"
+        echo "unknown system"
     fi
 # 打包软件
     jpackage \
