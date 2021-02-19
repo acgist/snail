@@ -1,8 +1,10 @@
-name: release
+name: package
 
 on:
   push:
     tags: [ "*" ]
+  push:
+    branches: [ dev ]
 
 jobs:
   build:
@@ -11,6 +13,18 @@ jobs:
         runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.runs-on }}
     steps:
+    - name: Mac Setting
+      if: ${{ matrix.runs-on }} == "macos-latest"
+      env:
+        os: mac
+    - name: Linux Setting
+      if: ${{ matrix.runs-on }} == "ubuntu-latest"
+      env:
+        os: linux
+    - name: Windows Setting
+      if: ${{ matrix.runs-on }} == "windows-latest"
+      env:
+        os: win
     - uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v1
@@ -20,26 +34,12 @@ jobs:
       run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
     - name: Package Snail
       run: |
+        echo ${{ os }}
         mkdir -p ./build/snail/
         cp -v -r ./LICENSE ./build/
         cp -v -r ./docs/logo.ico ./build/
         cp -v -r ./snail-javafx/target/lib ./build/snail/
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
-        jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
-        jpackage \
-          --name snail \
-          --app-version ${version} \
-          --vendor acgist \
-          --copyright acgist \
-          --description "acgist snail" \
-          --input ./build/snail/ \
-          --main-jar snail.javafx-${version}.jar \
-          --runtime-image ./build/runtime \
-          --icon ./build/logo.ico \
-          --license-file ./build/LICENSE \
-          --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
-          --dest ./build/ \
-          $args
         tar -cvf snail-${{ matrix.runs-on }}-without-jre.tar -C ./build/ snail
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
@@ -53,4 +53,3 @@ jobs:
           snail-*.rpm
           snail-*.deb
           snail-*.tar
-# 版本号截取、系统类型判断

@@ -3,14 +3,12 @@ name: build
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
     strategy:
       matrix:
-        runs-on: [macos-latest, ubuntu-latest, windows-latest]
+        runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v2
