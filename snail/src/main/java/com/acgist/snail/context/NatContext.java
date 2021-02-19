@@ -103,7 +103,7 @@ public final class NatContext implements IContext {
 			}
 		} else {
 			LOGGER.debug("已是公网IP地址：忽略NAT设置");
-			SystemConfig.setExternalIpAddress(NetUtils.LOCAL_HOST_ADDRESS);
+			SystemConfig.setExternalIPAddress(NetUtils.LOCAL_HOST_ADDRESS);
 		}
 	}
 	

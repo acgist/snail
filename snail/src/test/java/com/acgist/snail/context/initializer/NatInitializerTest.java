@@ -18,7 +18,7 @@ public class NatInitializerTest extends Performance {
 		if(NatContext.getInstance().type() != Type.UPNP) {
 			ThreadUtils.sleep(2000);
 		}
-		assertNotNull(SystemConfig.getExternalIpAddress());
+		assertNotNull(SystemConfig.getExternalIPAddress());
 		NatContext.getInstance().shutdown();
 	}
 	

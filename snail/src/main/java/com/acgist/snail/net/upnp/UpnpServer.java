@@ -19,24 +19,24 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	}
 	
 	/**
-	 * <p>UPNP组播端口</p>
+	 * <p>UPNP组播端口：{@value}</p>
 	 */
 	public static final int UPNP_PORT = 1900;
 	/**
-	 * <p>UPNP组播地址（IPv4）</p>
+	 * <p>UPNP组播地址（IPv4）：{@value}</p>
 	 */
 	public static final String UPNP_HOST = "239.255.255.250";
 	/**
-	 * <p>UPNP组播地址（IPv6）</p>
+	 * <p>UPNP组播地址（IPv6）：{@value}</p>
 	 */
 	public static final String UPNP_HOST_IPV6 = "[ff15::efff:fffa]";
 	/**
-	 * <p>UPNP根设备</p>
+	 * <p>UPNP根设备：{@value}</p>
 	 */
 	public static final String UPNP_ROOT_DEVICE = "upnp:rootdevice";
 	
 	private UpnpServer() {
-		// 不监听UPNP端口：防止收到很多其他应用消息
+		// 不监听UPNP端口：防止收到其他应用消息
 		super("UPNP Server", UpnpAcceptHandler.getInstance());
 		this.join(TTL, upnpHost());
 		this.handle();

@@ -134,8 +134,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 */
 	private void onRendezvous(String host, int port) {
 		LOGGER.debug("处理holepunch消息-rendezvous：{}-{}", host, port);
-		final String extIp = SystemConfig.getExternalIpAddress();
-		if(StringUtils.equals(host, extIp)) {
+		if(StringUtils.equals(host, SystemConfig.getExternalIPAddress())) {
 			LOGGER.debug("处理holepunch消息-rendezvous失败：目标属于中继");
 			this.error(host, port, HolepunchErrorCode.CODE_04);
 			return;

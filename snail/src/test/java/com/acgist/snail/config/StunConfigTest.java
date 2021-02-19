@@ -34,9 +34,9 @@ public class StunConfigTest extends Performance {
 		this.log("真实端口：{}", realPort);
 		assertEquals(12888, realPort);
 		final int ip = -1777019015;
-		final int realIp = ip ^ StunConfig.MAGIC_COOKIE;
-		this.log("真实IP：{}-{}", realIp, NetUtils.intToIP(realIp));
-		assertEquals(-1224314053, realIp);
+		final int realIP = ip ^ StunConfig.MAGIC_COOKIE;
+		this.log("真实IP：{}-{}", realIP, NetUtils.intToIP(realIP));
+		assertEquals(-1224314053, realIP);
 	}
 
 }

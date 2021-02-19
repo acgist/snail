@@ -22,13 +22,13 @@ public class StunClientTest extends Performance {
 //		final StunClient client = StunClient.newInstance("stunserver.org");
 //		final StunClient client = StunClient.newInstance("numb.viagenie.ca");
 //		final StunClient client = StunClient.newInstance("stun.softjoys.com");
-		assertNull(SystemConfig.getExternalIpAddress());
+		assertNull(SystemConfig.getExternalIPAddress());
 		client.mappedAddress();
 		int index = 0;
-		while(index++ < 5 && SystemConfig.getExternalIpAddress() == null) {
+		while(index++ < 5 && SystemConfig.getExternalIPAddress() == null) {
 			ThreadUtils.sleep(1000);
 		}
-		assertNotNull(SystemConfig.getExternalIpAddress());
+		assertNotNull(SystemConfig.getExternalIPAddress());
 	}
 	
 }

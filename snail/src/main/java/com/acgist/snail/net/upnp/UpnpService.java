@@ -21,8 +21,6 @@ import com.acgist.snail.utils.UrlUtils;
  * <p>UPNP Service</p>
  * <p>Internet Gateway Device</p>
  * <p>端口映射：将内网的端口映射到外网中</p>
- * <p>如果外网端口已经被映射：设置新的映射端口</p>
- * <p>注：多路由环境使用STUN进行内网穿透</p>
  * 
  * @author acgist
  */
@@ -38,16 +36,26 @@ public final class UpnpService {
 	
 	/**
 	 * <p>UPNP映射状态</p>
+	 * 
+	 * @author acgist
 	 */
 	public enum Status {
 		
-		/** 未初始化 */
+		/**
+		 * <p>未初始化</p>
+		 */
 		UNINIT,
-		/** 不可用：已被注册 */
+		/**
+		 * <p>不可用：已被注册</p>
+		 */
 		DISABLE,
-		/** 可用：需要注册 */
+		/**
+		 * <p>可用：需要注册</p>
+		 */
 		MAPABLE,
-		/** 可用：已被注册 */
+		/**
+		 * <p>可用：已被注册</p>
+		 */
 		USEABLE;
 		
 	}
@@ -92,13 +100,14 @@ public final class UpnpService {
 	 * 
 	 * @param location 描述文件地址
 	 * 
-	 * @return UpnpService
+	 * @return {@link UpnpService}
 	 * 
 	 * @throws NetException 网络异常
 	 */
 	public UpnpService load(String location) throws NetException {
 		final URIWrapper wrapper = URIWrapper.newInstance(location).decode();
 		if(!NetUtils.lan(wrapper.host())) {
+			// 判断处于同一内网
 			LOGGER.info("UPNP描述文件错误：{}", location);
 			return this;
 		}
@@ -109,12 +118,12 @@ public final class UpnpService {
 		final var xml = XML.load(body);
 		// 服务类型和服务地址
 		final List<String> serviceTypes = xml.elementValues("serviceType");
-		final List<String> controlUrls = xml.elementValues("controlURL");
 		if(CollectionUtils.isEmpty(serviceTypes)) {
 			LOGGER.warn("UPNP设置失败（服务类型）：{}", body);
 			return this;
 		}
 		boolean success = false;
+		final List<String> controlUrls = xml.elementValues("controlURL");
 		for (int index = 0; index < serviceTypes.size(); index++) {
 			final String serviceType = serviceTypes.get(index);
 			// 控制地址
@@ -171,12 +180,12 @@ public final class UpnpService {
 	/**
 	 * <p>端口映射信息：GetSpecificPortMappingEntry</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
-	 * <p>如果没有映射：返回{@linkplain StatusCode#INTERNAL_SERVER_ERROR 500}状态码</p>
+	 * <p>如果没有映射返回：{@link StatusCode#INTERNAL_SERVER_ERROR}</p>
 	 * 
 	 * @param portExt 外网端口
 	 * @param protocol 协议
 	 * 
-	 * @return {@linkplain Status 状态}
+	 * @return {@link Status}
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -261,16 +270,17 @@ public final class UpnpService {
 		if(!this.available) {
 			return;
 		}
-		if(this.remapping) {
-			this.remapping = false;
-			final String externalIpAddress = this.getExternalIPAddress();
-			if(NetUtils.localIP(externalIpAddress)) {
-				// 获取的公网IP地址为内网地址：多重路由环境
-				LOGGER.warn("UPNP端口映射失败：多重路由环境");
-			} else {
-				SystemConfig.setExternalIpAddress(externalIpAddress);
-				this.addMapping();
-			}
+		if(!this.remapping) {
+			return;
+		}
+		this.remapping = false;
+		final String externalIPAddress = this.getExternalIPAddress();
+		if(NetUtils.localIP(externalIPAddress)) {
+			// 获取的公网IP地址为内网地址
+			LOGGER.warn("UPNP端口映射失败：多重路由环境");
+		} else {
+			SystemConfig.setExternalIPAddress(externalIPAddress);
+			this.addMapping();
 		}
 	}
 	
@@ -286,7 +296,7 @@ public final class UpnpService {
 			} catch (NetException e) {
 				LOGGER.error("释放UPNP端口异常", e);
 			}
-			// 必须释放端口后才能修改状态
+			// 必须释放端口才能修改状态
 			this.useable = false;
 			this.available = false;
 		}
@@ -294,20 +304,19 @@ public final class UpnpService {
 	
 	/**
 	 * <p>端口映射</p>
-	 * <p>如果端口被占用：端口{@code +1}继续映射</p>
+	 * <p>如果端口被占用：端口递增继续映射</p>
 	 * 
 	 * @throws NetException 网络异常
 	 */
 	private void addMapping() throws NetException {
-		Status udpStatus = Status.DISABLE, tcpStatus;
-		int portExt = SystemConfig.getTorrentPort(); // 外网端口
-		while(true) {
-			if(portExt >= NetUtils.MAX_PORT) {
-				break;
-			}
+		Status tcpStatus;
+		Status udpStatus = Status.DISABLE;
+		final int torrentPort = SystemConfig.getTorrentPort();
+		int portExt = torrentPort;
+		while(portExt < NetUtils.MAX_PORT) {
 			// UDP
 			udpStatus = this.getSpecificPortMappingEntry(portExt, Protocol.Type.UDP);
-			if(udpStatus == Status.UNINIT || udpStatus == Status.DISABLE) {
+			if(udpStatus == Status.DISABLE) {
 				portExt++;
 				continue;
 			}
@@ -316,19 +325,20 @@ public final class UpnpService {
 			if(udpStatus == tcpStatus) {
 				break;
 			} else {
+				this.deletePortMapping(portExt, Protocol.Type.UDP);
 				portExt++;
 			}
 		}
 		if(udpStatus == Status.MAPABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
-			final boolean udpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.UDP);
-			final boolean tcpOk = this.addPortMapping(SystemConfig.getTorrentPort(), portExt, Protocol.Type.TCP);
-			LOGGER.debug("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, udpOk, SystemConfig.getTorrentPort(), portExt, tcpOk);
+			final boolean udpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.UDP);
+			final boolean tcpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.TCP);
+			LOGGER.debug("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", torrentPort, portExt, udpOk, torrentPort, portExt, tcpOk);
 		} else if(udpStatus == Status.USEABLE) {
 			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
-			LOGGER.debug("UPNP端口映射（可用）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", SystemConfig.getTorrentPort(), portExt, true, SystemConfig.getTorrentPort(), portExt, true);
+			LOGGER.debug("UPNP端口映射（可用）：UDP（{}-{}）、TCP（{}-{}）", torrentPort, portExt, torrentPort, portExt);
 		} else {
 			this.useable = false;
 			LOGGER.warn("UPNP端口映射失败");
