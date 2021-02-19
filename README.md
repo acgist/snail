@@ -37,9 +37,7 @@
 
 ## 使用
 
-稳定版本下载：[snail-windows.zip](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
-
-> 稳定版本提供`mac`、`linux`、`windows`三个版本
+[稳定版本下载](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
 
 ### 编译
 
@@ -52,11 +50,7 @@ mvn clean package -P release -D skipTests
 ### Gui
 
 ```bash
-# Linux
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
-
-# Windows
-javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
 ### Maven

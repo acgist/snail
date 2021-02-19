@@ -68,12 +68,12 @@
 
 |文件|描述|
 |:--|:--|
+|snail-win-vx.x.x.msi|Win安装版|
 |snail-mac-vx.x.x.pkg|Mac安装版|
 |snail-linux-vx.x.x.rpm|Linux安装版|
-|snail-windows-vx.x.x.msi|Windows安装版|
+|snail-win-vx.x.x-without-jre.zip|Win绿色版|
 |snail-mac-vx.x.x-without-jre.zip|Mac绿色版|
 |snail-linux-vx.x.x-without-jre.zip|Linux绿色版|
-|snail-windows-vx.x.x-without-jre.zip|Windows绿色版|
 
 * 带有`-without-jre`绿色版需要自己安装`Java`运行环境
 
@@ -81,11 +81,9 @@
 
 ### 环境
 
-Java：11+
-
-Maven：3.6.0+
-
-系统支持：win、mac、linux
+* Java：11+
+* Maven：3.6.0+
+* 系统支持：win、mac、linux
 
 ### 编译
 
@@ -103,19 +101,16 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 
 ### 乱码
 
-Windows控制台乱码设置编码：`chcp 65001`
-
-添加启动参数：`-D file.encoding=UTF-8`
+* Windows控制台乱码设置编码：`chcp 65001`
+* 添加启动参数：`-D file.encoding=UTF-8`
 
 ### 运行
 
 ```bash
-# Linux
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
-
-# Windows
-javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
+
+> Windows可以使用`javaw`命令
 
 ### 统计
 
@@ -123,11 +118,9 @@ javaw -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ### 进阶
 
-问题建议：`F1`
-
-统计面板：`F12`
-
-下载界面、新建下载界面支持拖拽操作：下载链接、种子文件
+* 问题建议：`F1`
+* 统计面板：`F12`
+* 下载界面、新建下载界面支持拖拽操作：下载链接、种子文件
 
 ## 视频播放
 
@@ -262,11 +255,7 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 使用FTP、HLS、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
 
 ```bash
-# Linux
 java -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.javafx-{version}.jar
-
-# Windows
-javaw -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.javafx-{version}.jar
 ```
 
 或者调小磁盘缓存
