@@ -7,15 +7,14 @@
 * [设置](#设置)
 * [关于](#关于)
 * [统计](#统计)
-* [统计](#统计)
-	* [统计-系统信息](#统计-系统信息)
-	* [统计-节点统计](#统计-节点统计)
-	* [统计-Tracker统计](#统计-tracker统计)
-	* [统计-客户端统计](#统计-客户端统计)
-	* [统计-来源统计](#统计-来源统计)
-	* [统计-连接统计](#统计-连接统计)
-	* [统计-流量统计](#统计-流量统计)
-	* [统计-Piece统计](#统计-piece统计)
+	* [系统信息](#系统信息)
+	* [节点统计](#节点统计)
+	* [Tracker统计](#tracker统计)
+	* [客户端统计](#客户端统计)
+	* [来源统计](#来源统计)
+	* [连接统计](#连接统计)
+	* [流量统计](#流量统计)
+	* [Piece统计](#piece统计)
 
 ## 主界面
 
@@ -51,11 +50,11 @@
 
 进入统计页面：主界面按`F12`
 
-### 统计-系统信息
+### 系统信息
 
-![统计-系统信息](.//gui/statistics-system.png "统计-系统信息")
+![系统信息](.//gui/statistics-system.png "系统信息")
 
-### 统计-节点统计
+### 节点统计
 
 系统DHT节点统计
 
@@ -63,35 +62,35 @@
 * 可用：可以使用
 * 未知：没有使用
 
-![统计-节点统计](.//gui/statistics-node.png "统计-节点统计")
+![节点统计](.//gui/statistics-node.png "节点统计")
 
-### 统计-Tracker统计
+### Tracker统计
 
 系统Tracker统计
 
-![统计-Tracker统计](.//gui/statistics-tracker.png "统计-Tracker统计")
+![Tracker统计](.//gui/statistics-tracker.png "Tracker统计")
 
-### 统计-客户端统计
+### 客户端统计
 
 当前所选BT任务客户端统计
 
 > 未知类型客户端：没有连接、连接失败
 
-![统计-客户端统计](.//gui/statistics-client.png "统计-客户端统计")
+![客户端统计](.//gui/statistics-client.png "客户端统计")
 
-### 统计-来源统计
+### 来源统计
 
 当前所选BT任务Peer来源统计
 
-![统计-来源统计](.//gui/statistics-source.png "统计-来源统计")
+![来源统计](.//gui/statistics-source.png "来源统计")
 
-### 统计-连接统计
+### 连接统计
 
 当前所选BT任务Peer连接统计
 
-![统计-连接统计](.//gui/statistics-connect.png "统计-连接统计")
+![连接统计](.//gui/statistics-connect.png "连接统计")
 
-### 统计-流量统计
+### 流量统计
 
 当前所选BT任务Peer流量统计
 
@@ -100,9 +99,9 @@
 * 下载（绿色）：只下载
 * 无情（灰色）：没有数据交流
 
-![统计-流量统计](.//gui/statistics-traffic.png "统计-流量统计")
+![流量统计](.//gui/statistics-traffic.png "流量统计")
 
-### 统计-Piece统计
+### Piece统计
 
 当前所选BT任务文件Piece统计
 
@@ -112,4 +111,4 @@
 * 鼠标可以指定优先下载位置
 * 健康度：当前任务所选文件是否全部能够下载（健康度不是100%肯定不能下载成功）
 
-![统计-Piece统计](.//gui/statistics-piece.png "统计-Piece统计")
+![Piece统计](.//gui/statistics-piece.png "Piece统计")
