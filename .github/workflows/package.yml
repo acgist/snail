@@ -3,7 +3,6 @@ name: package
 on:
   push:
     tags: [ "*" ]
-  push:
     branches: [ dev ]
 
 jobs:
