@@ -21,6 +21,8 @@ jobs:
     - name: Windows Setting
       if: matrix.runs-on == 'windows-latest'
       run: echo "system=win" >> $GITHUB_ENV
+    - name: Set Version
+      run: echo "version=${github.ref#refs/*/}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v1
@@ -30,13 +32,12 @@ jobs:
       run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
     - name: Package Snail
       run: |
-        echo ${{ env.system }}
         mkdir -p ./build/snail/
         cp -v -r ./LICENSE ./build/
         cp -v -r ./docs/logo.ico ./build/
         cp -v -r ./snail-javafx/target/lib ./build/snail/
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
-        tar -cvf snail-${{ matrix.runs-on }}-without-jre.tar -C ./build/ snail
+        tar -cvf snail-${{ env.system }}-${{ env.version }}-without-jre.tar -C ./build/ snail
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
