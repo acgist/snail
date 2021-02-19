@@ -13,13 +13,13 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     steps:
     - name: Mac Setting
-      if: matrix.runs-on == "macos-latest"
+      if: matrix.runs-on == 'macos-latest'
       run: echo "system=mac" >> $GITHUB_ENV
     - name: Linux Setting
-      if: matrix.runs-on == "ubuntu-latest"
+      if: matrix.runs-on == 'ubuntu-latest'
       run: echo "system=linux" >> $GITHUB_ENV
     - name: Windows Setting
-      if: matrix.runs-on == "windows-latest"
+      if: matrix.runs-on == 'windows-latest'
       run: echo "system=win" >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - name: Set up JDK
