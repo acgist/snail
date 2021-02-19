@@ -7,11 +7,11 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         language: [ "java" ]
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
