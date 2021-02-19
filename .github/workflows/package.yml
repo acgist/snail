@@ -20,9 +20,10 @@ jobs:
     - name: Windows Setting
       if: matrix.runs-on == 'windows-latest'
       run: |
-        $version=$GITHUB_REF.substring("/refs/tags/".length)
         echo "system=win" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "version=${{ env.version }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      env:
+        version: $GITHUB_REF.substring("/refs/tags/".length)
     - name: Set Version
       run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
