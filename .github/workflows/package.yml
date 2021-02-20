@@ -5,8 +5,24 @@ on:
     tags: [ "*" ]
 
 jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}版本
+        draft: false
+        prerelease: false
+        body: |
+          [最新版本下载](https://gitee.com/acgist/snail/attach_files)
   build:
-    name: Package
+    name: Build
+    needs: release
     strategy:
       matrix:
         runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
@@ -15,20 +31,26 @@ jobs:
     - name: Mac Setting
       if: matrix.runs-on == 'macos-latest'
       run: |
+        # pkg|dmg
+        echo "suffix=pkg" >> $GITHUB_ENV
         echo "system=mac" >> $GITHUB_ENV
-        echo "args=--type pkg" >> $GITHUB_ENV
+        echo "args=" >> $GITHUB_ENV
     - name: Linux Setting
       if: matrix.runs-on == 'ubuntu-latest'
       run: |
+        # rpm|deb
+        echo "suffix=rpm" >> $GITHUB_ENV
         echo "system=linux" >> $GITHUB_ENV
-        echo "args=--type rpm --linux-shortcut" >> $GITHUB_ENV
+        echo "args=--linux-shortcut" >> $GITHUB_ENV
     - name: Windows Setting
       if: matrix.runs-on == 'windows-latest'
       run: |
         $version="${{ github.ref }}".substring("refs/tags/".length)
+        # msi|exe
+        echo "suffix=msi" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "system=win" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "args=--type msi --win-shortcut --win-dir-chooser" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "args=--win-shortcut --win-dir-chooser" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: Set Version
       run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Checkout repository
@@ -40,6 +62,8 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
     - name: Package Snail
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         mkdir -p ./build/snail/
         cp -v -r ./LICENSE ./build/
@@ -50,6 +74,7 @@ jobs:
         jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
         jpackage \
           --name snail \
+          --type ${{ env.suffix }}
           --app-version ${{ env.version }} \
           --vendor acgist \
           --copyright acgist \
@@ -62,15 +87,6 @@ jobs:
           --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
           --dest ./build/ \
           $args
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: snail
-        path: |
-          snail-*.msi
-          snail-*.exe
-          snail-*.pkg
-          snail-*.dmg
-          snail-*.rpm
-          snail-*.deb
-          snail-*.tar
+        # upload-release-asset不能一次上传多个文件使用hub命令上传
+        hub release edit -a ./snail-${{ env.system }}-${{ env.version }}-without-jre.tar -m "" ${{ env.version }}
+        hub release edit -a ./snail-${{ env.system }}-${{ env.version }}.${{ env.suffix }} -m "" ${{ env.version }}

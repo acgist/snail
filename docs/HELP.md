@@ -71,9 +71,9 @@
 |snail-win-vx.x.x.msi|Win安装版|
 |snail-mac-vx.x.x.pkg|Mac安装版|
 |snail-linux-vx.x.x.rpm|Linux安装版|
-|snail-win-vx.x.x-without-jre.zip|Win绿色版|
-|snail-mac-vx.x.x-without-jre.zip|Mac绿色版|
-|snail-linux-vx.x.x-without-jre.zip|Linux绿色版|
+|snail-win-vx.x.x-without-jre.tar|Win绿色版|
+|snail-mac-vx.x.x-without-jre.tar|Mac绿色版|
+|snail-linux-vx.x.x-without-jre.tar|Linux绿色版|
 
 * 带有`-without-jre`绿色版需要自己安装`Java`运行环境
 
