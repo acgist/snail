@@ -49,7 +49,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	 */
 	@Override
 	protected void buildInput() throws NetException {
-		// 已下载大小
+		// 已经下载大小
 		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 		// HTTP客户端
 		final var client = HttpClient

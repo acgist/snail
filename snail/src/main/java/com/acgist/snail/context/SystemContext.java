@@ -154,7 +154,7 @@ public final class SystemContext implements IContext {
 	public static final void shutdown() {
 		if(Snail.available()) {
 			SystemThreadContext.submit(() -> {
-				LOGGER.info("系统关闭中...");
+				LOGGER.info("系统关闭中");
 				GuiContext.getInstance().hide();
 				Snail.shutdown();
 				TcpClient.shutdown();
@@ -166,7 +166,7 @@ public final class SystemContext implements IContext {
 				LoggerContext.shutdown();
 			});
 		} else {
-			GuiContext.getInstance().alert("关闭提示", "系统正在关闭中...");
+			GuiContext.getInstance().alert("关闭提示", "系统关闭中");
 		}
 	}
 	

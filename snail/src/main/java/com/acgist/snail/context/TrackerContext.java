@@ -226,7 +226,7 @@ public final class TrackerContext implements IContext {
 	 * <p>补充权重最大的客户端</p>
 	 * 
 	 * @param size 补充数量
-	 * @param sessions 已有客户端
+	 * @param sessions 现有客户端
 	 * 
 	 * @return TrackerSession列表
 	 */

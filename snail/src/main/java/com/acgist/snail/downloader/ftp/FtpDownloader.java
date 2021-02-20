@@ -55,7 +55,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 		this.client = FtpClient.newInstance(this.taskSession.getUrl());
 		final boolean success = this.client.connect(); // 建立连接
 		if(success) {
-			// 已下载大小
+			// 已经下载大小
 			final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 			this.input = Channels.newChannel(this.client.download(downloadSize));
 			if(this.client.range()) { // 支持断点续传

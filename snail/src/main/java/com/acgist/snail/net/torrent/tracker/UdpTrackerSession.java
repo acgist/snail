@@ -186,9 +186,9 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putInt(sid); // transaction_id
 		buffer.put(torrentSession.infoHash().infoHash()); // InfoHash
 		buffer.put(PeerService.getInstance().peerId()); // PeerId
-		buffer.putLong(download); // 已下载大小
+		buffer.putLong(download); // 已经下载大小
 		buffer.putLong(left); // 剩余下载大小
-		buffer.putLong(upload); // 已上传大小
+		buffer.putLong(upload); // 已经上传大小
 		buffer.putInt(event.id()); // 事件：completed-1、started-2、stopped-3
 		buffer.putInt(0); // 本机IP：0（服务器自动获取）
 		buffer.putInt(NumberUtils.build()); // 唯一数值

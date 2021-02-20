@@ -22,12 +22,10 @@ public abstract class Downloader implements IDownloader {
 	
 	/**
 	 * <p>任务失败状态</p>
-	 * <p>true-失败；false-正常；</p>
 	 */
 	protected volatile boolean fail = false;
 	/**
 	 * <p>任务完成状态</p>
-	 * <p>true-已完成；false-未完成；</p>
 	 */
 	protected volatile boolean completed = false;
 	/**
@@ -124,7 +122,7 @@ public abstract class Downloader implements IDownloader {
 	public boolean verify() throws DownloadException {
 		final boolean verify = this.taskSession.downloadFile().exists();
 		if(!verify) {
-			// 如果文件已删除修改已下载大小
+			// 如果文件已被删除修改已经下载大小
 			this.taskSession.downloadSize(0L);
 		}
 		return verify;

@@ -51,7 +51,7 @@ public final class TorrentPiece {
 	 */
 	private final boolean verify;
 	/**
-	 * <p>已下载数据大小</p>
+	 * <p>已经下载数据大小</p>
 	 */
 	private int size;
 	/**
