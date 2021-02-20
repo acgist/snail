@@ -69,12 +69,12 @@ public final class BeanUtils {
 	public static final Object objectToString(Object object) {
 		if (object == null) {
 			return null;
-		} else if (object instanceof Enum<?>) {
-			return ((Enum<?>) object).name();
-		} else if (object instanceof Date) {
-			return DateUtils.dateFormat((Date) object);
-		} else if (object instanceof byte[]) {
-			return new String((byte[]) object);
+		} else if (object instanceof Enum<?> value) {
+			return value.name();
+		} else if (object instanceof Date date) {
+			return DateUtils.dateFormat(date);
+		} else if (object instanceof byte[] bytes) {
+			return new String(bytes);
 		} else {
 			return object;
 		}

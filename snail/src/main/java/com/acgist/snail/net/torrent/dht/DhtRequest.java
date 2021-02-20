@@ -235,8 +235,7 @@ public class DhtRequest extends DhtMessage {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof DhtRequest) {
-			final DhtRequest request = (DhtRequest) object;
+		if(object instanceof DhtRequest request) {
 			return Arrays.equals(this.t, request.t);
 		}
 		return false;

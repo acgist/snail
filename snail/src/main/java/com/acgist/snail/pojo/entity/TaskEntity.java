@@ -191,8 +191,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof TaskEntity) {
-			final TaskEntity entity = (TaskEntity) object;
+		if(object instanceof TaskEntity entity) {
 			return StringUtils.equals(this.id, entity.id);
 		}
 		return false;

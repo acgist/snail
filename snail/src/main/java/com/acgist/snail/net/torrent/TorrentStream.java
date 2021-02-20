@@ -175,11 +175,17 @@ public final class TorrentStream {
 		AtomicLong fileBufferSize, TorrentStreamGroup torrentStreamGroup
 	) throws DownloadException {
 		final var stream = new TorrentStream(pieceLength, path, size, pos, completed, fileBufferSize, torrentStreamGroup);
-		// TODO：{}，使用多行文本
-		LOGGER.debug(
-			"创建文件流信息，Piece大小：{}，文件路径：{}，文件大小：{}，文件开始偏移：{}，文件结束偏移：{}，文件Piece数量：{}，文件Piece开始索引：{}，文件Piece结束索引：{}",
-			stream.pieceLength,
+		LOGGER.debug("""
+			创建文件流：{}
+			文件大小：{}
+			Piece大小：{}
+			文件开始偏移：{}
+			文件结束偏移：{}
+			文件Piece数量：{}
+			文件Piece开始索引：{}
+			文件Piece结束索引：{}""",
 			stream.filePath,
+			stream.pieceLength,
 			stream.fileSize,
 			stream.fileBeginPos,
 			stream.fileEndPos,

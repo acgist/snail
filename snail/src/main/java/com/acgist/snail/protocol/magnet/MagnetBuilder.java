@@ -117,27 +117,13 @@ public final class MagnetBuilder {
 				key = query.substring(0, index);
 				value = UrlUtils.decode(query.substring(index + 1));
 				switch (key) {
-				case QUERY_DN:
-					this.dn(value);
-					break;
-				case QUERY_XL:
-					this.xl(value);
-					break;
-				case QUERY_XT:
-					this.xt(value);
-					break;
-				case QUERY_AS:
-					this.as(value);
-					break;
-				case QUERY_XS:
-					this.xs(value);
-					break;
-				case QUERY_TR:
-					this.tr(value);
-					break;
-				default:
-					LOGGER.debug("磁力链接不支持的参数：{}-{}-{}", key, value, this.url);
-					break;
+					case QUERY_DN -> this.dn(value);
+					case QUERY_XL -> this.xl(value);
+					case QUERY_XT -> this.xt(value);
+					case QUERY_AS -> this.as(value);
+					case QUERY_XS -> this.xs(value);
+					case QUERY_TR -> this.tr(value);
+					default -> LOGGER.debug("磁力链接不支持的参数：{}-{}-{}", key, value, this.url);
 				}
 			} else {
 				LOGGER.debug("磁力链接错误参数：{}-{}", query, this.url);

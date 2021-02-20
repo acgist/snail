@@ -81,7 +81,7 @@
 
 ### 环境
 
-* Java：11+
+* Java：16+
 * Maven：3.6.0+
 * 系统支持：win、mac、linux
 

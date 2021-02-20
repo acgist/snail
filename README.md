@@ -6,10 +6,10 @@
 
 <p align="center">
 	<a target="_blank" href="https://openjdk.java.net">
-		<img alt="Java" src="https://img.shields.io/badge/Java-11-yellow.svg?style=flat-square" />
+		<img alt="Java" src="https://img.shields.io/badge/Java-16-yellow.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://openjfx.io">
-		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-11-blueviolet.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-16-blueviolet.svg?style=flat-square" />
 	</a>
 	<a target="_blank" href="https://github.com/acgist/snail">
 		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?color=red&style=flat-square" />

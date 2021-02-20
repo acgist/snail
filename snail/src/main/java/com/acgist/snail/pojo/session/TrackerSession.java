@@ -265,8 +265,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof TrackerSession) {
-			final TrackerSession session = (TrackerSession) object;
+		if(object instanceof TrackerSession session) {
 			return StringUtils.equals(this.announceUrl, session.announceUrl);
 		}
 		return false;

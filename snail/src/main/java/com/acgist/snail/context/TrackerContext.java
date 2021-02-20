@@ -134,14 +134,8 @@ public final class TrackerContext implements IContext {
 	 */
 	public void connectionId(int trackerId, long connectionId) {
 		final var trackerSession = this.trackerSessions.get(trackerId);
-		// 只有UDP Tracker需要获取连接ID
-		if(
-			trackerSession != null &&
-			trackerSession instanceof UdpTrackerSession &&
-			trackerSession.type() == Protocol.Type.UDP
-		) {
-			// TODO：新强转写法
-			final UdpTrackerSession udpTrackerSession = (UdpTrackerSession) trackerSession;
+		if(trackerSession instanceof UdpTrackerSession udpTrackerSession) {
+			// 类型判断不用判断是否为空
 			udpTrackerSession.connectionId(connectionId);
 		}
 	}

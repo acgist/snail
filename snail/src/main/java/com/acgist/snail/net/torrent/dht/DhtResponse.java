@@ -189,8 +189,8 @@ public class DhtResponse extends DhtMessage {
 	 */
 	public int errorCode() {
 		final var value = this.getErrorMessage(0);
-		if(value instanceof Number) {
-			return ((Number) value).intValue();
+		if(value instanceof Number number) {
+			return number.intValue();
 		} else {
 			LOGGER.warn("DHT不支持的错误代码类型：{}", value);
 		}
@@ -204,10 +204,10 @@ public class DhtResponse extends DhtMessage {
 	 */
 	public String errorMessage() {
 		final var value = getErrorMessage(1);
-		if(value instanceof byte[]) {
-			return new String((byte[]) value);
-		} else if(value instanceof String) {
-			return (String) value;
+		if(value instanceof byte[] bytes) {
+			return new String(bytes);
+		} else if(value instanceof String string) {
+			return string;
 		} else {
 			LOGGER.warn("DHT不支持的错误描述类型：{}", value);
 		}
@@ -254,8 +254,7 @@ public class DhtResponse extends DhtMessage {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof DhtResponse) {
-			final DhtResponse response = (DhtResponse) object;
+		if(object instanceof DhtResponse response) {
 			return Arrays.equals(this.t, response.t);
 		}
 		return false;

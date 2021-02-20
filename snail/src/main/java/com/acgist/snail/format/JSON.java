@@ -276,10 +276,10 @@ public final class JSON {
 	 * @param builder JSON字符串Builder
 	 */
 	private static final void serializeValue(Object object, StringBuilder builder) {
-		if(object instanceof String) {
+		if(object instanceof String string) {
 			builder
 				.append(JSON_STRING)
-				.append(escapeValue((String) object))
+				.append(escapeValue(string))
 				.append(JSON_STRING);
 		} else if(object instanceof Number) {
 			builder.append(object.toString());
@@ -287,10 +287,10 @@ public final class JSON {
 			builder.append(object.toString());
 		} else if(object instanceof JSON) {
 			builder.append(object.toString());
-		} else if(object instanceof Map) {
-			serializeMap((Map<?, ?>) object, builder);
-		} else if(object instanceof List) {
-			serializeList((List<?>) object, builder);
+		} else if(object instanceof Map<?, ?> map) {
+			serializeMap(map, builder);
+		} else if(object instanceof List<?> list) {
+			serializeList(list, builder);
 		} else if(object == null) {
 			builder.append(JSON_NULL);
 		} else {
@@ -538,16 +538,16 @@ public final class JSON {
 		final Object value = this.get(key);
 		if(value == null) {
 			return null;
-		} else if(value instanceof JSON) {
-			return (JSON) value;
-		} else if(value instanceof String) {
-			return JSON.ofString((String) value);
-		} else if(value instanceof Map) {
-			final Map<Object, Object> valueMap = ((Map<?, ?>) value).entrySet().stream()
+		} else if(value instanceof JSON json) {
+			return json;
+		} else if(value instanceof String string) {
+			return JSON.ofString(string);
+		} else if(value instanceof Map<?, ?> map) {
+			final Map<Object, Object> valueMap = map.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 			return JSON.ofMap(valueMap);
-		} else if(value instanceof List) {
-			final List<Object> valueList = ((List<?>) value).stream()
+		} else if(value instanceof List<?> list) {
+			final List<Object> valueList = list.stream()
 				.collect(Collectors.toList());
 			return JSON.ofList(valueList);
 		} else {
