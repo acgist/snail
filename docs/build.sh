@@ -44,7 +44,7 @@ cp -vr ./snail-javafx/target/snail.javafx-${version}.jar ./build/snail/
 
 # 打包项目
 
-tar -cvf ./build/snail-${system}-v${version}-without-jre.tar -C ./build/ snail
+tar -cvf ./build/snail-${system}-${version}-without-jre.tar -C ./build/ snail
 
 if [[ $pack == "pack" ]]; then
 # 运行环境
