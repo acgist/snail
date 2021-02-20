@@ -43,7 +43,7 @@ public abstract class Server<T extends Channel> {
 	/**
 	 * @param name 服务端名称
 	 */
-	public Server(String name) {
+	protected Server(String name) {
 		this.name = name;
 	}
 	
