@@ -23,7 +23,7 @@
 	
 	<properties>
 		<!-- 版本 -->
-		<acgist.version>1.7.16</acgist.version>
+		<snail.version>1.7.16</snail.version>
 		<!-- 作者 -->
 		<vendor>acgist</vendor>
 		<!-- 模块 -->
@@ -439,7 +439,12 @@
 			<dependency>
 				<groupId>com.acgist</groupId>
 				<artifactId>snail</artifactId>
-				<version>${acgist.version}</version>
+				<version>${snail.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.acgist</groupId>
+				<artifactId>snail.javafx</artifactId>
+				<version>${snail.version}</version>
 			</dependency>
 			<!-- 测试：JUnit -->
 			<dependency>
