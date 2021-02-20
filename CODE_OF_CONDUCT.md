@@ -137,8 +137,9 @@ list.stream()
 
 #### 抽象类
 
-* 抽象类不使用`base`、`Abstract`开头
+* 不使用`base`、`Abstract`开头
 * 子类必须使用父类后缀结尾
+* 构造方法必须使用`protected`修饰
 
 ###### 示例
 
