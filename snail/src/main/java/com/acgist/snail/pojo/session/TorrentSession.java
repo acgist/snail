@@ -850,7 +850,7 @@ public final class TorrentSession {
 	/**
 	 * <p>指定下载Piece索引</p>
 	 * 
-	 * @param index 指定下载Piece索引
+	 * @param index Piece索引
 	 * 
 	 * @see TorrentStreamGroup#piecePos(int)
 	 */

@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.bean;
 import java.util.Arrays;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DigestUtils;
 
 /**
@@ -299,5 +300,10 @@ public final class TorrentPiece {
 	public byte[] getData() {
 		return this.data;
 	}
-
+	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.index);
+	}
+	
 }
