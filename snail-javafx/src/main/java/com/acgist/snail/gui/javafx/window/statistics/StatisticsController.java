@@ -260,7 +260,9 @@ public final class StatisticsController extends Controller {
 	}
 
 	/**
-	 * @param index 指定下载Piece索引
+	 * <p>指定下载Piece索引</p>
+	 * 
+	 * @param index Piece索引
 	 * 
 	 * @see TorrentSession#piecePos(int)
 	 */
