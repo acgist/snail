@@ -22,7 +22,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends Client<T> {
 	 * @param name 客户端名称
 	 * @param handler 消息代理
 	 */
-	public UdpClient(String name, T handler) {
+	protected UdpClient(String name, T handler) {
 		super(name, handler);
 		this.open();
 	}
