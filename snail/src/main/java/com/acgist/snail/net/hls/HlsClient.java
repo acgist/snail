@@ -90,7 +90,7 @@ public final class HlsClient implements Runnable {
 			return;
 		}
 		LOGGER.debug("下载文件：{}", this.link);
-		// 已下载大小
+		// 已经下载大小
 		long downloadSize = FileUtils.fileSize(this.path);
 		this.completed = this.checkCompleted(downloadSize);
 		if(this.completed) {
@@ -101,7 +101,7 @@ public final class HlsClient implements Runnable {
 			try {
 				this.buildInput(downloadSize);
 				this.buildOutput();
-				// 不支持断点续传：重置已下载大小
+				// 不支持断点续传：重置已经下载大小
 				if(!this.range) {
 					downloadSize = 0L;
 				}
@@ -149,7 +149,7 @@ public final class HlsClient implements Runnable {
 	 * <p>校验是否完成</p>
 	 * <p>文件是否存在、大小是否正确</p>
 	 * 
-	 * @param downloadSize 已下载大小
+	 * @param downloadSize 已经下载大小
 	 * 
 	 * @return 是否完成
 	 */
@@ -179,7 +179,7 @@ public final class HlsClient implements Runnable {
 	/**
 	 * <p>创建{@linkplain #input 输入流}</p>
 	 * 
-	 * @param downloadSize 已下载大小
+	 * @param downloadSize 已经下载大小
 	 * 
 	 * @throws NetException 网络异常
 	 */

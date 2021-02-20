@@ -27,7 +27,6 @@ import com.acgist.snail.utils.FileUtils;
 
 /**
  * <p>文件流组</p>
- * <p>管理BT任务下载文件</p>
  * 
  * @author acgist
  */
@@ -37,14 +36,13 @@ public final class TorrentStreamGroup {
 
 	/**
 	 * <p>指定下载Piece索引</p>
-	 * <p>默认按照顺序从零开始下载</p>
-	 * <p>选择Piece时优先选择该索引后面的Piece</p>
+	 * <p>选择下载Piece开始位置索引</p>
 	 * 
 	 * @see #pick(BitSet, BitSet)
 	 */
 	private volatile int piecePos = 0;
 	/**
-	 * <p>已下载Piece位图</p>
+	 * <p>已经下载Piece位图</p>
 	 */
 	private final BitSet pieces;
 	/**
@@ -58,7 +56,7 @@ public final class TorrentStreamGroup {
 	private boolean full;
 	/**
 	 * <p>完整Piece位图</p>
-	 * <p>已下载Piece位图和Peer的Piece位图</p>
+	 * <p>已经下载Piece位图和Peer的Piece位图</p>
 	 * <dl>
 	 * 	<dt>更新条件</dt>
 	 * 	<dd>加载本地文件</dd>
@@ -286,7 +284,7 @@ public final class TorrentStreamGroup {
 	/**
 	 * <p>挑选下载Piece</p>
 	 * 
-	 * @param peerPieces Peer已下载Piece位图
+	 * @param peerPieces Peer已经下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图
 	 * 
 	 * @return 下载Piece
@@ -391,7 +389,7 @@ public final class TorrentStreamGroup {
 			this.have(piece.getIndex());
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("当前任务已下载Piece数量：{}，剩余未下载Piece数量：{}",
+			LOGGER.debug("当前任务已经下载Piece数量：{}，剩余未下载Piece数量：{}",
 				this.pieces.cardinality(),
 				this.remainingPieceSize()
 			);
@@ -415,7 +413,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>设置已下载的Piece</p>
+	 * <p>设置已经下载的Piece</p>
 	 * <p>文件流Piece下载完成使用</p>
 	 * 
 	 * @param index Piece索引
@@ -457,9 +455,9 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>获取已下载Piece位图</p>
+	 * <p>获取已经下载Piece位图</p>
 	 * 
-	 * @return 已下载Piece位图
+	 * @return 已经下载Piece位图
 	 */
 	public BitSet pieces() {
 		return this.pieces;
@@ -493,8 +491,8 @@ public final class TorrentStreamGroup {
 	 */
 	public int remainingPieceSize() {
 		final BitSet condition = new BitSet();
-		condition.or(this.selectPieces); // 已选择下载
-		condition.andNot(this.pieces); // 排除已下载
+		condition.or(this.selectPieces); // 已经选择下载
+		condition.andNot(this.pieces); // 排除已经下载
 		return condition.cardinality();
 	}
 	
@@ -600,9 +598,9 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>获取任务已下载大小</p>
+	 * <p>获取任务已经下载大小</p>
 	 * 
-	 * @return 任务已下载大小
+	 * @return 任务已经下载大小
 	 * 
 	 * @see TorrentStream#downloadSize()
 	 */

@@ -80,11 +80,11 @@ public final class TorrentStream {
 	 */
 	private final AtomicLong fileBufferSize;
 	/**
-	 * <p>已下载大小</p>
+	 * <p>已经下载大小</p>
 	 */
 	private final AtomicLong fileDownloadSize;
 	/**
-	 * <p>已下载Piece位图</p>
+	 * <p>已经下载Piece位图</p>
 	 * <p>选择Piece时排除这些Piece</p>
 	 */
 	private final BitSet pieces;
@@ -253,7 +253,7 @@ public final class TorrentStream {
 	 * <p>选择未下载的Piece</p>
 	 * 
 	 * @param piecePos 指定下载Piece索引
-	 * @param peerPieces Peer已下载Piece位图
+	 * @param peerPieces Peer已经下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图：优先使用
 	 * 
 	 * @return 未下载的Piece
@@ -264,7 +264,7 @@ public final class TorrentStream {
 			return null;
 		}
 		if(peerPieces.isEmpty() && suggestPieces.isEmpty()) {
-			// Peer没有已下载Piece位图
+			// Peer没有已经下载Piece位图
 			return null;
 		}
 		if(this.completed()) {
@@ -313,7 +313,7 @@ public final class TorrentStream {
 	 * <p>如果挑选不到数据（任务接近完成）：重复挑选下载中的Piece</p>
 	 * <p>如果挑选不到数据（任务正常下载）：可以挑选暂停中的Piece</p>
 	 * 
-	 * @param peerPieces Peer已下载Piece位图
+	 * @param peerPieces Peer已经下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图：优先使用
 	 * 
 	 * @return 未下载的Piece位图
@@ -328,7 +328,7 @@ public final class TorrentStream {
 			pickPieces.andNot(this.downloadPieces);
 		}
 		if(pickPieces.isEmpty()) {
-			// 没有数据使用Peer已下载Piece位图
+			// 没有数据使用Peer已经下载Piece位图
 			pickPieces.or(peerPieces);
 			pickPieces.andNot(this.pieces);
 			pickPieces.andNot(this.pausePieces);
@@ -386,7 +386,7 @@ public final class TorrentStream {
 				this.done(index);
 				// 更新缓存大小
 				this.fileBufferSize.addAndGet(piece.getLength());
-				// 设置已下载大小
+				// 设置已经下载大小
 				this.buildFileDownloadSize();
 				// 下载完成数据刷出
 				if(this.completed()) {
@@ -456,7 +456,7 @@ public final class TorrentStream {
 	 * @param index Piece索引
 	 * @param size 数据大小
 	 * @param pos 数据偏移
-	 * @param ignoreHasPiece 是否忽略已下载Piece位图
+	 * @param ignoreHasPiece 是否忽略已经下载Piece位图
 	 * 
 	 * @return Piece数据
 	 */
@@ -504,9 +504,9 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>获取文件已下载大小</p>
+	 * <p>获取文件已经下载大小</p>
 	 * 
-	 * @return 文件已下载大小
+	 * @return 文件已经下载大小
 	 */
 	public long downloadSize() {
 		return this.fileDownloadSize.get();
@@ -618,7 +618,7 @@ public final class TorrentStream {
 	/**
 	 * <p>校验文件</p>
 	 * <p>使用种子Hash校验文件</p>
-	 * <p>校验文件重新设置已下载文件信息</p>
+	 * <p>校验文件重新设置已经下载文件信息</p>
 	 * 
 	 * @return 校验结果
 	 * 
@@ -645,7 +645,7 @@ public final class TorrentStream {
 			this.buildFileDownloadSize();
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("当前文件流已下载Piece数量：{}，剩余下载Piece数量：{}",
+			LOGGER.debug("当前文件流已经下载Piece数量：{}，剩余下载Piece数量：{}",
 				this.pieces.cardinality(),
 				this.filePieceSize - this.pieces.cardinality()
 			);
@@ -719,7 +719,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>加载已下载Piece位图</p>
+	 * <p>加载已经下载Piece位图</p>
 	 * 
 	 * @param completed 任务是否完成
 	 */
@@ -745,7 +745,7 @@ public final class TorrentStream {
 			}
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("当前文件流已下载Piece数量：{}，剩余下载Piece数量：{}",
+			LOGGER.debug("当前文件流已经下载Piece数量：{}，剩余下载Piece数量：{}",
 				this.pieces.cardinality(),
 				this.filePieceSize - this.pieces.cardinality()
 			);
@@ -753,11 +753,11 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>设置已下载大小</p>
+	 * <p>设置已经下载大小</p>
 	 */
 	private void buildFileDownloadSize() {
-		long size = 0L; // 已下载大小
-		// 已下载Piece数量
+		long size = 0L; // 已经下载大小
+		// 已经下载Piece数量
 		int downloadPieceSize = this.pieces.cardinality();
 		if(this.fileInOnePiece()) {
 			// 第一块和最后一块大小一样
@@ -851,11 +851,11 @@ public final class TorrentStream {
 	}
 
 	/**
-	 * <p>判断是否已下载Piece数据</p>
+	 * <p>判断是否已经下载Piece数据</p>
 	 * 
 	 * @param index Piece索引
 	 * 
-	 * @return 是否已下载
+	 * @return 是否已经下载
 	 */
 	private boolean hasPiece(int index) {
 		return this.pieces.get(index);

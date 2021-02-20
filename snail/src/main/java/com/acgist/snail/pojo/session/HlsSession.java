@@ -160,16 +160,16 @@ public final class HlsSession {
 	}
 	
 	/**
-	 * <p>设置已下载大小</p>
+	 * <p>设置已经下载大小</p>
 	 * <p>注意：下载大小通过计算预计得出</p>
 	 * 
 	 * @param size 下载文件大小
 	 */
 	public void downloadSize(long size) {
-		// 设置已下载大小
+		// 设置已经下载大小
 		final long newDownloadSize = this.downloadSize.addAndGet(size);
 		this.taskSession.downloadSize(newDownloadSize);
-		// 已下载文件数量
+		// 已经下载文件数量
 		int downloadFileSize;
 		synchronized (this.clients) {
 			downloadFileSize = this.fileSize - this.clients.size();

@@ -166,9 +166,9 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	protected Object buildAnnounceMessage(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event) {
 		// 剩余下载大小
 		long left = 0L;
-		// 已上传大小
+		// 已经上传大小
 		long upload = 0L;
-		// 已下载大小
+		// 已经下载大小
 		long download = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
@@ -186,8 +186,8 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
 	 * @param event 事件
-	 * @param upload 已上传大小
-	 * @param download 已下载大小
+	 * @param upload 已经上传大小
+	 * @param download 已经下载大小
 	 * @param left 剩余下载大小
 	 * 
 	 * @return 声明消息

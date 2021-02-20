@@ -670,9 +670,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>创建已下载Piece位图</p>
+	 * <p>创建已经下载Piece位图</p>
 	 * 
-	 * @return 已下载Piece位图
+	 * @return 已经下载Piece位图
 	 */
 	public BitSet buildPieces() {
 		final byte[] payload = this.taskSession.getPayload();
@@ -684,7 +684,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>更新已下载Piece位图</p>
+	 * <p>更新已经下载Piece位图</p>
 	 * 
 	 * @param persistent 是否保存
 	 */
@@ -801,9 +801,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>设置已下载大小</p>
+	 * <p>设置已经下载大小</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param size 已经下载大小
 	 * 
 	 * @see ITaskSession#downloadSize(long)
 	 */
@@ -861,7 +861,7 @@ public final class TorrentSession {
 	/**
 	 * <p>挑选下载Piece</p>
 	 * 
-	 * @param peerPieces Peer已下载Piece位图
+	 * @param peerPieces Peer已经下载Piece位图
 	 * @param suggestPieces Peer推荐Piece位图
 	 * 
 	 * @return 下载Piece
@@ -974,9 +974,9 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>获取已下载Piece位图</p>
+	 * <p>获取已经下载Piece位图</p>
 	 * 
-	 * @return 已下载Piece位图
+	 * @return 已经下载Piece位图
 	 * 
 	 * @see TorrentStreamGroup#pieces()
 	 */

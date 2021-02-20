@@ -46,7 +46,7 @@ public class PeerClientTest extends Performance {
 //		final Integer port = 15000; // 迅雷测试端口
 //		final Integer port = 18888; // 蜗牛测试端口
 		final Integer port = 49160; // FDM测试端口
-		this.log("已下载Piece：" + torrentSession.pieces());
+		this.log("已经下载Piece：" + torrentSession.pieces());
 		final var statisticsSession = new StatisticsSession();
 		final var peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		// UTP支持

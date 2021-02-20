@@ -85,7 +85,6 @@ public final class TaskContext implements IContext {
 				// 任务添加必须创建下载器
 				taskSession.buildDownloader();
 				if(this.tasks.contains(taskSession)) {
-					// 任务已经添加
 					LOGGER.debug("任务已经存在：{}", taskSession.getName());
 				} else {
 					this.tasks.add(taskSession); // 添加任务

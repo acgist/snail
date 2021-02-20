@@ -120,9 +120,9 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	List<String> multifileSelected();
 
 	/**
-	 * <p>设置已下载大小</p>
+	 * <p>设置已经下载大小</p>
 	 * 
-	 * @param size 已下载大小
+	 * @param size 已经下载大小
 	 */
 	void downloadSize(long size);
 	

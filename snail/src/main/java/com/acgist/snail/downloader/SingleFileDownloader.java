@@ -98,7 +98,7 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	/**
 	 * <p>创建{@linkplain #output 输出流}</p>
-	 * <p>通过判断任务已下载大小判断是否支持断点续传</p>
+	 * <p>通过判断任务已经下载大小判断是否支持断点续传</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -123,7 +123,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>创建{@linkplain #input 输入流}</p>
-	 * <p>验证是否支持断点续传，如果支持重新设置任务已下载大小。</p>
+	 * <p>验证是否支持断点续传，如果支持重新设置任务已经下载大小。</p>
 	 * 
 	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常

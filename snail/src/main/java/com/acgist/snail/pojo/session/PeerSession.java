@@ -78,7 +78,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	 */
 	private byte[] reserved;
 	/**
-	 * <p>已下载Piece位图</p>
+	 * <p>已经下载Piece位图</p>
 	 * 
 	 * TODO：不是线程安全：是否加锁
 	 */
@@ -276,16 +276,16 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	}
 	
 	/**
-	 * <p>设置已下载Piece位图</p>
+	 * <p>设置已经下载Piece位图</p>
 	 * 
-	 * @param pieces 已下载Piece位图
+	 * @param pieces 已经下载Piece位图
 	 */
 	public void pieces(BitSet pieces) {
 		this.pieces.or(pieces);
 	}
 
 	/**
-	 * <p>设置已下载Piece位图</p>
+	 * <p>设置已经下载Piece位图</p>
 	 * 
 	 * @param index Piece索引
 	 */
@@ -296,7 +296,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	}
 	
 	/**
-	 * <p>取消已下载Piece位图</p>
+	 * <p>取消已经下载Piece位图</p>
 	 * 
 	 * @param index Piece索引
 	 */

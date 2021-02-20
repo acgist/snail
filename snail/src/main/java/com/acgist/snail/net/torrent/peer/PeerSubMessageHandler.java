@@ -880,7 +880,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		}
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer已下载Piece位图
+		final BitSet pieces = BitfieldUtils.toBitSet(bytes); // Peer已经下载Piece位图
 		LOGGER.debug("处理Piece位图消息：{}", pieces);
 		this.peerSession.pieces(pieces);
 		this.torrentSession.fullPieces(pieces);

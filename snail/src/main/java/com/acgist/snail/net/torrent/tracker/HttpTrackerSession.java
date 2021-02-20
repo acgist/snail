@@ -142,8 +142,8 @@ public final class HttpTrackerSession extends TrackerSession {
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&") // InfoHash
 			.append("peer_id").append("=").append(PeerService.getInstance().peerIdUrl()).append("&") // PeerId
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&") // 外网Peer端口
-			.append("uploaded").append("=").append(upload).append("&") // 已上传大小
-			.append("downloaded").append("=").append(download).append("&") // 已下载大小
+			.append("uploaded").append("=").append(upload).append("&") // 已经上传大小
+			.append("downloaded").append("=").append(download).append("&") // 已经下载大小
 			.append("left").append("=").append(left).append("&") // 剩余下载大小
 			.append("compact").append("=").append("1").append("&") // 默认：1（紧凑）
 			.append("event").append("=").append(event.value()).append("&") // 事件：completed、started、stopped

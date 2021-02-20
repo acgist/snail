@@ -67,7 +67,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private String description;
 	/**
 	 * <p>任务负载</p>
-	 * <p>BT任务：已下载Piece位图</p>
+	 * <p>BT任务：已经下载Piece位图</p>
 	 */
 	private byte[] payload;
 	

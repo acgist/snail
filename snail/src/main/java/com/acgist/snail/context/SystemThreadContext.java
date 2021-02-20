@@ -258,7 +258,7 @@ public final class SystemThreadContext implements IContext {
 	/**
 	 * <p>关闭线程池</p>
 	 * <p>立即关闭：调用正在运行的任务线程的interrupt方法，队列任务不会被执行，不能继续添加任务。</p>
-	 * <p>正常关闭：不能继续添加任务，已添加和正在执行的任务都会执行。</p>
+	 * <p>正常关闭：不能继续添加任务，已经添加和正在执行的任务都会执行。</p>
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param executor 线程池
