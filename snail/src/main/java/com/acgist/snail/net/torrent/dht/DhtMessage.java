@@ -187,8 +187,7 @@ public abstract class DhtMessage {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof DhtMessage) {
-			final DhtMessage message = (DhtMessage) object;
+		if(object instanceof DhtMessage message) {
 			return Arrays.equals(this.t, message.t);
 		}
 		return false;

@@ -194,32 +194,30 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			buffer.get(extData);
 		}
 		switch (type) {
-		case DATA:
-			if(this.connect) {
-				this.data(timestamp, seqnr, acknr, buffer);
-			} else {
-				this.close();
-			}
-			break;
-		case STATE:
-			this.state(timestamp, seqnr, acknr, wndSize);
-			break;
-		case FIN:
-			this.fin(timestamp, seqnr, acknr);
-			break;
-		case RESET:
-			this.reset(timestamp, seqnr, acknr);
-			break;
-		case SYN:
-			this.syn(timestamp, seqnr, acknr);
-			break;
-		default:
-			// TODO：多行日志
-			LOGGER.warn(
-				"处理UTP消息错误（未知类型），类型：{}，扩展：{}，连接ID：{}，时间戳：{}，时间差：{}，窗口大小：{}，请求编号：{}，应答编号：{}",
-				type, extension, connectionId, timestamp, timestampDifference, wndSize, seqnr, acknr
+			case DATA -> this.data(timestamp, seqnr, acknr, buffer);
+			case STATE -> this.state(timestamp, seqnr, acknr, wndSize);
+			case FIN -> this.fin(timestamp, seqnr, acknr);
+			case RESET -> this.reset(timestamp, seqnr, acknr);
+			case SYN -> this.syn(timestamp, seqnr, acknr);
+			default -> LOGGER.warn("""
+				处理UTP消息错误（未知类型）
+				类型：{}
+				扩展：{}
+				连接ID：{}
+				时间戳：{}
+				时间差：{}
+				窗口大小：{}
+				请求编号：{}
+				应答编号：{}""",
+				type,
+				extension,
+				connectionId,
+				timestamp,
+				timestampDifference,
+				wndSize,
+				seqnr,
+				acknr
 			);
-			break;
 		}
 	}
 
@@ -329,14 +327,18 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @throws NetException 网络异常
 	 */
 	private void data(int timestamp, short seqnr, short acknr, ByteBuffer buffer) throws NetException {
-		// TODO：处理acknr
+		if(!this.connect) {
+			LOGGER.debug("UTP通道没有连接：{}-{}", seqnr, acknr);
+			this.close();
+		}
 		LOGGER.debug("处理数据消息：{}", seqnr);
 		try {
 			this.recvWindow.receive(timestamp, seqnr, buffer);
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {
-			this.state(timestamp, this.recvWindow.seqnr()); // 最后一次处理的接收请求编号
+			// 最后一次处理成功请求编号
+			this.state(timestamp, this.recvWindow.seqnr());
 		}
 	}
 	

@@ -845,8 +845,7 @@ public final class StatisticsController extends Controller {
 			if(this == object) {
 				return true;
 			}
-			if(object instanceof SelectInfoHash) {
-				final SelectInfoHash selectInfoHash = (SelectInfoHash) object;
+			if(object instanceof SelectInfoHash selectInfoHash) {
 				return StringUtils.equals(this.hash, selectInfoHash.hash);
 			}
 			return false;

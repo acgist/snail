@@ -223,16 +223,16 @@ public final class BEncodeEncoder {
 	 * @param value 数据
 	 */
 	private void writeObject(Object value) {
-		if(value instanceof String) {
-			this.writeBytes(((String) value).getBytes());
-		} else if(value instanceof Number) {
-			this.writeNumber((Number) value);
-		} else if(value instanceof byte[]) {
-			this.writeBytes((byte[]) value);
-		} else if(value instanceof Map) {
-			this.writeMap((Map<?, ?>) value);
-		} else if(value instanceof List) {
-			this.writeList((List<?>) value);
+		if(value instanceof String string) {
+			this.writeBytes(string.getBytes());
+		} else if(value instanceof Number number) {
+			this.writeNumber(number);
+		} else if(value instanceof byte[] bytes) {
+			this.writeBytes(bytes);
+		} else if(value instanceof Map<?, ?> map) {
+			this.writeMap(map);
+		} else if(value instanceof List<?> list) {
+			this.writeList(list);
 		} else if(value == null) {
 			this.writeBytes(new byte[0]);
 		} else {

@@ -84,9 +84,14 @@ public abstract class Performance {
 	protected final long costed() {
 		final long time = System.currentTimeMillis();
 		final long costed = time - this.costTime.getAndSet(time);
-		// TODO：多行文本
-		LOGGER.info("消耗时间（毫秒）：{}", costed);
-		LOGGER.info("消耗时间（秒）：{}", costed / SystemConfig.ONE_SECOND_MILLIS);
+		if(LOGGER.isInfoEnabled()) {
+			LOGGER.info("""
+				消耗时间（毫秒）：{}
+				消耗时间（秒）：{}""",
+				costed,
+				costed / SystemConfig.ONE_SECOND_MILLIS
+			);
+		}
 		return costed;
 	}
 	

@@ -828,9 +828,8 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof PeerSession) {
-			final PeerSession peerSession = (PeerSession) object;
-			return peerSession.equals(this.host, this.port);
+		if(object instanceof PeerSession session) {
+			return this.equals(session.host, session.port);
 		}
 		return false;
 	}

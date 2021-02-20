@@ -1,7 +1,5 @@
 package com.acgist.snail.config;
 
-import java.nio.file.Paths;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,11 +165,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>任务列表刷新时间（秒）：{@value}</p>
 	 */
 	public static final int TASK_REFRESH_INTERVAL = 4;
-	/**
-	 * <p>用户工作目录</p>
-	 * <p>注意：初始化为常量（不能使用类变量：本类初始化时会使用）</p>
-	 */
-	private static final String USER_DIR = System.getProperty("user.dir");
 	
 	static {
 		LOGGER.debug("初始化系统配置：{}", SYSTEM_CONFIG);
@@ -347,7 +340,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>记录日志</p>
 	 */
 	private void logger() {
-		LOGGER.debug("用户工作目录：{}", SystemConfig.USER_DIR);
 		LOGGER.debug("软件名称：{}", this.name);
 		LOGGER.debug("软件名称（英文）：{}", this.nameEn);
 		LOGGER.debug("软件版本：{}", this.version);
@@ -604,26 +596,6 @@ public final class SystemConfig extends PropertiesConfig {
 		return INSTANCE.peerOptimizeInterval;
 	}
 
-	/**
-	 * <p>获取用户工作目录</p>
-	 * 
-	 * @return 用户工作目录
-	 */
-	public static final String userDir() {
-		return SystemConfig.USER_DIR;
-	}
-	
-	/**
-	 * <p>获取用户工作目录中的文件路径</p>
-	 * 
-	 * @param path 文件相对路径
-	 * 
-	 * @return 用户工作目录中的文件路径
-	 */
-	public static final String userDir(String path) {
-		return Paths.get(userDir(), path).toString();
-	}
-	
 	/**
 	 * <p>获取软件信息</p>
 	 * 

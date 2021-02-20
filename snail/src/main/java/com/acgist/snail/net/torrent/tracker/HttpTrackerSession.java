@@ -190,12 +190,11 @@ public final class HttpTrackerSession extends TrackerSession {
 		final String failureReason = decoder.getString("failure reason");
 		final Object peersObject = decoder.get("peers");
 		Map<String, Integer> peers;
-		if(peersObject instanceof byte[]) {
-			peers = PeerUtils.read((byte[]) peersObject);
+		if(peersObject instanceof byte[] bytes) {
+			peers = PeerUtils.read(bytes);
 		} else {
 			peers = new HashMap<>();
-			// TODO：List解析
-			LOGGER.warn("Peer声明消息格式没有适配：{}", peersObject);
+			LOGGER.debug("Peer声明消息格式没有适配：{}", peersObject);
 		}
 		final AnnounceMessage message = new AnnounceMessage();
 		message.setId(sid);

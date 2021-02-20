@@ -93,8 +93,7 @@ public abstract class Entity implements Serializable {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof Entity) {
-			final Entity entity = (Entity) object;
+		if(object instanceof Entity entity) {
 			return StringUtils.equals(this.id, entity.id);
 		}
 		return false;

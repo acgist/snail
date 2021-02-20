@@ -158,8 +158,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof NodeSession) {
-			final NodeSession session = (NodeSession) object;
+		if(object instanceof NodeSession session) {
 			return Arrays.equals(this.id, session.id);
 		}
 		return false;

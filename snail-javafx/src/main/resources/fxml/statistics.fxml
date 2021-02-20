@@ -24,7 +24,7 @@
 		</HBox>
 		<HBox fx:id="systemTabs" styleClass="tabs">
 			<Button fx:id="system" text="系统信息" onAction="#handleSystemAction" />
-			<Button fx:id="node" text="节点统计"  onAction="#handleNodeAction" />
+			<Button fx:id="node" text="节点统计" onAction="#handleNodeAction" />
 			<Button fx:id="tracker" text="Tracker统计" onAction="#handleTrackerAction" />
 			<Button fx:id="client" text="客户端统计" onAction="#handleClientAction" />
 		</HBox>

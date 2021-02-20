@@ -68,8 +68,7 @@ public final class ConfigEntity extends Entity {
 		if(this == object) {
 			return true;
 		}
-		if(object instanceof ConfigEntity) {
-			final ConfigEntity entity = (ConfigEntity) object;
+		if(object instanceof ConfigEntity entity) {
 			return StringUtils.equals(this.id, entity.id);
 		}
 		return false;

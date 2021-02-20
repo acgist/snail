@@ -501,8 +501,7 @@ public final class StringUtils {
 		if(object == null) {
 			return null;
 		}
-		if(object instanceof byte[]) {
-			final byte[] bytes = (byte[]) object;
+		if(object instanceof byte[] bytes) {
 			if(encoding != null) {
 				try {
 					return new String(bytes, encoding);

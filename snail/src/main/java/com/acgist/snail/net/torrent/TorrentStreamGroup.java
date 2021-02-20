@@ -388,9 +388,10 @@ public final class TorrentStreamGroup {
 		if(success) {
 			this.have(piece.getIndex());
 		}
-		// TODO：多行文本
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("当前任务已经下载Piece数量：{}，剩余未下载Piece数量：{}",
+			LOGGER.debug("""
+				任务已经下载Piece数量：{}
+				剩余未下载的Piece数量：{}""",
 				this.pieces.cardinality(),
 				this.remainingPieceSize()
 			);

@@ -275,10 +275,10 @@ public final class EntityContext implements IContext {
 				this.taskEntities.clear();
 				this.configEntities.clear();
 				list.forEach(object -> {
-					if(object instanceof TaskEntity) {
-						this.taskEntities.add((TaskEntity) object);
-					} else if(object instanceof ConfigEntity) {
-						this.configEntities.add((ConfigEntity) object);
+					if(object instanceof TaskEntity entity) {
+						this.taskEntities.add(entity);
+					} else if(object instanceof ConfigEntity entity) {
+						this.configEntities.add(entity);
 					} else {
 						LOGGER.warn("未知实体类型：{}", object);
 					}

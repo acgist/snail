@@ -33,6 +33,10 @@ public final class FileUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
 	/**
+	 * <p>用户工作目录</p>
+	 */
+	private static final String USER_DIR = System.getProperty("user.dir");
+	/**
 	 * <p>文件大小单位</p>
 	 */
 	private static final String[] FILE_SCALE_UNIT = {"B", "KB", "M", "G", "T"};
@@ -82,6 +86,7 @@ public final class FileUtils {
 		));
 		// 未知文件
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of());
+		LOGGER.debug("用户工作目录：{}", FileUtils.userDir());
 	}
 	
 	private FileUtils() {
@@ -465,6 +470,26 @@ public final class FileUtils {
 	}
 	
 	/**
+	 * <p>获取用户工作目录</p>
+	 * 
+	 * @return 用户工作目录
+	 */
+	public static final String userDir() {
+		return USER_DIR;
+	}
+	
+	/**
+	 * <p>获取用户工作目录中的文件路径</p>
+	 * 
+	 * @param path 文件相对路径
+	 * 
+	 * @return 用户工作目录中的文件路径
+	 */
+	public static final String userDir(String path) {
+		return file(userDir(), path);
+	}
+	
+	/**
 	 * <p>获取用户工作目录中的文件</p>
 	 * 
 	 * @param path 文件相对路径
@@ -472,7 +497,7 @@ public final class FileUtils {
 	 * @return 文件
 	 */
 	public static final File userDirFile(String path) {
-		return new File(SystemConfig.userDir(path));
+		return new File(userDir(path));
 	}
 	
 }
