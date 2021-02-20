@@ -14,7 +14,7 @@ fi
 # 系统参数
 
 if [[ $system == "win" ]]; then
-    args="--type msi --win-shortcut --win-dir-chooser" # win:msi|exe
+    args="--type msi --win-shortcut --win-dir-chooser --win-per-user-install" # win:msi|exe
 elif [[ $system == "mac" ]]; then
     args="--type pkg" # mac:pkg|dmg
 elif [[ $system == "linux" ]]; then

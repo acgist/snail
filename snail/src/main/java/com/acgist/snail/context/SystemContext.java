@@ -193,10 +193,10 @@ public final class SystemContext implements IContext {
 				.get()
 				.responseToString();
 			final JSON json = JSON.ofString(body);
-			// 最新版本：v1.0.0
+			// 最新版本：1.0.0
 			final String latestVersion = json.getString("tag_name");
 			LOGGER.debug("版本信息：{}-{}", version, latestVersion);
-			return latestVersion.substring(1).equals(version);
+			return latestVersion.equals(version);
 		} catch (NetException e) {
 			LOGGER.error("获取版本信息异常", e);
 		}
