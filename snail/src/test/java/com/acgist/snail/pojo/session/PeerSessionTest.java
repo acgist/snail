@@ -11,10 +11,10 @@ import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
 import com.acgist.snail.utils.Performance;
 
-public class PeerSessionTest extends Performance {
+class PeerSessionTest extends Performance {
 
 	@Test
-	public void testPeerSession() {
+	void testPeerSession() {
 		final PeerSession session = PeerSession.newInstance(new StatisticsSession(), "192.168.1.100", 18888);
 		assertTrue(session.unknownClientName());
 		session.piece(1);
@@ -56,7 +56,7 @@ public class PeerSessionTest extends Performance {
 	}
 	
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		PeerSession a = PeerSession.newInstance(null, "1234", 12);
 		PeerSession b = PeerSession.newInstance(null, "1234", 12);
 		assertEquals(a, b);

@@ -10,10 +10,10 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.Performance;
 
-public class MSECipherTest extends Performance {
+class MSECipherTest extends Performance {
 
 	@Test
-	public void testMSECipher() throws NetException {
+	void testMSECipher() throws NetException {
 		final byte[] secret = ArrayUtils.random(16);
 		final InfoHash infoHash = InfoHash.newInstance(ArrayUtils.random(20));
 		final var sender = MSECipher.newSender(secret, infoHash);
@@ -33,7 +33,7 @@ public class MSECipherTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() throws NetException {
+	void testCosted() throws NetException {
 		final byte[] secret = ArrayUtils.random(16);
 		final InfoHash infoHash = InfoHash.newInstance(ArrayUtils.random(20));
 		final var sender = MSECipher.newSender(secret, infoHash);

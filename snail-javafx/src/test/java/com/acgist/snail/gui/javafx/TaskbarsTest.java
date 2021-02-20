@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TaskbarsTest extends Performance {
+class TaskbarsTest extends Performance {
 
 	@Test
-	public void testTaskbars() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	void testTaskbars() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		if(SKIP_COSTED) {
 			this.log("跳过testTaskbars测试");
 			return;

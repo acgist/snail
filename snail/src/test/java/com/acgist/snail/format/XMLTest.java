@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class XMLTest extends Performance {
+class XMLTest extends Performance {
 
 	@Test
-	public void testXML() {
+	void testXML() {
 		final XML xml = XML.build();
 		final String text = "text";
 		final var root = xml.element(xml.document(), "root");
@@ -33,7 +33,7 @@ public class XMLTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		long costed = this.costed(10000, () -> {
 			final XML xml = XML.build();
 			var root = xml.element(xml.document(), "root");

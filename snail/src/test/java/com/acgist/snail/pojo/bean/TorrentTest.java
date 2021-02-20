@@ -12,10 +12,10 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class TorrentTest extends Performance {
+class TorrentTest extends Performance {
 
 	@Test
-	public void testTorrent() throws Exception {
+	void testTorrent() throws Exception {
 //		String path = "E:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
 		String path = "E:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent"; // 没有编码：UTF-8
 //		String path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
@@ -48,7 +48,7 @@ public class TorrentTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() throws DownloadException {
+	void testCosted() throws DownloadException {
 		assertDoesNotThrow(() -> this.costed(1000, () -> {
 			try {
 				TorrentContext.loadTorrent("E:/snail/b3e9dcb123b80078aa5ace79323f925e8f755a6a.torrent");

@@ -10,10 +10,10 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.Performance;
 
-public class UdpTrackerSessionTest extends Performance {
+class UdpTrackerSessionTest extends Performance {
 
 	@Test
-	public void testAnnounce() throws NetException, DownloadException {
+	void testAnnounce() throws NetException, DownloadException {
 		final String path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 //		final String announceUrl = "udp://explodie.org:6969/announce";
 		final String announceUrl = "udp://tracker.moeking.me:6969/announce";

@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class TrackerContextTest extends Performance {
+class TrackerContextTest extends Performance {
 
 	@Test
-	public void testTrackerContext() {
+	void testTrackerContext() {
 		assertNotNull(TrackerContext.getInstance());
 	}
 	
 	@Test
-	public void testError() {
+	void testError() {
 		assertNotNull(TrackerContext.getInstance().sessions("acgist://www.acgist.com"));
 	}
 	

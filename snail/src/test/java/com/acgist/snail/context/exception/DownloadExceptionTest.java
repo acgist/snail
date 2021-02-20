@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DownloadExceptionTest extends Performance {
+class DownloadExceptionTest extends Performance {
 
 	@Test
-	public void testDownloadException() {
+	void testDownloadException() {
 		DownloadException exception = assertThrows(DownloadException.class, () -> {throw new DownloadException();});
 		this.log(exception.getMessage());
 		exception = assertThrows(DownloadException.class, () -> {throw new DownloadException("测试下载异常");});

@@ -13,10 +13,10 @@ import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class HttpDownloaderTest extends Performance {
+class HttpDownloaderTest extends Performance {
 	
 	@Test
-	public void testHttpDownloaderBuild() throws DownloadException {
+	void testHttpDownloaderBuild() throws DownloadException {
 		final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
 		ProtocolContext.getInstance().register(HttpProtocol.getInstance()).available(true);
 		final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
@@ -27,7 +27,7 @@ public class HttpDownloaderTest extends Performance {
 	}
 
 	@Test
-	public void testHttpDownloader() throws DownloadException {
+	void testHttpDownloader() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testHttpDownloader测试");
 			return;

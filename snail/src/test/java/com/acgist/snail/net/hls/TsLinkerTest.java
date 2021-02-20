@@ -15,10 +15,10 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class TsLinkerTest extends Performance {
+class TsLinkerTest extends Performance {
 
 	@Test
-	public void testLink() throws DownloadException {
+	void testLink() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testLink测试");
 			return;

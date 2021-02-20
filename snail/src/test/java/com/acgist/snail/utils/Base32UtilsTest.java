@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class Base32UtilsTest extends Performance {
+class Base32UtilsTest extends Performance {
 
 	@Test
-	public void testBase32Utils() {
+	void testBase32Utils() {
 		var content = Base32Utils.encode(StringUtils.unhex("fa493c8add6d907a0575631831033dcf94ba5217"));
 		assertEquals("7JETZCW5NWIHUBLVMMMDCAZ5Z6KLUUQX", content);
 		assertEquals("fa493c8add6d907a0575631831033dcf94ba5217", StringUtils.hex(Base32Utils.decode(content)));

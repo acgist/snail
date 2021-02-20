@@ -10,17 +10,17 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.entity.TaskEntity;
 
-public class BeanUtilsTest extends Performance {
+class BeanUtilsTest extends Performance {
 
 	@Test
-	public void testNewInstance() {
+	void testNewInstance() {
 		final var task = BeanUtils.newInstance(TaskEntity.class);
 		assertNotNull(task);
 		this.costed(100000, () -> BeanUtils.newInstance(TaskEntity.class));
 	}
 	
 	@Test
-	public void testToString() {
+	void testToString() {
 		final var task = new TaskEntity();
 		task.setId("1234");
 		task.setEndDate(new Date());
@@ -30,7 +30,7 @@ public class BeanUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testProperty() {
+	void testProperty() {
 		final var entity = new TaskEntity();
 		entity.setId("1234");
 		this.log(BeanUtils.properties(TaskEntity.class));

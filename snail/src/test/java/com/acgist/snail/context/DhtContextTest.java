@@ -8,10 +8,10 @@ import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.net.torrent.dht.response.PingResponse;
 import com.acgist.snail.utils.Performance;
 
-public class DhtContextTest extends Performance {
+class DhtContextTest extends Performance {
 
 	@Test
-	public void testRequest() {
+	void testRequest() {
 		final var request = PingRequest.newRequest();
 		DhtContext.getInstance().request(request);
 		final var response = DhtContext.getInstance().response(PingResponse.newInstance(request));
@@ -19,7 +19,7 @@ public class DhtContextTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		this.costed(100000, () -> this.testRequest());
 //		this.costed(100000, () -> DhtContext.getInstance().buildRequestId());
 	}

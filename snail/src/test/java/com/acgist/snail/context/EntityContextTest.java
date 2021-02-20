@@ -22,23 +22,23 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.Performance;
 
-public class EntityContextTest extends Performance {
+class EntityContextTest extends Performance {
 	
 	@BeforeAll
-	public static final void load() {
+	static final void load() {
 		LoggerConfig.off();
 		EntityContext.getInstance().load();
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		this.costed(10000, () -> EntityContext.getInstance().load());
 		this.costed(10000, () -> EntityContext.getInstance().persistent());
 		assertNotNull(EntityContext.getInstance());
 	}
 
 	@Test
-	public void testAll() {
+	void testAll() {
 		EntityContext.getInstance().allTask().forEach(this::log);
 		EntityContext.getInstance().allConfig().forEach(this::log);
 		assertNotNull(EntityContext.getInstance());
@@ -46,7 +46,7 @@ public class EntityContextTest extends Performance {
 	
 	@Test
 	@Order(0)
-	public void testSaveTask() {
+	void testSaveTask() {
 		final TaskEntity entity = new TaskEntity();
 		entity.setName("测试");
 		entity.setType(Type.HTTP);
@@ -58,7 +58,7 @@ public class EntityContextTest extends Performance {
 
 	@Test
 	@Order(1)
-	public void testUpdateTask() {
+	void testUpdateTask() {
 		final TaskEntity entity = new TaskEntity();
 		assertThrows(EntityException.class, () -> EntityContext.getInstance().update(entity));
 		entity.setName("测试");
@@ -73,14 +73,14 @@ public class EntityContextTest extends Performance {
 	
 	@Test
 	@Order(2)
-	public void testDeleteTask() {
+	void testDeleteTask() {
 		final var list = new ArrayList<>(EntityContext.getInstance().allTask());
 		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
 	}
 	
 	@Test
 	@Order(3)
-	public void testSaveConfig() {
+	void testSaveConfig() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
@@ -91,7 +91,7 @@ public class EntityContextTest extends Performance {
 
 	@Test
 	@Order(4)
-	public void testUpdateConfig() {
+	void testUpdateConfig() {
 		final ConfigEntity entity = new ConfigEntity();
 		assertThrows(EntityException.class, () -> EntityContext.getInstance().update(entity));
 		entity.setName("acgist");
@@ -105,14 +105,14 @@ public class EntityContextTest extends Performance {
 	
 	@Test
 	@Order(5)
-	public void testDeleteConfig() {
+	void testDeleteConfig() {
 		final var list = new ArrayList<>(EntityContext.getInstance().allConfig());
 		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
 	}
 
 	@Test
 	@Order(6)
-	public void testFindConfigByName() {
+	void testFindConfigByName() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
@@ -124,7 +124,7 @@ public class EntityContextTest extends Performance {
 	
 	@Test
 	@Order(7)
-	public void testDeleteConfigByName() {
+	void testDeleteConfigByName() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
@@ -138,7 +138,7 @@ public class EntityContextTest extends Performance {
 	
 	@Test
 	@Order(8)
-	public void testMergeConfig() {
+	void testMergeConfig() {
 		EntityContext.getInstance().allConfig().forEach(this::log);
 		EntityContext.getInstance().mergeConfig("acgist", "1234");
 		EntityContext.getInstance().allConfig().forEach(this::log);

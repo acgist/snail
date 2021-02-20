@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class SystemThreadContextTest extends Performance {
+class SystemThreadContextTest extends Performance {
 
 	@Test
-	public void testSystemThreadContext() throws InterruptedException {
+	void testSystemThreadContext() throws InterruptedException {
 		final CountDownLatch latch = new CountDownLatch(1);
 		SystemThreadContext.submit(() -> {
 			latch.countDown();

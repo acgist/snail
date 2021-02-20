@@ -23,10 +23,10 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * <p>软件本身充当下载的客户端和服务端测试</p>
  */
-public class PeerServerTest extends Performance {
+class PeerServerTest extends Performance {
 	
 	@Test
-	public void testServer() throws DownloadException {
+	void testServer() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		DownloadConfig.setBuffer(4 * 1024);
@@ -53,7 +53,7 @@ public class PeerServerTest extends Performance {
 	}
 
 	@Test
-	public void testClient() throws DownloadException {
+	void testClient() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final List<String> list = new ArrayList<>();

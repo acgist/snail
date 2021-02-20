@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class ConfigInitializerTest extends Performance {
+class ConfigInitializerTest extends Performance {
 
 	@Test
-	public void testConfigInitializer() {
+	void testConfigInitializer() {
 		assertDoesNotThrow(() -> ConfigInitializer.newInstance().sync());
 	}
 	

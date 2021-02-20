@@ -8,24 +8,24 @@ import org.slf4j.Logger;
 
 import com.acgist.snail.utils.Performance;
 
-public class LoggerContextTest extends Performance {
+class LoggerContextTest extends Performance {
 
 	@Test
-	public void testGetName() {
+	void testGetName() {
 		final String name = LoggerContext.getInstance().getName();
 		assertNotNull(name);
 		this.log(name);
 	}
 	
 	@Test
-	public void testGetLogger() {
+	void testGetLogger() {
 		final Logger logger = LoggerContext.getInstance().getLogger("acgist");
 		assertNotNull(logger);
 		logger.debug("acgist");
 	}
 
 	@Test
-	public void testShutdown() {
+	void testShutdown() {
 		this.log("close");
 		LoggerContext.shutdown();
 		assertDoesNotThrow(() -> this.log("close"));

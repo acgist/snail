@@ -10,10 +10,10 @@ import com.acgist.snail.utils.Performance;
 
 import javafx.application.Platform;
 
-public class ClipboardsTest extends Performance {
+class ClipboardsTest extends Performance {
 
 	@Test
-	public void testClipboards() throws InterruptedException {
+	void testClipboards() throws InterruptedException {
 		Platform.startup(() -> {});
 		final CountDownLatch latch = new CountDownLatch(1);
 		Platform.runLater(() -> {

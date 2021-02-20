@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class InitializerTest extends Performance {
+class InitializerTest extends Performance {
 
 	@Test
-	public void testInitializer() {
+	void testInitializer() {
 		final AtomicBoolean init = new AtomicBoolean(false);
 		new Initializer() {
 			@Override

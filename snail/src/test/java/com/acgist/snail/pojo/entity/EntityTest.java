@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class EntityTest extends Performance {
+class EntityTest extends Performance {
 
 	@Test
-	public void testEntity() {
+	void testEntity() {
 		final var task = new TaskEntity();
 		task.setId("1234");
 		final var config = new ConfigEntity();

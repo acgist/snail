@@ -18,12 +18,12 @@ import com.acgist.snail.format.XML;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class VerifyTest extends Performance {
+class VerifyTest extends Performance {
 
 	private static final String PROJECT_BASE_PATH = "E:/gitee/snail/";
 	
 	@Test
-	public void testVersionVerify() throws IOException {
+	void testVersionVerify() throws IOException {
 		final String basePath = PROJECT_BASE_PATH;
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
@@ -55,11 +55,11 @@ public class VerifyTest extends Performance {
 	}
 	
 	@Test
-	public void testFormat() throws IOException {
+	void testFormat() throws IOException {
 		format(new File(PROJECT_BASE_PATH));
 	}
 	
-	public void format(File file) throws IOException {
+	void format(File file) throws IOException {
 		if (file.isFile()) {
 			final String name = file.getName();
 			if (
@@ -86,7 +86,7 @@ public class VerifyTest extends Performance {
 	}
 
 	@Test
-	public void checkFile() {
+	void checkFile() {
 		final var sources = new File("E:\\snail\\server\\Scans\\Vol.1").listFiles();
 		final var targets = new File("E:\\snail\\tmp\\client\\Scans\\Vol.1").listFiles();
 		boolean same = true;

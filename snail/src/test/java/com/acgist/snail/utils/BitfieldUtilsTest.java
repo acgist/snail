@@ -7,10 +7,10 @@ import java.util.BitSet;
 
 import org.junit.jupiter.api.Test;
 
-public class BitfieldUtilsTest extends Performance {
+class BitfieldUtilsTest extends Performance {
 
 	@Test
-	public void testBitfieldUtils() {
+	void testBitfieldUtils() {
 		BitSet bitSet = new BitSet();
 		bitSet.set(0);
 		assertEquals((byte) 0B1000_0000, BitfieldUtils.toBytes(8, bitSet)[0]);

@@ -12,15 +12,15 @@ import java.nio.ByteBuffer;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-public class NumberUtilsTest extends Performance {
+class NumberUtilsTest extends Performance {
 
 	@Test
-	public void testBuild() {
+	void testBuild() {
 		assertNotEquals(NumberUtils.build(), NumberUtils.build());
 	}
 
 	@Test
-	public void testLong() {
+	void testLong() {
 		final long value = System.currentTimeMillis();
 		final byte[] bytes = NumberUtils.longToBytes(value);
 		this.costed(100000, () -> {
@@ -48,7 +48,7 @@ public class NumberUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testInt() {
+	void testInt() {
 		this.costed(100000, () -> {
 			final int value = (int) (System.nanoTime() % Integer.MAX_VALUE);
 			final ByteBuffer buffer = ByteBuffer.allocate(4);
@@ -60,7 +60,7 @@ public class NumberUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testShort() {
+	void testShort() {
 		this.costed(100000, () -> {
 			final short value = (short) (System.nanoTime() % Short.MAX_VALUE);
 			final ByteBuffer buffer = ByteBuffer.allocate(2);
@@ -72,21 +72,21 @@ public class NumberUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testCeilDiv() {
+	void testCeilDiv() {
 		assertEquals(1, NumberUtils.ceilDiv(2, 2));
 		assertEquals(2, NumberUtils.ceilDiv(3, 2));
 		assertEquals(2, NumberUtils.ceilDiv(4, 2));
 	}
 	
 	@Test
-	public void testCeilMult() {
+	void testCeilMult() {
 		assertEquals(2, NumberUtils.ceilMult(2, 2));
 		assertEquals(4, NumberUtils.ceilMult(3, 2));
 		assertEquals(4, NumberUtils.ceilMult(4, 2));
 	}
 	
 	@RepeatedTest(10)
-	public void testUnsigned() {
+	void testUnsigned() {
 		final int length = 100;
 		final var random = NumberUtils.random();
 		final byte[] bytes = new byte[length];
@@ -103,7 +103,7 @@ public class NumberUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		assertFalse(NumberUtils.equals(null, Integer.valueOf(100000)));
 		assertFalse(NumberUtils.equals(Integer.valueOf(100000), null));
 		assertFalse(NumberUtils.equals(Integer.valueOf(100000), Integer.valueOf(100010)));

@@ -9,22 +9,22 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.Performance;
 
-public class SystemContextTest extends Performance {
+class SystemContextTest extends Performance {
 
 	@Test
-	public void testSystemContext() {
+	void testSystemContext() {
 		SystemContext.info();
 		this.log(SystemContext.osName());
 		assertNotNull(SystemContext.getInstance());
 	}
 	
 	@Test
-	public void testLatestRelease() throws NetException {
+	void testLatestRelease() throws NetException {
 		assertTrue(SystemContext.latestRelease());
 	}
 	
 	@Test
-	public void testBuild() {
+	void testBuild() {
 		assertDoesNotThrow(() -> SystemContext.build());
 	}
 	

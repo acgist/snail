@@ -10,10 +10,10 @@ import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.utils.Performance;
 
-public class MagnetBuilderTest extends Performance {
+class MagnetBuilderTest extends Performance {
 
 	@Test
-	public void testBuild() throws DownloadException {
+	void testBuild() throws DownloadException {
 		Magnet magnet = MagnetBuilder.newInstance("magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel%20%e6%b5%8b%e8%af%95&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent").build();
 		assertEquals("08ada5a7a6183aae1e09d831df6748d566095a10", magnet.getHash());
 		this.log(magnet);
@@ -26,7 +26,7 @@ public class MagnetBuilderTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		LoggerConfig.off();
 		final long costed = this.costed(100000, () -> {
 			try {

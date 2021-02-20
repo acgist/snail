@@ -18,19 +18,19 @@ import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
-public class GuiContextTest extends Performance {
+class GuiContextTest extends Performance {
 
 	/**
 	 * <p>测试环境客户端和服务端使用同一套事件</p>
 	 * <p>客户端收到事件也会发出通知所以会提示：发送扩展GUI消息失败</p>
 	 */
 	@BeforeAll
-	public static final void registerEvent() {
+	static final void registerEvent() {
 		GuiContext.registerAdapter();
 	}
 
 	@Test
-	public void testEvent() {
+	void testEvent() {
 		final var guiContext = GuiContext.getInstance();
 		guiContext.alert("acgist", "acgist");
 		guiContext.notice("acgist", "acgist");
@@ -46,7 +46,7 @@ public class GuiContextTest extends Performance {
 	}
 	
 	@Test
-	public void testExtend() {
+	void testExtend() {
 		if(SKIP_COSTED) {
 			this.log("跳过testExtend测试");
 			return;
@@ -65,7 +65,7 @@ public class GuiContextTest extends Performance {
 	}
 	
 	@Test
-	public void testSocket() {
+	void testSocket() {
 		if(SKIP_COSTED) {
 			this.log("跳过testSocket测试");
 			return;

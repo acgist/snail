@@ -10,10 +10,10 @@ import com.acgist.snail.pojo.session.StatisticsSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class StatisticsContextTest extends Performance {
+class StatisticsContextTest extends Performance {
 
 	@Test
-	public void testStatisticsContext() {
+	void testStatisticsContext() {
 		if(SKIP_COSTED) {
 			this.log("跳过testStatisticsContext测试");
 			return;

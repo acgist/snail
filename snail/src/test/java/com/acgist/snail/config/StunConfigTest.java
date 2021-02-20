@@ -9,10 +9,10 @@ import com.acgist.snail.config.StunConfig.MethodType;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.Performance;
 
-public class StunConfigTest extends Performance {
+class StunConfigTest extends Performance {
 
 	@Test
-	public void testMessageType() {
+	void testMessageType() {
 		short value = StunConfig.MessageType.REQUEST.of(MethodType.BINDING);
 		this.log("消息类型：{}-{}", String.format("%016d", Integer.valueOf(Integer.toBinaryString(value))), value);
 		assertEquals(MessageType.REQUEST, StunConfig.MessageType.of(value));
@@ -28,7 +28,7 @@ public class StunConfigTest extends Performance {
 	}
 
 	@Test
-	public void testXOR() {
+	void testXOR() {
 		final short port = 4938;
 		final int realPort = port ^ (StunConfig.MAGIC_COOKIE >> 16);
 		this.log("真实端口：{}", realPort);

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class LocalServiceDiscoveryInitializerTest extends Performance {
+class LocalServiceDiscoveryInitializerTest extends Performance {
 
 	@Test
-	public void testLocalServiceDiscoveryInitializer() {
+	void testLocalServiceDiscoveryInitializer() {
 		assertDoesNotThrow(() -> LocalServiceDiscoveryInitializer.newInstance().sync());
 	}
 	

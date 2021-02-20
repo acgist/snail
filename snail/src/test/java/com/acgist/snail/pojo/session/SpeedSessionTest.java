@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class SpeedSessionTest extends Performance {
+class SpeedSessionTest extends Performance {
 
 	@Test
-	public void testSpeedSession() {
+	void testSpeedSession() {
 		final SpeedSession session = new SpeedSession();
 		session.buffer(1024);
 		session.buffer(1024);

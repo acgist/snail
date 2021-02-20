@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.utils.Performance;
 
-public class JSONTest extends Performance {
+class JSONTest extends Performance {
 	
 	private static final char[] CHARS = new char[] {
 		'\u0000', '\u0001', '\u0002', '\u0003', '\u0004', '\u0005',
@@ -25,7 +25,7 @@ public class JSONTest extends Performance {
 	};
 
 	@Test
-	public void testChars() {
+	void testChars() {
 		boolean match = false;
 		for (char value : CHARS) {
 			this.log(Integer.toHexString(value));
@@ -38,7 +38,7 @@ public class JSONTest extends Performance {
 	}
 	
 	@Test
-	public void testJSON() {
+	void testJSON() {
 		final String escape = new String(CHARS);
 		final var like = List.of("动\"漫", "洞\\箫");
 		final var list = List.of(List.of(1, 2), 2, 3);
@@ -96,7 +96,7 @@ public class JSONTest extends Performance {
 	}
 	
 	@Test
-	public void testEscape() {
+	void testEscape() {
 //		{"name":"{\"name\":\"\\\"\"}"}
 		final String name = "\"";
 		final Map<Object, Object> a = Map.of("name", name);
@@ -108,7 +108,7 @@ public class JSONTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		LoggerConfig.off();
 		final var like = List.of("动\"漫", "洞\\箫");
 		final var list = List.of(List.of(1, 2), 2, 3);

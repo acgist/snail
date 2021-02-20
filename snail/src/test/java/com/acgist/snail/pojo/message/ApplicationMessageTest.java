@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
-public class ApplicationMessageTest extends Performance {
+class ApplicationMessageTest extends Performance {
 
 	@Test
-	public void testApplicationMessage() {
+	void testApplicationMessage() {
 		var message = ApplicationMessage.message(Type.ALERT);
 		this.log(message.toString());
 		assertNotNull(message.toString());

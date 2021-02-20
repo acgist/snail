@@ -14,10 +14,10 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class NodeContextTest extends Performance {
+class NodeContextTest extends Performance {
 
 	@Test
-	public void testNewNodeSession() {
+	void testNewNodeSession() {
 		LoggerConfig.off();
 //		this.costed(1000, () -> {
 //			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
@@ -43,7 +43,7 @@ public class NodeContextTest extends Performance {
 	}
 
 	@Test
-	public void testFindNode() {
+	void testFindNode() {
 		LoggerConfig.off();
 		this.costed(10000, () -> {
 			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
@@ -72,7 +72,7 @@ public class NodeContextTest extends Performance {
 	}
 	
 	@Test
-	public void testResize() {
+	void testResize() {
 		LoggerConfig.off();
 		this.costed(10000, () -> {
 			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
@@ -86,7 +86,7 @@ public class NodeContextTest extends Performance {
 	}
 
 	@Test
-	public void testMinFindNode() {
+	void testMinFindNode() {
 		LoggerConfig.off();
 		this.costed(2, () -> {
 			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);

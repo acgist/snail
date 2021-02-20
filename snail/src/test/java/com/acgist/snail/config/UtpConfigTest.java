@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class UtpConfigTest extends Performance {
+class UtpConfigTest extends Performance {
 
 	@Test
-	public void testType() {
+	void testType() {
 		final UtpConfig.Type[] types = UtpConfig.Type.values();
 		for (UtpConfig.Type type : types) {
 			this.log(type.type());
@@ -23,7 +23,7 @@ public class UtpConfigTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		long costed = this.costed(10000000, () -> UtpConfig.Type.of((byte) 0x01));
 		assertTrue(costed < 200);
 		costed = this.costed(10000000, () -> UtpConfig.Type.of((byte) 0x41));

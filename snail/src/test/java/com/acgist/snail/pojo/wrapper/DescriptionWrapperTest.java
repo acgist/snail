@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DescriptionWrapperTest extends Performance {
+class DescriptionWrapperTest extends Performance {
 
 	@Test
-	public void testEncode() {
+	void testEncode() {
 		var wrapper = DescriptionWrapper.newEncoder(List.of("acgist", "蜗牛"));
 		assertEquals("l6:acgist6:蜗牛e", wrapper.serialize());
 		wrapper = DescriptionWrapper.newEncoder(null);
@@ -24,7 +24,7 @@ public class DescriptionWrapperTest extends Performance {
 	}
 	
 	@Test
-	public void testDecode() {
+	void testDecode() {
 		var wrapper = DescriptionWrapper.newDecoder("l6:acgist6:蜗牛e");
 		assertEquals(2, wrapper.deserialize().size());
 		wrapper = DescriptionWrapper.newDecoder(null);
@@ -34,7 +34,7 @@ public class DescriptionWrapperTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		assertDoesNotThrow(() -> {
 			this.costed(100000, () -> {
 				testEncode();

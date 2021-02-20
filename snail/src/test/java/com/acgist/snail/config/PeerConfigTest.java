@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class PeerConfigTest extends Performance {
+class PeerConfigTest extends Performance {
 
 	@Test
-	public void testReserved() {
+	void testReserved() {
 		int value = PeerConfig.RESERVED_DHT_PROTOCOL + PeerConfig.RESERVED_PEER_EXCHANGE + PeerConfig.RESERVED_FAST_PROTOCOL;
 		this.log(PeerConfig.RESERVED);
 		assertEquals(value, PeerConfig.RESERVED[7]);
@@ -21,7 +21,7 @@ public class PeerConfigTest extends Performance {
 	}
 	
 	@Test
-	public void testClientName() {
+	void testClientName() {
 		String name = PeerConfig.clientName("-A~1000-xx".getBytes());
 		assertEquals("Ares", name);
 		name = PeerConfig.clientName("-XL1000-xx".getBytes());

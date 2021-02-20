@@ -76,7 +76,7 @@ public class CanvasPainterTest extends Application {
 	}
 	
 	@Test
-	public void test() {
+	void test() {
 		assertDoesNotThrow(() -> launch());
 	}
 	

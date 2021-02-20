@@ -18,15 +18,15 @@ import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class TaskContextTest extends Performance {
+class TaskContextTest extends Performance {
 
 	@Test
-	public void testDownloader() {
+	void testDownloader() {
 		assertTrue(TaskContext.getInstance().allTask().isEmpty());
 	}
 	
 	@Test
-	public void testNewTask() throws DownloadException {
+	void testNewTask() throws DownloadException {
 		SnailBuilder.newBuilder().buildSync();
 		final var taskContext = TaskContext.getInstance();
 		var exception = assertThrows(DownloadException.class, () -> taskContext.download("https://www.acgist.com"));
@@ -41,7 +41,7 @@ public class TaskContextTest extends Performance {
 	}
 	
 	@Test
-	public void testRefresh() throws DownloadException {
+	void testRefresh() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var taskContext = TaskContext.getInstance();
 		final ITaskSession taskSession = taskContext.download("1234567890123456789012345678901234567890");
@@ -54,7 +54,7 @@ public class TaskContextTest extends Performance {
 	}
 	
 	@Test
-	public void testRestart() throws DownloadException {
+	void testRestart() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		final var taskContext = TaskContext.getInstance();
 		ITaskSession taskSession = taskContext.download("1234567890123456789012345678901234567890");

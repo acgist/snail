@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class UpnpResponseTest extends Performance {
+class UpnpResponseTest extends Performance {
 
 	@Test
-	public void testResponse() {
+	void testResponse() {
 		String xml = """
 			<?xml version="1.0"?>
 			<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">

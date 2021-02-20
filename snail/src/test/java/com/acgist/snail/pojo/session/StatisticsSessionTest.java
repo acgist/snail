@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class StatisticsSessionTest extends Performance {
+class StatisticsSessionTest extends Performance {
 
 	@Test
-	public void testStatisticsSession() {
+	void testStatisticsSession() {
 		final StatisticsSession parent = new StatisticsSession();
 		final StatisticsSession session = new StatisticsSession(true, parent);
 		session.upload(1024);

@@ -9,15 +9,15 @@ import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class DhtConfigTest extends Performance {
+class DhtConfigTest extends Performance {
 
 	@Test
-	public void testNodes() {
+	void testNodes() {
 		assertNotNull(DhtConfig.getInstance().nodes());
 	}
 	
 	@Test
-	public void testPersistent() {
+	void testPersistent() {
 		final DhtConfig config = DhtConfig.getInstance();
 		NodeContext.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 2020);
 		config.persistent();

@@ -8,16 +8,16 @@ import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.utils.Performance;
 
-public class TrackerInitializerTest extends Performance {
+class TrackerInitializerTest extends Performance {
 
 	@Test
-	public void testTrackerInitializer() {
+	void testTrackerInitializer() {
 		TrackerInitializer.newInstance().sync();
 		assertTrue(TrackerContext.getInstance().sessions().size() > 0);
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		LoggerConfig.off();
 		final long costed = this.costed(100000, () -> TrackerInitializer.newInstance().sync());
 		assertTrue(costed < 3000);

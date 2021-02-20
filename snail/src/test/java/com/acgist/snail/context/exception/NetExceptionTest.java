@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class NetExceptionTest extends Performance {
+class NetExceptionTest extends Performance {
 
 	@Test
-	public void testNetException() {
+	void testNetException() {
 		NetException exception = assertThrows(NetException.class, () -> {throw new NetException();});
 		this.log(exception.getMessage());
 		exception = assertThrows(NetException.class, () -> {throw new NetException("网络异常");});

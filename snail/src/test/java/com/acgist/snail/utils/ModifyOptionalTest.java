@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-public class ModifyOptionalTest {
+class ModifyOptionalTest {
 
 	@Test
-	public void testModifyOptional() {
+	void testModifyOptional() {
 		final ModifyOptional<String> optional = ModifyOptional.newInstance();
 		assertNull(optional.get());
 		assertEquals("null", optional.get("null"));

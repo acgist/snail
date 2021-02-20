@@ -8,10 +8,10 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class UpnpClientTest extends Performance {
+class UpnpClientTest extends Performance {
 
 	@Test
-	public void testMSearch() {
+	void testMSearch() {
 		if(SKIP_COSTED) {
 			this.log("跳过testMSearch测试");
 			return;

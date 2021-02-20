@@ -12,10 +12,10 @@ import com.acgist.snail.utils.Performance;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 
-public class AlertsTest extends Performance {
+class AlertsTest extends Performance {
 
 	@Test
-	public void testAlerts() throws InterruptedException {
+	void testAlerts() throws InterruptedException {
 		final Object lock = new Object();
 		Platform.startup(() -> {});
 		Platform.runLater(() -> {

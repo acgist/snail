@@ -20,16 +20,16 @@ import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.utils.Performance;
 
-public class SnailTest extends Performance {
+class SnailTest extends Performance {
 
 	@Test
-	public void testSnail() {
+	void testSnail() {
 		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.newBuilder().buildSync().download("https://www.acgist.com"));
 		this.log(exception);
 	}
 	
 	@Test
-	public void testTorrent() throws DownloadException {
+	void testTorrent() throws DownloadException {
 		final String torrentPath = "E:\\snail\\0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 		final var snail = SnailBuilder.newBuilder()
 			.enableTorrent()
@@ -52,7 +52,7 @@ public class SnailTest extends Performance {
 	}
 	
 	@Test
-	public void testApplication() throws IOException {
+	void testApplication() throws IOException {
 		SnailBuilder.newBuilder()
 			.application()
 			.buildSync();
@@ -64,7 +64,7 @@ public class SnailTest extends Performance {
 	}
 	
 	@Test
-	public void testLockDownload() throws DownloadException {
+	void testLockDownload() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testLockDownload测试");
 			return;
@@ -82,7 +82,7 @@ public class SnailTest extends Performance {
 	}
 
 	@Test
-	public void testMagnet() throws DownloadException {
+	void testMagnet() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testMagnet测试");
 			return;
