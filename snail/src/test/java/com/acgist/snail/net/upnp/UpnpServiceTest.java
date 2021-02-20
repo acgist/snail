@@ -12,25 +12,25 @@ import com.acgist.snail.net.upnp.UpnpService.Status;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.Performance;
 
-public class UpnpServiceTest extends Performance {
+class UpnpServiceTest extends Performance {
 
 	private static final String SERVICEURL = "http://192.168.1.1:10087/rootDesc.xml";
 //	private static final String SERVICEURL = "http://192.168.1.1:5351/rootDesc.xml";
 	
 	@BeforeAll
-	public static final void load() throws NetException {
+	static final void load() throws NetException {
 		UpnpService.getInstance().load(SERVICEURL);
 	}
 	
 	@Test
-	public void testGetExternalIPAddress() throws NetException {
+	void testGetExternalIPAddress() throws NetException {
 		final String ip = UpnpService.getInstance().getExternalIPAddress();
 		this.log(ip);
 		assertNotNull(ip);
 	}
 
 	@Test
-	public void testGetSpecificPortMappingEntry() throws NetException {
+	void testGetSpecificPortMappingEntry() throws NetException {
 		final var tcp = UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.TCP);
 		final var udp = UpnpService.getInstance().getSpecificPortMappingEntry(18888, Protocol.Type.UDP);
 		this.log(tcp);
@@ -40,13 +40,13 @@ public class UpnpServiceTest extends Performance {
 	}
 
 	@Test
-	public void testAddPortMapping() throws NetException {
+	void testAddPortMapping() throws NetException {
 		assertTrue(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.TCP));
 		assertTrue(UpnpService.getInstance().addPortMapping(18888, 18888, Protocol.Type.UDP));
 	}
 
 	@Test
-	public void testDeletePortMapping() throws NetException {
+	void testDeletePortMapping() throws NetException {
 		assertTrue(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.TCP));
 		assertTrue(UpnpService.getInstance().deletePortMapping(18888, Protocol.Type.UDP));
 	}

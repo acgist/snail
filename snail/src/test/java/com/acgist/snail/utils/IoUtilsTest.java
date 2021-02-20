@@ -7,10 +7,10 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 
-public class IoUtilsTest extends Performance {
+class IoUtilsTest extends Performance {
 
 	@Test
-	public void testClose() throws IOException {
+	void testClose() throws IOException {
 		final InputStream inputStream = InputStream.nullInputStream();
 		IoUtils.close(inputStream);
 		assertThrows(IOException.class, () -> inputStream.available());

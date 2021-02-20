@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class TimerExceptionTest extends Performance {
+class TimerExceptionTest extends Performance {
 
 	@Test
-	public void testTimerException() {
+	void testTimerException() {
 		TimerException exception = assertThrows(TimerException.class, () -> {throw new TimerException();});
 		this.log(exception.getMessage());
 		exception = assertThrows(TimerException.class, () -> {throw new TimerException("网络包大小异常");});

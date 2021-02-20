@@ -22,10 +22,10 @@ import com.acgist.snail.utils.ThreadUtils;
 /**
  * <p>结合本地迅雷或者其他BT软件测试</p>
  */
-public class PeerClientTest extends Performance {
+class PeerClientTest extends Performance {
 	
 	@Test
-	public void testDownload() throws DownloadException {
+	void testDownload() throws DownloadException {
 		final var path = "E:/snail/1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final List<String> list = new ArrayList<>();
@@ -63,7 +63,7 @@ public class PeerClientTest extends Performance {
 	}
 
 	@Test
-	public void testMagnet() throws DownloadException {
+	void testMagnet() throws DownloadException {
 		final var hash = "1f4f28a6df2ea7899328cbef1dfaaeec9920cdb3";
 		final var torrentSession = TorrentSession.newInstance(InfoHash.newInstance(hash), null);
 		final var entity = new TaskEntity();

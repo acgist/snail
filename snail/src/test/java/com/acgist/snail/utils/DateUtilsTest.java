@@ -8,10 +8,10 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 
-public class DateUtilsTest extends Performance {
+class DateUtilsTest extends Performance {
 
 	@Test
-	public void testFormat() {
+	void testFormat() {
 		assertEquals("11天13小时", DateUtils.format(1000000));
 		assertEquals("1天3小时", DateUtils.format(100000));
 		assertEquals("2小时46分钟", DateUtils.format(10000));
@@ -20,14 +20,14 @@ public class DateUtilsTest extends Performance {
 	}
 
 	@Test
-	public void testDateFormat() {
+	void testDateFormat() {
 		this.log(DateUtils.dateFormat(new Date()));
 		this.log(DateUtils.localDateTimeFormat(LocalDateTime.now()));
 		assertEquals(DateUtils.dateFormat(new Date()), DateUtils.localDateTimeFormat(LocalDateTime.now()));
 	}
 	
 	@Test
-	public void testTimestamp() {
+	void testTimestamp() {
 		final long value = System.currentTimeMillis();
 		this.log(DateUtils.unixTimestamp());
 		this.log(DateUtils.windowsTimestamp());
@@ -47,7 +47,7 @@ public class DateUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		assertDoesNotThrow(() -> {
 			this.costed(100000, () -> DateUtils.dateFormat(new Date()));
 			this.costed(100000, () -> DateUtils.localDateTimeFormat(LocalDateTime.now()));

@@ -10,10 +10,10 @@ import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.net.torrent.dht.response.PingResponse;
 import com.acgist.snail.utils.Performance;
 
-public class DhtMessageTest extends Performance {
+class DhtMessageTest extends Performance {
 
 	@Test
-	public void testDhtMessage() {
+	void testDhtMessage() {
 		final var request = PingRequest.newRequest();
 		this.log(request.toString());
 		this.log(new String(request.toBytes()));
@@ -25,7 +25,7 @@ public class DhtMessageTest extends Performance {
 	}
 
 	@Test
-	public void testErrorResponse() {
+	void testErrorResponse() {
 		int code = 200;
 		String message = "acgist";
 		var response = DhtResponse.buildErrorResponse("1".repeat(20).getBytes(), 200, "acgist");
@@ -40,7 +40,7 @@ public class DhtMessageTest extends Performance {
 	}
 
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		final PingRequest request = PingRequest.newRequest();
 		final Object response = PingResponse.newInstance(request);
 		assertFalse(request.equals(response));

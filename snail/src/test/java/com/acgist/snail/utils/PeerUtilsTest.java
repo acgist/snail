@@ -8,10 +8,10 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-public class PeerUtilsTest extends Performance {
+class PeerUtilsTest extends Performance {
 
 	@Test
-	public void testRead() {
+	void testRead() {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(NetUtils.ipToInt("192.168.1.1"));
 		buffer.putShort(NetUtils.portToShort(18888));
@@ -24,7 +24,7 @@ public class PeerUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testAllowedFast() {
+	void testAllowedFast() {
 		final String ip = "80.4.4.200";
 		final byte[] infoHash = StringUtils.unhex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		final int[] trueValues = {1059, 431, 808, 1217, 287, 376, 1188, 353, 508, 1246};
@@ -36,7 +36,7 @@ public class PeerUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testUrlEncode() {
+	void testUrlEncode() {
 		final byte[] source = {0x12, 0x34, 0x56, 0x78, (byte) 0x9A, (byte) 0xBC, (byte) 0xDE, (byte) 0xF1, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF, 0x12, 0x34, 0x56, 0x78, (byte) 0x9A};
 		final String target = "%124Vx%9A%BC%DE%F1%23Eg%89%AB%CD%EF%124Vx%9A";
 		this.log(PeerUtils.urlEncode(source));

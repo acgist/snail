@@ -12,15 +12,15 @@ import java.net.SocketException;
 
 import org.junit.jupiter.api.Test;
 
-public class NetUtilsTest extends Performance {
+class NetUtilsTest extends Performance {
 
 	@Test
-	public void testNetUtils() {
+	void testNetUtils() {
 		assertNotNull(NetUtils.LOCAL_HOST_ADDRESS);
 	}
 	
 	@Test
-	public void testPort() {
+	void testPort() {
 		for (int port = 0; port < NetUtils.MAX_PORT; port++) {
 			final short portShort = NetUtils.portToShort(port);
 			assertEquals(port, NetUtils.portToInt(portShort));
@@ -28,7 +28,7 @@ public class NetUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testIPv4() {
+	void testIPv4() {
 		assertThrows(IllegalArgumentException.class, () -> NetUtils.ipToInt("1.1.1.1.1"));
 		int ipInt = (int) 2130706433L;
 		String ip = "127.0.0.1";
@@ -63,7 +63,7 @@ public class NetUtilsTest extends Performance {
 	}
 
 	@Test
-	public void testIPv6() {
+	void testIPv6() {
 		final String ipv6Address = "fe80::f84b:bc3a:9556:683d";
 		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6Address);
 		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
@@ -78,7 +78,7 @@ public class NetUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testIP() {
+	void testIP() {
 		assertTrue(NetUtils.ip("192.168.1.1"));
 		assertTrue(NetUtils.ip("192.168.1.100"));
 		assertTrue(NetUtils.ip("999.999.999.999"));
@@ -107,7 +107,7 @@ public class NetUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testLan() {
+	void testLan() {
 		assertTrue(NetUtils.lan("192.168.1.1"));
 		assertTrue(NetUtils.lan("192.168.1.100"));
 		assertFalse(NetUtils.lan("192.168.100.100"));
@@ -116,7 +116,7 @@ public class NetUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testLocalIP() {
+	void testLocalIP() {
 		this.log(NetUtils.LOCAL_HOST_ADDRESS);
 		assertTrue(NetUtils.localIP("10.0.0.0"));
 		assertTrue(NetUtils.localIP("172.16.0.0"));
@@ -131,7 +131,7 @@ public class NetUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testNetwork() throws SocketException {
+	void testNetwork() throws SocketException {
 		NetworkInterface.networkInterfaces().forEach(networkInterfaces -> {
 			networkInterfaces.getInterfaceAddresses().stream().forEach(networkInterface -> {
 				final var address = networkInterface.getAddress();

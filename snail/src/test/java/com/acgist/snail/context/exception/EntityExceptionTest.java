@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class EntityExceptionTest extends Performance {
+class EntityExceptionTest extends Performance {
 
 	@Test
-	public void testEntityException() {
+	void testEntityException() {
 		EntityException exception = assertThrows(EntityException.class, () -> {throw new EntityException();});
 		this.log(exception.getMessage());
 		exception = assertThrows(EntityException.class, () -> {throw new EntityException("网络包大小异常");});

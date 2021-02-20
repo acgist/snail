@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class MapUtilsTest extends Performance {
+class MapUtilsTest extends Performance {
 
 	@Test
-	public void testMapUtils() {
+	void testMapUtils() {
 		assertTrue(MapUtils.isEmpty(Map.of()));
 		assertFalse(MapUtils.isEmpty(Map.of("1", "2")));
 		assertFalse(MapUtils.isNotEmpty(Map.of()));

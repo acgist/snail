@@ -9,10 +9,10 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class StunClientTest extends Performance {
+class StunClientTest extends Performance {
 
 	@Test
-	public void testMappedAddress() {
+	void testMappedAddress() {
 //		final StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
 		final StunClient client = StunClient.newInstance("stun1.l.google.com", 19302);
 //		final StunClient client = StunClient.newInstance("stun2.l.google.com", 19302);

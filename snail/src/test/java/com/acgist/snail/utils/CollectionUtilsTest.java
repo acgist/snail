@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class CollectionUtilsTest {
+class CollectionUtilsTest {
 
 	@Test
-	public void testEmpty() {
+	void testEmpty() {
 		assertTrue(CollectionUtils.isEmpty(List.of()));
 		assertFalse(CollectionUtils.isEmpty(List.of("1", "2")));
 		assertFalse(CollectionUtils.isNotEmpty(List.of()));

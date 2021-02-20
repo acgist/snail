@@ -13,10 +13,10 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.Performance;
 
-public class DhtLauncherTest extends Performance {
+class DhtLauncherTest extends Performance {
 
 	@Test
-	public void testDhtLauncher() throws DownloadException {
+	void testDhtLauncher() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testDhtLauncher测试");
 			return;

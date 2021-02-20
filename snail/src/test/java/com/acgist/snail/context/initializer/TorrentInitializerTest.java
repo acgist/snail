@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.Performance;
 
-public class TorrentInitializerTest extends Performance {
+class TorrentInitializerTest extends Performance {
 
 	@Test
-	public void testTorrentInitializer() throws IOException {
+	void testTorrentInitializer() throws IOException {
 		TorrentInitializer.newInstance().sync();
 		final Socket socket = new Socket();
 		socket.connect(new InetSocketAddress(SystemConfig.getTorrentPort()));

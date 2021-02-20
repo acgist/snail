@@ -13,10 +13,10 @@ import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.Performance;
 
-public class HeaderWrapperTest extends Performance {
+class HeaderWrapperTest extends Performance {
 
 	@Test
-	public void testHeaderWrapper() {
+	void testHeaderWrapper() {
 		final StringBuilder builder = new StringBuilder();
 		builder
 			.append("M-SEARCH * HTTP/1.1").append(SymbolConfig.LINE_SEPARATOR_COMPAT)
@@ -46,7 +46,7 @@ public class HeaderWrapperTest extends Performance {
 	}
 	
 	@Test
-	public void testDecode() {
+	void testDecode() {
 		final var wrapper = HeaderWrapper.newInstance("acgist\na: b\n c : d\ne\nf:");
 		this.log(wrapper.allHeaders());
 		assertEquals("b", wrapper.header("a"));

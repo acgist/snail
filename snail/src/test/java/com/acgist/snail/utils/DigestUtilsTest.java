@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-public class DigestUtilsTest extends Performance {
+class DigestUtilsTest extends Performance {
 
 	@Test
-	public void testDigestUtils() {
+	void testDigestUtils() {
 		assertNotNull(DigestUtils.md5());
 		assertNotNull(DigestUtils.sha1());
 		assertEquals("e10adc3949ba59abbe56e057f20f883e", StringUtils.hex(DigestUtils.md5().digest("123456".getBytes())));

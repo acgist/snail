@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.pojo.ITaskSessionStatus.Status;
 import com.acgist.snail.pojo.entity.TaskEntity;
 
-public class PropertyDescriptorTest extends Performance {
+class PropertyDescriptorTest extends Performance {
 
 	@Test
-	public void testGetter() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	void testGetter() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final String id = "1234";
 		final TaskEntity task = new TaskEntity();
 		task.setId(id);
@@ -23,7 +23,7 @@ public class PropertyDescriptorTest extends Performance {
 	}
 	
 	@Test
-	public void testSetter() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	void testSetter() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final String id = "1234";
 		final TaskEntity task = new TaskEntity();
 		assertNull(task.getId());
@@ -32,7 +32,7 @@ public class PropertyDescriptorTest extends Performance {
 	}
 	
 	@Test
-	public void testEnumProperty() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	void testEnumProperty() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		boolean find = false;
 		final TaskEntity task = new TaskEntity();
 		task.setStatus(Status.AWAIT);
@@ -50,7 +50,7 @@ public class PropertyDescriptorTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final TaskEntity task = new TaskEntity();
 		final var descriptor = PropertyDescriptor.newInstance(task);
 		this.costed(100000, () -> descriptor.get("id"));

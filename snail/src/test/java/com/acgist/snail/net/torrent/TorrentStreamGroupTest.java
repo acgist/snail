@@ -28,10 +28,10 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class TorrentStreamGroupTest extends Performance {
+class TorrentStreamGroupTest extends Performance {
 
 	@Test
-	public void testReload() throws DownloadException {
+	void testReload() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
@@ -76,7 +76,7 @@ public class TorrentStreamGroupTest extends Performance {
 	}
 	
 	@Test
-	public void testPick() throws DownloadException {
+	void testPick() throws DownloadException {
 		LoggerConfig.off();
 		final var path = "E:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
@@ -111,7 +111,7 @@ public class TorrentStreamGroupTest extends Performance {
 	}
 	
 	@Test
-	public void testVerify() throws DownloadException, NetException, IOException {
+	void testVerify() throws DownloadException, NetException, IOException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();

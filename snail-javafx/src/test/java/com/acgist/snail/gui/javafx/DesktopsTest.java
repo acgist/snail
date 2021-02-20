@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DesktopsTest extends Performance {
+class DesktopsTest extends Performance {
 
 	@Test
-	public void testOpen() {
+	void testOpen() {
 		assertDoesNotThrow(() -> Desktops.open(new File("E://snail")));
 	}
 	
 	@Test
-	public void testBrowse() {
+	void testBrowse() {
 		assertDoesNotThrow(() -> Desktops.browse("https://www.acgist.com"));
 	}
 	

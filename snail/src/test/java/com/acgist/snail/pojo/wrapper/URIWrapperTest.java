@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class URIWrapperTest extends Performance {
+class URIWrapperTest extends Performance {
 	
 	@Test
-	public void testDecode() {
+	void testDecode() {
 		URIWrapper wrapper = URIWrapper.newInstance("ftp://localhost/path?query=query").decode();
 		assertEquals("ftp", wrapper.scheme());
 		assertEquals("localhost", wrapper.host());

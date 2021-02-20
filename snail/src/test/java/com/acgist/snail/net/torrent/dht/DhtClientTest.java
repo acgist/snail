@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class DhtClientTest extends Performance {
+class DhtClientTest extends Performance {
 
 	// 本地FDM测试节点
 //	private static final int PORT = 49160;
@@ -29,7 +29,7 @@ public class DhtClientTest extends Performance {
 	private static final String HASH = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
 	
 	@Test
-	public void testPing() {
+	void testPing() {
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var node = client.ping();
 		this.log("节点信息：{}", node);
@@ -37,7 +37,7 @@ public class DhtClientTest extends Performance {
 	}
 	
 	@Test
-	public void testFindNode() {
+	void testFindNode() {
 		final int size = NodeContext.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
 		while(true) {
@@ -51,7 +51,7 @@ public class DhtClientTest extends Performance {
 	}
 	
 	@Test
-	public void testGetPeers() throws DownloadException {
+	void testGetPeers() throws DownloadException {
 		final int size = NodeContext.getInstance().nodes().size();
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var infoHash = InfoHash.newInstance(HASH);
@@ -66,7 +66,7 @@ public class DhtClientTest extends Performance {
 	}
 	
 	@Test
-	public void testAnnouncePeer() throws DownloadException {
+	void testAnnouncePeer() throws DownloadException {
 		final var client = DhtClient.newInstance(HOST, PORT);
 		final var infoHash = InfoHash.newInstance(HASH);
 		client.announcePeer("1".repeat(20).getBytes(), infoHash);

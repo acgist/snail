@@ -12,17 +12,17 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
-public class MSEPaddingSyncTest extends Performance {
+class MSEPaddingSyncTest extends Performance {
 
 	@Test
-	public void testToString() {
+	void testToString() {
 		final MSEPaddingSync sync = MSEPaddingSync.newInstance(10);
 		this.log(sync.toString());
 		assertNotNull(sync.toString());
 	}
 	
 	@Test
-	public void testSync() throws PacketSizeException {
+	void testSync() throws PacketSizeException {
 		final MSEPaddingSync sync = MSEPaddingSync.newInstance(3);
 		final ByteBuffer buffer = ByteBuffer.allocate(100);
 		buffer.putShort((short) 2).put("12".getBytes());
@@ -41,7 +41,7 @@ public class MSEPaddingSyncTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() throws NetException {
+	void testCosted() throws NetException {
 		this.costed(100000, () -> {
 			try {
 				this.testSync();

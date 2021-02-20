@@ -13,10 +13,10 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class FtpClientTest extends Performance {
+class FtpClientTest extends Performance {
 
 	@Test
-	public void testDownload() throws FileNotFoundException, IOException, NetException {
+	void testDownload() throws FileNotFoundException, IOException, NetException {
 		if(SKIP_COSTED) {
 			this.log("跳过testDownload测试");
 			return;

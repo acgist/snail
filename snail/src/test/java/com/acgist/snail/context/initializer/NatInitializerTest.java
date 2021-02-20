@@ -10,10 +10,10 @@ import com.acgist.snail.context.NatContext.Type;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class NatInitializerTest extends Performance {
+class NatInitializerTest extends Performance {
 
 	@Test
-	public void testNatInitializer() {
+	void testNatInitializer() {
 		NatInitializer.newInstance().sync();
 		if(NatContext.getInstance().type() != Type.UPNP) {
 			ThreadUtils.sleep(2000);

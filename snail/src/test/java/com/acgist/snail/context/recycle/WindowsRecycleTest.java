@@ -15,10 +15,10 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class WindowsRecycleTest extends Performance {
+class WindowsRecycleTest extends Performance {
 
 	@Test
-	public void testDelete() throws IOException {
+	void testDelete() throws IOException {
 		final String path = "E:/snail/tmp/" + System.currentTimeMillis();
 		FileUtils.write(path, "acgist".repeat(1024).getBytes());
 		final File file = new File(path);
@@ -29,7 +29,7 @@ public class WindowsRecycleTest extends Performance {
 	}
 	
 	@Test
-	public void testFileInfo() throws IOException {
+	void testFileInfo() throws IOException {
 		if(SKIP_COSTED) {
 			this.log("跳过testRecycle测试");
 			return;

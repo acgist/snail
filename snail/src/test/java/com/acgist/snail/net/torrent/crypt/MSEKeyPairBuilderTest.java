@@ -13,10 +13,10 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class MSEKeyPairBuilderTest extends Performance {
+class MSEKeyPairBuilderTest extends Performance {
 
 	@Test
-	public void testMSEKeyPairBuilder() throws InvalidKeyException {
+	void testMSEKeyPairBuilder() throws InvalidKeyException {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		final var a = mseKeyPairBuilder.buildKeyPair();
 		final var b = mseKeyPairBuilder.buildKeyPair();
@@ -39,7 +39,7 @@ public class MSEKeyPairBuilderTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final MSEKeyPairBuilder mseKeyPairBuilder = MSEKeyPairBuilder.newInstance();
 		this.costed(1000, () -> {
 			try {

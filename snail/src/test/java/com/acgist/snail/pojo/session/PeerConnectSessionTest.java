@@ -10,10 +10,10 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-public class PeerConnectSessionTest extends Performance {
+class PeerConnectSessionTest extends Performance {
 
 	@Test
-	public void testPeerConnectSession() {
+	void testPeerConnectSession() {
 		if(SKIP_COSTED) {
 			this.log("跳过testPeerConnectSession测试");
 		}

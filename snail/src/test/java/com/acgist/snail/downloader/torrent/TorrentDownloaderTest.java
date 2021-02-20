@@ -21,10 +21,10 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class TorrentDownloaderTest extends Performance {
+class TorrentDownloaderTest extends Performance {
 
 	@Test
-	public void testTorrentDownloaderBuild() throws DownloadException {
+	void testTorrentDownloaderBuild() throws DownloadException {
 		final String url = "E://snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		ProtocolContext.getInstance().register(TorrentProtocol.getInstance()).available(true);
 		final var torrent = TorrentContext.loadTorrent(url);
@@ -45,7 +45,7 @@ public class TorrentDownloaderTest extends Performance {
 	}
 
 	@Test
-	public void testTorrentDownloader() throws DownloadException {
+	void testTorrentDownloader() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testTorrentDownloader测试");
 			return;

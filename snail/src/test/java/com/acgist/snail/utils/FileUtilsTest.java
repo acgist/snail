@@ -13,17 +13,17 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.pojo.ITaskSession.FileType;
 
-public class FileUtilsTest extends Performance {
+class FileUtilsTest extends Performance {
 	
 	@Test
-	public void testSystemSeparator() {
+	void testSystemSeparator() {
 		final String truePath = "E:\\\\snail\\tmp\\\\tmp\\\\tmp";
 		final String path = FileUtils.systemSeparator("E://snail\\tmp//tmp\\\\tmp");
 		assertEquals(truePath, path);
 	}
 	
 	@Test
-	public void testDelete() throws IOException {
+	void testDelete() throws IOException {
 		final String path = "E://snail/tmp/" + System.currentTimeMillis();
 		final File file = new File(path);
 		this.log(file.getAbsolutePath());
@@ -35,7 +35,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testFileName() {
+	void testFileName() {
 		assertEquals("订单fds.mpe", FileUtils.fileName("%e8%ae%a2%e5%8d%95fds.mpe?xx"));
 		assertEquals("订单fds.mpe", FileUtils.fileName("http://acgist/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
 		assertEquals("view", FileUtils.fileName("https://www.acgist.com/demo/weixin/view?xx?xx"));
@@ -43,7 +43,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testFileType() {
+	void testFileType() {
 		assertEquals(FileType.VIDEO, FileUtils.fileType("http://casd/fds.mp4"));
 		assertEquals(FileType.IMAGE, FileUtils.fileType("http://casd/fds.JPEG"));
 		assertEquals(FileType.IMAGE, FileUtils.fileType("http://casd/fds.jPg"));
@@ -52,7 +52,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testMoveCopy() {
+	void testMoveCopy() {
 		final String copy = "E:/snail/tmp/" + System.currentTimeMillis() + "/acgist.torrent";
 		final String move = "E:/snail/tmp/" + System.currentTimeMillis() + "/acgist.move.torrent";
 		FileUtils.copy("E:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent", copy);
@@ -63,13 +63,13 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testFile() {
+	void testFile() {
 		assertEquals("E:\\snail\\acgist", FileUtils.file("E:\\snail", "acgist"));
 		assertEquals("E:\\snail\\acgist", FileUtils.file("E:\\snail\\", "acgist"));
 	}
 	
 	@Test
-	public void testFormatSize() {
+	void testFormatSize() {
 		assertEquals("131.39KB", FileUtils.formatSize(134542L));
 		assertEquals("1.00KB", FileUtils.formatSize(1024L));
 		assertEquals("1.00M", FileUtils.formatSize(1024L * 1024));
@@ -79,7 +79,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testFormatSizeMB() {
+	void testFormatSizeMB() {
 		assertEquals(0.13, FileUtils.formatSizeMB(134542L));
 		assertEquals(0.0, FileUtils.formatSizeMB(1024L));
 		assertEquals(1.0, FileUtils.formatSizeMB(1024L * 1024));
@@ -87,7 +87,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testFileSize() {
+	void testFileSize() {
 		assertDoesNotThrow(() -> {
 			final long size = FileUtils.fileSize("E:/snail/tmp");
 			this.log(size);
@@ -96,7 +96,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testBuildFolder() throws IOException {
+	void testBuildFolder() throws IOException {
 		final String path = "E://snail/tmp/" + System.currentTimeMillis();
 		final File file = new File(path);
 		this.log(file.getAbsolutePath());
@@ -108,7 +108,7 @@ public class FileUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testHash() {
+	void testHash() {
 		this.cost();
 		FileUtils.md5("E:\\snail\\FTPserver.exe");
 		assertTrue(this.costed() < 1000);

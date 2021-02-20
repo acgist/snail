@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.Performance;
 
-public class PacketSizeExceptionTest extends Performance {
+class PacketSizeExceptionTest extends Performance {
 
 	@Test
-	public void testPacketSizeException() {
+	void testPacketSizeException() {
 		PacketSizeException exception = assertThrows(PacketSizeException.class, () -> {throw new PacketSizeException();});
 		this.log(exception.getMessage());
 		exception = assertThrows(PacketSizeException.class, () -> {throw new PacketSizeException("网络包大小异常");});

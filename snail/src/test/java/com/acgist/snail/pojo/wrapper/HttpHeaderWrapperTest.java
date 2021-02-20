@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class HttpHeaderWrapperTest extends Performance {
+class HttpHeaderWrapperTest extends Performance {
 
 	@Test
-	public void testFileName() throws UnsupportedEncodingException {
+	void testFileName() throws UnsupportedEncodingException {
 		var headers = Map.of("Content-Disposition", List.of("attachment;filename='snail.jar'"));
 		var headerWrapper = HttpHeaderWrapper.newInstance(headers);
 		var fileName = headerWrapper.fileName("错误");
@@ -59,7 +59,7 @@ public class HttpHeaderWrapperTest extends Performance {
 	}
 	
 	@Test
-	public void testFileSize() {
+	void testFileSize() {
 		var headers = Map.of(
 			"Content-Length", List.of(" 10000 "),
 			"Content-Disposition", List.of("attachment;filename='snail.jar'")

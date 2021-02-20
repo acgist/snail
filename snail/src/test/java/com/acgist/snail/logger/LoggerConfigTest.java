@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class LoggerConfigTest extends Performance {
+class LoggerConfigTest extends Performance {
 
 	@Test
-	public void testLoggerConfig() {
+	void testLoggerConfig() {
 		assertDoesNotThrow(() -> this.log("测试"));
 		LoggerConfig.off();
 		assertDoesNotThrow(() -> this.log("测试"));

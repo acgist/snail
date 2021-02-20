@@ -8,10 +8,10 @@ import java.io.UnsupportedEncodingException;
 
 import org.junit.jupiter.api.Test;
 
-public class StringUtilsTest extends Performance {
+class StringUtilsTest extends Performance {
 
 	@Test
-	public void testEmpty() {
+	void testEmpty() {
 		assertTrue(StringUtils.isEmpty(null));
 		assertTrue(StringUtils.isEmpty(""));
 		assertFalse(StringUtils.isEmpty("1"));
@@ -21,7 +21,7 @@ public class StringUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testNumber() {
+	void testNumber() {
 		assertFalse(StringUtils.isNumeric(""));
 		assertTrue(StringUtils.isNumeric("1"));
 		assertFalse(StringUtils.isNumeric("1.1"));
@@ -33,7 +33,7 @@ public class StringUtilsTest extends Performance {
 	}
 
 	@Test
-	public void testStartEnd() {
+	void testStartEnd() {
 		assertTrue(StringUtils.startsWith("1234", "12"));
 		assertFalse(StringUtils.startsWith("1234", "012"));
 		assertTrue(StringUtils.endsWith("1234", "34"));
@@ -41,19 +41,19 @@ public class StringUtilsTest extends Performance {
 	}
 
 	@Test
-	public void testHex() {
+	void testHex() {
 		final String value = "测试";
 		final String hex = StringUtils.hex(value.getBytes());
 		assertTrue(value.equals(new String(StringUtils.unhex(hex))));
 	}
 
 	@Test
-	public void testSha1() {
+	void testSha1() {
 		assertEquals("69345456767060fe5970bec185c718f777348af1", StringUtils.sha1Hex("12341234123412341234".getBytes()));
 	}
 
 	@Test
-	public void testCharset() {
+	void testCharset() {
 		final String source = "对啊这就是一个测试啊逗比";
 		final String target = "瀵瑰晩杩欏氨鏄竴涓祴璇曞晩閫楁瘮";
 		String value = StringUtils.charsetFrom(target, "gbk");
@@ -63,7 +63,7 @@ public class StringUtilsTest extends Performance {
 	}
 
 	@Test
-	public void testUnicode() {
+	void testUnicode() {
 		final String source = "测试代码";
 		final String target = "\\u6d4b\\u8bd5\\u4ee3\\u7801";
 		assertEquals(target, StringUtils.toUnicode("测试代码"));
@@ -73,26 +73,26 @@ public class StringUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testArgValue() {
+	void testArgValue() {
 		assertEquals(null, StringUtils.argValue("modeextend", "mode"));
 		assertEquals("extend", StringUtils.argValue("mode=extend", "mode"));
 	}
 
 	@Test
-	public void testGetCharset() throws UnsupportedEncodingException {
+	void testGetCharset() throws UnsupportedEncodingException {
 		assertEquals("GBK", StringUtils.getCharset(new String("测试".getBytes("GBK"))));
 		assertEquals("UTF-8", StringUtils.getCharset("测试"));
 	}
 
 	@Test
-	public void testTrimBlank() {
+	void testTrimBlank() {
 		final String source = " 0 0 0 	\n \r ";
 		final String target = StringUtils.trimAllBlank(source);
 		assertTrue("000".equals(target));
 	}
 
 	@Test
-	public void testReadLines() {
+	void testReadLines() {
 		final var lines = StringUtils.readLines("1\n2\n\r");
 		assertEquals("1", lines.get(0));
 		assertEquals("2", lines.get(1));

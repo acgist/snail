@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class ArrayUtilsTest extends Performance {
+class ArrayUtilsTest extends Performance {
 
 	@Test
-	public void testXOR() {
+	void testXOR() {
 		final byte[] zero = new byte[9];
 		final byte[] sources = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
 		final byte[] targets = new byte[] {8, 7, 6, 5, 4, 3, 2, 1, 0};
@@ -25,7 +25,7 @@ public class ArrayUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testEmpty() {
+	void testEmpty() {
 		assertTrue(ArrayUtils.isEmpty((byte[]) null));
 		assertFalse(ArrayUtils.isEmpty(new byte[] {0}));
 		assertFalse(ArrayUtils.isNotEmpty(new byte[0]));
@@ -37,13 +37,13 @@ public class ArrayUtilsTest extends Performance {
 	}
 	
 	@Test
-	public void testRandom() {
+	void testRandom() {
 		assertNotNull(ArrayUtils.random(10));
 		this.costed(100000, () -> ArrayUtils.random(10));
 	}
 	
 	@Test
-	public void testIndexOf() {
+	void testIndexOf() {
 		final int[] ints = new int[] {1, 1, 2, 3, 4, 5, 6, 7, 8};
 		assertEquals(0, ArrayUtils.indexOf(ints, 1));
 		assertEquals(-1, ArrayUtils.indexOf(ints, 100));

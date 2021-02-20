@@ -8,10 +8,10 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.pojo.session.LimitSession.Type;
 import com.acgist.snail.utils.Performance;
 
-public class LimitSessionTest extends Performance {
+class LimitSessionTest extends Performance {
 
 	@Test
-	public void testLimitSession() throws InterruptedException {
+	void testLimitSession() throws InterruptedException {
 		final LimitSession session = new LimitSession(Type.UPLOAD);
 		final long size = DownloadConfig.getUploadBufferByte();
 		this.cost();

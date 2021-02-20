@@ -9,10 +9,10 @@ import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 
-public class ProtocolContextTest extends Performance {
+class ProtocolContextTest extends Performance {
 
 	@Test
-	public void testSupport() {
+	void testSupport() {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		var result = ProtocolContext.getInstance().support("https://www.acgist.com");
 		this.log(result);
@@ -27,7 +27,7 @@ public class ProtocolContextTest extends Performance {
 	}
 	
 	@Test
-	public void testBuildTaskSession() throws DownloadException {
+	void testBuildTaskSession() throws DownloadException {
 		SnailBuilder.newBuilder().enableAllProtocol().buildSync();
 		ITaskSession result;
 //		result = ProtocolContext.getInstance().buildTaskSession("https://www.acgist.com");

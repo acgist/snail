@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class MSECryptHandshakeHandlerTest extends Performance {
+class MSECryptHandshakeHandlerTest extends Performance {
 
 	private final ByteBuffer buffer = ByteBuffer.allocate(1024);
 	
 	@Test
-	public void testMatch() {
+	void testMatch() {
 		this.buffer.put("0".repeat(10).getBytes());
 		this.buffer.put("1".repeat(10).getBytes());
 		this.buffer.put("2".repeat(10).getBytes());
@@ -48,7 +48,7 @@ public class MSECryptHandshakeHandlerTest extends Performance {
 		this.log(this.buffer);
 	}
 
-	public boolean match(byte[] bytes) {
+	boolean match(byte[] bytes) {
 		final int length = bytes.length;
 		this.buffer.flip();
 		if(this.buffer.remaining() < length) {

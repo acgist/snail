@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class EntityInitializerTest extends Performance {
+class EntityInitializerTest extends Performance {
 
 	@Test
-	public void testEntityInitializer() {
+	void testEntityInitializer() {
 		assertDoesNotThrow(() -> EntityInitializer.newInstance().sync());
 	}
 	

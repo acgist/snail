@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.Performance;
 
-public class UtpMessageHandlerTest extends Performance {
+class UtpMessageHandlerTest extends Performance {
 
 	@Test
-	public void test() {
+	void test() {
 		var socketAddress = NetUtils.buildSocketAddress("45.14.148.240", 50007);
 		var handler = new UtpMessageHandler((short) 1000, socketAddress);
 		var connect = handler.connect();

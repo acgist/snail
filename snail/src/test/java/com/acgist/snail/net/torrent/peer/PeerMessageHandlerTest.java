@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class PeerMessageHandlerTest extends Performance {
+class PeerMessageHandlerTest extends Performance {
 
 	@Test
-	public void testUseless() {
+	void testUseless() {
 		final PeerMessageHandler handler = new PeerMessageHandler();
 		assertFalse(handler.useless());
 		assertFalse(handler.useless());

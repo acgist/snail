@@ -13,10 +13,10 @@ import com.acgist.snail.protocol.ftp.FtpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class FtpDownloaderTest extends Performance {
+class FtpDownloaderTest extends Performance {
 	
 	@Test
-	public void testFtpDownloaderBuild() throws DownloadException {
+	void testFtpDownloaderBuild() throws DownloadException {
 //		final String url = "ftp://localhost/ftp/FTPserver.exe";
 		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
 		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);
@@ -28,7 +28,7 @@ public class FtpDownloaderTest extends Performance {
 	}
 
 	@Test
-	public void testFtpDownloader() throws DownloadException {
+	void testFtpDownloader() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testFtpDownloader测试");
 			return;

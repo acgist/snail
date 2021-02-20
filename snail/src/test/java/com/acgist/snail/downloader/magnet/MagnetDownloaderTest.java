@@ -15,10 +15,10 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class MagnetDownloaderTest extends Performance {
+class MagnetDownloaderTest extends Performance {
 
 	@Test
-	public void testMagnetDownloaderBuild() throws DownloadException {
+	void testMagnetDownloaderBuild() throws DownloadException {
 //		final String url = "902FFAA29EE632C8DC966ED9AB573409BA9A518E";
 		final String url = "magnet:?xt=urn:btih:902FFAA29EE632C8DC966ED9AB573409BA9A518E";
 		ProtocolContext.getInstance().register(MagnetProtocol.getInstance()).available(true);
@@ -33,7 +33,7 @@ public class MagnetDownloaderTest extends Performance {
 	}
 
 	@Test
-	public void testMagnetDownloader() throws DownloadException {
+	void testMagnetDownloader() throws DownloadException {
 		if(SKIP_COSTED) {
 			this.log("跳过testMagnetDownloader测试");
 			return;

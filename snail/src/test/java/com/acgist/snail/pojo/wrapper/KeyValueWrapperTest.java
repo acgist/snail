@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.Performance;
 
-public class KeyValueWrapperTest extends Performance {
+class KeyValueWrapperTest extends Performance {
 
 	@Test
-	public void testEncode() {
+	void testEncode() {
 		var wrapper = KeyValueWrapper.newInstance(Map.of("1", "2", "3", "4"));
 		var value = wrapper.encode();
 		assertTrue("1=2&3=4".equals(value) || "3=4&1=2".equals(value));
@@ -25,7 +25,7 @@ public class KeyValueWrapperTest extends Performance {
 	}
 	
 	@Test
-	public void testDecode() {
+	void testDecode() {
 		var wrapper = KeyValueWrapper.newInstance("1=2&").decode();
 		assertEquals("2", wrapper.get("1"));
 		wrapper = KeyValueWrapper.newInstance("&1=2&").decode();
@@ -65,7 +65,7 @@ public class KeyValueWrapperTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		assertDoesNotThrow(() -> {
 			this.costed(100000, this::testEncode);
 			this.costed(100000, this::testDecode);

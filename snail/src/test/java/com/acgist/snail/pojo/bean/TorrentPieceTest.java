@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.Performance;
 
-public class TorrentPieceTest extends Performance {
+class TorrentPieceTest extends Performance {
 
 	@Test
-	public void testWrite() {
+	void testWrite() {
 		final var verify = new byte[2 * 16 * 1024 - 2];
 		verify[1] = 100;
 		final var piece = TorrentPiece.newInstance(2 * 16 * 1024, 10, 0, 2 * 16 * 1024 - 2, DigestUtils.sha1().digest(verify), true);
@@ -34,7 +34,7 @@ public class TorrentPieceTest extends Performance {
 	}
 	
 	@Test
-	public void testRead() {
+	void testRead() {
 		final int pieceLength = 1024;
 		final int begin = 10;
 		final int end = 20;
@@ -53,7 +53,7 @@ public class TorrentPieceTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final int pieceLength = 1024;
 		final int begin = 10;
 		final int end = 20;

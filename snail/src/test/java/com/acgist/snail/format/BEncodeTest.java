@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
-public class BEncodeTest extends Performance {
+class BEncodeTest extends Performance {
 
 	@Test
-	public void testBEncode() throws PacketSizeException {
+	void testBEncode() throws PacketSizeException {
 		final BEncodeEncoder encoder = BEncodeEncoder.newInstance();
 		encoder
 			.newList().put(List.of("a", "b")).flush()
@@ -43,7 +43,7 @@ public class BEncodeTest extends Performance {
 	}
 	
 	@Test
-	public void testNull() throws PacketSizeException {
+	void testNull() throws PacketSizeException {
 		final Map<String, Object> map = new LinkedHashMap<>();
 		map.put("a", 1);
 		map.put("b", null);
@@ -66,7 +66,7 @@ public class BEncodeTest extends Performance {
 	}
 	
 	@Test
-	public void testEncode() {
+	void testEncode() {
 		final String map = BEncodeEncoder.encodeMapString(Map.of("1", "2"));
 		final String list = BEncodeEncoder.encodeListString(List.of("1", "2"));
 		assertEquals("d1:11:2e", map);
@@ -74,7 +74,7 @@ public class BEncodeTest extends Performance {
 	}
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final long costed = this.costed(100000, () -> {
 			BEncodeEncoder.encodeMapString(Map.of("1", "2"));
 			BEncodeEncoder.encodeListString(List.of("1", "2"));

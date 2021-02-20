@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.Performance;
 
-public class HttpClientTest extends Performance {
+class HttpClientTest extends Performance {
 
 	@Test
-	public void testCode() throws NetException {
+	void testCode() throws NetException {
 		var client = HttpClient.newInstance("http://localhost:8080/timeout", 5000, 5000).get();
 //		var client = HttpClient.newInstance("https://gitee.com").get();
 		assertEquals(200, client.code());
@@ -25,7 +25,7 @@ public class HttpClientTest extends Performance {
 	}
 	
 	@Test
-	public void testRequest() throws NetException {
+	void testRequest() throws NetException {
 		var client = HttpClient.newInstance("https://gitee.com");
 		assertNotNull(client.get());
 		this.log(client.responseToString());
@@ -47,7 +47,7 @@ public class HttpClientTest extends Performance {
 	}
 	
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final long costed = this.costed(100, 10, () -> {
 			try {
 				HttpClient.newInstance("https://www.acgist.com").get();
@@ -59,7 +59,7 @@ public class HttpClientTest extends Performance {
 	}
 
 	@Test
-	public void testUrlCosted() {
+	void testUrlCosted() {
 		String url = "https://www.acgist.com";
 		this.costed(100000, () -> {
 			try {

@@ -21,10 +21,10 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
-public class TorrentStreamTest extends Performance {
+class TorrentStreamTest extends Performance {
 
 	@Test
-	public void testReadWrite() throws DownloadException, IOException {
+	void testReadWrite() throws DownloadException, IOException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();

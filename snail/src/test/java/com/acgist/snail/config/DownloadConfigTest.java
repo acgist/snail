@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
-public class DownloadConfigTest extends Performance {
+class DownloadConfigTest extends Performance {
 
 	@Test
-	public void testDownloadConfig() {
+	void testDownloadConfig() {
 		final var config = DownloadConfig.getInstance();
 		assertNotNull(config);
 		assertNotEquals(0, DownloadConfig.getUploadBufferByte());

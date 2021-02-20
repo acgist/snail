@@ -9,16 +9,16 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.Performance;
 
-public class LoggerTest extends Performance {
+class LoggerTest extends Performance {
 
 	@Test
-	public void testCosted() {
+	void testCosted() {
 		final long costed = this.costed(100000, 10, () -> this.log("----" + System.currentTimeMillis()));
 		assertTrue(costed < 3000);
 	}
 	
 	@Test
-	public void testLevel() {
+	void testLevel() {
 		String arga = null;
 		String argb = "";
 		final TaskEntity taskEntity = new TaskEntity();
