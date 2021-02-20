@@ -226,7 +226,7 @@ public final class TorrentSelector {
 		// 获取选择文件前缀
 		final String prefix = this.selectors.values().stream()
 			.filter(selector -> selector.getCheckBox() == checkBox)
-			.map(selector -> selector.getPath())
+			.map(Selector::getPath)
 			.findFirst()
 			.orElse("");
 		// 选择下级目录

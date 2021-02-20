@@ -1,13 +1,13 @@
 package com.acgist.snail.gui.javafx.theme;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.gui.javafx.Themes;
-import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.scene.paint.Color;
@@ -48,13 +48,33 @@ public final class WindowsTheme implements ITheme {
 	
 	@Override
 	public Color systemThemeColor() {
-		String line;
-		String color = null;
 		Process process = null;
-		BufferedReader reader = null;
 		try {
 			process = Runtime.getRuntime().exec(THEME_COLOR_COMMAND);
-			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			return this.process(process);
+		} catch (Exception e) {
+			LOGGER.error("获取Windows主题颜色异常", e);
+		} finally {
+			if(process != null) {
+				process.destroy();
+			}
+		}
+		return Themes.DEFAULT_THEME_COLOR;
+	}
+	
+	/**
+	 * <p>读取命令</p>
+	 * 
+	 * @param process 命令
+	 * 
+	 * @return 颜色
+	 * 
+	 * @throws IOException IO异常
+	 */
+	private Color process(Process process) throws IOException {
+		String line;
+		String color = null;
+		try (final var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if(StringUtils.startsWith(line, THEME_COLOR_KEY)) {
@@ -63,18 +83,10 @@ public final class WindowsTheme implements ITheme {
 					break;
 				}
 			}
-			return this.convertWindowsColor(color);
-		} catch (Exception e) {
-			LOGGER.error("获取Windows主题颜色异常", e);
-		} finally {
-			IoUtils.close(reader);
-			if(process != null) {
-				process.destroy();
-			}
 		}
-		return Themes.DEFAULT_THEME_COLOR;
+		return this.convertColor(color);
 	}
-
+	
 	/**
 	 * <p>Windows颜色转换</p>
 	 * 
@@ -82,7 +94,7 @@ public final class WindowsTheme implements ITheme {
 	 * 
 	 * @return 颜色
 	 */
-	private Color convertWindowsColor(String colorValue) {
+	private Color convertColor(String colorValue) {
 		Color theme;
 		if(colorValue == null) {
 			theme = Themes.DEFAULT_THEME_COLOR;

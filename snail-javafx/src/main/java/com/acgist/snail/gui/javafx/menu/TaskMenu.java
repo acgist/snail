@@ -142,8 +142,11 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>文件校验</p>
 	 */
-	private EventHandler<ActionEvent> verifyEvent = event -> Platform.runLater(() -> {
-		MainWindow.getInstance().controller().selected().forEach(session -> {
+	private EventHandler<ActionEvent> verifyEvent = event -> {
+		if(!MainWindow.getInstance().controller().hasSelected()) {
+			return;
+		}
+		Platform.runLater(() -> MainWindow.getInstance().controller().selected().forEach(session -> {
 			if(session.verify()) {
 				Alerts.info("校验成功", session.getName());
 			} else if(session.statusCompleted()) {
@@ -155,8 +158,8 @@ public final class TaskMenu extends Menu {
 			} else {
 				Alerts.warn("校验失败", "开始下载自动修复");
 			}
-		});
-	});
+		}));
+	};
 	
 	/**
 	 * <p>打开目录</p>
