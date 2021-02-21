@@ -62,7 +62,7 @@
 
 ## 稳定版本
 
-[最新稳定版本下载](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
+[最新稳定版本下载](https://gitee.com/acgist/snail/attach_files)
 
 ### 附件说明
 
@@ -97,7 +97,7 @@ mvn clean package -P release -D skipTests
 mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 ```
 
-> 推荐使用[稳定版](https://gitee.com/acgist/snail/releases)编译
+> 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
 
 ### 乱码
 
@@ -134,7 +134,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ### 边下边播
 
-[指定优先下载位置](./GUI.md#统计-piece统计)
+[指定优先下载位置](./GUI.md#piece统计)
 
 ## BT任务
 
@@ -163,9 +163,9 @@ BT任务上传速度是下载速度的四分之一，任务只要开始下载都
 
 * 网络故障
 * 种子损坏
-* 无人分享（[做种](./GUI.md#统计-来源统计)）
-* 任务文件不完整（[健康度](./GUI.md#统计-piece统计)）
-* 没有可用的[Tracker服务器](./GUI.md#统计-tracker统计)和[DHT网络节点](./GUI.md#统计-节点统计)
+* 无人分享（[做种](./GUI.md#来源统计)）
+* 任务文件不完整（[健康度](./GUI.md#piece统计)）
+* 没有可用的[Tracker服务器](./GUI.md#tracker统计)和[DHT网络节点](./GUI.md#节点统计)
 
 ### BT文件校验
 
