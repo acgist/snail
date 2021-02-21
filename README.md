@@ -37,7 +37,7 @@
 
 ## 使用
 
-[稳定版本下载](https://gitee.com/acgist/snail/attach_files)（解压可以直接运行）
+[稳定版本下载](https://gitee.com/acgist/snail/attach_files)
 
 ### 编译
 
@@ -45,7 +45,7 @@
 mvn clean package -P release -D skipTests
 ```
 
-> 推荐使用[稳定版](https://gitee.com/acgist/snail/releases)编译
+> 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
 
 ### Gui
 

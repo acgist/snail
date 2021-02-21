@@ -52,7 +52,7 @@ tar -cvf ./build/snail-${system}-${version}-without-jre.tar -C ./build/ snail
 
 if [[ $pack == "pack" ]]; then
 # 运行环境
-    jlink --add-modules java.base,java.xml,java.desktop,java.scripting,jdk.unsupported --output ./build/runtime
+    jlink --add-modules "java.base,java.xml,java.desktop,java.scripting,jdk.unsupported" --output ./build/runtime
 # 打包软件
     jpackage \
         --name snail \
