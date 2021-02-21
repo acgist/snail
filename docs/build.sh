@@ -14,11 +14,17 @@ fi
 # 系统参数
 
 if [[ $system == "win" ]]; then
-    args="--type msi --win-shortcut --win-dir-chooser --win-per-user-install" # win:msi|exe
+    # win:msi|exe
+    icon="./docs/logo/logo.ico"
+    args="--type msi --win-shortcut --win-dir-chooser --win-per-user-install"
 elif [[ $system == "mac" ]]; then
-    args="--type pkg" # mac:pkg|dmg
+    # mac:pkg|dmg
+    icon="./docs/logo/logo.icns"
+    args="--type pkg"
 elif [[ $system == "linux" ]]; then
-    args="--type rpm --linux-shortcut" # linux:rpm|deb
+    # linux:rpm|deb
+    icon="./docs/logo/logo.png"
+    args="--type rpm --linux-shortcut"
 else
     echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [pack]"
     exit
@@ -37,8 +43,6 @@ rm -rf ./build/
 
 mvn package -P release -D javafx.platform=$system -D skipTests
 mkdir -p ./build/snail/
-cp -vr ./LICENSE ./build/
-cp -vr ./docs/logo.ico ./build/
 cp -vr ./snail-javafx/target/lib ./build/snail/
 cp -vr ./snail-javafx/target/snail.javafx-${version}.jar ./build/snail/
 
@@ -59,11 +63,11 @@ if [[ $pack == "pack" ]]; then
         --input ./build/snail/ \
         --main-jar snail.javafx-${version}.jar \
         --runtime-image ./build/runtime \
-        --icon ./build/logo.ico \
-        --license-file ./build/LICENSE \
+        --icon ${icon} \
+        --license-file ./LICENSE \
         --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
         --dest ./build/ \
-        $args
+        ${args}
 fi
 
 echo "done"
