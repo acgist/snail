@@ -58,8 +58,8 @@ if [[ $pack == "pack" ]]; then
         --name snail \
         --app-version ${version} \
         --vendor acgist \
-        --copyright acgist \
-        --description "acgist snail" \
+        --copyright "Copyright (C) 2019 acgist. All Rights Reserved." \
+        --description "Acgist Snail Downloader" \
         --input ./build/snail/ \
         --main-jar snail.javafx-${version}.jar \
         --runtime-image ./build/runtime \
