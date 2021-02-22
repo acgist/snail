@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,14 +27,15 @@ class TorrentStreamTest extends Performance {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
-		entity.setFile("E:/snail/tmp/");
+		entity.setFile("E:/snail/tmp");
 		entity.setType(Type.TORRENT);
+		entity.setName("acgist");
 		entity.setStatus(Status.COMPLETED);
 		long pos = 0L;
 		TorrentFile torrentFile = null;
 		final var files = session.torrent().getInfo().files();
 		for (TorrentFile file : files) {
-			if(file.path().endsWith("Box_1.png")) {
+			if(file.path().endsWith("Scans/Vol.1/Box_1.png")) {
 				torrentFile = file;
 				break;
 			}
@@ -52,8 +52,7 @@ class TorrentStreamTest extends Performance {
 			sourceFile,
 			torrentFile.getLength(),
 			pos,
-			false,
-			new AtomicLong(),
+			true,
 			group
 		);
 		oldStream.install();
@@ -65,26 +64,24 @@ class TorrentStreamTest extends Performance {
 			torrentFile.getLength(),
 			pos,
 			false,
-			new AtomicLong(),
 			group
 		);
 		newStream.install();
 		newStream.verify();
-		int begin = (int) (pos / pieceLength);
-		int end = (int) ((pos + torrentFile.getLength()) / pieceLength) + 1;
+		int pieceBeginIndex = (int) (pos / pieceLength);
+		int pieceEndIndex = (int) ((pos + torrentFile.getLength()) / pieceLength) + 1;
 		final BitSet peerPieces = new BitSet();
-		peerPieces.set(begin, end);
+		peerPieces.set(pieceBeginIndex, pieceEndIndex);
 		this.cost();
-		for (int index = begin; index < end; index++) {
-			this.log(index);
+		for (int index = pieceBeginIndex; index < pieceEndIndex; index++) {
 			var torrentPiece = newStream.pick(0, peerPieces, peerPieces);
-			final byte[] bytes = oldStream.read(index);
 			if(torrentPiece != null) {
-				torrentPiece.write(torrentPiece.getBegin(), bytes);
+				torrentPiece.write(torrentPiece.getBegin(), oldStream.read(index));
 				newStream.write(torrentPiece);
 			}
 		}
 		this.costed();
+		oldStream.release();
 		newStream.release();
 		final var sourceHash = FileUtils.sha1(sourceFile);
 		final var targetHash = FileUtils.sha1(targetFile);

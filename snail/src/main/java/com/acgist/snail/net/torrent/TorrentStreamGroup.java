@@ -188,10 +188,7 @@ public final class TorrentStreamGroup {
 						if(oldStream == null) {
 							LOGGER.debug("文件选择下载（加载）：{}", filePath);
 							loadFileCount++;
-							final TorrentStream newStream = TorrentStream.newInstance(
-								pieceLength, filePath, fileSize, pos, completed,
-								this.fileBufferSize, this
-							);
+							final TorrentStream newStream = TorrentStream.newInstance(pieceLength, filePath, fileSize, pos, completed, this);
 							this.streams.add(newStream);
 							newStream.buildSelectPieces(this.selectPieces);
 							newStream.install();
@@ -390,8 +387,8 @@ public final class TorrentStreamGroup {
 		}
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("""
-				任务已经下载Piece数量：{}
-				剩余未下载的Piece数量：{}""",
+				已经下载Piece数量：{}
+				剩余下载Piece数量：{}""",
 				this.pieces.cardinality(),
 				this.remainingPieceSize()
 			);
@@ -411,6 +408,15 @@ public final class TorrentStreamGroup {
 			return false;
 		}
 		return this.pieces.get(index);
+	}
+	
+	/**
+	 * <p>更新缓存大小</p>
+	 * 
+	 * @param length 数据大小
+	 */
+	void fileBufferSize(int length) {
+		this.fileBufferSize.addAndGet(length);
 	}
 	
 	/**
