@@ -372,18 +372,18 @@ public final class TorrentStreamGroup {
 		} finally {
 			this.readLock.unlock();
 		}
-		// 判断是否刷出缓存
-		final long oldValue = this.fileBufferSize.get();
-		if(
-			oldValue > DownloadConfig.getMemoryBufferByte() &&
-			this.fileBufferSize.compareAndSet(oldValue, 0)
-		) {
-			LOGGER.debug("缓冲区被占满");
-			this.flush();
-		}
-		// 保存成功发送have消息
 		if(success) {
+			// 保存成功发送have消息
 			this.have(piece.getIndex());
+			// 修改缓存大小
+			final long oldValue = this.fileBufferSize.addAndGet(piece.getLength());
+			if(
+				oldValue > DownloadConfig.getMemoryBufferByte() &&
+				this.fileBufferSize.compareAndSet(oldValue, 0)
+			) {
+				LOGGER.debug("缓冲区被占满");
+				this.flush();
+			}
 		}
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("""
@@ -408,15 +408,6 @@ public final class TorrentStreamGroup {
 			return false;
 		}
 		return this.pieces.get(index);
-	}
-	
-	/**
-	 * <p>更新缓存大小</p>
-	 * 
-	 * @param length 数据大小
-	 */
-	void fileBufferSize(int length) {
-		this.fileBufferSize.addAndGet(length);
 	}
 	
 	/**
