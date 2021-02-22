@@ -23,8 +23,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Torrent下载文件流</p>
- * <p>除了文件开头和结尾的Piece，每次下载必须是一个完整的Piece。</p>
+ * <p>文件流</p>
  * 
  * @author acgist
  */
@@ -368,7 +367,7 @@ public final class TorrentStream {
 	
 	/**
 	 * <p>保存Piece</p>
-	 * <p>每次保存的必须是一个完成的Piece</p>
+	 * <p>每次保存的必须是一个完成的Piece（除了文件开头和结尾的Piece）</p>
 	 * 
 	 * @param piece Piece
 	 * 
