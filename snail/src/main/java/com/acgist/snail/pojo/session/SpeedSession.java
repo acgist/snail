@@ -15,11 +15,6 @@ public final class SpeedSession {
 	 * <p>采样次数：{@value}</p>
 	 */
 	private static final byte SAMPLE_SIZE = 10;
-	/**
-	 * <p>速度采样时间</p>
-	 * <p>不能大于刷新时间：防止统计误差</p>
-	 */
-	private static final long SAMPLE_TIME = 1L * SystemConfig.TASK_REFRESH_INTERVAL * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
 	 * <p>速度</p>
@@ -66,7 +61,7 @@ public final class SpeedSession {
 	public long speed() {
 		final long time = System.currentTimeMillis();
 		final long interval = time - this.bufferSampleTime;
-		if(interval >= SAMPLE_TIME) {
+		if(interval >= SystemConfig.REFRESH_INTERVAL_MILLIS) {
 			synchronized (this) {
 				if(time - this.bufferSampleTime == interval) {
 					this.bufferSampleTime = time;

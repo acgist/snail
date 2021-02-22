@@ -5,7 +5,6 @@ import com.acgist.snail.net.TcpServer;
 
 /**
  * <p>Peer服务端</p>
- * <p>监听端口：{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
  */

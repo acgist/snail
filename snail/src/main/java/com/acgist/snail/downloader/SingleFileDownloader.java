@@ -64,7 +64,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	public void download() throws DownloadException {
 		int length = 0;
 		final long fileSize = this.taskSession.getSize();
-		final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH);
+		final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_LENGTH);
 		try {
 			while(this.downloadable()) {
 				length = this.input.read(buffer);

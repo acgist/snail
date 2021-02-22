@@ -53,11 +53,11 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>UPNP端口映射超时时间：{@value}</p>
+	 * <p>UPNP端口映射超时时间（毫秒）：{@value}</p>
 	 */
-	private static final int UPNP_TIMEOUT = SystemConfig.CONNECT_TIMEOUT_MILLIS;
+	private static final long UPNP_TIMEOUT = 4L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * <p>注册NAT执行周期</p>
+	 * <p>注册NAT执行周期（秒）：{@value}</p>
 	 * <p>如果NAT注册失败下次执行周期</p>
 	 */
 	private static final int NAT_INTERVAL = 10;

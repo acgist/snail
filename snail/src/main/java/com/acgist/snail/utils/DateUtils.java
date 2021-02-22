@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import com.acgist.snail.config.SystemConfig;
 
@@ -47,34 +48,35 @@ public final class DateUtils {
 	 * <p>格式化时间</p>
 	 * <p>保留两个时间单位</p>
 	 * 
-	 * @param value 时间（单位：秒）
+	 * @param seconds 时间（单位：秒）
 	 * 
 	 * @return XX天XX小时、XX小时XX分钟、XX分钟XX秒
 	 */
-	public static final String format(long value) {
+	public static final String format(long seconds) {
+		final TimeUnit secondUnit = TimeUnit.SECONDS;
 		final StringBuilder builder = new StringBuilder();
-		final long day = value / SystemConfig.ONE_DAY;
-		if(day != 0) {
-			builder.append(day).append("天");
-			value = value % SystemConfig.ONE_DAY;
+		final long days = secondUnit.toDays(seconds);
+		if(days != 0) {
+			builder.append(days).append("天");
+			seconds = seconds - TimeUnit.DAYS.toSeconds(days);
 		}
-		final long hour = value / SystemConfig.ONE_HOUR;
-		if(hour != 0) {
-			builder.append(hour).append("小时");
-			value = value % SystemConfig.ONE_HOUR;
-			if(day != 0) {
+		final long hours = secondUnit.toHours(seconds);
+		if(hours != 0) {
+			builder.append(hours).append("小时");
+			if(days != 0) {
 				return builder.toString();
 			}
+			seconds = seconds - TimeUnit.HOURS.toSeconds(hours);
 		}
-		final long minute = value / SystemConfig.ONE_MINUTE;
-		if(minute != 0) {
-			builder.append(minute).append("分钟");
-			value = value % SystemConfig.ONE_MINUTE;
-			if(hour != 0) {
+		final long minutes = secondUnit.toMinutes(seconds);
+		if(minutes != 0) {
+			builder.append(minutes).append("分钟");
+			if(hours != 0) {
 				return builder.toString();
 			}
+			seconds = seconds - TimeUnit.MINUTES.toSeconds(minutes);
 		}
-		builder.append(value).append("秒");
+		builder.append(seconds).append("秒");
 		return builder.toString();
 	}
 	
@@ -244,7 +246,7 @@ public final class DateUtils {
 	 * @return 微秒时间戳
 	 */
 	public static final int timestampUs() {
-		return (int) (System.nanoTime() / 1000);
+		return (int) (System.nanoTime() / SystemConfig.DATE_SCALE);
 	}
 	
 }

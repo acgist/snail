@@ -47,7 +47,7 @@ public final class TaskDisplay {
 				this.controller = controller;
 				SystemThreadContext.timerAtFixedRate(
 					0,
-					SystemConfig.TASK_REFRESH_INTERVAL,
+					SystemConfig.REFRESH_INTERVAL,
 					TimeUnit.SECONDS,
 					this::refreshTaskStatus
 				);

@@ -33,6 +33,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	/**
+	 * <p>IP和端口占用字节大小：{@value}</p>
+	 */
+	public static final int IP_PORT_LENGTH = 6;
+	/**
 	 * <p>数据大小比例：{@value}</p>
 	 */
 	public static final int DATA_SCALE = 1024;
@@ -47,49 +51,8 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
-	 * <p>时间大小比例：{@value}</p>
-	 */
-	public static final int DATE_SCALE = 1000;
-	/**
-	 * <p>一秒钟（毫秒）：{@value}</p>
-	 */
-	public static final int ONE_SECOND_MILLIS = DATE_SCALE;
-	/**
-	 * <p>一分钟（秒数）：{@value}</p>
-	 */
-	public static final long ONE_MINUTE = 60L;
-	/**
-	 * <p>一分钟（毫数）：{@value}</p>
-	 */
-	public static final long ONE_MINUTE_MILLIS = ONE_MINUTE * ONE_SECOND_MILLIS;
-	/**
-	 * <p>一小时（秒数）：{@value}</p>
-	 */
-	public static final long ONE_HOUR = ONE_MINUTE * 60;
-	/**
-	 * <p>一小时（毫数）：{@value}</p>
-	 */
-	public static final long ONE_HOUR_MILLIS = ONE_HOUR * ONE_SECOND_MILLIS;
-	/**
-	 * <p>一天（秒数）：{@value}</p>
-	 */
-	public static final long ONE_DAY = ONE_HOUR * 24;
-	/**
-	 * <p>一天（毫数）：{@value}</p>
-	 */
-	public static final long ONE_DAY_MILLIS = ONE_DAY * ONE_SECOND_MILLIS;
-	/**
-	 * <p>最小下载速度：{@value}</p>
-	 * <p>16KB</p>
-	 */
-	public static final int MIN_DOWNLOAD_BUFFER_KB = 16;
-	/**
-	 * <p>IP和端口占用字节大小：{@value}</p>
-	 */
-	public static final int IP_PORT_LENGTH = 6;
-	/**
 	 * <p>TCP消息缓冲大小：{@value}</p>
-	 * <p>大小和Piece交换Slice大小一样</p>
+	 * <p>默认：Piece交换Slice大小一样</p>
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
@@ -97,13 +60,30 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
-	 * <p>数据传输默认大小：{@value}</p>
-	 * <p>一般IO读写缓冲数据大小</p>
-	 * <p>注意：默认系统最小下载速度</p>
+	 * <p>最大的网络包大小：{@value}</p>
+	 * <p>如果创建byte[]和ByteBuffer对象的长度是由外部数据决定时需要验证长度：防止太长导致内存泄漏</p>
+	 */
+	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
+	/**
+	 * <p>最小下载速度：{@value}</p>
+	 * <p>默认：16KB</p>
+	 */
+	public static final int MIN_DOWNLOAD_BUFFER_KB = 16;
+	/**
+	 * <p>默认数据传输大小：{@value}</p>
+	 * <p>默认：系统最小下载速度</p>
 	 * 
 	 * @see #MIN_DOWNLOAD_BUFFER_KB
 	 */
-	public static final int DEFAULT_EXCHANGE_BYTES_LENGTH = MIN_DOWNLOAD_BUFFER_KB * ONE_KB;
+	public static final int DEFAULT_EXCHANGE_LENGTH = MIN_DOWNLOAD_BUFFER_KB * ONE_KB;
+	/**
+	 * <p>时间比例：{@value}</p>
+	 */
+	public static final int DATE_SCALE = 1000;
+	/**
+	 * <p>一秒钟（毫秒）：{@value}</p>
+	 */
+	public static final int ONE_SECOND_MILLIS = DATE_SCALE;
 	/**
 	 * <p>没有超时时间：{@value}</p>
 	 */
@@ -133,10 +113,14 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
-	 * <p>最大的网络包大小：{@value}</p>
-	 * <p>如果创建byte[]和ByteBuffer对象的长度是由外部数据决定时需要验证长度：防止太长导致内存泄漏</p>
+	 * <p>刷新时间（秒）：{@value}</p>
+	 * <p>任务列表、速度统计</p>
 	 */
-	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
+	public static final int REFRESH_INTERVAL = 4;
+	/**
+	 * <p>刷新时间（毫秒）：{@value}</p>
+	 */
+	public static final int REFRESH_INTERVAL_MILLIS = REFRESH_INTERVAL * ONE_SECOND_MILLIS;
 	/**
 	 * <p>SHA-1散列值长度：{@value}</p>
 	 */
@@ -161,10 +145,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 * <p>系统默认编码（file.encoding）：{@value}</p>
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
-	/**
-	 * <p>任务列表刷新时间（秒）：{@value}</p>
-	 */
-	public static final int TASK_REFRESH_INTERVAL = 4;
 	
 	static {
 		LOGGER.debug("初始化系统配置：{}", SYSTEM_CONFIG);

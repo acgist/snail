@@ -485,7 +485,7 @@ public final class HttpClient {
 	public String responseToString() throws NetException {
 		int length;
 		final var input = this.response();
-		final var bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final var bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_LENGTH];
 		final var builder = new StringBuilder();
 		try {
 			while((length = input.read(bytes)) >= 0) {

@@ -17,6 +17,7 @@ class DateUtilsTest extends Performance {
 		assertEquals("2小时46分钟", DateUtils.format(10000));
 		assertEquals("16分钟40秒", DateUtils.format(1000));
 		assertEquals("10秒", DateUtils.format(10));
+		this.costed(100000, () -> DateUtils.format(1000));
 	}
 
 	@Test

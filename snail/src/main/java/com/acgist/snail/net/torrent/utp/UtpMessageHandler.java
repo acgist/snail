@@ -76,6 +76,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private final short sendId;
 	/**
+	 * <p>连接Key</p>
+	 */
+	private final String key;
+	/**
 	 * <p>UTP Service</p>
 	 */
 	private final UtpService utpService;
@@ -150,16 +154,17 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			this.recvId = this.utpService.connectionId();
 			this.sendId = (short) (this.recvId + 1);
 		}
+		this.key = this.utpService.buildKey(this.recvId, this.socketAddress);
 		this.utpService.put(this);
 	}
 	
 	/**
-	 * <p>获取Key</p>
+	 * <p>获取连接Key</p>
 	 * 
-	 * @return key
+	 * @return 连接Key
 	 */
 	public String key() {
-		return this.utpService.buildKey(this.recvId, this.socketAddress);
+		return this.key;
 	}
 	
 	@Override
