@@ -376,7 +376,6 @@ public final class TorrentStream {
 			if(this.cachePieces.offer(piece)) {
 				LOGGER.debug("保存Piece成功：{}", index);
 				this.done(index);
-				this.torrentStreamGroup.fileBufferSize(piece.getLength());
 				this.buildFileDownloadSize();
 				// 下载完成数据刷出
 				if(this.completed()) {
