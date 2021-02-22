@@ -5,7 +5,6 @@ import com.acgist.snail.net.UdpServer;
 
 /**
  * <p>Torrent服务端：UTP、DHT、STUN</p>
- * <p>监听端口：{@link SystemConfig#getTorrentPort()}</p>
  * 
  * @author acgist
  */

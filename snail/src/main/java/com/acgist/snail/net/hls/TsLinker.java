@@ -109,7 +109,7 @@ public final class TsLinker {
 	 */
 	private void link(File file, OutputStream output) throws IOException {
 		int length = 0;
-		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_BYTES_LENGTH];
+		final byte[] bytes = new byte[SystemConfig.DEFAULT_EXCHANGE_LENGTH];
 		final boolean crypt = this.cipher != null;
 		try(final var input = new FileInputStream(file)) {
 			while((length = input.read(bytes)) >= 0) {

@@ -39,7 +39,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	/**
 	 * <p>连接ID</p>
 	 */
-	private int connectionId = 0;
+	private short connectionId = (short) System.currentTimeMillis();
 	/**
 	 * <p>UDP通道</p>
 	 */
@@ -49,8 +49,10 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 */
 	private final MessageHandlerContext context;
 	/**
-	 * <p>UTP消息代理</p>
-	 * <p>{@link #buildKey(short, InetSocketAddress)}=消息代理</p>
+	 * <p>UTP消息代理列表</p>
+	 * <p>连接Key=消息代理</p>
+	 * 
+	 * @see #buildKey(short, InetSocketAddress)
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
 	
@@ -79,19 +81,17 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	
 	/**
 	 * <p>获取连接ID</p>
-	 * <p>每次获取递增</p>
 	 * 
 	 * @return 连接ID
 	 */
 	public short connectionId() {
 		synchronized (this) {
-			return (short) connectionId++;
+			return this.connectionId++;
 		}
 	}
 	
 	/**
 	 * <p>获取UTP消息代理</p>
-	 * <p>如果已经存在直接返回，否者创建并返回。</p>
 	 * 
 	 * @param connectionId 连接ID
 	 * @param socketAddress 连接地址
@@ -106,6 +106,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 		}
 		utpMessageHandler = new UtpMessageHandler(connectionId, socketAddress);
 		utpMessageHandler.handle(this.channel);
+		// 只需要管理服务端连接
 		this.context.newInstance(utpMessageHandler);
 		return utpMessageHandler;
 	}
@@ -133,13 +134,12 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	}
 	
 	/**
-	 * <p>生成UTP消息代理key</p>
-	 * <p>key = 地址 + 端口 + connectionId</p>
+	 * <p>生成UTP消息代理连接Key</p>
 	 * 
 	 * @param connectionId 连接ID
 	 * @param socketAddress 请求地址
 	 * 
-	 * @return key
+	 * @return 连接Key
 	 */
 	public String buildKey(short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;

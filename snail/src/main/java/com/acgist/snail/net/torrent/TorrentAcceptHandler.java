@@ -13,8 +13,6 @@ import com.acgist.snail.net.torrent.utp.UtpService;
 
 /**
  * <p>Torrent（UTP、DHT、STUN）消息接收代理</p>
- * <p>DHT和STUN消息都使用头一个字符验证：STUN需要进一步验证MagicCookie</p>
- * <p>如果不是DHT和STUN消息则属于UTP消息</p>
  * 
  * @author acgist
  */
@@ -64,16 +62,19 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		// 区分类型：DHT、UTP、STUN
 		final byte header = buffer.get(0);
 		if(DHT_HEADER == header) {
+			// DHT消息
 			return this.dhtMessageHandler;
 		} else if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) {
+			// STUN消息
 			final int magicCookie = buffer.getInt(4);
 			if(magicCookie == StunConfig.MAGIC_COOKIE) {
+				// 由于UTP数据（DATA）消息也是0x01所以需要验证MAGIC_COOKIE
 				return this.stunMessageHandler;
 			}
 		}
+		// UTP消息
 		final short connectionId = buffer.getShort(2);
 		return this.utpService.get(connectionId, socketAddress);
 	}

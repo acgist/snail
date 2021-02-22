@@ -44,7 +44,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
 	/**
-	 * <p>握手超时时间：{@value}</p>
+	 * <p>握手超时时间（秒）：{@value}</p>
 	 */
 	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
 	/**
