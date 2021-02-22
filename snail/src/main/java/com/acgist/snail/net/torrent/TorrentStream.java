@@ -370,7 +370,8 @@ public final class TorrentStream {
 			if(this.hasPiece(index)) {
 				// 最后阶段重复选择可能导致重复下载
 				LOGGER.debug("Piece已经下载完成（忽略）：{}", index);
-				return true;
+				// 此处不能返回成功：防止计算文件已经下载大小错误
+				return false;
 			}
 			// 加入缓存队列
 			if(this.cachePieces.offer(piece)) {
@@ -628,7 +629,7 @@ public final class TorrentStream {
 	 * @param index Piece索引
 	 */
 	private void verifyFail(int index) {
-		LOGGER.debug("文件校验失败：{}", index);
+		LOGGER.debug("Piece校验失败：{}", index);
 		this.pieces.clear(index);
 		this.torrentStreamGroup.undone(index);
 	}

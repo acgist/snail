@@ -373,10 +373,11 @@ public final class TorrentStreamGroup {
 			this.readLock.unlock();
 		}
 		if(success) {
-			// 保存成功发送have消息
+			// 发送have消息
 			this.have(piece.getIndex());
 			// 修改缓存大小
 			final long oldValue = this.fileBufferSize.addAndGet(piece.getLength());
+			// 判断是否刷出缓存
 			if(
 				oldValue > DownloadConfig.getMemoryBufferByte() &&
 				this.fileBufferSize.compareAndSet(oldValue, 0)
