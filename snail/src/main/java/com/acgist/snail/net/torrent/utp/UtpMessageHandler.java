@@ -355,7 +355,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void data(UtpWindowData windowData) {
 		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
 		final ByteBuffer buffer = this.buildHeader(UtpConfig.Type.DATA, windowData.getLength() + UTP_HEADER_LENGTH);
-		final int now = windowData.pushUpdateGetTimestamp();
+		final int now = windowData.updateGetTimestamp();
 		buffer.putShort(this.sendId);
 		buffer.putInt(now); // 更新发送时间
 		buffer.putInt(now - this.recvWindow.timestamp());
@@ -493,6 +493,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		LOGGER.debug("处理握手消息：{}", this.socketAddress);
 		if(!this.connect) {
 			this.connect = true;
+			// seqnr可以设置为随机值：默认请求编号（acknr）
 			this.recvWindow.connect(timestamp, seqnr);
 		}
 		this.state(timestamp, seqnr);
@@ -506,7 +507,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		final UtpWindowData windowData = this.sendWindow.build();
 		final ByteBuffer buffer = buildHeader(UtpConfig.Type.SYN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.recvId);
-		buffer.putInt(windowData.pushUpdateGetTimestamp());
+		buffer.putInt(windowData.updateGetTimestamp());
 		buffer.putInt(0);
 		buffer.putInt(0);
 		buffer.putShort(windowData.getSeqnr());
