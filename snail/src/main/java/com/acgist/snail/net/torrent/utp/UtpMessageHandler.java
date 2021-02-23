@@ -335,6 +335,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(!this.connect) {
 			LOGGER.debug("UTP通道没有连接：{}-{}", seqnr, acknr);
 			this.close();
+			return;
 		}
 		LOGGER.debug("处理数据消息：{}", seqnr);
 		try {
