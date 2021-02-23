@@ -44,7 +44,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends Client<T> {
 	}
 	
 	/**
-	 * <p>超时时间</p>
+	 * <p>超时时间（秒）</p>
 	 */
 	private final int timeout;
 	
@@ -52,7 +52,7 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends Client<T> {
 	 * <p>TCP客户端</p>
 	 * 
 	 * @param name 客户端名称
-	 * @param timeout 超时时间
+	 * @param timeout 超时时间（秒）
 	 * @param handler 消息代理
 	 */
 	protected TcpClient(String name, int timeout, T handler) {

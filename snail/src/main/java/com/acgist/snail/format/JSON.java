@@ -390,40 +390,29 @@ public final class JSON {
 			if (value == JSON_ESCAPE) {
 				value = content.charAt(index.incrementAndGet());
 				switch (value) {
-				case 'b':
-					builder.append('\b');
-					break;
-				case 't':
-					builder.append('\t');
-					break;
-				case 'n':
-					builder.append('\n');
-					break;
-				case 'f':
-					builder.append('\f');
-					break;
-				case 'r':
-					builder.append('\r');
-					break;
-				case '"':
-				case JSON_ESCAPE:
-					// 如果存在JSON对象里面保留转义字符
-					if(jsonIndex != 0) {
-						builder.append(JSON_ESCAPE);
+					case 'b' -> builder.append('\b');
+					case 't' -> builder.append('\t');
+					case 'n' -> builder.append('\n');
+					case 'f' -> builder.append('\f');
+					case 'r' -> builder.append('\r');
+					case '"', JSON_ESCAPE -> {
+						// 如果存在JSON对象里面保留转义字符
+						if(jsonIndex != 0) {
+							builder.append(JSON_ESCAPE);
+						}
+						builder.append(value);
 					}
-					builder.append(value);
-					break;
-				case 'u':
-					// Unicode
-					hexValue = content.substring(index.get() + 1, index.get() + 5);
-					builder.append((char) Integer.parseInt(hexValue, 16));
-					index.addAndGet(4);
-					break;
-				default:
-					// 未知转义类型保留转义字符
-					builder.append(JSON_ESCAPE);
-					builder.append(value);
-					break;
+					case 'u' -> {
+						// Unicode
+						hexValue = content.substring(index.get() + 1, index.get() + 5);
+						builder.append((char) Integer.parseInt(hexValue, 16));
+						index.addAndGet(4);
+					}
+					default -> {
+						// 未知转义类型保留转义字符
+						builder.append(JSON_ESCAPE);
+						builder.append(value);
+					}
 				}
 			} else {
 				builder.append(value);

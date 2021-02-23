@@ -1219,7 +1219,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>发送消息</p>
 	 * 
 	 * @param buffer 消息
-	 * @param timeout 超时时间
+	 * @param timeout 超时时间（秒）
 	 * 
 	 * @see IEncryptMessageSender#send(ByteBuffer, int)
 	 */
@@ -1250,7 +1250,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>发送加密消息</p>
 	 * 
 	 * @param buffer 消息
-	 * @param timeout 超时时间
+	 * @param timeout 超时时间（秒）
 	 * 
 	 * @see IEncryptMessageSender#sendEncrypt(ByteBuffer, int)
 	 */

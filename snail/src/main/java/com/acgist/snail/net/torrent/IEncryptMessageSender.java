@@ -28,7 +28,7 @@ public interface IEncryptMessageSender extends IMessageSender, IPeerConnect {
 	 * <p>消息加密发送</p>
 	 * 
 	 * @param buffer 消息内容
-	 * @param timeout 超时时间
+	 * @param timeout 超时时间（秒）
 	 * 
 	 * @throws NetException 网络异常
 	 */

@@ -318,40 +318,22 @@ public final class BEncodeDecoder {
 		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
-			case TYPE_E:
-				return list;
-			case TYPE_I:
-				list.add(readLong(inputStream));
-				break;
-			case TYPE_L:
-				list.add(readList(inputStream));
-				break;
-			case TYPE_D:
-				list.add(readMap(inputStream));
-				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				lengthBuilder.append(indexChar);
-				break;
-			case SEPARATOR:
-				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = readBytes(lengthBuilder, inputStream);
-					list.add(bytes);
-				} else {
-					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
+				case TYPE_E -> {
+					return list;
 				}
-				break;
-			default:
-				LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
-				break;
+				case TYPE_I -> list.add(readLong(inputStream));
+				case TYPE_L -> list.add(readList(inputStream));
+				case TYPE_D -> list.add(readMap(inputStream));
+				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lengthBuilder.append(indexChar);
+				case SEPARATOR -> {
+					if(lengthBuilder.length() > 0) {
+						final byte[] bytes = readBytes(lengthBuilder, inputStream);
+						list.add(bytes);
+					} else {
+						LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
+					}
+				}
+				default -> LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
 			}
 		}
 		return list;
@@ -377,60 +359,48 @@ public final class BEncodeDecoder {
 		while ((index = inputStream.read()) != -1) {
 			indexChar = (char) index;
 			switch (indexChar) {
-			case TYPE_E:
-				return map;
-			case TYPE_I:
-				if(key != null) {
-					map.put(key, readLong(inputStream));
-					key = null;
-				} else {
-					LOGGER.warn("B编码key为空跳过（I）");
+				case TYPE_E -> {
+					return map;
 				}
-				break;
-			case TYPE_L:
-				if(key != null) {
-					map.put(key, readList(inputStream));
-					key = null;
-				} else {
-					LOGGER.warn("B编码key为空跳过（L）");
-				}
-				break;
-			case TYPE_D:
-				if(key != null) {
-					map.put(key, readMap(inputStream));
-					key = null;
-				} else {
-					LOGGER.warn("B编码key为空跳过（D）");
-				}
-				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				lengthBuilder.append(indexChar);
-				break;
-			case SEPARATOR:
-				if(lengthBuilder.length() > 0) {
-					final byte[] bytes = readBytes(lengthBuilder, inputStream);
-					if (key == null) {
-						key = new String(bytes);
-					} else {
-						map.put(key, bytes);
+				case TYPE_I -> {
+					if(key != null) {
+						map.put(key, readLong(inputStream));
 						key = null;
+					} else {
+						LOGGER.warn("B编码key为空跳过（I）");
 					}
-				} else {
-					LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
 				}
-				break;
-			default:
-				LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
-				break;
+				case TYPE_L -> {
+					if(key != null) {
+						map.put(key, readList(inputStream));
+						key = null;
+					} else {
+						LOGGER.warn("B编码key为空跳过（L）");
+					}
+				}
+				case TYPE_D -> {
+					if(key != null) {
+						map.put(key, readMap(inputStream));
+						key = null;
+					} else {
+						LOGGER.warn("B编码key为空跳过（D）");
+					}
+				}
+				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lengthBuilder.append(indexChar);
+				case SEPARATOR -> {
+					if(lengthBuilder.length() > 0) {
+						final byte[] bytes = readBytes(lengthBuilder, inputStream);
+						if (key == null) {
+							key = new String(bytes);
+						} else {
+							map.put(key, bytes);
+							key = null;
+						}
+					} else {
+						LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
+					}
+				}
+				default -> LOGGER.warn("B编码错误（未知类型）：{}", indexChar);
 			}
 		}
 		return map;
