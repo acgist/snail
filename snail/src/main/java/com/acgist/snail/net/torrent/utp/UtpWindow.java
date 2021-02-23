@@ -245,35 +245,29 @@ public final class UtpWindow {
 	public boolean ack(final short acknr, final int wndSize) {
 		synchronized (this) {
 			this.wndSize = wndSize;
+			// 响应编号已经处理说明可能丢包
+			boolean loss = true;
+			Entry<Short, UtpWindowData> entry;
 			final int timestamp = DateUtils.timestampUs();
-			// 响应数据集合
-			final var ackList = this.wndMap.entrySet().stream()
-				.filter(entry -> {
-					// 删除编号小于等于当前响应编号数据
-					final short diff = (short) (acknr - entry.getKey());
-					if(diff >= 0) {
-						// 更新超时时间
-						this.timeout(timestamp - entry.getValue().getTimestamp());
-						return true;
-					}
-					return false;
-				})
-				.map(Entry::getKey)
-				.collect(Collectors.toList());
-			if(ackList.isEmpty()) {
-				// 响应编号已经处理说明可能丢包
-				return true;
-			} else {
-				// 响应编号没有处理说明没有丢包
-				ackList.forEach(seqnr -> {
+			final var iterator = this.wndMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				entry = iterator.next();
+				// 编号是否已经处理
+				final short diff = (short) (acknr - entry.getKey());
+				if(diff >= 0) {
+					// 响应编号没有处理说明没有丢包
+					loss = false;
+					// 更新超时时间
+					this.timeout(timestamp - entry.getValue().getTimestamp());
 					// 释放信号量
 					this.release();
 					// 删除已经响应数据
-					this.take(seqnr);
-				});
-				this.wnd();
-				return false;
+					iterator.remove();
+				}
 			}
+			// 计算窗口大小
+			this.wnd();
+			return loss;
 		}
 	}
 	
