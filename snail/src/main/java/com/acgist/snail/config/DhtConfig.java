@@ -170,10 +170,6 @@ public final class DhtConfig extends PropertiesConfig {
 	 * <p>DHT请求清理周期（分钟）：{@value}</p>
 	 */
 	public static final int DHT_REQUEST_CLEAN_INTERVAL = 10;
-	/**
-	 * <p>DHT响应超时（毫秒）：{@value}</p>
-	 */
-	public static final long DHT_TIMEOUT = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 	
 	static {
 		LOGGER.debug("初始化DHT节点配置：{}", DHT_CONFIG);

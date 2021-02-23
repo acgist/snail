@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.utils.DateUtils;
@@ -29,10 +30,6 @@ public final class UtpWindow {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpWindow.class);
 
 	/**
-	 * <p>默认最大超时时间（微秒）：{@value}</p>
-	 */
-	private static final int MAX_TIMEOUT = 500 * 1000;
-	/**
 	 * <p>最小窗口大小：{@value}</p>
 	 */
 	private static final int MIN_WND_SIZE = 16;
@@ -41,8 +38,12 @@ public final class UtpWindow {
 	 */
 	private static final int MAX_WND_SIZE = 64;
 	/**
+	 * <p>默认最大超时时间（微秒）：{@value}</p>
+	 */
+	private static final int MAX_TIMEOUT = 500 * SystemConfig.DATE_SCALE;
+	/**
 	 * <p>获取信号量超时时间（秒）：{@value}</p>
-	 * <p>防止长时间获取不到信号量导致线程阻塞</p>
+	 * <p>防止阻塞时间过长</p>
 	 */
 	private static final int SEMAPHORE_TIMEOUT = 2;
 	
@@ -431,21 +432,19 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>获取信号量</p>
-	 * <p>如果窗口已经关闭：不需要获取信号量</p>
 	 */
 	private void acquire() {
 		if(this.close) {
+			// 如果窗口已经关闭：不需要获取信号量
 			return;
 		}
 		try {
-			LOGGER.debug("信号量获取：{}", this.semaphore.availablePermits());
-			final boolean success = this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS);
-			if(!success) {
-				LOGGER.debug("信号量获取失败");
+			if(!this.semaphore.tryAcquire(SEMAPHORE_TIMEOUT, TimeUnit.SECONDS)) {
+				LOGGER.debug("获取信号量失败：{}-{}", this.wnd, this.wndSize);
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			LOGGER.debug("信号量获取异常", e);
+			LOGGER.debug("获取信号量异常", e);
 		}
 	}
 	
@@ -454,8 +453,8 @@ public final class UtpWindow {
 	 */
 	public void release() {
 		final int available = this.semaphore.availablePermits();
-		LOGGER.debug("信号量释放：{}", available);
 		if(available < this.wnd) {
+			LOGGER.debug("信号量释放：{}", available);
 			this.semaphore.release();
 		}
 	}

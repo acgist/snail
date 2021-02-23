@@ -39,17 +39,17 @@ public abstract class PeerConnect implements IPeerConnect {
 	 */
 	private static final int SLICE_REQUEST_MAX_SIZE = 4;
 	/**
-	 * <p>SLICE请求等待时间：{@value}</p>
+	 * <p>SLICE请求等待时间（毫秒）：{@value}</p>
 	 */
 	private static final long SLICE_TIMEOUT = 10L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * <p>PICEC完成等待时间：{@value}</p>
+	 * <p>PICEC完成等待时间（毫秒）：{@value}</p>
 	 */
 	private static final long COMPLETED_TIMEOUT = 30L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * <p>释放等待时间：{@value}</p>
+	 * <p>释放等待时间（毫秒）：{@value}</p>
 	 */
-	private static final int RELEASE_TIMEOUT = 4000;
+	private static final long RELEASE_TIMEOUT = 4L * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
 	 * <p>连接状态</p>

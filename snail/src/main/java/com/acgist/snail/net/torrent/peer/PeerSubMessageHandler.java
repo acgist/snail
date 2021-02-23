@@ -44,10 +44,6 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerSubMessageHandler.class);
 	
 	/**
-	 * <p>握手超时时间（秒）：{@value}</p>
-	 */
-	public static final int HANDSHAKE_TIMEOUT = SystemConfig.CONNECT_TIMEOUT;
-	/**
 	 * <p>最大检查是否使用次数</p>
 	 */
 	private static final int MAX_USELESS_CHECK = 3;
@@ -382,7 +378,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		buffer.put(PeerConfig.RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
 		buffer.put(PeerService.getInstance().peerId());
-		this.sendEncrypt(buffer, HANDSHAKE_TIMEOUT);
+		this.sendEncrypt(buffer, SystemConfig.CONNECT_TIMEOUT);
 	}
 	
 	/**
