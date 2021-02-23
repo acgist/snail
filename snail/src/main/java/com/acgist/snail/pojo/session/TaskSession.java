@@ -47,7 +47,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	 */
 	private static final String TASK_STATUS_VALUE = "statusValue";
 	/**
-	 * <p>删除等待时间</p>
+	 * <p>删除等待时间（毫秒）：{@value}</p>
 	 */
 	private static final long DELETE_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 

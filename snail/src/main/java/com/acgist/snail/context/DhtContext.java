@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.utils.NumberUtils;
@@ -174,7 +175,7 @@ public final class DhtContext implements IContext {
 	 */
 	private void timeout() {
 		LOGGER.debug("处理DHT超时请求");
-		final long timeout = DhtConfig.DHT_TIMEOUT;
+		final long timeout = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 		final long timestamp = System.currentTimeMillis();
 		synchronized (this.requests) {
 			DhtRequest request;

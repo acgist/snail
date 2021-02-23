@@ -156,7 +156,7 @@ public final class PeerConfig extends PropertiesConfig {
 	/**
 	 * <p>holepunch连接超时时间（毫秒）：{@value}</p>
 	 */
-	public static final int HOLEPUNCH_TIMEOUT = 2000;
+	public static final long HOLEPUNCH_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>PeerId名称配置：{@value}</p>
 	 */

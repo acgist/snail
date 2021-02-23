@@ -24,7 +24,7 @@ import com.acgist.snail.utils.IoUtils;
 public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
-	 * <p>快速失败时间</p>
+	 * <p>快速失败时间（毫秒）：{@value}</p>
 	 * <p>注意：不建议超过任务删除锁等待时间</p>
 	 */
 	private static final long FAST_CHECK_TIME = 2L * SystemConfig.ONE_SECOND_MILLIS;

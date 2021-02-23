@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.QType;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.DhtContext;
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.format.BEncodeDecoder;
@@ -206,7 +207,7 @@ public class DhtRequest extends DhtMessage {
 			synchronized (this) {
 				if(!this.hasResponse()) {
 					try {
-						this.wait(DhtConfig.DHT_TIMEOUT);
+						this.wait(SystemConfig.RECEIVE_TIMEOUT_MILLIS);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						LOGGER.debug("线程等待异常", e);

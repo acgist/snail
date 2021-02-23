@@ -60,11 +60,6 @@ public final class MSECryptHandshakeHandler {
 	 * <p>缓冲区大小：{@value}</p>
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
-	/**
-	 * <p>加密握手超时时间（毫秒）：{@value}</p>
-	 * <p>不能超过{@link PeerSubMessageHandler#HANDSHAKE_TIMEOUT}</p>
-	 */
-	private static final long HANDSHAKE_TIMEOUT = 1L * PeerSubMessageHandler.HANDSHAKE_TIMEOUT * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
 	 * <p>加密握手步骤</p>
@@ -321,7 +316,8 @@ public final class MSECryptHandshakeHandler {
 			synchronized (this.handshakeLock) {
 				if(!this.completed) {
 					try {
-						this.handshakeLock.wait(HANDSHAKE_TIMEOUT);
+						// 加密握手超时时间不能超过Peer连接超时时间
+						this.handshakeLock.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						LOGGER.debug("线程等待异常", e);
