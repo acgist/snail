@@ -1,7 +1,7 @@
 /**
- * <h1>BT任务下载</h1>
+ * <h1>Torrent协议</h1>
  * <table border="1">
- * 	<caption>包名</caption>
+ * 	<caption>包和功能</caption>
  * 	<tr>
  * 		<th>包名</th>
  * 		<th align="left">功能</th>
@@ -20,7 +20,7 @@
  * 	</tr>
  * 	<tr>
  * 		<td>peer</td>
- * 		<td>Peer协议（TCP）：Peer协议实现</td>
+ * 		<td>Peer协议</td>
  * 	</tr>
  * 	<tr>
  * 		<td>tracker</td>

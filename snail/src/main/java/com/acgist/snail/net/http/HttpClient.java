@@ -169,8 +169,8 @@ public final class HttpClient {
 	
 	/**
 	 * @param url 请求地址
-	 * @param connectTimeout 连接超时时间（单位：毫秒）
-	 * @param receiveTimeout 响应超时时间（单位：毫秒）
+	 * @param connectTimeout 连接超时时间（毫秒）
+	 * @param receiveTimeout 响应超时时间（毫秒）
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -210,8 +210,8 @@ public final class HttpClient {
 	 * <p>新建HTTP客户端</p>
 	 * 
 	 * @param url 请求地址
-	 * @param connectTimeout 连接超时时间（单位：毫秒）
-	 * @param receiveTimeout 响应超时时间（单位：毫秒）
+	 * @param connectTimeout 连接超时时间（毫秒）
+	 * @param receiveTimeout 响应超时时间（毫秒）
 	 * 
 	 * @return {@link HttpClient}
 	 * 
@@ -525,8 +525,8 @@ public final class HttpClient {
 	/**
 	 * <p>创建请求连接</p>
 	 * 
-	 * @param connectTimeout 连接超时时间（单位：毫秒）
-	 * @param receiveTimeout 响应超时时间（单位：毫秒）
+	 * @param connectTimeout 连接超时时间（毫秒）
+	 * @param receiveTimeout 响应超时时间（毫秒）
 	 * 
 	 * @return 请求连接
 	 * 

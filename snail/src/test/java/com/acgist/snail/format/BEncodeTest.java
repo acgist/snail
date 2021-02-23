@@ -40,6 +40,17 @@ class BEncodeTest extends Performance {
 		assertEquals("xxxx", odd);
 		assertTrue(map.size() == 1);
 		assertTrue(list.size() == 2);
+		final String mix = BEncodeEncoder.newInstance()
+			.newList().put(List.of("a", List.of("b", "c"), Map.of("d", "e"))).flush().toString();
+		this.log(mix);
+		assertEquals("l1:al1:b1:ced1:d1:eee", mix);
+		final var mixList = BEncodeDecoder.newInstance(mix).nextList();
+		assertEquals("a", new String((byte[]) mixList.get(0)));
+		final List<?> mixListList = (List<?>) mixList.get(1);
+		assertEquals("b", new String((byte[]) mixListList.get(0)));
+		assertEquals("c", new String((byte[]) mixListList.get(1)));
+		final Map<?, ?> mixListMap = (Map<?, ?>) mixList.get(2);
+		assertEquals("e", new String((byte[]) mixListMap.get("d")));
 	}
 	
 	@Test

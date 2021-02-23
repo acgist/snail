@@ -71,7 +71,7 @@ public interface IMessageSender {
 	 * <p>所有消息发送都使用此方法发送</p>
 	 * 
 	 * @param buffer 消息内容
-	 * @param timeout 超时时间
+	 * @param timeout 超时时间（秒）
 	 * 
 	 * @throws NetException 网络异常
 	 */
