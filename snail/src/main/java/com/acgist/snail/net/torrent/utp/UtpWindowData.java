@@ -33,7 +33,7 @@ public final class UtpWindowData {
 	
 	/**
 	 * @param seqnr seqnr
-	 * @param timestamp 时间戳
+	 * @param timestamp 时间戳（微秒）
 	 * @param data 负载数据
 	 */
 	private UtpWindowData(short seqnr, int timestamp, byte[] data) {
@@ -50,10 +50,10 @@ public final class UtpWindowData {
 	 * <p>创建窗口数据</p>
 	 * 
 	 * @param seqnr seqnr
-	 * @param timestamp 时间戳
+	 * @param timestamp 时间戳（微秒）
 	 * @param data 负载数据
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 */
 	public static final UtpWindowData newInstance(short seqnr, int timestamp, byte[] data) {
 		return new UtpWindowData(seqnr, timestamp, data);
@@ -69,9 +69,9 @@ public final class UtpWindowData {
 	}
 
 	/**
-	 * <p>获取时间戳</p>
+	 * <p>获取时间戳（微秒）</p>
 	 * 
-	 * @return 时间戳
+	 * @return 时间戳（微秒）
 	 */
 	public int getTimestamp() {
 		return this.timestamp;
@@ -106,11 +106,10 @@ public final class UtpWindowData {
 	
 	/**
 	 * <p>更新数据并返回时间戳</p>
-	 * <p>更新数据：时间戳、发送次数</p>
 	 * 
-	 * @return 时间戳
+	 * @return 时间戳（微秒）
 	 */
-	public int pushUpdateGetTimestamp() {
+	public int updateGetTimestamp() {
 		this.pushTimes++;
 		this.timestamp = DateUtils.timestampUs();
 		return this.timestamp;

@@ -21,7 +21,7 @@ import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.utils.DateUtils;
 
 /**
- * <p>UTP滑块窗口</p>
+ * <p>UTP窗口</p>
  * 
  * @author acgist
  */
@@ -43,7 +43,7 @@ public final class UtpWindow {
 	private static final int MAX_TIMEOUT = 500 * SystemConfig.DATE_SCALE;
 	/**
 	 * <p>获取信号量超时时间（秒）：{@value}</p>
-	 * <p>防止阻塞时间过长</p>
+	 * <p>防止长时间阻塞</p>
 	 */
 	private static final int SEMAPHORE_TIMEOUT = 2;
 	
@@ -97,19 +97,19 @@ public final class UtpWindow {
 	 * 	<dd>接收端：未处理的数据</dd>
 	 * 	<dd>发送端：未响应的数据</dd>
 	 * </dl>
-	 * <p>数据可能是不连贯的：先收到后发送的数据包</p>
+	 * <p>数据可能是乱序的</p>
 	 */
 	private final Map<Short, UtpWindowData> wndMap;
 	/**
-	 * <p>发送窗口控制信号量</p>
+	 * <p>窗口信号量</p>
 	 */
 	private final Semaphore semaphore;
 	/**
-	 * <p>UTP窗口请求队列</p>
+	 * <p>窗口请求队列</p>
 	 */
 	private final BlockingQueue<UtpRequest> requests;
 	/**
-	 * <p>消息处理器</p>
+	 * <p>窗口消息处理器</p>
 	 */
 	private final IMessageDecoder<ByteBuffer> messageDecoder;
 	
@@ -121,8 +121,6 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>创建窗口对象</p>
-	 * 
 	 * @param messageDecoder 消息处理器
 	 */
 	private UtpWindow(IMessageDecoder<ByteBuffer> messageDecoder) {
@@ -130,40 +128,39 @@ public final class UtpWindow {
 		this.rttVar = 0;
 		this.timeout = MAX_TIMEOUT;
 		this.wndSize = 0;
+		// 固定值：1
 		this.seqnr = 1;
 		this.timestamp = 0;
 		this.wndMap = new LinkedHashMap<>();
-		this.semaphore = new Semaphore(MIN_WND_SIZE);
 		if(messageDecoder == null) {
 			// 发送窗口对象
-			// 发送窗口不创建请求队列
 			this.requests = null;
 			this.messageDecoder = null;
+			this.semaphore = new Semaphore(MIN_WND_SIZE);
 		} else {
 			// 接收窗口对象
-			// 同一个窗口必须将消息发送到同一个请求队列防止消息出现乱序
+			// 相同窗口必须将消息发送到相同请求队列：防止消息出现乱序
 			this.requests = UtpRequestQueue.getInstance().requestQueue();
 			this.messageDecoder = messageDecoder;
+			this.semaphore = null;
 		}
 	}
 	
 	/**
-	 * <p>创建发送窗口对象</p>
-	 * <p>发送窗口不接收和处理请求，不创建请求队列。</p>
+	 * <p>创建发送窗口</p>
 	 * 
-	 * @return 窗口对象
+	 * @return {@link UtpWindow}
 	 */
 	public static final UtpWindow newSendInstance() {
 		return new UtpWindow();
 	}
 	
 	/**
-	 * <p>创建接收窗口对象</p>
-	 * <p>接收窗口接收和处理请求，创建请求队列。</p>
+	 * <p>创建接收窗口</p>
 	 * 
-	 * @param messageDecoder 消息处理器
+	 * @param messageDecoder 窗口消息处理器
 	 * 
-	 * @return 窗口对象
+	 * @return {@link UtpWindow}
 	 */
 	public static final UtpWindow newRecvInstance(IMessageDecoder<ByteBuffer> messageDecoder) {
 		return new UtpWindow(messageDecoder);
@@ -171,7 +168,6 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>设置连接信息</p>
-	 * <p>接收端的seqnr可以设置为随机值：默认设置和发送端一样</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
@@ -194,9 +190,8 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>发送数据</p>
-	 * <p>没有负载</p>
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 * 
 	 * @see #build(byte[])
 	 */
@@ -206,17 +201,18 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>发送数据</p>
-	 * <p>递增seqnr</p>
 	 * 
 	 * @param data 数据
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 */
 	public UtpWindowData build(byte[] data) {
-		this.acquire(); // 不能加锁
+		// 不能加锁
+		this.acquire();
 		synchronized (this) {
 			this.timestamp = DateUtils.timestampUs();
 			final UtpWindowData windowData = this.storage(this.timestamp, this.seqnr, data);
+			// 数据创建完成递增
 			this.seqnr++;
 			return windowData;
 		}
@@ -229,8 +225,8 @@ public final class UtpWindow {
 	 */
 	public List<UtpWindowData> timeoutWindowData() {
 		synchronized (this) {
-			final int timestamp = DateUtils.timestampUs();
 			final int timeout = this.timeout;
+			final int timestamp = DateUtils.timestampUs();
 			return this.wndMap.values().stream()
 				.filter(windowData -> timestamp - windowData.getTimestamp() > timeout)
 				.collect(Collectors.toList());
@@ -239,35 +235,41 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>处理响应</p>
-	 * <p>移除已经响应数据并更新超时时间</p>
-	 * <p>如果响应编号没有处理说明没有丢包，如果响应编号已经处理说明可能发生丢包。</p>
+	 * <p>删除已经响应数据、更新超时时间</p>
 	 * 
 	 * @param acknr 响应编号：最后处理编号
 	 * @param wndSize 剩余窗口大小
 	 * 
-	 * @return 是否丢包：true-丢包；false-没有丢包；
+	 * @return 是否丢包
 	 */
 	public boolean ack(final short acknr, final int wndSize) {
 		synchronized (this) {
 			this.wndSize = wndSize;
 			final int timestamp = DateUtils.timestampUs();
+			// 响应数据集合
 			final var ackList = this.wndMap.entrySet().stream()
 				.filter(entry -> {
-					// 移除编号小于等于当前响应编号的数据
+					// 删除编号小于等于当前响应编号数据
 					final short diff = (short) (acknr - entry.getKey());
-					return diff >= 0;
-				})
-				.peek(entry -> {
-					this.timeout(timestamp - entry.getValue().getTimestamp()); // 计算超时时间
+					if(diff >= 0) {
+						// 更新超时时间
+						this.timeout(timestamp - entry.getValue().getTimestamp());
+						return true;
+					}
+					return false;
 				})
 				.map(Entry::getKey)
 				.collect(Collectors.toList());
 			if(ackList.isEmpty()) {
+				// 响应编号已经处理说明可能丢包
 				return true;
 			} else {
+				// 响应编号没有处理说明没有丢包
 				ackList.forEach(seqnr -> {
-					this.release(); // 释放信号量
-					this.take(seqnr); // 删除数据
+					// 释放信号量
+					this.release();
+					// 删除已经响应数据
+					this.take(seqnr);
 				});
 				this.wnd();
 				return false;
@@ -278,8 +280,8 @@ public final class UtpWindow {
 	/**
 	 * <dl>
 	 * 	<dt>接收数据</dt>
-	 * 	<dd>如果seqnr != 下一个编号：放入缓存</dd>
-	 * 	<dd>如果seqnr == 下一个编号：放入缓存、读取数据、更新seqnr，然后继续获取seqnr直到seqnr != 下一个编号为止，最后合并消息并处理。</dd>
+	 * 	<dd>如果seqnr != 下一个请求编号：放入缓存</dd>
+	 * 	<dd>如果seqnr == 下一个请求编号：放入缓存、读取数据、更新seqnr（直到seqnr != 下一个请求编号为止合并返回）</dd>
 	 * </dl>
 	 * 
 	 * @param timestamp 时间戳
@@ -291,15 +293,18 @@ public final class UtpWindow {
 	public void receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
-			if(diff >= 0) { // seqnr已被处理
+			if(diff >= 0) {
+				// seqnr已被处理
 				return;
 			}
-			this.storage(timestamp, seqnr, buffer); // 先保存数据
+			// 优先保存数据
+			this.storage(timestamp, seqnr, buffer);
 			UtpWindowData nextWindowData;
 			short nextSeqnr = this.seqnr;
 			final var output = new ByteArrayOutputStream();
 			while(true) {
-				nextSeqnr = (short) (nextSeqnr + 1); // 下一个请求编号
+				// 下一个请求编号
+				nextSeqnr = (short) (nextSeqnr + 1);
 				nextWindowData = this.take(nextSeqnr);
 				if(nextWindowData == null) {
 					break;
@@ -345,11 +350,10 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>取出窗口数据</p>
-	 * <p>取出窗口数据并更新窗口大小</p>
 	 * 
 	 * @param seqnr 请求编号
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 */
 	private UtpWindowData take(short seqnr) {
 		final UtpWindowData windowData = this.wndMap.remove(seqnr);
@@ -361,13 +365,13 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>存入窗口数据</p>
+	 * <p>保存窗口数据</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -376,13 +380,13 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>存入窗口数据</p>
+	 * <p>保存窗口数据</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
 	 * @param bytes 请求数据
 	 * 
-	 * @return 窗口数据
+	 * @return {@link UtpWindowData}
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
@@ -394,7 +398,7 @@ public final class UtpWindow {
 	/**
 	 * <p>计算超时时间</p>
 	 * 
-	 * @param packetRtt 数据包往返时间
+	 * @param packetRtt 数据往返时间
 	 */
 	private void timeout(final int packetRtt) {
 		int rtt = this.rtt;
@@ -410,8 +414,8 @@ public final class UtpWindow {
 	
 	/**
 	 * <p>流量控制和阻塞控制</p>
-	 * <p>超时时间等于默认超时时间：窗口{@code +1}</p>
-	 * <p>超时时间大于默认超时时间：窗口{@code /2}</p>
+	 * <p>超时时间等于默认超时时间：窗口大小 + 1</p>
+	 * <p>超时时间大于默认超时时间：窗口大小 / 2</p>
 	 */
 	private void wnd() {
 		int wnd = this.wnd;
@@ -423,7 +427,7 @@ public final class UtpWindow {
 		} else {
 			wnd = wnd / 2;
 			if(wnd < MIN_WND_SIZE) {
-				this.wnd = MIN_WND_SIZE;
+				wnd = MIN_WND_SIZE;
 			}
 		}
 		this.wnd = wnd;
@@ -451,7 +455,10 @@ public final class UtpWindow {
 	/**
 	 * <p>释放信号量</p>
 	 */
-	public void release() {
+	private void release() {
+		if(this.semaphore == null) {
+			return;
+		}
 		final int available = this.semaphore.availablePermits();
 		if(available < this.wnd) {
 			LOGGER.debug("信号量释放：{}", available);
