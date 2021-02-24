@@ -311,10 +311,8 @@ public final class UtpWindow {
 				return;
 			}
 			// 添加请求队列：异步处理请求
-			if(this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes), this.messageDecoder))) {
-				LOGGER.debug("处理UTP数据消息：{}", this.seqnr);
-			} else {
-				LOGGER.warn("处理UTP数据消息失败：{}", this.seqnr);
+			if(!this.requests.offer(UtpRequest.newInstance(ByteBuffer.wrap(bytes), this.messageDecoder))) {
+				LOGGER.warn("处理数据消息失败：{}", this.seqnr);
 			}
 		}
 	}
