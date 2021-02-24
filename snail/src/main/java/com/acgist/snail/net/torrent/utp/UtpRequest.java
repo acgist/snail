@@ -8,35 +8,23 @@ import com.acgist.snail.net.codec.IMessageDecoder;
 /**
  * <p>UTP请求</p>
  * 
+ * @param buffer 请求数据
+ * @param messageDecoder 消息处理器
+ * 
  * @author acgist
  */
-public final class UtpRequest {
+public final record UtpRequest(
+	ByteBuffer buffer,
+	IMessageDecoder<ByteBuffer> messageDecoder
+) {
 
-	/**
-	 * <p>请求数据</p>
-	 */
-	private final ByteBuffer buffer;
-	/**
-	 * <p>消息处理器</p>
-	 */
-	private final IMessageDecoder<ByteBuffer> messageDecoder;
-	
-	/**
-	 * @param buffer 请求数据
-	 * @param messageDecoder 消息处理器
-	 */
-	private UtpRequest(ByteBuffer buffer, IMessageDecoder<ByteBuffer> messageDecoder) {
-		this.buffer = buffer;
-		this.messageDecoder = messageDecoder;
-	}
-	
 	/**
 	 * <p>创建UTP请求</p>
 	 * 
 	 * @param buffer 请求数据
 	 * @param messageDecoder 消息处理器
 	 * 
-	 * @return UTP请求
+	 * @return {@link UtpRequest}
 	 */
 	public static final UtpRequest newInstance(ByteBuffer buffer, IMessageDecoder<ByteBuffer> messageDecoder) {
 		return new UtpRequest(buffer, messageDecoder);

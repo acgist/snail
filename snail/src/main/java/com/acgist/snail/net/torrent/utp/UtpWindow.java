@@ -264,7 +264,10 @@ public final class UtpWindow {
 					iterator.remove();
 				}
 			}
-			this.wndControl();
+			if(!loss) {
+				// 没有丢包计算窗口
+				this.wndControl();
+			}
 			return loss;
 		}
 	}
