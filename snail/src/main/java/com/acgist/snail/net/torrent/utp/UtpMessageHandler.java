@@ -311,8 +311,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			return;
 		}
 		windowDatas.forEach(windowData -> {
-			if(windowData.getPushTimes() > UtpConfig.MAX_PUSH_TIMES) {
-				LOGGER.warn("发送数据包失败（次数超限）：{}-{}", windowData.getSeqnr(), windowData.getPushTimes());
+			if(windowData.discard()) {
+				LOGGER.debug("发送数据包失败（次数超限）：{}", windowData);
 				this.sendWindow.discard(windowData.getSeqnr());
 			} else {
 				this.data(windowData);
@@ -339,7 +339,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		}
 		LOGGER.debug("处理数据消息：{}", seqnr);
 		try {
-			this.recvWindow.receive(timestamp, seqnr, buffer);
+			this.recvWindow.receive(seqnr, timestamp, buffer);
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {
@@ -381,7 +381,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(!this.connect) { // 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				this.recvWindow.connect(timestamp, (short) (seqnr - 1)); // 注意：seqnr-1
+				// 注意：seqnr-1
+				this.recvWindow.connect((short) (seqnr - 1), timestamp);
 			}
 			// 释放连接锁
 			this.unlockConnect();
@@ -495,7 +496,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(!this.connect) {
 			this.connect = true;
 			// seqnr可以设置为随机值：默认请求编号（acknr）
-			this.recvWindow.connect(timestamp, seqnr);
+			this.recvWindow.connect(seqnr, timestamp);
 		}
 		this.state(timestamp, seqnr);
 	}
