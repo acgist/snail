@@ -169,10 +169,10 @@ public final class UtpWindow {
 	/**
 	 * <p>设置连接信息</p>
 	 * 
-	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
+	 * @param timestamp 时间戳
 	 */
-	public void connect(int timestamp, short seqnr) {
+	public void connect(short seqnr, int timestamp) {
 		this.seqnr = seqnr;
 		this.timestamp = timestamp;
 	}
@@ -210,9 +210,10 @@ public final class UtpWindow {
 		// 不能加锁
 		this.acquire();
 		synchronized (this) {
+			// 最后发送时间
 			this.timestamp = DateUtils.timestampUs();
-			final UtpWindowData windowData = this.storage(this.timestamp, this.seqnr, data);
-			// 数据创建完成递增
+			final UtpWindowData windowData = this.storage(this.seqnr, this.timestamp, data);
+			// 创建完成递增
 			this.seqnr++;
 			return windowData;
 		}
@@ -257,34 +258,27 @@ public final class UtpWindow {
 				if(diff >= 0) {
 					// 响应编号没有处理说明没有丢包
 					loss = false;
-					// 更新超时时间
 					this.timeout(timestamp - entry.getValue().getTimestamp());
-					// 释放信号量
 					this.release();
 					// 删除已经响应数据
 					iterator.remove();
 				}
 			}
-			// 计算窗口大小
-			this.wnd();
+			this.wndControl();
 			return loss;
 		}
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>接收数据</dt>
-	 * 	<dd>如果seqnr != 下一个请求编号：放入缓存</dd>
-	 * 	<dd>如果seqnr == 下一个请求编号：放入缓存、读取数据、更新seqnr（直到seqnr != 下一个请求编号为止合并返回）</dd>
-	 * </dl>
+	 * <p>接收数据</p>
 	 * 
-	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
+	 * @param timestamp 时间戳
 	 * @param buffer 请求数据
 	 * 
 	 * @throws IOException IO异常
 	 */
-	public void receive(int timestamp, short seqnr, ByteBuffer buffer) throws IOException {
+	public void receive(final short seqnr, final  int timestamp, final ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
 			if(diff >= 0) {
@@ -292,7 +286,7 @@ public final class UtpWindow {
 				return;
 			}
 			// 优先保存数据
-			this.storage(timestamp, seqnr, buffer);
+			this.storage(seqnr, timestamp, buffer);
 			UtpWindowData nextWindowData;
 			short nextSeqnr = this.seqnr;
 			final var output = new ByteArrayOutputStream();
@@ -304,6 +298,7 @@ public final class UtpWindow {
 					break;
 				} else {
 					this.seqnr = nextWindowData.getSeqnr();
+					// 最后接收时间
 					this.timestamp = nextWindowData.getTimestamp();
 					output.write(nextWindowData.getData());
 				}
@@ -361,28 +356,28 @@ public final class UtpWindow {
 	/**
 	 * <p>保存窗口数据</p>
 	 * 
-	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
+	 * @param timestamp 时间戳
 	 * @param buffer 请求数据
 	 * 
 	 * @return {@link UtpWindowData}
 	 */
-	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
+	private UtpWindowData storage(final short seqnr, final int timestamp, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		return this.storage(timestamp, seqnr, bytes);
+		return this.storage(seqnr, timestamp, bytes);
 	}
 	
 	/**
 	 * <p>保存窗口数据</p>
 	 * 
-	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
+	 * @param timestamp 时间戳
 	 * @param bytes 请求数据
 	 * 
 	 * @return {@link UtpWindowData}
 	 */
-	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
+	private UtpWindowData storage(final short seqnr, final int timestamp, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
 		this.wndMap.put(seqnr, windowData);
 		this.wndSize = this.wndSize + windowData.getLength();
@@ -411,7 +406,7 @@ public final class UtpWindow {
 	 * <p>超时时间等于默认超时时间：窗口大小 + 1</p>
 	 * <p>超时时间大于默认超时时间：窗口大小 / 2</p>
 	 */
-	private void wnd() {
+	private void wndControl() {
 		int wnd = this.wnd;
 		if(this.timeout <= MAX_TIMEOUT) {
 			if(wnd < MAX_WND_SIZE) {
