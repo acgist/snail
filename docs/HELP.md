@@ -266,7 +266,7 @@ java -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.jav
 
 ### 启动后没有出现GUI界面
 
-可以查看端口`16888`和`18888`是否被占用了，查看命令：
+* 可以查看端口`16888`和`18888`是否占用：
 
 ```bash
 # Linux
@@ -285,6 +285,8 @@ tasklist | findstr pid
 ```
 
 > pid：查询进程ID
+
+* 端口未被占用可以试试使用管理用户权限运行
 
 ## 开发帮助
 
