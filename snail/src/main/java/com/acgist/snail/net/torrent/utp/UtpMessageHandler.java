@@ -50,7 +50,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
 	/**
-	 * <p>UTP消息请求头长度：{@value}</p>
+	 * <p>UTP消息请求头默认长度：{@value}</p>
 	 */
 	private static final int UTP_HEADER_LENGTH = 20;
 	/**
@@ -64,7 +64,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	/**
 	 * <p>是否连接</p>
-	 * <p>不能使用这个状态{@linkplain #available() 判断是否可用}，发送方法判断这个状态，导致发送连接消息失败。</p>
+	 * <p>不能使用方法{@link #available()}判断是否可用：发送方法判断这个状态导致发送连接消息失败</p>
 	 */
 	private volatile boolean connect;
 	/**
@@ -132,7 +132,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param peerSubMessageHandler Peer消息代理
 	 * @param socketAddress 地址
 	 * @param connectionId 连接ID
-	 * @param server 是否服务端
+	 * @param server 是否是服务端
 	 */
 	private UtpMessageHandler(PeerSubMessageHandler peerSubMessageHandler, InetSocketAddress socketAddress, short connectionId, boolean server) {
 		super(socketAddress);
@@ -177,27 +177,37 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(buffer.remaining() < UTP_HEADER_MIN_LENGTH) {
 			throw new NetException("处理UTP消息错误（长度）：" + buffer.remaining());
 		}
-		final byte typeVersion = buffer.get(); // 消息类型
-		final UtpConfig.Type type = UtpConfig.Type.of(typeVersion); // UTP消息类型
+		// 类型版本
+		final byte typeVersion = buffer.get();
+		// 消息类型
+		final UtpConfig.Type type = UtpConfig.Type.of(typeVersion);
 		if(type == null) {
 			throw new NetException("未知UTP消息类型：" + typeVersion);
 		}
-		final byte extension = buffer.get(); // 扩展
-		final short connectionId = buffer.getShort(); // 连接ID
-		final int timestamp = buffer.getInt(); // 时间戳
-		final int timestampDifference = buffer.getInt(); // 时间差
-		final int wndSize = buffer.getInt(); // 窗口大小
-		final short seqnr = buffer.getShort(); // 请求编号
-		final short acknr = buffer.getShort(); // 响应编号
-		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_LENGTH) { // 扩展数据
+		// 扩展
+		final byte extension = buffer.get();
+		// 连接ID
+		final short connectionId = buffer.getShort();
+		// 时间戳
+		final int timestamp = buffer.getInt();
+		// 时间差
+		final int timestampDifference = buffer.getInt();
+		// 窗口大小
+		final int wndSize = buffer.getInt();
+		// 请求编号
+		final short seqnr = buffer.getShort();
+		// 响应编号
+		final short acknr = buffer.getShort();
+		// 扩展消息
+		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_LENGTH) {
 			final short extLength = buffer.getShort();
 			if(extLength <= 0 || buffer.remaining() < extLength) {
 				throw new NetException("处理UTP消息错误（扩展长度）：" + extLength);
 			}
-			// 扩展信息
 			final byte[] extData = new byte[extLength];
 			buffer.get(extData);
 		}
+		// 注意顺序（性能）：按照消息数量排序
 		switch (type) {
 			case DATA -> this.data(timestamp, seqnr, acknr, buffer);
 			case STATE -> this.state(timestamp, seqnr, acknr, wndSize);
@@ -274,10 +284,9 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	public boolean connect() {
 		this.connect = false;
 		this.syn();
-		// 添加连接锁
 		this.lockConnect();
-		// 连接失败移除
 		if(!this.connect) {
+			// 连接失败移除
 			this.close();
 		}
 		return this.connect;
@@ -292,8 +301,15 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(this.available()) {
 			final List<UtpWindowData> windowDatas = this.sendWindow.timeoutWindowData();
 			if(CollectionUtils.isNotEmpty(windowDatas)) {
-				this.data(windowDatas);
 				LOGGER.debug("超时数据包重新发送：{}-{}", this.sendId, windowDatas.size());
+				windowDatas.forEach(windowData -> {
+					if(windowData.discard()) {
+						LOGGER.debug("超时数据包重新发送失败（次数超限）：{}", windowData);
+						this.sendWindow.discard(windowData.getSeqnr());
+					} else {
+						this.data(windowData);
+					}
+				});
 			}
 			return false;
 		} else {
@@ -302,27 +318,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	}
 	
 	/**
-	 * <p>发送数据包</p>
-	 * 
-	 * @param windowDatas 数据包集合
-	 */
-	private void data(List<UtpWindowData> windowDatas) {
-		if(CollectionUtils.isEmpty(windowDatas)) {
-			return;
-		}
-		windowDatas.forEach(windowData -> {
-			if(windowData.discard()) {
-				LOGGER.debug("发送数据包失败（次数超限）：{}", windowData);
-				this.sendWindow.discard(windowData.getSeqnr());
-			} else {
-				this.data(windowData);
-			}
-		});
-	}
-	
-	/**
 	 * <p>处理数据消息</p>
-	 * <p>发送响应消息响应编号等于最后一次处理的接收请求编号</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
@@ -337,13 +333,13 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			this.close();
 			return;
 		}
-		LOGGER.debug("处理数据消息：{}", seqnr);
+		LOGGER.debug("处理数据消息：{}-{}", seqnr, acknr);
 		try {
 			this.recvWindow.receive(seqnr, timestamp, buffer);
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {
-			// 最后一次处理成功请求编号
+			// 响应消息响应编号：最后一次接收请求编号
 			this.state(timestamp, this.recvWindow.seqnr());
 		}
 	}
@@ -355,21 +351,20 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private void data(UtpWindowData windowData) {
 		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
-		final ByteBuffer buffer = this.buildHeader(UtpConfig.Type.DATA, windowData.getLength() + UTP_HEADER_LENGTH);
 		final int now = windowData.updateGetTimestamp();
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.DATA, windowData.getLength() + UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
-		buffer.putInt(now); // 更新发送时间
+		buffer.putInt(now);
 		buffer.putInt(now - this.recvWindow.timestamp());
 		buffer.putInt(this.recvWindow.wndSize());
-		buffer.putShort(windowData.getSeqnr()); // seqnr
-		buffer.putShort(this.recvWindow.seqnr()); // acknr
+		buffer.putShort(windowData.getSeqnr());
+		buffer.putShort(this.recvWindow.seqnr());
 		buffer.put(windowData.getData());
 		this.pushMessage(buffer);
 	}
 
 	/**
 	 * <p>处理响应消息</p>
-	 * <p>如果多次返回已处理的数据编号，则视为丢包重新发送最后一个未确认数据包。</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param seqnr 请求编号
@@ -377,23 +372,25 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param wndSize 窗口大小
 	 */
 	private void state(int timestamp, short seqnr, short acknr, int wndSize) {
-		LOGGER.debug("处理响应消息：{}", acknr);
-		if(!this.connect) { // 没有连接
+		LOGGER.debug("处理响应消息：{}-{}", seqnr, acknr);
+		if(!this.connect) {
+			// 没有连接
 			this.connect = this.available();
 			if(this.connect) {
-				// 注意：seqnr-1
+				// 注意：seqnr - 1
 				this.recvWindow.connect((short) (seqnr - 1), timestamp);
 			}
-			// 释放连接锁
 			this.unlockConnect();
 		}
-		// 快速重传
-		final boolean loss = this.sendWindow.ack(acknr, wndSize); // 是否可能丢包
+		// 是否丢包
+		final boolean loss = this.sendWindow.ack(acknr, wndSize);
 		if(loss) {
+			// 快速重传：多次返回已处理的数据编号视为丢包
 			if(this.ackLossTimes.incrementAndGet() > UtpConfig.FAST_ACK_RETRY_TIMES) {
+				// 重新发送最后一个未确认数据包
 				final var packet = this.sendWindow.lastUnack();
 				if(packet != null) {
-					LOGGER.debug("UTP消息快速重传：{}-{}", acknr, packet.getSeqnr());
+					LOGGER.debug("快速重传：{}-{}", acknr, packet.getSeqnr());
 					this.data(packet);
 				}
 			}
@@ -404,7 +401,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	/**
 	 * <p>发送响应消息</p>
-	 * <p>发送此消息不增加seqnr</p>
+	 * <p>响应消息不用增加seqnr</p>
 	 * 
 	 * @param timestamp 时间戳
 	 * @param acknr 响应编号
@@ -412,13 +409,13 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void state(int timestamp, short acknr) {
 		LOGGER.debug("发送响应消息：{}", acknr);
 		final int now = DateUtils.timestampUs();
-		final ByteBuffer buffer = this.buildHeader(UtpConfig.Type.STATE, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.STATE, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
 		buffer.putInt(this.recvWindow.wndSize());
-		buffer.putShort(this.sendWindow.seqnr()); // seqnr
-		buffer.putShort(acknr); // acknr
+		buffer.putShort(this.sendWindow.seqnr());
+		buffer.putShort(acknr);
 		this.pushMessage(buffer);
 	}
 
@@ -430,7 +427,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param acknr 响应编号
 	 */
 	private void fin(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理结束消息：{}", this.socketAddress);
+		LOGGER.debug("处理结束消息：{}-{}-{}", seqnr, acknr, this.socketAddress);
 		// 如果没有连接不用发送响应消息：防止一直往返确认造成死循环
 		if(this.connect) {
 			this.state(timestamp, seqnr);
@@ -443,7 +440,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private void fin() {
 		LOGGER.debug("发送结束消息：{}", this.socketAddress);
-		final ByteBuffer buffer = this.buildHeader(UtpConfig.Type.FIN, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.FIN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -461,7 +458,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param acknr 响应编号
 	 */
 	private void reset(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理重置消息：{}", this.socketAddress);
+		LOGGER.debug("处理重置消息：{}-{}-{}", seqnr, acknr, this.socketAddress);
 		// 如果没有连接不用发送响应消息：防止一直往返确认造成死循环
 		if(this.connect) {
 			this.state(timestamp, seqnr);
@@ -474,7 +471,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private void reset() {
 		LOGGER.debug("发送重置消息：{}", this.socketAddress);
-		final ByteBuffer buffer = this.buildHeader(UtpConfig.Type.RESET, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.RESET, UTP_HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -492,10 +489,10 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param acknr 响应编号
 	 */
 	private void syn(int timestamp, short seqnr, short acknr) {
-		LOGGER.debug("处理握手消息：{}", this.socketAddress);
+		LOGGER.debug("处理握手消息：{}-{}-{}", seqnr, acknr, this.socketAddress);
 		if(!this.connect) {
 			this.connect = true;
-			// seqnr可以设置为随机值：默认请求编号（acknr）
+			// seqnr可以设置为随机值：响应需要默认请求编号（acknr）
 			this.recvWindow.connect(seqnr, timestamp);
 		}
 		this.state(timestamp, seqnr);
@@ -507,7 +504,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void syn() {
 		LOGGER.debug("发送握手消息：{}", this.socketAddress);
 		final UtpWindowData windowData = this.sendWindow.build();
-		final ByteBuffer buffer = buildHeader(UtpConfig.Type.SYN, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.SYN, UTP_HEADER_LENGTH);
 		buffer.putShort(this.recvId);
 		buffer.putInt(windowData.updateGetTimestamp());
 		buffer.putInt(0);
@@ -518,22 +515,22 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	}
 
 	/**
-	 * <p>设置消息头</p>
+	 * <p>创建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param size 消息长度
 	 * 
 	 * @return 消息
 	 */
-	private ByteBuffer buildHeader(UtpConfig.Type type, int size) {
+	private ByteBuffer buildMessage(UtpConfig.Type type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
-		buffer.put(type.typeVersion()); // 消息类型
-		buffer.put(UtpConfig.EXTENSION); // 扩展扩展
+		buffer.put(type.typeVersion());
+		buffer.put(UtpConfig.EXTENSION);
 		return buffer;
 	}
 	
 	/**
-	 * <p>发送消息</p>
+	 * <p>发送UTP消息</p>
 	 * 
 	 * @param buffer 消息
 	 */
@@ -575,7 +572,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	/**
 	 * <p>关闭窗口</p>
-	 * <p>释放信号量才能发送关闭和重置消息（否者可能一直等待）</p>
+	 * <p>关闭窗口释放信号量才能发送关闭和重置消息（否者可能一直等待）</p>
 	 */
 	private void closeWindow() {
 		this.sendWindow.close();
@@ -592,7 +589,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	}
 
 	/**
-	 * <p>远程关闭</p>
+	 * <p>关闭远程</p>
 	 */
 	private void closeRemote() {
 		this.closeWindow();
@@ -604,7 +601,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(this.close) {
 			return;
 		}
-		LOGGER.debug("关闭UTP");
 		this.closeWindow();
 		if(this.connect) {
 			this.fin();
