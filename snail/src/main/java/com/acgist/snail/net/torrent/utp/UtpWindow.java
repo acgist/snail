@@ -169,10 +169,10 @@ public final class UtpWindow {
 	/**
 	 * <p>设置连接信息</p>
 	 * 
-	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
 	 */
-	public void connect(short seqnr, int timestamp) {
+	public void connect(final int timestamp, final short seqnr) {
 		this.seqnr = seqnr;
 		this.timestamp = timestamp;
 	}
@@ -212,7 +212,7 @@ public final class UtpWindow {
 		synchronized (this) {
 			// 最后发送时间
 			this.timestamp = DateUtils.timestampUs();
-			final UtpWindowData windowData = this.storage(this.seqnr, this.timestamp, data);
+			final UtpWindowData windowData = this.storage(this.timestamp, this.seqnr, data);
 			// 创建完成递增
 			this.seqnr++;
 			return windowData;
@@ -275,13 +275,13 @@ public final class UtpWindow {
 	/**
 	 * <p>接收数据</p>
 	 * 
-	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
 	 * 
 	 * @throws IOException IO异常
 	 */
-	public void receive(final short seqnr, final  int timestamp, final ByteBuffer buffer) throws IOException {
+	public void receive(final  int timestamp, final short seqnr, final ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
 			if(diff >= 0) {
@@ -289,7 +289,7 @@ public final class UtpWindow {
 				return;
 			}
 			// 优先保存数据
-			this.storage(seqnr, timestamp, buffer);
+			this.storage(timestamp, seqnr, buffer);
 			UtpWindowData nextWindowData;
 			short nextSeqnr = this.seqnr;
 			final var output = new ByteArrayOutputStream();
@@ -360,28 +360,28 @@ public final class UtpWindow {
 	/**
 	 * <p>保存窗口数据</p>
 	 * 
-	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
 	 * @param buffer 请求数据
 	 * 
 	 * @return {@link UtpWindowData}
 	 */
-	private UtpWindowData storage(final short seqnr, final int timestamp, final ByteBuffer buffer) {
+	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
-		return this.storage(seqnr, timestamp, bytes);
+		return this.storage(timestamp, seqnr, bytes);
 	}
 	
 	/**
 	 * <p>保存窗口数据</p>
 	 * 
-	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳
+	 * @param seqnr 请求编号
 	 * @param bytes 请求数据
 	 * 
 	 * @return {@link UtpWindowData}
 	 */
-	private UtpWindowData storage(final short seqnr, final int timestamp, byte[] bytes) {
+	private UtpWindowData storage(final int timestamp, final short seqnr, byte[] bytes) {
 		final UtpWindowData windowData = UtpWindowData.newInstance(seqnr, timestamp, bytes);
 		this.wndMap.put(seqnr, windowData);
 		this.wndSize = this.wndSize + windowData.getLength();

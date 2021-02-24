@@ -12,7 +12,7 @@ import com.acgist.snail.utils.DateUtils;
 public final class UtpWindowData {
 
 	/**
-	 * <p>seqnr</p>
+	 * <p>请求编号</p>
 	 */
 	private final short seqnr;
 	/**
@@ -34,17 +34,18 @@ public final class UtpWindowData {
 	private volatile byte pushTimes;
 	
 	/**
-	 * @param seqnr seqnr
+	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳（微秒）
 	 * @param data 负载数据
 	 */
-	private UtpWindowData(short seqnr, int timestamp, byte[] data) {
+	private UtpWindowData(final short seqnr, final int timestamp, final byte[] data) {
 		this.seqnr = seqnr;
 		if(data == null) {
-			data = new byte[0];
+			this.data = new byte[0];
+		} else {
+			this.data = data;
 		}
-		this.data = data;
-		this.length = data.length;
+		this.length = this.data.length;
 		this.timestamp = timestamp;
 		this.pushTimes = 0;
 	}
@@ -52,20 +53,20 @@ public final class UtpWindowData {
 	/**
 	 * <p>创建窗口数据</p>
 	 * 
-	 * @param seqnr seqnr
+	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳（微秒）
 	 * @param data 负载数据
 	 * 
 	 * @return {@link UtpWindowData}
 	 */
-	public static final UtpWindowData newInstance(short seqnr, int timestamp, byte[] data) {
+	public static final UtpWindowData newInstance(final short seqnr, final int timestamp, final byte[] data) {
 		return new UtpWindowData(seqnr, timestamp, data);
 	}
 
 	/**
-	 * <p>获取seqnr</p>
+	 * <p>获取请求编号</p>
 	 * 
-	 * @return seqnr
+	 * @return 请求编号
 	 */
 	public short getSeqnr() {
 		return this.seqnr;
