@@ -54,10 +54,11 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 * 
 	 * @see #buildKey(short, InetSocketAddress)
 	 */
-	private final Map<String, UtpMessageHandler> utpMessageHandlers = new ConcurrentHashMap<>();
+	private final Map<String, UtpMessageHandler> utpMessageHandlers;
 	
 	private UtpService() {
 		this.context = MessageHandlerContext.getInstance();
+		this.utpMessageHandlers = new ConcurrentHashMap<>();
 		this.register();
 	}
 	
@@ -141,24 +142,25 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 * 
 	 * @return 连接Key
 	 */
-	public String buildKey(short connectionId, InetSocketAddress socketAddress) {
+	String buildKey(short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
 	
 	/**
 	 * <p>处理超时UTP消息</p>
 	 * <p>如果消息代理可用：重新发送超时消息</p>
-	 * <p>如果消息代理不可用：关闭消息代理</p>
+	 * <p>如果消息代理关闭：移除消息代理</p>
 	 */
 	private void timeout() {
 		LOGGER.debug("处理超时UTP消息");
 		synchronized (this.utpMessageHandlers) {
 			try {
 				this.utpMessageHandlers.values().stream()
+					// 超时重试
 					.filter(UtpMessageHandler::timeoutRetry)
 					// 转换List关闭：防止关闭删除消息代理产生异常
 					.collect(Collectors.toList())
-					// 直接移除不用关闭
+					// 已经关闭：直接移除
 					.forEach(this::remove);
 			} catch (Exception e) {
 				LOGGER.error("处理超时UTP消息异常", e);

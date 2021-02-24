@@ -29,13 +29,13 @@ class PeerServerTest extends Performance {
 	void testServer() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
-		DownloadConfig.setBuffer(4 * 1024);
+		DownloadConfig.setBuffer(40 * 1024);
 		final List<String> list = new ArrayList<>();
 		final AtomicLong size = new AtomicLong();
 		torrentSession.torrent().getInfo().files().stream()
 			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
-				if(file.path().contains("Vol.1")) {
+				if(file.path().contains("Scans/Vol.1")) {
 					list.add(file.path());
 				}
 				size.addAndGet(file.getLength());
@@ -56,12 +56,13 @@ class PeerServerTest extends Performance {
 	void testClient() throws DownloadException {
 		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
+		DownloadConfig.setBuffer(40 * 1024);
 		final List<String> list = new ArrayList<>();
 		// 选择下载文件
 		torrentSession.torrent().getInfo().files().stream()
 			.filter(TorrentFile::notPaddingFile)
 			.forEach(file -> {
-				if(file.path().contains("Vol.1")) {
+				if(file.path().contains("Scans/Vol.1")) {
 					list.add(file.path());
 				}
 			});
