@@ -335,7 +335,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		}
 		LOGGER.debug("处理数据消息：{}-{}", seqnr, acknr);
 		try {
-			this.recvWindow.receive(seqnr, timestamp, buffer);
+			this.recvWindow.receive(timestamp, seqnr, buffer);
 		} catch (IOException e) {
 			throw new NetException(e);
 		} finally {
@@ -378,7 +378,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			this.connect = this.available();
 			if(this.connect) {
 				// 注意：seqnr - 1
-				this.recvWindow.connect((short) (seqnr - 1), timestamp);
+				this.recvWindow.connect(timestamp, (short) (seqnr - 1));
 			}
 			this.unlockConnect();
 		}
@@ -493,7 +493,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		if(!this.connect) {
 			this.connect = true;
 			// seqnr可以设置为随机值：响应需要默认请求编号（acknr）
-			this.recvWindow.connect(seqnr, timestamp);
+			this.recvWindow.connect(timestamp, seqnr);
 		}
 		this.state(timestamp, seqnr);
 	}
