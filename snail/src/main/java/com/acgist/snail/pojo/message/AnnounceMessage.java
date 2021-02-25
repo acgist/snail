@@ -2,7 +2,6 @@ package com.acgist.snail.pojo.message;
 
 import java.util.Map;
 
-import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
@@ -10,143 +9,76 @@ import com.acgist.snail.utils.BeanUtils;
  * 
  * @author acgist
  */
-public final class AnnounceMessage {
-
+public final record AnnounceMessage (
 	/**
 	 * <p>ID</p>
 	 * 
 	 * @see TrackerLauncher#id()
 	 */
-	private Integer id;
+	Integer id,
 	/**
 	 * <p>TrackerId</p>
 	 * <p>HTTP Tracker使用</p>
 	 */
-	private String trackerId;
+	String trackerId,
 	/**
 	 * <p>下次请求等待时间</p>
 	 */
-	private Integer interval;
+	Integer interval,
 	/**
 	 * <p>做种Peer数量</p>
 	 */
-	private Integer seeder;
+	Integer seeder,
 	/**
 	 * <p>下载Peer数量</p>
 	 */
-	private Integer leecher;
+	Integer leecher,
 	/**
 	 * <p>Peer数据</p>
 	 * <p>IP=端口</p>
 	 */
-	private Map<String, Integer> peers;
-
+	Map<String, Integer> peers
+) {
+	
 	/**
-	 * <p>获取ID</p>
-	 * 
-	 * @return ID
-	 */
-	public Integer getId() {
-		return this.id;
-	}
-
-	/**
-	 * <p>设置ID</p>
+	 * <p>创建UDP Tracker声明响应消息</p>
 	 * 
 	 * @param id ID
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * <p>获取TrackerId</p>
-	 * 
-	 * @return TrackerId
-	 */
-	public String getTrackerId() {
-		return this.trackerId;
-	}
-	
-	/**
-	 * <p>设置TrackerId</p>
-	 * 
-	 * @param trackerId TrackerId
-	 */
-	public void setTrackerId(String trackerId) {
-		this.trackerId = trackerId;
-	}
-	
-	/**
-	 * <p>获取下次请求等待时间</p>
-	 * 
-	 * @return 下次请求等待时间
-	 */
-	public Integer getInterval() {
-		return this.interval;
-	}
-	
-	/**
-	 * <p>设置下次请求等待时间</p>
-	 * 
 	 * @param interval 下次请求等待时间
-	 */
-	public void setInterval(Integer interval) {
-		this.interval = interval;
-	}
-
-	/**
-	 * <p>获取做种Peer数量</p>
-	 * 
-	 * @return 做种Peer数量
-	 */
-	public Integer getSeeder() {
-		return this.seeder;
-	}
-
-	/**
-	 * <p>设置做种Peer数量</p>
-	 * 
+	 * @param leecher 下载Peer数量
 	 * @param seeder 做种Peer数量
-	 */
-	public void setSeeder(Integer seeder) {
-		this.seeder = seeder;
-	}
-
-	/**
-	 * <p>获取做种Peer数量</p>
+	 * @param peers Peer数据
 	 * 
-	 * @return 做种Peer数量
+	 * @return {@link AnnounceMessage}
 	 */
-	public Integer getLeecher() {
-		return this.leecher;
+	public static final AnnounceMessage newUdp(
+		Integer id, Integer interval,
+		Integer leecher, Integer seeder, Map<String, Integer> peers
+	) {
+		return new AnnounceMessage(id, null, interval, seeder, leecher, peers);
 	}
-
+	
 	/**
-	 * <p>设置做种Peer数量</p>
+	 * <p>创建HTTP Tracker声明响应消息</p>
 	 * 
-	 * @param leecher 做种Peer数量
-	 */
-	public void setLeecher(Integer leecher) {
-		this.leecher = leecher;
-	}
-
-	/**
-	 * <p>获取Peers数据</p>
+	 * @param id ID
+	 * @param trackerId TrackerId
+	 * @param interval 下次请求等待时间
+	 * @param minInterval 下次请求等待最小时间
+	 * @param leecher 下载Peer数量
+	 * @param seeder 做种Peer数量
+	 * @param peers Peer数据
 	 * 
-	 * @return Peers数据
+	 * @return {@link AnnounceMessage}
 	 */
-	public Map<String, Integer> getPeers() {
-		return this.peers;
-	}
-
-	/**
-	 * <p>设置Peers数据</p>
-	 * 
-	 * @param peers Peers数据
-	 */
-	public void setPeers(Map<String, Integer> peers) {
-		this.peers = peers;
+	public static final AnnounceMessage newHttp(
+		Integer id, String trackerId, Integer interval, Integer minInterval,
+		Integer leecher, Integer seeder, Map<String, Integer> peers
+	) {
+		if(interval != null && minInterval != null) {
+			interval = Math.min(interval, minInterval);
+		}
+		return new AnnounceMessage(id, trackerId, interval, seeder, leecher, peers);
 	}
 	
 	@Override

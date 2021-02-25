@@ -108,12 +108,13 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 			LOGGER.debug("处理UDP Tracker声明消息错误（长度）：{}", remaining);
 			return;
 		}
-		final AnnounceMessage message = new AnnounceMessage();
-		message.setId(buffer.getInt());
-		message.setInterval(buffer.getInt());
-		message.setLeecher(buffer.getInt());
-		message.setSeeder(buffer.getInt());
-		message.setPeers(PeerUtils.read(buffer));
+		final AnnounceMessage message = AnnounceMessage.newUdp(
+			buffer.getInt(),
+			buffer.getInt(),
+			buffer.getInt(),
+			buffer.getInt(),
+			PeerUtils.read(buffer)
+		);
 		TrackerContext.getInstance().announce(message);
 	}
 	
@@ -128,11 +129,12 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 			LOGGER.debug("处理UDP Tracker刮擦消息错误（长度）：{}", remaining);
 			return;
 		}
-		final ScrapeMessage message = new ScrapeMessage();
-		message.setId(buffer.getInt());
-		message.setSeeder(buffer.getInt());
-		message.setCompleted(buffer.getInt());
-		message.setLeecher(buffer.getInt());
+		final ScrapeMessage message = ScrapeMessage.newInstance(
+			buffer.getInt(),
+			buffer.getInt(),
+			buffer.getInt(),
+			buffer.getInt()
+		);
 		TrackerContext.getInstance().scrape(message);
 	}
 

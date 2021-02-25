@@ -16,7 +16,7 @@ class HttpTrackerSessionTest extends Performance {
 		final TorrentSession torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://explodie.org:6969/announce");
 		session.started(1000, torrentSession);
-//		session.scrape(1000, torrentSession);
+		session.scrape(1000, torrentSession);
 	}
 	
 }

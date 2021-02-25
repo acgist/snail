@@ -1,6 +1,5 @@
 package com.acgist.snail.pojo.message;
 
-import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
@@ -8,99 +7,41 @@ import com.acgist.snail.utils.BeanUtils;
  * 
  * @author acgist
  */
-public final class ScrapeMessage {
-
+public final record ScrapeMessage (
 	/**
 	 * <p>ID</p>
 	 * 
 	 * @see TrackerLauncher#id()
 	 */
-	private Integer id;
+	Integer id,
 	/**
 	 * <p>做种Peer数量</p>
 	 */
-	private Integer seeder;
-	/**
-	 * <p>下载Peer数量</p>
-	 */
-	private Integer leecher;
+	Integer seeder,
 	/**
 	 * <p>完成Peer数量</p>
 	 */
-	private Integer completed;
-
+	Integer completed,
 	/**
-	 * <p>获取ID</p>
-	 * 
-	 * @return ID
+	 * <p>下载Peer数量</p>
 	 */
-	public Integer getId() {
-		return this.id;
-	}
-
+	Integer leecher
+) {
+	
 	/**
-	 * <p>设置ID</p>
+	 * <p>创建Tracker刮擦响应消息</p>
 	 * 
 	 * @param id ID
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * <p>获取做种Peer数量</p>
-	 * 
-	 * @return 做种Peer数量
-	 */
-	public Integer getSeeder() {
-		return this.seeder;
-	}
-
-	/**
-	 * <p>设置做种Peer数量</p>
-	 * 
 	 * @param seeder 做种Peer数量
-	 */
-	public void setSeeder(Integer seeder) {
-		this.seeder = seeder;
-	}
-
-	/**
-	 * <p>获取下载Peer数量</p>
-	 * 
-	 * @return 下载Peer数量
-	 */
-	public Integer getLeecher() {
-		return this.leecher;
-	}
-
-	/**
-	 * <p>设置下载Peer数量</p>
-	 * 
-	 * @param leecher 下载Peer数量
-	 */
-	public void setLeecher(Integer leecher) {
-		this.leecher = leecher;
-	}
-
-	/**
-	 * <p>获取完成Peer数量</p>
-	 * 
-	 * @return 完成Peer数量
-	 */
-	public Integer getCompleted() {
-		return this.completed;
-	}
-
-	/**
-	 * <p>设置完成Peer数量</p>
-	 * 
 	 * @param completed 完成Peer数量
+	 * @param leecher 下载Peer数量
+	 * 
+	 * @return {@link ScrapeMessage}
 	 */
-	public void setCompleted(Integer completed) {
-		this.completed = completed;
+	public static final ScrapeMessage newInstance(Integer id, Integer seeder, Integer completed, Integer leecher) {
+		return new ScrapeMessage(id, seeder, completed, leecher);
 	}
-
+	
 	@Override
 	public String toString() {
 		return BeanUtils.toString(this);
