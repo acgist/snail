@@ -2,10 +2,17 @@ package com.acgist.snail.utils;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.format.BEncodeDecoder;
 
 /**
  * <p>Peer工具</p>
@@ -13,6 +20,8 @@ import com.acgist.snail.config.SystemConfig;
  * @author acgist
  */
 public final class PeerUtils {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeerUtils.class);
 	
 	private PeerUtils() {
 	}
@@ -64,6 +73,39 @@ public final class PeerUtils {
 			data.put(ip, port);
 		}
 		return data;
+	}
+	
+	/**
+	 * <p>读取IP和端口</p>
+	 * 
+	 * @param object 数据
+	 * 
+	 * @return IP=端口
+	 */
+	public static final Map<String, Integer> read(Object object) {
+		Map<String, Integer> peers;
+		if(object instanceof byte[] bytes) {
+			// compact：紧凑
+			peers = PeerUtils.read(bytes);
+		} else if(object instanceof ByteBuffer buffer) {
+			peers = PeerUtils.read(buffer);
+		} else if (object instanceof List<?> list) {
+			// compact：地址
+			peers = list.stream()
+				.filter(Objects::nonNull)
+				.map(value -> {
+					final Map<?, ?> map = (Map<?, ?>) value;
+					return Map.entry(
+						BEncodeDecoder.getString(map, "ip"),
+						BEncodeDecoder.getInteger(map, "port")
+					);
+				})
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else {
+			peers = new HashMap<>();
+			LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+		}
+		return peers;
 	}
 	
 	/**
