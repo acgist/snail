@@ -4,9 +4,7 @@ import com.acgist.snail.net.torrent.tracker.TrackerLauncher;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
- * <p>Tracker刮檫响应消息</p>
- * <p>UDP：http://www.bittorrent.org/beps/bep_0048.html</p>
- * <p>HTTP：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
+ * <p>Tracker刮擦响应消息</p>
  * 
  * @author acgist
  */

@@ -26,28 +26,19 @@ public final class TrackerLauncher {
 	
 	/**
 	 * <p>transaction_id</p>
-	 * <p>ID与Tracker服务器和BT任务一一对应</p>
+	 * <p>对应Tracker服务器和BT任务信息</p>
 	 */
 	private final Integer id;
 	/**
-	 * <p>下次等待时间</p>
+	 * <p>下次请求等待时间</p>
 	 */
 	private Integer interval;
-	/**
-	 * <p>已完成数量</p>
-	 */
-	private Integer seeder;
-	/**
-	 * <p>未完成数量</p>
-	 */
-	private Integer leecher;
 	/**
 	 * <p>可用状态</p>
 	 */
 	private boolean available = true;
 	/**
 	 * <p>是否需要释放</p>
-	 * <p>查找Peer后需要释放</p>
 	 */
 	private boolean needRelease = false;
 	/**
@@ -70,12 +61,12 @@ public final class TrackerLauncher {
 	}
 	
 	/**
-	 * <p>创建Tracker执行器</p>
+	 * <p>创建TrackerLauncher</p>
 	 * 
 	 * @param session Tracker信息
 	 * @param torrentSession BT任务信息
 	 * 
-	 * @return Tracker执行器
+	 * @return {@link TrackerLauncher}
 	 */
 	public static final TrackerLauncher newInstance(TrackerSession session, TorrentSession torrentSession) {
 		return new TrackerLauncher(session, torrentSession);
@@ -120,20 +111,12 @@ public final class TrackerLauncher {
 			return;
 		}
 		if(!this.available()) {
-			LOGGER.debug("收到声明响应消息：Tracker执行器无效");
+			LOGGER.debug("收到声明响应消息：TrackerLauncher无效");
 			return;
 		}
 		this.interval = message.getInterval();
-		this.seeder = message.getSeeder();
-		this.leecher = message.getLeecher();
 		this.peer(message.getPeers());
-		LOGGER.debug(
-			"{}-收到声明响应：做种Peer数量：{}，下载Peer数量：{}，下次请求时间：{}",
-			this.announceUrl(),
-			this.seeder,
-			this.leecher,
-			this.interval
-		);
+		LOGGER.debug("设置下次请求等待时间：{}", this.interval);
 	}
 	
 	/**
@@ -157,7 +140,6 @@ public final class TrackerLauncher {
 
 	/**
 	 * <p>释放资源</p>
-	 * <p>暂停发送暂停消息、完成发送完成消息</p>
 	 */
 	public void release() {
 		if(this.needRelease && this.available()) {
@@ -165,10 +147,10 @@ public final class TrackerLauncher {
 			this.needRelease = false;
 			try {
 				if(this.torrentSession.completed()) {
-					LOGGER.debug("Tracker完成通知：{}", this.announceUrl());
+					LOGGER.debug("TrackerLauncher完成通知：{}", this.announceUrl());
 					this.session.completed(this.id, this.torrentSession);
 				} else {
-					LOGGER.debug("Tracker暂停通知：{}", this.announceUrl());
+					LOGGER.debug("TrackerLauncher暂停通知：{}", this.announceUrl());
 					this.session.stopped(this.id, this.torrentSession);
 				}
 			} catch (Exception e) {

@@ -55,7 +55,7 @@ public final class TrackerContext implements IContext {
 	private final Map<Integer, TrackerSession> trackerSessions;
 	/**
 	 * <p>TrackerLauncher Map</p>
-	 * <p>{@link TrackerLauncher#id()}=Tracker执行器</p>
+	 * <p>{@link TrackerLauncher#id()}=TrackerLauncher</p>
 	 */
 	private final Map<Integer, TrackerLauncher> trackerLaunchers;
 	
@@ -91,7 +91,7 @@ public final class TrackerContext implements IContext {
 	}
 	
 	/**
-	 * <p>处理announce信息</p>
+	 * <p>处理声明信息</p>
 	 * 
 	 * @param message 消息
 	 */
@@ -102,14 +102,28 @@ public final class TrackerContext implements IContext {
 		final Integer id = message.getId();
 		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug(
+					"""
+					收到声明响应消息：{}
+					做种Peer数量：{}
+					下载Peer数量：{}
+					下次请求等待时间：{}	
+					""",
+					trackerLauncher.announceUrl(),
+					message.getSeeder(),
+					message.getLeecher(),
+					message.getInterval()
+				);
+			}
 			trackerLauncher.announce(message);
 		} else {
-			LOGGER.debug("TrackerLauncher不存在（AnnounceMessage）：{}", message);
+			LOGGER.debug("TrackerLauncher不存在（声明消息）：{}", message);
 		}
 	}
 	
 	/**
-	 * <p>处理scrape消息</p>
+	 * <p>处理刮擦消息</p>
 	 * 
 	 * @param message 消息
 	 */
@@ -120,9 +134,21 @@ public final class TrackerContext implements IContext {
 		final Integer id = message.getId();
 		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
-			LOGGER.debug("Tracker刮檫消息：{}，做种：{}，完成：{}，下载：{}", id, message.getSeeder(), message.getCompleted(), message.getLeecher());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("""
+					收到刮擦响应消息：{}
+					做种Peer数量：{}
+					完成Peer数量：{}
+					下载Peer数量：{}
+					""",
+					trackerLauncher.announceUrl(),
+					message.getSeeder(),
+					message.getCompleted(),
+					message.getLeecher()
+				);
+			}
 		} else {
-			LOGGER.debug("TrackerLauncher不存在（ScrapeMessage）：{}", message);
+			LOGGER.debug("TrackerLauncher不存在（刮擦消息）：{}", message);
 		}
 	}
 	

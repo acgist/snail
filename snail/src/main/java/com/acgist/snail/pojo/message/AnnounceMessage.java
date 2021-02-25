@@ -7,8 +7,6 @@ import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>Tracker声明响应消息</p>
- * <p>UDP：http://www.bittorrent.org/beps/bep_0015.html</p>
- * <p>HTTP：https://wiki.theory.org/index.php/BitTorrentSpecification</p>
  * 
  * @author acgist
  */
@@ -69,7 +67,7 @@ public final class AnnounceMessage {
 	public String getTrackerId() {
 		return this.trackerId;
 	}
-
+	
 	/**
 	 * <p>设置TrackerId</p>
 	 * 
@@ -78,7 +76,7 @@ public final class AnnounceMessage {
 	public void setTrackerId(String trackerId) {
 		this.trackerId = trackerId;
 	}
-
+	
 	/**
 	 * <p>获取下次请求等待时间</p>
 	 * 
@@ -87,7 +85,7 @@ public final class AnnounceMessage {
 	public Integer getInterval() {
 		return this.interval;
 	}
-
+	
 	/**
 	 * <p>设置下次请求等待时间</p>
 	 * 

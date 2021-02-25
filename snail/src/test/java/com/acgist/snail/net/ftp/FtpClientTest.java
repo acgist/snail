@@ -23,7 +23,6 @@ class FtpClientTest extends Performance {
 		}
 		final String path = "ftp://localhost/ftp/中文文件.exe";
 //		final String path = "ftp://localhost/ftp/FTPserver.exe";
-//		final String path = "ftp://demo:password@test.rebex.net/readme.txt";
 		final var client = FtpClient.newInstance(path);
 		final var success = client.connect();
 		if(!success) {

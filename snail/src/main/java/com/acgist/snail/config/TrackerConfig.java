@@ -136,7 +136,7 @@ public final class TrackerConfig extends PropertiesConfig {
 		 */
 		ANNOUNCE(1, "announce"),
 		/**
-		 * <p>刮檫</p>
+		 * <p>刮擦</p>
 		 */
 		SCRAPE(2, "scrape"),
 		/**

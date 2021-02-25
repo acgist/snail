@@ -23,19 +23,23 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 	
 	/**
-	 * <p>Connect消息最小长度：{@value}</p>
+	 * <p>消息最小长度：{@value}</p>
+	 */
+	private static final int MIN_LENGTH = 4;
+	/**
+	 * <p>连接消息最小长度：{@value}</p>
 	 */
 	private static final int CONNECT_MIN_LENGTH = 12;
 	/**
-	 * <p>Announce消息最小长度：{@value}</p>
+	 * <p>声明消息最小长度：{@value}</p>
 	 */
 	private static final int ANNOUNCE_MIN_LENGTH = 16;
 	/**
-	 * <p>Scrape消息最小长度：{@value}</p>
+	 * <p>刮擦消息最小长度：{@value}</p>
 	 */
 	private static final int SCRAPE_MIN_LENGTH = 16;
 	/**
-	 * <p>Error消息最小长度：{@value}</p>
+	 * <p>错误消息最小长度：{@value}</p>
 	 */
 	private static final int ERROR_MIN_LENGTH = 4;
 	
@@ -57,28 +61,23 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
+		final int remaining = buffer.remaining();
+		if(remaining < MIN_LENGTH) {
+			LOGGER.warn("处理UDP Tracker消息错误（长度）：{}", remaining);
+			return;
+		}
 		final int id = buffer.getInt();
 		final var action = Action.of(id);
 		if(action == null) {
-			LOGGER.warn("处理Tracker消息错误（未知类型）：{}", id);
+			LOGGER.warn("处理UDP Tracker消息错误（未知动作）：{}", id);
 			return;
 		}
 		switch (action) {
-		case CONNECT:
-			this.doConnect(buffer);
-			break;
-		case ANNOUNCE:
-			this.doAnnounce(buffer);
-			break;
-		case SCRAPE:
-			this.doScrape(buffer);
-			break;
-		case ERROR:
-			this.doError(buffer);
-			break;
-		default:
-			LOGGER.debug("处理Tracker消息错误（类型未适配）：{}", action);
-			break;
+			case CONNECT -> this.doConnect(buffer);
+			case ANNOUNCE -> this.doAnnounce(buffer);
+			case SCRAPE -> this.doScrape(buffer);
+			case ERROR -> this.doError(buffer);
+			default -> LOGGER.debug("处理UDP Tracker消息错误（动作未适配）：{}", action);
 		}
 	}
 
@@ -88,9 +87,9 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 * @param buffer 消息
 	 */
 	private void doConnect(ByteBuffer buffer) {
-		final int remaining = buffer.remaining(); // 消息剩余长度
+		final int remaining = buffer.remaining();
 		if(remaining < CONNECT_MIN_LENGTH) {
-			LOGGER.debug("处理Tracker连接消息-错误（长度）：{}", remaining);
+			LOGGER.debug("处理UDP Tracker连接消息错误（长度）：{}", remaining);
 			return;
 		}
 		final int trackerId = buffer.getInt();
@@ -104,9 +103,9 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 * @param buffer 消息
 	 */
 	private void doAnnounce(ByteBuffer buffer) {
-		final int remaining = buffer.remaining(); // 消息剩余长度
+		final int remaining = buffer.remaining();
 		if(remaining < ANNOUNCE_MIN_LENGTH) {
-			LOGGER.debug("处理Tracker声明消息-错误（长度）：{}", remaining);
+			LOGGER.debug("处理UDP Tracker声明消息错误（长度）：{}", remaining);
 			return;
 		}
 		final AnnounceMessage message = new AnnounceMessage();
@@ -119,14 +118,14 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * <p>刮檫消息</p>
+	 * <p>刮擦消息</p>
 	 * 
 	 * @param buffer 消息
 	 */
 	private void doScrape(ByteBuffer buffer) {
-		final int remaining = buffer.remaining(); // 消息剩余长度
+		final int remaining = buffer.remaining();
 		if(remaining < SCRAPE_MIN_LENGTH) {
-			LOGGER.debug("处理Tracker刮檫消息-错误（长度）：{}", remaining);
+			LOGGER.debug("处理UDP Tracker刮擦消息错误（长度）：{}", remaining);
 			return;
 		}
 		final ScrapeMessage message = new ScrapeMessage();
@@ -143,16 +142,16 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 * @param buffer 消息
 	 */
 	private void doError(ByteBuffer buffer) {
-		final int remaining = buffer.remaining(); // 消息剩余长度
+		final int remaining = buffer.remaining();
 		if(remaining < ERROR_MIN_LENGTH) {
-			LOGGER.debug("处理Tracker错误消息-错误（长度）：{}", remaining);
+			LOGGER.debug("处理UDP Tracker错误消息错误（长度）：{}", remaining);
 			return;
 		}
 		final var trackerId = buffer.getInt();
 		final var bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		final String message = new String(bytes);
-		LOGGER.warn("处理Tracker消息-错误消息：{}-{}", trackerId, message);
+		LOGGER.warn("UDP Tracker错误消息：{}-{}", trackerId, message);
 	}
 
 }

@@ -283,6 +283,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	public boolean connect() {
 		this.connect = false;
+		this.connectLock.set(false);
 		this.syn();
 		this.lockConnect();
 		if(!this.connect) {

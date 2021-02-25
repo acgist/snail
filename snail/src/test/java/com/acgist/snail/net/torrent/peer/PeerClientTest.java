@@ -59,7 +59,7 @@ class PeerClientTest extends Performance {
 				ThreadUtils.sleep(1000);
 			}
 		}).start();
-		this.pause();
+		ThreadUtils.sleep(100000);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class PeerClientTest extends Performance {
 		final var peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
 		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession);
 		launcher.handshake();
-		this.pause();
+		ThreadUtils.sleep(100000);
 	}
 
 }

@@ -15,7 +15,6 @@ import com.acgist.snail.pojo.session.TrackerSession;
 
 /**
  * <p>Tracker执行器组</p>
- * <p>Tracker执行器加载和管理</p>
  * 
  * @author acgist
  */
@@ -28,7 +27,7 @@ public final class TrackerLauncherGroup {
 	 */
 	private final TorrentSession torrentSession;
 	/**
-	 * <p>Tracker执行器集合</p>
+	 * <p>TrackerLauncher集合</p>
 	 */
 	private final List<TrackerLauncher> trackerLaunchers;
 	
@@ -45,16 +44,16 @@ public final class TrackerLauncherGroup {
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 
-	 * @return Tracker执行器组
+	 * @return {@link TrackerLauncherGroup}
 	 */
 	public static final TrackerLauncherGroup newInstance(TorrentSession torrentSession) {
 		return new TrackerLauncherGroup(torrentSession);
 	}
 
 	/**
-	 * <p>获取当前使用的所有Tracker服务器声明地址</p>
+	 * <p>获取所有Tracker执行器的声明地址</p>
 	 * 
-	 * @return 当前使用的所有Tracker服务器声明地址
+	 * @return Tracker执行器的声明地址
 	 */
 	public List<String> trackers() {
 		synchronized (this.trackerLaunchers) {
@@ -70,17 +69,18 @@ public final class TrackerLauncherGroup {
 	public void loadTracker() {
 		List<TrackerSession> sessions = null;
 		final var action = this.torrentSession.action();
+		final var context = TrackerContext.getInstance();
 		if(action == Action.TORRENT) {
 			final var torrent = this.torrentSession.torrent();
-			sessions = TrackerContext.getInstance().sessions(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.privateTorrent());
+			sessions = context.sessions(torrent.getAnnounce(), torrent.getAnnounceList(), this.torrentSession.privateTorrent());
 		} else if(action == Action.MAGNET) {
 			final var magnet = this.torrentSession.magnet();
-			sessions = TrackerContext.getInstance().sessions(magnet.getTr());
+			sessions = context.sessions(magnet.getTr());
 		} else {
-			sessions = TrackerContext.getInstance().sessions();
+			sessions = context.sessions();
 		}
 		final var list = sessions.stream()
-			.map(client -> TrackerContext.getInstance().buildTrackerLauncher(client, this.torrentSession))
+			.map(client -> context.buildTrackerLauncher(client, this.torrentSession))
 			.collect(Collectors.toList());
 		synchronized (this.trackerLaunchers) {
 			this.trackerLaunchers.addAll(list);
