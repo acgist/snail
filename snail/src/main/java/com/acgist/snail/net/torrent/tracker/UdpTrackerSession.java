@@ -46,7 +46,6 @@ public final class UdpTrackerSession extends TrackerSession {
 	private final int port;
 	/**
 	 * <p>连接ID</p>
-	 * <p>先获取连接ID（发送声明消息时需要使用）</p>
 	 */
 	private Long connectionId;
 	/**
@@ -55,8 +54,8 @@ public final class UdpTrackerSession extends TrackerSession {
 	private final TrackerClient trackerClient;
 
 	/**
-	 * @param scrapeUrl 刮擦URL
-	 * @param announceUrl 声明URL
+	 * @param scrapeUrl 刮擦地址
+	 * @param announceUrl 声明地址
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -69,11 +68,11 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建Tracker客户端</p>
+	 * <p>创建UDP Tracker信息</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
-	 * @return Tracker客户端
+	 * @return {@link UdpTrackerSession}
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -83,13 +82,13 @@ public final class UdpTrackerSession extends TrackerSession {
 	
 	@Override
 	public void started(Integer sid, TorrentSession torrentSession) throws NetException {
-		// 获取连接ID
 		if(this.connectionId == null) {
-			// 添加连接锁
+			// 获取连接ID
 			synchronized (this) {
 				if(this.connectionId == null) {
 					// 发送连接消息
-					this.buildConnectionId();
+					this.send(this.buildConnectionMessage());
+					// 添加连接锁
 					try {
 						this.wait(SystemConfig.CONNECT_TIMEOUT_MILLIS);
 					} catch (InterruptedException e) {
@@ -100,33 +99,30 @@ public final class UdpTrackerSession extends TrackerSession {
 			}
 		}
 		if(this.connectionId == null) {
-			throw new NetException("UDP Tracker声明消息错误（connectionId）");
+			throw new NetException("UDP Tracker声明失败（connectionId）");
 		} else {
-			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED);
-			this.send(announceMessage);
+			this.send((ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STARTED));
 		}
 	}
 
 	@Override
 	public void completed(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED);
-			this.send(announceMessage);
+			this.send((ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.COMPLETED));
 		}
 	}
 	
 	@Override
 	public void stopped(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			final ByteBuffer announceMessage = (ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED);
-			this.send(announceMessage);
+			this.send((ByteBuffer) this.buildAnnounceMessage(sid, torrentSession, TrackerConfig.Event.STOPPED));
 		}
 	}
 	
 	@Override
 	public void scrape(Integer sid, TorrentSession torrentSession) throws NetException {
 		if(this.connectionId != null) {
-			this.send(buildScrapeMessage(sid, torrentSession));
+			this.send(this.buildScrapeMessage(sid, torrentSession));
 		}
 	}
 
@@ -136,22 +132,11 @@ public final class UdpTrackerSession extends TrackerSession {
 	 * @param connectionId 连接ID
 	 */
 	public void connectionId(Long connectionId) {
-		LOGGER.debug("UDP Tracker设置连接ID：{}", connectionId);
 		this.connectionId = connectionId;
 		// 释放连接锁
 		synchronized (this) {
 			this.notifyAll();
 		}
-	}
-	
-	/**
-	 * <p>发送获取连接ID消息</p>
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	private void buildConnectionId() throws NetException {
-		LOGGER.debug("UDP Tracker发送获取连接ID消息");
-		this.send(buildConnectionIdMessage());
 	}
 	
 	/**
@@ -166,42 +151,46 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建获取连接ID消息</p>
+	 * <p>创建连接消息</p>
 	 * 
-	 * @return 消息
+	 * @return 连接消息
 	 */
-	private ByteBuffer buildConnectionIdMessage() {
+	private ByteBuffer buildConnectionMessage() {
 		final ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(PROTOCOL_ID);
 		buffer.putInt(TrackerConfig.Action.CONNECT.id());
-		buffer.putInt(this.id); // 使用客户端ID：收到响应时回写连接ID
+		// 客户端ID：收到响应回写连接ID
+		buffer.putInt(this.id);
 		return buffer;
 	}
 	
 	@Override
 	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
-		buffer.putLong(this.connectionId); // connection_id
-		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id()); // action
-		buffer.putInt(sid); // transaction_id
-		buffer.put(torrentSession.infoHash().infoHash()); // InfoHash
-		buffer.put(PeerService.getInstance().peerId()); // PeerId
-		buffer.putLong(download); // 已经下载大小
-		buffer.putLong(left); // 剩余下载大小
-		buffer.putLong(upload); // 已经上传大小
-		buffer.putInt(event.id()); // 事件：completed-1、started-2、stopped-3
-		buffer.putInt(0); // 本机IP：0（服务器自动获取）
-		buffer.putInt(NumberUtils.build()); // 唯一数值
-		buffer.putInt(WANT_PEER_SIZE); // 想要获取的Peer数量
-		buffer.putShort(SystemConfig.getTorrentPortExtShort()); // 外网Peer端口
+		buffer.putLong(this.connectionId);
+		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id());
+		buffer.putInt(sid);
+		buffer.put(torrentSession.infoHash().infoHash());
+		buffer.put(PeerService.getInstance().peerId());
+		buffer.putLong(download);
+		buffer.putLong(left);
+		buffer.putLong(upload);
+		buffer.putInt(event.id());
+		// 本机IP：0（服务器自动获取）
+		buffer.putInt(0);
+		// 唯一数值
+		buffer.putInt(NumberUtils.build());
+		buffer.putInt(WANT_PEER_SIZE);
+		// 外网Peer端口
+		buffer.putShort(SystemConfig.getTorrentPortExtShort());
 		return buffer;
 	}
 
 	/**
-	 * <p>创建刮檫消息</p>
+	 * <p>创建刮擦消息</p>
 	 * 
-	 * @param sid sid
-	 * @param torrentSession BT信息
+	 * @param sid {@link TrackerLauncher#id()}
+	 * @param torrentSession BT任务信息
 	 * 
 	 * @return 刮擦消息
 	 */

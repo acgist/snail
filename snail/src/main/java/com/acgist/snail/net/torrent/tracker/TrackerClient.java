@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import com.acgist.snail.net.UdpClient;
 
 /**
- * <p>Tracker Client（UDP）</p>
+ * <p>UDP Tracker客户端</p>
  * 
  * @author acgist
  */
@@ -23,7 +23,7 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 	 * 
 	 * @param socketAddress 地址
 	 * 
-	 * @return Tracker客户端
+	 * @return {@link TrackerClient}
 	 */
 	public static final TrackerClient newInstance(InetSocketAddress socketAddress) {
 		return new TrackerClient(socketAddress);

@@ -17,8 +17,7 @@ class FtpDownloaderTest extends Performance {
 	
 	@Test
 	void testFtpDownloaderBuild() throws DownloadException {
-//		final String url = "ftp://localhost/ftp/FTPserver.exe";
-		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
+		final String url = "ftp://localhost/ftp/FTPserver.exe";
 		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);
 		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
@@ -35,7 +34,6 @@ class FtpDownloaderTest extends Performance {
 		}
 		final String url = "ftp://localhost/ftp/中文文件.exe";
 //		final String url = "ftp://localhost/ftp/FTPserver.exe";
-//		final String url = "ftp://demo:password@test.rebex.net/readme.txt";
 		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);
 		final var taskSession = FtpProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();

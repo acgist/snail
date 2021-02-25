@@ -49,7 +49,7 @@ class PeerServerTest extends Performance {
 		torrentSession.verify();
 		PeerServer.getInstance();
 		TorrentServer.getInstance();
-		this.pause();
+		ThreadUtils.sleep(100000);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ class PeerServerTest extends Performance {
 				torrentSession.torrentStreamGroup().flush();
 			}
 		}).start();
-		this.pause();
+		ThreadUtils.sleep(100000);
 	}
 
 }

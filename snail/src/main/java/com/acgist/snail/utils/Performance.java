@@ -155,20 +155,6 @@ public abstract class Performance {
 	}
 
 	/**
-	 * <p>暂停线程</p>
-	 */
-	public final void pause() {
-		synchronized (this) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				LOGGER.error("线程等待异常", e);
-			}
-		}
-	}
-	
-	/**
 	 * <p>执行任务接口</p>
 	 * 
 	 * @author acgist

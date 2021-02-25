@@ -3,7 +3,7 @@ package com.acgist.snail.net.torrent.tracker;
 import com.acgist.snail.net.UdpServer;
 
 /**
- * <p>Tracker服务端</p>
+ * <p>UDP Tracker服务端</p>
  * 
  * @author acgist
  */

@@ -38,7 +38,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	 */
 	protected final Protocol.Type type;
 	/**
-	 * <p>刮檫地址</p>
+	 * <p>刮擦地址</p>
 	 */
 	protected final String scrapeUrl;
 	/**
