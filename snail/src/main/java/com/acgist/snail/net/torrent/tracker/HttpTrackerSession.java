@@ -1,9 +1,7 @@
 package com.acgist.snail.net.torrent.tracker;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -180,46 +178,21 @@ public final class HttpTrackerSession extends TrackerSession {
 	 */
 	private static final AnnounceMessage convertAnnounceMessage(Integer sid, BEncodeDecoder decoder) {
 		final String failureReason = decoder.getString("failure reason");
-		final String warngingMessage = decoder.getString("warnging message");
-		final Integer interval = decoder.getInteger("interval");
-		final Integer minInterval = decoder.getInteger("min interval");
-		final String trackerId = decoder.getString("tracker id");
-		final Integer complete = decoder.getInteger("complete");
-		final Integer incomplete = decoder.getInteger("incomplete");
-		final Object peersObject = decoder.get("peers");
-		Map<String, Integer> peers;
-		if(peersObject instanceof byte[] bytes) {
-			// compact：紧凑
-			peers = PeerUtils.read(bytes);
-		} else if (peersObject instanceof List<?> list) {
-			// compact：地址
-			peers = list.stream()
-				.filter(Objects::nonNull)
-				.map(value -> {
-					final Map<?, ?> map = (Map<?, ?>) value;
-					final String ip = BEncodeDecoder.getString(map, "ip");
-					final Integer port = BEncodeDecoder.getInteger(map, "port");
-					return Map.entry(ip, port);
-				})
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		} else {
-			peers = new HashMap<>();
-			LOGGER.debug("Peer声明消息格式没有适配：{}", peersObject);
-		}
 		if(StringUtils.isNotEmpty(failureReason)) {
 			LOGGER.warn("HTTP Tracker声明失败：{}", failureReason);
 		}
+		final String warngingMessage = decoder.getString("warnging message");
 		if(StringUtils.isNotEmpty(warngingMessage)) {
 			LOGGER.warn("HTTP Tracker声明警告：{}", warngingMessage);
 		}
 		return AnnounceMessage.newHttp(
 			sid,
-			trackerId,
-			interval,
-			minInterval,
-			incomplete,
-			complete,
-			peers
+			decoder.getString("tracker id"),
+			decoder.getInteger("interval"),
+			decoder.getInteger("min interval"),
+			decoder.getInteger("incomplete"),
+			decoder.getInteger("complete"),
+			PeerUtils.read(decoder.get("peers"))
 		);
 	}
 	
