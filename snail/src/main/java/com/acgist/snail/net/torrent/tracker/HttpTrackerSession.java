@@ -210,7 +210,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			LOGGER.warn("HTTP Tracker声明失败：{}", failureReason);
 		}
 		if(StringUtils.isNotEmpty(warngingMessage)) {
-			LOGGER.warn("HTTP Tracker声明警告：{}", failureReason);
+			LOGGER.warn("HTTP Tracker声明警告：{}", warngingMessage);
 		}
 		return AnnounceMessage.newHttp(
 			sid,
