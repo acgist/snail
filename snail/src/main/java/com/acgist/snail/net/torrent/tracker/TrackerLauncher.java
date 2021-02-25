@@ -114,8 +114,8 @@ public final class TrackerLauncher {
 			LOGGER.debug("收到声明响应消息：TrackerLauncher无效");
 			return;
 		}
-		this.interval = message.getInterval();
-		this.peer(message.getPeers());
+		this.interval = message.interval();
+		this.peer(message.peers());
 		LOGGER.debug("设置下次请求等待时间：{}", this.interval);
 	}
 	

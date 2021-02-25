@@ -99,26 +99,24 @@ public final class TrackerContext implements IContext {
 		if(message == null) {
 			return;
 		}
-		final Integer id = message.getId();
+		final Integer id = message.id();
 		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug(
-					"""
+				LOGGER.debug("""
 					收到声明响应消息：{}
 					做种Peer数量：{}
 					下载Peer数量：{}
-					下次请求等待时间：{}	
-					""",
+					下次请求等待时间：{}""",
 					trackerLauncher.announceUrl(),
-					message.getSeeder(),
-					message.getLeecher(),
-					message.getInterval()
+					message.seeder(),
+					message.leecher(),
+					message.interval()
 				);
 			}
 			trackerLauncher.announce(message);
 		} else {
-			LOGGER.debug("TrackerLauncher不存在（声明消息）：{}", message);
+			LOGGER.debug("TrackerLauncher没有注册（声明消息）：{}", message);
 		}
 	}
 	
@@ -131,7 +129,7 @@ public final class TrackerContext implements IContext {
 		if(message == null) {
 			return;
 		}
-		final Integer id = message.getId();
+		final Integer id = message.id();
 		final TrackerLauncher trackerLauncher = this.trackerLaunchers.get(id);
 		if(trackerLauncher != null) {
 			if(LOGGER.isDebugEnabled()) {
@@ -139,16 +137,15 @@ public final class TrackerContext implements IContext {
 					收到刮擦响应消息：{}
 					做种Peer数量：{}
 					完成Peer数量：{}
-					下载Peer数量：{}
-					""",
+					下载Peer数量：{}""",
 					trackerLauncher.announceUrl(),
-					message.getSeeder(),
-					message.getCompleted(),
-					message.getLeecher()
+					message.seeder(),
+					message.completed(),
+					message.leecher()
 				);
 			}
 		} else {
-			LOGGER.debug("TrackerLauncher不存在（刮擦消息）：{}", message);
+			LOGGER.debug("TrackerLauncher没有注册（刮擦消息）：{}", message);
 		}
 	}
 	

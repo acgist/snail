@@ -95,7 +95,7 @@ public final class HttpTrackerSession extends TrackerSession {
 		}
 		final var message = convertAnnounceMessage(sid, decoder);
 		// 初始化跟踪器ID
-		this.trackerId = message.getTrackerId();
+		this.trackerId = message.trackerId();
 		TrackerContext.getInstance().announce(message);
 	}
 	
@@ -179,17 +179,8 @@ public final class HttpTrackerSession extends TrackerSession {
 	 * @return 声明消息
 	 */
 	private static final AnnounceMessage convertAnnounceMessage(Integer sid, BEncodeDecoder decoder) {
-		final AnnounceMessage message = new AnnounceMessage();
-		message.setId(sid);
 		final String failureReason = decoder.getString("failure reason");
-		if(StringUtils.isNotEmpty(failureReason)) {
-			LOGGER.warn("HTTP Tracker声明失败：{}", failureReason);
-			return message;
-		}
 		final String warngingMessage = decoder.getString("warnging message");
-		if(StringUtils.isNotEmpty(warngingMessage)) {
-			LOGGER.warn("HTTP Tracker声明警告：{}", failureReason);
-		}
 		final Integer interval = decoder.getInteger("interval");
 		final Integer minInterval = decoder.getInteger("min interval");
 		final String trackerId = decoder.getString("tracker id");
@@ -215,16 +206,21 @@ public final class HttpTrackerSession extends TrackerSession {
 			peers = new HashMap<>();
 			LOGGER.debug("Peer声明消息格式没有适配：{}", peersObject);
 		}
-		message.setTrackerId(trackerId);
-		if(interval != null && minInterval != null) {
-			message.setInterval(Math.min(interval, minInterval));
-		} else {
-			message.setInterval(interval);
+		if(StringUtils.isNotEmpty(failureReason)) {
+			LOGGER.warn("HTTP Tracker声明失败：{}", failureReason);
 		}
-		message.setLeecher(incomplete);
-		message.setSeeder(complete);
-		message.setPeers(peers);
-		return message;
+		if(StringUtils.isNotEmpty(warngingMessage)) {
+			LOGGER.warn("HTTP Tracker声明警告：{}", failureReason);
+		}
+		return AnnounceMessage.newHttp(
+			sid,
+			trackerId,
+			interval,
+			minInterval,
+			incomplete,
+			complete,
+			peers
+		);
 	}
 	
 	/**
@@ -245,12 +241,12 @@ public final class HttpTrackerSession extends TrackerSession {
 			.map(entry -> {
 				// key：InfoHash
 				final Map<?, ?> map = (Map<?, ?>) entry.getValue();
-				final ScrapeMessage message = new ScrapeMessage();
-				message.setId(sid);
-				message.setSeeder(BEncodeDecoder.getInteger(map, "complete"));
-				message.setCompleted(BEncodeDecoder.getInteger(map, "downloaded"));
-				message.setLeecher(BEncodeDecoder.getInteger(map, "incomplete"));
-				return message;
+				return ScrapeMessage.newInstance(
+					sid,
+					BEncodeDecoder.getInteger(map, "complete"),
+					BEncodeDecoder.getInteger(map, "downloaded"),
+					BEncodeDecoder.getInteger(map, "incomplete")
+				);
 			})
 			.collect(Collectors.toList());
 	}

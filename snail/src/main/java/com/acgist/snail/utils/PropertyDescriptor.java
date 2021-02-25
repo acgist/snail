@@ -91,10 +91,11 @@ public final class PropertyDescriptor {
 		String methodName;
 		for (Method method : methods) {
 			methodName = method.getName();
-			// GET方法最多优先判断
+			// 按照出现次数排序
 			if(
 				getMethod.equalsIgnoreCase(methodName) ||
-				isMethod.equalsIgnoreCase(methodName)
+				isMethod.equalsIgnoreCase(methodName) ||
+				property.equalsIgnoreCase(methodName)
 			) {
 				return method;
 			}
