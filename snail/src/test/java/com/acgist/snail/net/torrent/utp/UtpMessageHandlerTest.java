@@ -1,5 +1,6 @@
 package com.acgist.snail.net.torrent.utp;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,10 @@ class UtpMessageHandlerTest extends Performance {
 
 	@Test
 	void testServer() {
-		TorrentServer.getInstance();
-		ThreadUtils.sleep(100000);
+		assertDoesNotThrow(() -> {
+			TorrentServer.getInstance();
+			ThreadUtils.sleep(100000);
+		});
 	}
 	
 	@Test

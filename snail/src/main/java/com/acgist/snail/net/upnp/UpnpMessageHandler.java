@@ -17,7 +17,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>UPNP消息代理</p>
  * <p>协议链接：https://www.rfc-editor.org/rfc/rfc6970.txt</p>
  * <p>协议链接：http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf</p>
- * <p>注：固定IP有时不能正确获取UPNP设置（需要设置自动获取IP地址）</p>
+ * <p>注意：固定IP有时不能正确获取UPNP设置（需要设置自动获取IP地址）</p>
  * 
  * @author acgist
  */

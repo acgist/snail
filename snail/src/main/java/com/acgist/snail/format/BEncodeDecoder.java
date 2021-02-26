@@ -267,8 +267,7 @@ public final class BEncodeDecoder {
 	 * @return 剩余所有数据字符串
 	 */
 	public String oddString() {
-		final var bytes = this.oddBytes();
-		return new String(bytes);
+		return new String(this.oddBytes());
 	}
 
 	/**

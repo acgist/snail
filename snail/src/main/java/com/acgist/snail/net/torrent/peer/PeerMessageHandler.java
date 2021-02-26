@@ -58,7 +58,7 @@ public final class PeerMessageHandler extends TcpMessageHandler implements IEncr
 	
 	@Override
 	public IPeerConnect.ConnectType connectType() {
-		return IEncryptMessageSender.ConnectType.TCP;
+		return IPeerConnect.ConnectType.TCP;
 	}
 
 }

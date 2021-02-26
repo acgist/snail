@@ -47,7 +47,7 @@ public final class PeerDownloader extends PeerConnect {
 		final boolean success = this.connect();
 		if(success) {
 			// 发送握手
-			this.peerSubMessageHandler.handshake(this);
+			this.peerSubMessageHandler.initClient(this).handshake();
 		} else {
 			this.peerSession.incrementFailTimes();
 		}

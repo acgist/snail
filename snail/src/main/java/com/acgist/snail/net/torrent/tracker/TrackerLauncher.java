@@ -30,10 +30,6 @@ public final class TrackerLauncher {
 	 */
 	private final Integer id;
 	/**
-	 * <p>下次请求等待时间</p>
-	 */
-	private Integer interval;
-	/**
 	 * <p>可用状态</p>
 	 */
 	private boolean available = true;
@@ -96,7 +92,9 @@ public final class TrackerLauncher {
 	public void findPeer() {
 		this.needRelease = true;
 		if(this.available()) {
-			LOGGER.debug("TrackerLauncher查找Peer：{}", this.announceUrl());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("TrackerLauncher查找Peer：{}", this.announceUrl());
+			}
 			this.session.findPeers(this.id, this.torrentSession);
 		}
 	}
@@ -114,9 +112,7 @@ public final class TrackerLauncher {
 			LOGGER.debug("收到声明响应消息：TrackerLauncher无效");
 			return;
 		}
-		this.interval = message.interval();
 		this.peer(message.peers());
-		LOGGER.debug("设置下次请求等待时间：{}", this.interval);
 	}
 	
 	/**
@@ -147,10 +143,14 @@ public final class TrackerLauncher {
 			this.needRelease = false;
 			try {
 				if(this.torrentSession.completed()) {
-					LOGGER.debug("TrackerLauncher完成通知：{}", this.announceUrl());
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("TrackerLauncher完成通知：{}", this.announceUrl());
+					}
 					this.session.completed(this.id, this.torrentSession);
 				} else {
-					LOGGER.debug("TrackerLauncher暂停通知：{}", this.announceUrl());
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("TrackerLauncher暂停通知：{}", this.announceUrl());
+					}
 					this.session.stopped(this.id, this.torrentSession);
 				}
 			} catch (Exception e) {

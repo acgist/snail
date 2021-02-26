@@ -34,10 +34,14 @@ public final class UtpRequestQueue {
 	private static final int QUEUE_SIZE = 4;
 	
 	/**
+	 * <p>是否可用</p>
+	 */
+	private boolean available;
+	/**
 	 * <p>请求队列索引</p>
 	 * <p>获取请求队列递增：保证UTP连接被均匀分配到请求队列</p>
 	 */
-	private final AtomicInteger index;
+	private final AtomicInteger queueIndex;
 	/**
 	 * <p>请求队列处理线程池</p>
 	 * 
@@ -53,7 +57,8 @@ public final class UtpRequestQueue {
 	
 	private UtpRequestQueue() {
 		LOGGER.debug("启动UTP请求队列：{}", QUEUE_SIZE);
-		this.index = new AtomicInteger(0);
+		this.available = true;
+		this.queueIndex = new AtomicInteger(0);
 		this.queues = new ArrayList<>(QUEUE_SIZE);
 		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
 		this.buildQueues();
@@ -64,8 +69,8 @@ public final class UtpRequestQueue {
 	 * 
 	 * @return 请求队列
 	 */
-	public BlockingQueue<UtpRequest> requestQueue() {
-		final int index = this.index.getAndIncrement() % QUEUE_SIZE;
+	public BlockingQueue<UtpRequest> queue() {
+		final int index = this.queueIndex.getAndIncrement() % QUEUE_SIZE;
 		return this.queues.get(Math.abs(index));
 	}
 	
@@ -86,7 +91,7 @@ public final class UtpRequestQueue {
 	 * @param queue 请求队列
 	 */
 	private void queueExecute(BlockingQueue<UtpRequest> queue) {
-		while(true) {
+		while(this.available) {
 			try {
 				queue.take().execute();
 			} catch (InterruptedException e) {
@@ -103,6 +108,7 @@ public final class UtpRequestQueue {
 	 */
 	public void shutdown() {
 		LOGGER.debug("关闭UTP请求队列处理线程池");
+		this.available = false;
 		SystemThreadContext.shutdown(this.executor);
 	}
 	

@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.peer;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +53,8 @@ class PeerClientTest extends Performance {
 		final var peerSession = PeerSession.newInstance(statisticsSession, host, port);
 		// UTP支持
 		peerSession.flags(PeerConfig.PEX_UTP);
-		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession);
-		launcher.handshake();
+		final var downloader = PeerDownloader.newInstance(peerSession, torrentSession);
+		downloader.handshake();
 		new Thread(() -> {
 			while(true) {
 				this.log("下载速度：" + statisticsSession.downloadSpeed());
@@ -60,6 +62,7 @@ class PeerClientTest extends Performance {
 			}
 		}).start();
 		ThreadUtils.sleep(100000);
+		assertNotNull(downloader);
 	}
 
 	@Test
@@ -76,9 +79,10 @@ class PeerClientTest extends Performance {
 //		final Integer port = 18888; // 蜗牛测试端口
 		final Integer port = 49160; // FDM测试端口
 		final var peerSession = PeerSession.newInstance(new StatisticsSession(), host, port);
-		final var launcher = PeerDownloader.newInstance(peerSession, torrentSession);
-		launcher.handshake();
+		final var downloader = PeerDownloader.newInstance(peerSession, torrentSession);
+		downloader.handshake();
 		ThreadUtils.sleep(100000);
+		assertNotNull(downloader);
 	}
 
 }

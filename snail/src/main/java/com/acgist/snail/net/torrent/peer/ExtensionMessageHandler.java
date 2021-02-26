@@ -272,7 +272,9 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
-			LOGGER.warn("处理扩展消息-握手失败（格式）：{}", decoder.oddString());
+			if(LOGGER.isWarnEnabled()) {
+				LOGGER.warn("处理扩展消息-握手失败（格式）：{}", decoder.oddString());
+			}
 			return;
 		}
 		// 获取端口
