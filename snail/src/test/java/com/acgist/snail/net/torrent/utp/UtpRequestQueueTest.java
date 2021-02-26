@@ -9,9 +9,9 @@ class UtpRequestQueueTest {
 	@Test
 	void testUtpRequestQueue() {
 		final UtpRequestQueue manager = UtpRequestQueue.getInstance();
-		manager.requestQueue().add(UtpRequest.newInstance(null, null));
-		manager.requestQueue().add(UtpRequest.newInstance(null, null));
-		assertNotEquals(manager.requestQueue(), manager.requestQueue());
+		manager.queue().add(UtpRequest.newInstance(null, null));
+		manager.queue().add(UtpRequest.newInstance(null, null));
+		assertNotEquals(manager.queue(), manager.queue());
 	}
 
 }

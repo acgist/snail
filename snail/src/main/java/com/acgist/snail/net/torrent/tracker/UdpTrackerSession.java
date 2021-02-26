@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.tracker;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>UDP Tracker信息</p>
@@ -201,6 +203,22 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putInt(sid);
 		buffer.put(torrentSession.infoHash().infoHash());
 		return buffer;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.announceUrl);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof UdpTrackerSession session) {
+			return StringUtils.equals(this.announceUrl, session.announceUrl);
+		}
+		return false;
 	}
 	
 }

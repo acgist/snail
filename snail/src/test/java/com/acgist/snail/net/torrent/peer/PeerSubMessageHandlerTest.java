@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.peer;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.StatisticsContext;
@@ -30,6 +32,7 @@ class PeerSubMessageHandlerTest extends Performance {
 		peerSession.piece(3);
 		peerSession.piece(4);
 		handler.have(1, 2, 3, 4);
+		assertNotNull(handler);
 	}
 	
 }

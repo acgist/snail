@@ -2,6 +2,7 @@ package com.acgist.snail.net.torrent.tracker;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -126,7 +127,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			throw new NetException("HTTP Tracker刮擦消息错误（格式）：" + decoder.oddString());
 		}
 		final var messages = convertScrapeMessage(sid, decoder);
-		messages.forEach(message -> TrackerContext.getInstance().scrape(message));
+		messages.forEach(TrackerContext.getInstance()::scrape);
 	}
 	
 	@Override
@@ -207,7 +208,6 @@ public final class HttpTrackerSession extends TrackerSession {
 	private static final List<ScrapeMessage> convertScrapeMessage(Integer sid, BEncodeDecoder decoder) {
 		final var files = decoder.getMap("files");
 		if(files == null) {
-			LOGGER.debug("HTTP Tracker刮擦消息错误：{}", decoder.oddString());
 			return List.of();
 		}
 		return files.entrySet().stream()
@@ -266,6 +266,22 @@ public final class HttpTrackerSession extends TrackerSession {
 			return url.replace(ANNOUNCE_URL_SUFFIX, SCRAPE_URL_SUFFIX);
 		}
 		return null;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.announceUrl);
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object instanceof HttpTrackerSession session) {
+			return StringUtils.equals(this.announceUrl, session.announceUrl);
+		}
+		return false;
 	}
 	
 }

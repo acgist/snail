@@ -249,7 +249,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	@Override
 	public IPeerConnect.ConnectType connectType() {
-		return IEncryptMessageSender.ConnectType.UTP;
+		return IPeerConnect.ConnectType.UTP;
 	}
 
 	/**

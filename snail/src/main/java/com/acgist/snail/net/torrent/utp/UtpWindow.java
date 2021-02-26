@@ -140,7 +140,7 @@ public final class UtpWindow {
 		} else {
 			// 接收窗口对象
 			// 相同窗口必须将消息发送到相同请求队列：防止消息出现乱序
-			this.requests = UtpRequestQueue.getInstance().requestQueue();
+			this.requests = UtpRequestQueue.getInstance().queue();
 			this.messageDecoder = messageDecoder;
 			this.semaphore = null;
 		}

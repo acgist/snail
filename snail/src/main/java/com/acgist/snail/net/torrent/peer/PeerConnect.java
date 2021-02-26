@@ -28,7 +28,7 @@ public abstract class PeerConnect implements IPeerConnect {
 
 	/**
 	 * <p>SLICE请求数量：{@value}</p>
-	 * <p>注：过大会导致UTP信号量阻塞</p>
+	 * <p>注意：过大会导致UTP信号量阻塞</p>
 	 * 
 	 * TODO：根据速度优化
 	 */

@@ -68,7 +68,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			}
 			return;
 		}
-		final String y = decoder.getString(DhtConfig.KEY_Y); // 消息类型
+		final String y = decoder.getString(DhtConfig.KEY_Y);
 		if(DhtConfig.KEY_Q.equals(y)) {
 			final DhtRequest request = DhtRequest.valueOf(decoder);
 			request.setSocketAddress(socketAddress);

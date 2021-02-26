@@ -1,5 +1,7 @@
 package com.acgist.snail.net.torrent.tracker;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.TorrentContext;
@@ -17,6 +19,7 @@ class HttpTrackerSessionTest extends Performance {
 		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://explodie.org:6969/announce");
 		session.started(1000, torrentSession);
 		session.scrape(1000, torrentSession);
+		assertNotNull(session);
 	}
 	
 }
