@@ -10,7 +10,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * <p>Peer下载</p>
- * <p>主动连接Peer</p>
  * 
  * @author acgist
  */
@@ -32,7 +31,7 @@ public final class PeerDownloader extends PeerConnect {
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
 	 * 
-	 * @return Peer下载
+	 * @return {@link PeerDownloader}
 	 */
 	public static final PeerDownloader newInstance(PeerSession peerSession, TorrentSession torrentSession) {
 		return new PeerDownloader(peerSession, torrentSession);
@@ -40,13 +39,14 @@ public final class PeerDownloader extends PeerConnect {
 	
 	/**
 	 * <p>握手</p>
-	 * <p>建立连接、发送握手</p>
 	 * 
 	 * @return 是否握手成功
 	 */
 	public boolean handshake() {
+		// 建立连接
 		final boolean success = this.connect();
 		if(success) {
+			// 发送握手
 			this.peerSubMessageHandler.handshake(this);
 		} else {
 			this.peerSession.incrementFailTimes();
@@ -57,35 +57,34 @@ public final class PeerDownloader extends PeerConnect {
 	
 	/**
 	 * <p>建立连接</p>
-	 * <p>优先直接使用TCP/UTP进行连接，如果连接失败使用holepunch协议重连。</p>
+	 * <p>优先使用TCP/UTP进行连接，如果连接失败使用holepunch协议重连。</p>
 	 * 
 	 * @return 是否连接成功
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
-			LOGGER.debug("Peer连接（uTP）：{}-{}", this.peerSession.host(), this.peerSession.port());
+			LOGGER.debug("Peer连接（uTP）：{}", this.peerSession);
 			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean utpOk = utpClient.connect();
 			if(utpOk) {
 				return utpOk;
 			} else {
-				return this.holepunchConnect(false); // 不需要再使用UTP重试
+				return this.holepunchConnect(false);
 			}
 		} else {
-			LOGGER.debug("Peer连接（TCP）：{}-{}", this.peerSession.host(), this.peerSession.port());
+			LOGGER.debug("Peer连接（TCP）：{}", this.peerSession);
 			final PeerClient peerClient = PeerClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean tcpOk = peerClient.connect();
 			if(tcpOk) {
 				return tcpOk;
 			} else {
-				return this.holepunchConnect(true); // 需要使用UTP重试
+				return this.holepunchConnect(true);
 			}
 		}
 	}
 
 	/**
 	 * <p>使用holepunch协议连接</p>
-	 * <p>如果Peer不可以直接连接使用holepunch协议连接，如果连接失败并且可以使用UTP重试时再使用UTP重试连接。</p>
 	 * 
 	 * @param utpRetry 是否可以使用UTP重试
 	 * 
@@ -94,58 +93,59 @@ public final class PeerDownloader extends PeerConnect {
 	private boolean holepunchConnect(boolean utpRetry) {
 		// Peer不可以直接连接：使用holepunch协议连接
 		if(!this.peerSession.outgo()) {
-			final PeerSession pexSource = this.peerSession.pexSource(); // Pex来源：中继
+			// 中继：Pex来源
+			final PeerSession pexSource = this.peerSession.pexSource();
 			if(
 				pexSource != null &&
-				pexSource.holepunch() && // 中继支持holepunch
-				pexSource.connected() && // 中继已经连接
-				this.peerSession.holepunch() // 目标支持holepunch
+				// 中继支持holepunch
+				pexSource.holepunch() &&
+				// 中继已经连接
+				pexSource.connected() &&
+				// 目标支持holepunch
+				this.peerSession.holepunch()
 			) {
 				final var peerConnect = pexSource.peerConnect();
 				if(peerConnect != null) {
-					if(!this.peerSession.holeunchConnect()) { // 是否已经连接
-						// 向中继发送rendezvous消息
+					// 是否已经连接
+					if(!this.peerSession.holeunchConnect()) {
 						peerConnect.holepunchRendezvous(this.peerSession);
 					}
 					// 已经收到holepunch连接消息使用UTP协议连接
 					if(this.peerSession.holeunchConnect()) {
-						LOGGER.debug("Peer连接（uTP）（holepunch）：{}-{}", this.peerSession.host(), this.peerSession.port());
+						LOGGER.debug("Peer连接（holepunch）：{}", this.peerSession);
 						final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 						return utpClient.connect();
 					} else {
-						LOGGER.debug("Peer连接（uTP）（holepunch）：连接失败");
+						LOGGER.debug("Peer连接失败（holepunch）：{}", this.peerSession);
 					}
 				}
 			}
 		}
 		// holepunch协议连接失败并且可以使用UTP重试
 		if(utpRetry) {
-			LOGGER.debug("Peer连接（uTP）（重试）：{}-{}", this.peerSession.host(), this.peerSession.port());
+			LOGGER.debug("Peer连接重试（uTP）：{}", this.peerSession);
 			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean utpOk = utpClient.connect();
 			if(utpOk) {
-				this.peerSession.flags(PeerConfig.PEX_UTP); // UTP
-				this.peerSession.flags(PeerConfig.PEX_OUTGO); // 直接连接
+				// 支持UTP
+				this.peerSession.flags(PeerConfig.PEX_UTP);
+				// 直接连接
+				this.peerSession.flags(PeerConfig.PEX_OUTGO);
 				return utpOk;
 			}
 		}
 		return false;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>设置非下载状态</p>
-	 */
 	@Override
 	public void release() {
 		try {
 			if(this.available) {
-				LOGGER.debug("PeerDownloader关闭：{}-{}", this.peerSession.host(), this.peerSession.port());
+				LOGGER.debug("关闭PeerDownloader：{}", this.peerSession);
 				super.release();
 			}
 		} catch (Exception e) {
-			LOGGER.error("PeerDownloader关闭异常", e);
+			LOGGER.error("关闭PeerDownloader异常", e);
 		} finally {
 			this.peerSession.statusOff(PeerConfig.STATUS_DOWNLOAD);
 			this.peerSession.peerDownloader(null);
