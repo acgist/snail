@@ -10,7 +10,6 @@ import com.acgist.snail.utils.PeerUtils;
 
 /**
  * <p>Peer Service</p>
- * <p>管理客户端的PeerId</p>
  * 
  * @author acgist
  */
