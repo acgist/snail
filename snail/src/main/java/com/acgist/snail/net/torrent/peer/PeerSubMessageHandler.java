@@ -299,14 +299,14 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 				case CANCEL -> this.cancel(buffer);
 				// DHT扩展
 				case DHT -> this.dht(buffer);
+				// 扩展协议
+				case EXTENSION -> this.extension(buffer);
 				// FAST扩展
 				case HAVE_ALL -> this.haveAll(buffer);
 				case HAVE_NONE -> this.haveNone(buffer);
 				case SUGGEST_PIECE -> this.suggestPiece(buffer);
 				case REJECT_REQUEST -> this.rejectRequest(buffer);
 				case ALLOWED_FAST -> this.allowedFast(buffer);
-				// 扩展协议
-				case EXTENSION -> this.extension(buffer);
 				default -> LOGGER.warn("处理Peer消息错误（类型未适配）：{}", type);
 			}
 		} else {
