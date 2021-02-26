@@ -97,10 +97,10 @@ public final class PeerDownloader extends PeerConnect {
 			final PeerSession pexSource = this.peerSession.pexSource();
 			if(
 				pexSource != null &&
-				// 中继支持holepunch
-				pexSource.holepunch() &&
 				// 中继已经连接
 				pexSource.connected() &&
+				// 中继支持holepunch
+				pexSource.holepunch() &&
 				// 目标支持holepunch
 				this.peerSession.holepunch()
 			) {

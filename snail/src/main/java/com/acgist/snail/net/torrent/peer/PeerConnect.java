@@ -64,25 +64,25 @@ public abstract class PeerConnect implements IPeerConnect {
 	 */
 	private TorrentPiece downloadPiece;
 	/**
-	 * <p>slice锁</p>
+	 * <p>SLICE锁</p>
 	 * 
 	 * @see #SLICE_TIMEOUT
 	 * @see #SLICE_REQUEST_SIZE
 	 * @see #SLICE_REQUEST_MAX_SIZE
 	 */
-	private final AtomicInteger sliceLock = new AtomicInteger(0);
+	private final AtomicInteger sliceLock;
 	/**
 	 * <p>完成锁</p>
 	 * 
 	 * @see #COMPLETED_TIMEOUT
 	 */
-	private final AtomicBoolean completedLock = new AtomicBoolean(false);
+	private final AtomicBoolean completedLock;
 	/**
 	 * <p>释放锁</p>
 	 * 
 	 * @see #RELEASE_TIMEOUT
 	 */
-	private final AtomicBoolean releaseLock = new AtomicBoolean(false);
+	private final AtomicBoolean releaseLock;
 	/**
 	 * <p>Peer信息</p>
 	 */
@@ -112,6 +112,9 @@ public abstract class PeerConnect implements IPeerConnect {
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	protected PeerConnect(PeerSession peerSession, TorrentSession torrentSession, PeerSubMessageHandler peerSubMessageHandler) {
+		this.sliceLock = new AtomicInteger(0);
+		this.completedLock = new AtomicBoolean(false);
+		this.releaseLock = new AtomicBoolean(false);
 		this.peerSession = peerSession;
 		this.statisticsSession = peerSession.statistics();
 		this.torrentSession = torrentSession;
