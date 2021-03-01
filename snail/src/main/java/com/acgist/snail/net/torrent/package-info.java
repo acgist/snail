@@ -28,7 +28,7 @@
  * 	</tr>
  * 	<tr>
  * 		<td>utp</td>
- * 		<td>uTP协议</td>
+ * 		<td>UTP协议</td>
  * 	</tr>
  * </table>
  * 

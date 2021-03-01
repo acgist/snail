@@ -159,7 +159,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * @return 是否成功
 	 */
 	private boolean initServer(String infoHashHex, byte[] peerId) {
-		if(Arrays.equals(PeerService.getInstance().peerId(), peerId)) {
+		if(Arrays.equals(PeerConfig.getInstance().peerId(), peerId)) {
 			LOGGER.debug("Peer接入失败（PeerId一致）");
 			return false;
 		}
@@ -343,7 +343,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		buffer.put(PeerConfig.PROTOCOL_NAME_BYTES);
 		buffer.put(PeerConfig.RESERVED);
 		buffer.put(this.torrentSession.infoHash().infoHash());
-		buffer.put(PeerService.getInstance().peerId());
+		buffer.put(PeerConfig.getInstance().peerId());
 		this.sendEncrypt(buffer, SystemConfig.CONNECT_TIMEOUT);
 	}
 	

@@ -5,10 +5,10 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpClient;
-import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.NetUtils;
@@ -74,7 +74,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 * @return 本地发现消息
 	 */
 	private String buildMessage(String ... infoHashs) {
-		final String peerId = StringUtils.hex(PeerService.getInstance().peerId());
+		final String peerId = StringUtils.hex(PeerConfig.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, LocalServiceDiscoveryServer.lsdHost() + ":" + LocalServiceDiscoveryServer.LSD_PORT)

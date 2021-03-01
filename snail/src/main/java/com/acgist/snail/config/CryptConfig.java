@@ -146,8 +146,6 @@ public final class CryptConfig {
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
 	 * <p>VC长度：{@value}</p>
-	 * 
-	 * @see #VC
 	 */
 	public static final int VC_LENGTH = 8;
 	/**

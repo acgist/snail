@@ -54,8 +54,8 @@ public final class StunService {
 	 */
 	public void mapping(String externalIPAddress, int port) {
 		LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
-		PeerConfig.nat(); // 设置使用NAT穿透
-		NatContext.getInstance().stun(); // 设置STUN穿透类型
+		PeerConfig.nat();
+		NatContext.getInstance().stun();
 		SystemConfig.setExternalIPAddress(externalIPAddress);
 		SystemConfig.setTorrentPortExt(port);
 	}
