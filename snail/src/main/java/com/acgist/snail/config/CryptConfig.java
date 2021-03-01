@@ -83,7 +83,7 @@ public final class CryptConfig {
 		private final boolean crypt;
 		/**
 		 * <p>加密模式：crypto_provide</p>
-		 * <p>客户端可能支持多种加密算法，双方协商最优加密算法。</p>
+		 * <p>支持多种加密算法：双方协商最优加密算法</p>
 		 * 
 		 * @see CryptAlgo#provide
 		 */
@@ -101,7 +101,7 @@ public final class CryptConfig {
 		/**
 		 * <p>判断是否加密</p>
 		 * 
-		 * @return true-加密；false-明文；
+		 * @return 是否加密
 		 */
 		public final boolean crypt() {
 			return this.crypt;
@@ -136,8 +136,8 @@ public final class CryptConfig {
 	/**
 	 * <p>私钥长度：{@value}</p>
 	 * <p>随机长度：128~180</p>
-	 * <p>超过180只能增加计算时间，并不能提高安全性。</p>
 	 * <p>推荐长度：160</p>
+	 * <p>超过180只能增加计算时间：并不能提高安全性</p>
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 20;
 	/**
@@ -153,6 +153,8 @@ public final class CryptConfig {
 	/**
 	 * <p>VC数据</p>
 	 * <p>默认填充：0x00</p>
+	 * 
+	 * @see #VC_LENGTH
 	 */
 	public static final byte[] VC = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
@@ -166,9 +168,6 @@ public final class CryptConfig {
 		LOGGER.debug("默认加密策略：{}", CryptConfig.STRATEGY);
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private CryptConfig() {
 	}
 	

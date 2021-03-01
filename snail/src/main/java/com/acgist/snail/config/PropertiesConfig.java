@@ -120,22 +120,21 @@ public abstract class PropertiesConfig {
 	 * <p>保存配置文件</p>
 	 * 
 	 * @param data 数据
-	 * @param file 文件
+	 * @param path 路径
 	 */
-	protected final void persistent(Map<String, String> data, File file) {
-		if(data == null || file == null) {
-			LOGGER.warn("保存配置文件失败：{}-{}", data, file);
+	protected final void persistent(Map<String, String> data, String path) {
+		if(data == null || path == null) {
+			LOGGER.warn("保存配置文件失败：{}-{}", data, path);
 			return;
 		}
-		// 创建上级目录
+		final File file = FileUtils.userDirFile(path);
 		FileUtils.buildParentFolder(file);
 		try(final var output = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
-			// 不能使用内部变量：数据可能被清空
 			final Properties persistentProperties = new Properties();
 			persistentProperties.putAll(data);
 			persistentProperties.store(output, SystemConfig.getName());
 		} catch (IOException e) {
-			LOGGER.error("保存配置文件异常：{}", file.getAbsolutePath(), e);
+			LOGGER.error("保存配置文件异常：{}", file, e);
 		}
 	}
 	
