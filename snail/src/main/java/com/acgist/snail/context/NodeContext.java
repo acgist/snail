@@ -118,8 +118,6 @@ public final class NodeContext implements IContext {
 	 * <p>超过最大保存数量：删除验证节点和多余节点</p>
 	 * 
 	 * @return 所有节点拷贝
-	 * 
-	 * @see DhtConfig#MAX_NODE_SIZE
 	 */
 	public List<NodeSession> resize() {
 		synchronized (this.nodes) {

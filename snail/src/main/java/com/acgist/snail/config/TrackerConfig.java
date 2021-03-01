@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.pojo.session.TrackerSession;
-import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -249,8 +248,10 @@ public final class TrackerConfig extends PropertiesConfig {
 				session -> String.format("%04d", index.incrementAndGet()),
 				TrackerSession::announceUrl
 			));
-		LOGGER.debug("保存Tracker服务器配置：{}", data.size());
-		this.persistent(data, FileUtils.userDirFile(TRACKER_CONFIG));
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("保存Tracker服务器配置：{}", data.size());
+		}
+		this.persistent(data, TRACKER_CONFIG);
 	}
 	
 }

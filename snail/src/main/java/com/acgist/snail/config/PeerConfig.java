@@ -61,6 +61,8 @@ public final class PeerConfig extends PropertiesConfig {
 	/**
 	 * <p>保留位</p>
 	 * 
+	 * @see #RESERVED_LENGTH
+	 * 
 	 * @see #RESERVED_DHT_PROTOCOL
 	 * @see #RESERVED_PEER_EXCHANGE
 	 * @see #RESERVED_FAST_PROTOCOL
