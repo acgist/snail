@@ -137,7 +137,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
 	 * <p>自动配置：忽略端口配置</p>
-	 * <p>使用UDP连接端口作为对等端口（支持uTP）</p>
+	 * <p>使用UDP连接端口作为对等端口（支持UTP）</p>
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**

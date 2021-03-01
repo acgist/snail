@@ -24,10 +24,10 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 
 /**
- * <p>uTP消息代理</p>
+ * <p>UTP消息代理</p>
  * <p>uTorrent transport protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0029.html</p>
- * <p>uTP头格式</p>
+ * <p>UTP头格式</p>
  * <pre>
  * 0       4       8               16              24              32
  * +-------+-------+---------------+---------------+---------------+

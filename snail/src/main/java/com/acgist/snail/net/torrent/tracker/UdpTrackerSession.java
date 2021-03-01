@@ -6,10 +6,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
@@ -173,7 +173,7 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id());
 		buffer.putInt(sid);
 		buffer.put(torrentSession.infoHash().infoHash());
-		buffer.put(PeerService.getInstance().peerId());
+		buffer.put(PeerConfig.getInstance().peerId());
 		buffer.putLong(download);
 		buffer.putLong(left);
 		buffer.putLong(upload);

@@ -63,7 +63,7 @@ public final class PeerDownloader extends PeerConnect {
 	 */
 	private boolean connect() {
 		if(this.peerSession.utp()) {
-			LOGGER.debug("Peer连接（uTP）：{}", this.peerSession);
+			LOGGER.debug("Peer连接（UTP）：{}", this.peerSession);
 			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean utpOk = utpClient.connect();
 			if(utpOk) {
@@ -123,7 +123,7 @@ public final class PeerDownloader extends PeerConnect {
 		}
 		// holepunch协议连接失败并且可以使用UTP重试
 		if(utpRetry) {
-			LOGGER.debug("Peer连接重试（uTP）：{}", this.peerSession);
+			LOGGER.debug("Peer连接重试（UTP）：{}", this.peerSession);
 			final UtpClient utpClient = UtpClient.newInstance(this.peerSession, this.peerSubMessageHandler);
 			final boolean utpOk = utpClient.connect();
 			if(utpOk) {

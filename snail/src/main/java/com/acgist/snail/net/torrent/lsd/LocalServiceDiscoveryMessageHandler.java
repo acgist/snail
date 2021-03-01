@@ -13,7 +13,6 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.StringMessageCodec;
-import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.CollectionUtils;
@@ -74,7 +73,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 		final List<String> infoHashHexs = headers.headerList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashHexs)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
-			if(Arrays.equals(peerId, PeerService.getInstance().peerId())) {
+			if(Arrays.equals(peerId, PeerConfig.getInstance().peerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
 				infoHashHexs.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));

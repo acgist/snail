@@ -7,13 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.TaskContext;
-import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>下载配置</p>
- * <p>默认加载配置文件配置，如果实体存在相同配置，则使用实体配置覆盖。</p>
+ * <p>默认加载配置文件配置，如果实体存在相同配置，使用实体配置覆盖。</p>
  * 
  * @author acgist
  */
@@ -21,16 +20,8 @@ public final class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
-	/**
-	 * <p>单例对象</p>
-	 */
 	private static final DownloadConfig INSTANCE = new DownloadConfig();
 	
-	/**
-	 * <p>获取单例对象</p>
-	 * 
-	 * @return 单例对象
-	 */
 	public static final DownloadConfig getInstance() {
 		return INSTANCE;
 	}
@@ -97,9 +88,6 @@ public final class DownloadConfig extends PropertiesConfig {
 		INSTANCE.release();
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private DownloadConfig() {
 		super(DOWNLOAD_CONFIG);
 	}
@@ -154,33 +142,25 @@ public final class DownloadConfig extends PropertiesConfig {
 	private void initFromProperties() {
 		this.path = this.getString(DOWNLOAD_PATH);
 		this.size = this.getInteger(DOWNLOAD_SIZE, 4);
-		this.buffer = this.getInteger(DOWNLOAD_BUFFER, 1024);
 		this.notice = this.getBoolean(DOWNLOAD_NOTICE, true);
 		this.delete = this.getBoolean(DOWNLOAD_DELETE, false);
+		this.buffer = this.getInteger(DOWNLOAD_BUFFER, 1024);
 		this.lastPath = this.getString(DOWNLOAD_LAST_PATH);
 		this.memoryBuffer = this.getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
 	}
 	
 	/**
-	 * <p>初始化配置：实体</p>
+	 * <p>初始化配置：实体文件</p>
 	 */
 	private void initFromEntity() {
 		final EntityContext entityContext = EntityContext.getInstance();
-		ConfigEntity entity = null;
-		entity = entityContext.findConfigByName(DOWNLOAD_PATH);
-		this.path = this.getString(entity, this.path);
-		entity = entityContext.findConfigByName(DOWNLOAD_SIZE);
-		this.size = this.getInteger(entity, this.size);
-		entity = entityContext.findConfigByName(DOWNLOAD_NOTICE);
-		this.notice = this.getBoolean(entity, this.notice);
-		entity = entityContext.findConfigByName(DOWNLOAD_DELETE);
-		this.delete = this.getBoolean(entity, this.delete);
-		entity = entityContext.findConfigByName(DOWNLOAD_BUFFER);
-		this.buffer = this.getInteger(entity, this.buffer);
-		entity = entityContext.findConfigByName(DOWNLOAD_LAST_PATH);
-		this.lastPath = this.getString(entity, this.lastPath);
-		entity = entityContext.findConfigByName(DOWNLOAD_MEMORY_BUFFER);
-		this.memoryBuffer = this.getInteger(entity, this.memoryBuffer);
+		this.path = this.getString(entityContext.findConfigByName(DOWNLOAD_PATH), this.path);
+		this.size = this.getInteger(entityContext.findConfigByName(DOWNLOAD_SIZE), this.size);
+		this.notice = this.getBoolean(entityContext.findConfigByName(DOWNLOAD_NOTICE), this.notice);
+		this.delete = this.getBoolean(entityContext.findConfigByName(DOWNLOAD_DELETE), this.delete);
+		this.buffer = this.getInteger(entityContext.findConfigByName(DOWNLOAD_BUFFER), this.buffer);
+		this.lastPath = this.getString(entityContext.findConfigByName(DOWNLOAD_LAST_PATH), this.lastPath);
+		this.memoryBuffer = this.getInteger(entityContext.findConfigByName(DOWNLOAD_MEMORY_BUFFER), this.memoryBuffer);
 	}
 	
 	/**
@@ -197,13 +177,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载目录路径</p>
+	 * <p>设置下载目录</p>
 	 * 
-	 * @param path 下载目录路径
+	 * @param path 下载目录
 	 */
 	public static final void setPath(String path) {
 		if(StringUtils.equals(INSTANCE.path, path)) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.path = path;
@@ -211,11 +190,13 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取下载目录路径</p>
-	 * <p>下载目录存在：返回下载目录路径</p>
-	 * <p>下载目录不在：返回{@code user.dir}路径 + 下载目录路径</p>
+	 * <p>获取下载目录</p>
+	 * <p>下载目录存在：返回下载目录</p>
+	 * <p>下载目录无效：返回用户工作目录 + 下载目录</p>
 	 * 
-	 * @return 下载目录路径
+	 * @return 下载目录
+	 * 
+	 * @see FileUtils#userDir(String)
 	 */
 	public static final String getPath() {
 		String path = INSTANCE.path;
@@ -229,7 +210,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取下载目录下文件路径</p>
+	 * <p>获取下载目录中的文件路径</p>
 	 * 
 	 * @param fileName 文件名称
 	 * 
@@ -249,12 +230,10 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setSize(int size) {
 		if(INSTANCE.size == size) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.size = size;
 		EntityContext.getInstance().mergeConfig(DOWNLOAD_SIZE, String.valueOf(size));
-		// 刷新下载任务
 		TaskContext.getInstance().refresh();
 	}
 
@@ -274,7 +253,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setNotice(boolean notice) {
 		if(INSTANCE.notice == notice) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.notice = notice;
@@ -297,7 +275,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setDelete(boolean delete) {
 		if(INSTANCE.delete == delete) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.delete = delete;
@@ -316,23 +293,21 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>设置下载速度（单个）（KB）</p>
 	 * 
-	 * @param buffer 下载速度
+	 * @param buffer 下载速度（单个）（KB）
 	 */
 	public static final void setBuffer(int buffer) {
 		if(INSTANCE.buffer == buffer) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.buffer = buffer;
 		EntityContext.getInstance().mergeConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
-		// 刷新下载速度和上传速度
 		INSTANCE.refreshUploadDownloadBuffer();
 	}
 	
 	/**
 	 * <p>获取下载速度（单个）（KB）</p>
 	 * 
-	 * @return 下载速度
+	 * @return 下载速度（单个）（KB）
 	 */
 	public static final int getBuffer() {
 		return INSTANCE.buffer;
@@ -341,7 +316,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>获取上传速度（单个）（B）</p>
 	 * 
-	 * @return 上传速度
+	 * @return 上传速度（单个）（B）
 	 */
 	public static final int getUploadBufferByte() {
 		return INSTANCE.uploadBufferByte;
@@ -350,7 +325,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>获取下载速度（单个）（B）</p>
 	 * 
-	 * @return 下载速度
+	 * @return 下载速度（单个）（B）
 	 */
 	public static final int getDownloadBufferByte() {
 		return INSTANCE.downloadBufferByte;
@@ -371,7 +346,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	public static final void setLastPath(String lastPath) {
 		if(StringUtils.equals(INSTANCE.lastPath, lastPath)) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.lastPath = lastPath;
@@ -383,6 +357,8 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * <p>如果最后一次选择目录为空返回下载目录</p>
 	 * 
 	 * @return 最后一次选择目录
+	 * 
+	 * @see #getPath()
 	 */
 	public static final String getLastPath() {
 		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
@@ -404,23 +380,21 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>设置磁盘缓存（单个）（MB）</p>
 	 * 
-	 * @param memoryBuffer 磁盘缓存
+	 * @param memoryBuffer 磁盘缓存（单个）（MB）
 	 */
 	public static final void setMemoryBuffer(int memoryBuffer) {
 		if(INSTANCE.memoryBuffer == memoryBuffer) {
-			// 忽略没有修改
 			return;
 		}
 		INSTANCE.memoryBuffer = memoryBuffer;
 		EntityContext.getInstance().mergeConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
-		// 刷新磁盘缓存
 		INSTANCE.refreshMemoryBuffer();
 	}
 
 	/**
 	 * <p>获取磁盘缓存（单个）（MB）</p>
 	 * 
-	 * @return 磁盘缓存
+	 * @return 磁盘缓存（单个）（MB）
 	 */
 	public static final int getMemoryBuffer() {
 		return INSTANCE.memoryBuffer;
@@ -429,24 +403,24 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * <p>获取磁盘缓存（单个）（B）</p>
 	 * 
-	 * @return 磁盘缓存
+	 * @return 磁盘缓存（单个）（B）
 	 */
 	public static final int getMemoryBufferByte() {
 		return INSTANCE.memoryBufferByte;
 	}
 	
 	/**
-	 * <p>获取磁盘缓存（单个）（B）</p>
-	 * <p>如果文件小于默认磁盘缓存直接使用文件大小作为缓存大小</p>
+	 * <p>获取文件磁盘缓存（单个）（B）</p>
 	 * 
-	 * @param fileSize 文件大小
+	 * @param fileSize 文件大小（B）
 	 * 
-	 * @return 磁盘缓存
+	 * @return 文件磁盘缓存（单个）（B）
 	 */
 	public static final int getMemoryBufferByte(final long fileSize) {
 		final int bufferSize = getMemoryBufferByte();
 		if(fileSize > 0L) {
 			if(bufferSize > fileSize) {
+				// 如果文件大小小于磁盘缓存直接使用文件大小作为缓存大小
 				return (int) fileSize;
 			} else {
 				return bufferSize;

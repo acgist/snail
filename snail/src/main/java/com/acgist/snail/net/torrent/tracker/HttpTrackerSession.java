@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.net.http.HttpClient;
-import com.acgist.snail.net.torrent.peer.PeerService;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
@@ -135,7 +135,7 @@ public final class HttpTrackerSession extends TrackerSession {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&")
-			.append("peer_id").append("=").append(PeerService.getInstance().peerIdUrl()).append("&")
+			.append("peer_id").append("=").append(PeerConfig.getInstance().peerIdUrl()).append("&")
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&")
 			.append("uploaded").append("=").append(upload).append("&")
 			.append("downloaded").append("=").append(download).append("&")
