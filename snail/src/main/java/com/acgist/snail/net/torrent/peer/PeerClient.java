@@ -36,7 +36,7 @@ public final class PeerClient extends TcpClient<PeerMessageHandler> {
 	 * @param peerSession Peer信息
 	 * @param peerSubMessageHandler Peer消息代理
 	 * 
-	 * @return Peer客户端
+	 * @return {@link PeerClient}
 	 */
 	public static final PeerClient newInstance(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return new PeerClient(peerSession, peerSubMessageHandler);

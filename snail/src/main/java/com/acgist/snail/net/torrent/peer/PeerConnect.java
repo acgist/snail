@@ -29,13 +29,10 @@ public abstract class PeerConnect implements IPeerConnect {
 	/**
 	 * <p>SLICE请求数量：{@value}</p>
 	 * <p>注意：过大会导致UTP信号量阻塞</p>
-	 * 
-	 * TODO：根据速度优化
 	 */
 	private static final int SLICE_REQUEST_SIZE = 2;
 	/**
 	 * <p>SLICE最大请求数量：{@value}</p>
-	 * <p>超过这个数量跳出请求</p>
 	 */
 	private static final int SLICE_REQUEST_MAX_SIZE = 4;
 	/**
@@ -105,8 +102,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	protected final PeerSubMessageHandler peerSubMessageHandler;
 	
 	/**
-	 * <p>Peer连接</p>
-	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
 	 * @param peerSubMessageHandler Peer消息代理
@@ -278,12 +273,12 @@ public abstract class PeerConnect implements IPeerConnect {
 	 * @param bytes Piece数据
 	 */
 	public final void piece(int index, int begin, byte[] bytes) {
-		// 数据不完整抛弃当前Piece：重新选择下载Piece
 		if(bytes == null || this.downloadPiece == null) {
 			return;
 		}
-		if(index != this.downloadPiece.getIndex()) {
-			LOGGER.warn("下载Piece索引和当前Piece索引不符：{}-{}", index, this.downloadPiece.getIndex());
+		final int downloadIndex = this.downloadPiece.getIndex();
+		if(index != downloadIndex) {
+			LOGGER.debug("下载Piece索引和当前Piece索引不符：{}-{}", index, downloadIndex);
 			return;
 		}
 		// 释放slice锁
@@ -310,7 +305,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	
 	/**
 	 * <p>请求下载</p>
-	 * <p>跳出请求循环：设置完成状态、释放下载资源、完成检测、验证Piece状态</p>
 	 */
 	private void requests() {
 		LOGGER.debug("开始请求下载：{}", this.peerSession);
@@ -325,18 +319,16 @@ public abstract class PeerConnect implements IPeerConnect {
 		this.completedLock.set(true);
 		this.releaseDownload();
 		this.torrentSession.checkCompletedAndDone();
-		// 验证最后选择的Piece是否下载完成
+		// 验证最后选择Piece是否下载完成
 		if(this.downloadPiece != null && !this.downloadPiece.completedAndVerify()) {
 			this.undone();
+			// TODO：发送cancel
 		}
 		LOGGER.debug("结束请求下载：{}", this.peerSession);
 	}
 	
 	/**
 	 * <p>请求数据</p>
-	 * <p>每次发送{@value #SLICE_REQUEST_SIZE}个请求，然后进入等待，当全部数据响应后，又开始发送请求，直到Piece下载完成。</p>
-	 * <p>请求发送完成后必须进入完成等待</p>
-	 * <p>请求等待队列数量超过{@value #SLICE_REQUEST_MAX_SIZE}个时跳出循环</p>
 	 * 
 	 * @return 是否可以继续下载
 	 */
@@ -348,10 +340,10 @@ public abstract class PeerConnect implements IPeerConnect {
 			LOGGER.debug("释放Peer：任务不可下载");
 			return false;
 		}
-		this.pick(); // 挑选Piece
+		this.pick();
 		if(this.downloadPiece == null) {
 			LOGGER.debug("释放Peer：没有匹配Piece下载");
-			this.peerSubMessageHandler.notInterested(); // 发送不感兴趣消息
+			this.peerSubMessageHandler.notInterested();
 			return false;
 		}
 		final int index = this.downloadPiece.getIndex();
@@ -362,7 +354,7 @@ public abstract class PeerConnect implements IPeerConnect {
 			}
 			// 超过slice最大请求数量跳出循环
 			if (this.sliceLock.get() >= SLICE_REQUEST_MAX_SIZE) {
-				LOGGER.debug("超过slice最大请求数量跳出循环：{}-{}", this.downloadPiece.getIndex(), this.sliceLock.get());
+				LOGGER.debug("超过slice最大请求数量跳出循环");
 				break;
 			}
 			this.sliceLock.incrementAndGet();
@@ -375,7 +367,7 @@ public abstract class PeerConnect implements IPeerConnect {
 				break;
 			}
 		}
-		// 添加完成锁
+		// 添加完成锁：请求发送完成必须进入完成等待（数据可能没有全部返回）
 		this.lockCompleted();
 		// 释放释放锁
 		this.unlockRelease();
@@ -384,7 +376,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	
 	/**
 	 * <p>选择下载Piece</p>
-	 * <p>如果上个Piece没有完成：标记失败</p>
 	 */
 	private void pick() {
 		if(this.downloadPiece == null) {
@@ -396,16 +387,17 @@ public abstract class PeerConnect implements IPeerConnect {
 					// 统计下载有效数据
 					this.statisticsSession.download(this.downloadPiece.getLength());
 				} else {
-					LOGGER.debug("Piece保存失败：{}", this.downloadPiece.getIndex());
+					LOGGER.debug("Piece保存失败：{}", this.downloadPiece);
 					this.undone();
 				}
 			} else {
-				LOGGER.warn("Piece校验失败：{}", this.downloadPiece.getIndex());
+				// 设置下载错误Piece位图
 				this.peerSession.badPieces(this.downloadPiece.getIndex());
+				LOGGER.warn("Piece校验失败：{}", this.downloadPiece);
 				this.undone();
 			}
 		} else {
-			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece.getIndex());
+			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece);
 			this.undone();
 		}
 		if(this.peerConnectSession.isPeerUnchoked()) {
@@ -415,18 +407,15 @@ public abstract class PeerConnect implements IPeerConnect {
 			LOGGER.debug("选择下载Piece：快速允许");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.allowedPieces(), this.peerSession.allowedPieces());
 		}
-		if(this.downloadPiece != null) {
+		if(LOGGER.isDebugEnabled() && this.downloadPiece != null) {
 			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
 		}
-		// 设置状态
 		this.sliceLock.set(0);
 		this.completedLock.set(false);
 	}
 	
 	/**
 	 * <p>下载失败</p>
-	 * 
-	 * TODO：发送cancel
 	 */
 	private void undone() {
 		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
@@ -438,7 +427,7 @@ public abstract class PeerConnect implements IPeerConnect {
 	 */
 	protected final void releaseDownload() {
 		if(this.downloading) {
-			LOGGER.debug("PeerConnect释放下载：{}-{}", this.peerSession.host(), this.peerSession.port());
+			LOGGER.debug("PeerConnect释放下载：{}", this.peerSession);
 			this.downloading = false;
 			// 没有完成：等待下载完成
 			if(!this.completedLock.get()) {
@@ -465,7 +454,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	 * <p>释放slice锁</p>
 	 */
 	private void unlockSlice() {
-		// 请求数据下载完成：释放锁
 		if (this.sliceLock.decrementAndGet() <= 0) {
 			synchronized (this.sliceLock) {
 				this.sliceLock.notifyAll();
@@ -475,7 +463,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	
 	/**
 	 * <p>添加完成锁</p>
-	 * <p>无论是否有数据返回都需要进行结束等待，防止数据小于{@value #SLICE_REQUEST_SIZE}个slice时直接跳出了slice wait（sliceLock）导致响应还没有收到就直接结束了。</p>
 	 */
 	private void lockCompleted() {
 		if(!this.completedLock.get()) {
@@ -509,7 +496,6 @@ public abstract class PeerConnect implements IPeerConnect {
 		if(!this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
 				if(!this.releaseLock.get()) {
-					// 设置释放状态
 					this.releaseLock.set(true);
 					try {
 						this.releaseLock.wait(RELEASE_TIMEOUT);
@@ -526,7 +512,6 @@ public abstract class PeerConnect implements IPeerConnect {
 	 * <p>释放释放锁</p>
 	 */
 	private void unlockRelease() {
-		// 释放状态
 		if(this.releaseLock.get()) {
 			synchronized (this.releaseLock) {
 				if(this.releaseLock.get()) {

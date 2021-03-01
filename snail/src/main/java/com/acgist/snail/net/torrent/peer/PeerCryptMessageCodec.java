@@ -26,8 +26,8 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
 	/**
-	 * @param peerUnpackMessageCodec Peer消息代理
-	 * @param peerSubMessageHandler MSE加密握手代理
+	 * @param peerUnpackMessageCodec Peer消息处理器：拆包
+	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerUnpackMessageCodec);
@@ -37,20 +37,16 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	@Override
 	public ByteBuffer encode(ByteBuffer buffer) {
 		if(this.mseCryptHandshakeHandler.completed()) {
-			// 加密消息
 			this.mseCryptHandshakeHandler.encrypt(buffer);
 		} else {
-			// 判断是否需要加密：Peer加密策略和系统加密策略
 			final boolean encrypt = this.mseCryptHandshakeHandler.needEncrypt() && CryptConfig.STRATEGY.crypt();
 			if(encrypt) {
-				// 握手
+				// 需要加密
 				this.mseCryptHandshakeHandler.handshake();
-				// 握手加锁
 				this.mseCryptHandshakeHandler.lockHandshake();
-				// 加密消息
 				this.mseCryptHandshakeHandler.encrypt(buffer);
 			} else {
-				// 不要加密：使用明文完成握手
+				// 不用加密：使用明文完成握手
 				this.mseCryptHandshakeHandler.plaintext();
 			}
 		}
