@@ -6,16 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32C;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.MapUtils;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -23,6 +26,8 @@ import com.acgist.snail.utils.StringUtils;
  * <p>DHT节点上下文</p>
  * <p>协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
  * <p>BT=DHT、eMule=KAD</p>
+ * <p>DHT Security extension</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0042.html</p>
  * 
  * @author acgist
  */
@@ -40,6 +45,22 @@ public final class NodeContext implements IContext {
 	 * <p>Node查找时返回的Node列表长度：{@value}</p>
 	 */
 	private static final int MAX_NODE_SIZE = 8;
+	/**
+	 * <p>IPv4 MASK</p>
+	 */
+	private static final byte[] IPV4_MASK = NumberUtils.intToBytes(0x030F3FFF);
+	/**
+	 * <p>IPv6 MASK</p>
+	 */
+	private static final byte[] IPV6_MASK = NumberUtils.longToBytes(0x0103070F1F3F7FFFL);
+	/**
+	 * <p>NodeId随机开始位置：{@value}</p>
+	 */
+	private static final int NODE_ID_RANDOM_BEGIN = 3;
+	/**
+	 * <p>NodeId随机结束位置：{@value}</p>
+	 */
+	private static final int NODE_ID_RANDOM_END = 19;
 	
 	/**
 	 * <p>当前客户端的NodeId</p>
@@ -76,8 +97,51 @@ public final class NodeContext implements IContext {
 	 * @return 系统NodeId
 	 */
 	private byte[] buildNodeId() {
-		LOGGER.debug("生成系统NodeId");
-		return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
+		final String ipExt = SystemConfig.getExternalIPAddress();
+		if(StringUtils.isEmpty(ipExt)) {
+			LOGGER.debug("生成系统NodeId：完全随机生成");
+			return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
+		} else {
+			LOGGER.debug("生成系统NodeId：根据IP生成");
+			return this.buildNodeId(ipExt);
+		}
+	}
+
+	/**
+	 * <p>通过IP地址生成NodeId</p>
+	 * 
+	 * @param ip IP
+	 * 
+	 * @return NodeId
+	 */
+	public byte[] buildNodeId(String ip) {
+		final byte[] mask;
+		final byte[] ipBytes = NetUtils.ipToBytes(ip);
+		if (ipBytes.length == NetUtils.IPV4_BYTES_LENGTH) {
+			mask = IPV4_MASK;
+		} else {
+			mask = IPV6_MASK;
+		}
+		final int length = mask.length;
+		for (int index = 0; index < length; ++index) {
+			ipBytes[index] &= mask[index];
+		}
+		final Random random = NumberUtils.random();
+		final byte rand = (byte) (random.nextInt() & 0xFF);
+		final byte r = (byte) (rand & 0x07);
+		ipBytes[0] |= r << 5;
+		final CRC32C crc32c = new CRC32C();
+		crc32c.update(ipBytes, 0, length);
+		final int crc = (int) (crc32c.getValue() & 0xFFFFFFFF);
+		final byte[] nodeId = new byte[DhtConfig.NODE_ID_LENGTH];
+		nodeId[0] = (byte) ((crc >> 24) & 0xFF);
+		nodeId[1] = (byte) ((crc >> 16) & 0xFF);
+		nodeId[2] = (byte) (((crc >> 8) & 0xF8) | (random.nextInt() & 0x07));
+		for (int index = NODE_ID_RANDOM_BEGIN; index < NODE_ID_RANDOM_END; ++index) {
+			nodeId[index] = (byte) random.nextInt();
+		}
+		nodeId[19] = rand;
+		return nodeId;
 	}
 	
 	/**
@@ -163,7 +227,8 @@ public final class NodeContext implements IContext {
 		final DhtClient client = DhtClient.newInstance(host, port);
 		final NodeSession nodeSession = client.ping();
 		if(nodeSession != null) {
-			nodeSession.setStatus(NodeSession.Status.AVAILABLE); // 标记可用
+			// 标记可用
+			nodeSession.setStatus(NodeSession.Status.AVAILABLE);
 		}
 		return nodeSession;
 	}
@@ -236,8 +301,10 @@ public final class NodeContext implements IContext {
 				NodeSession leftNode;
 				NodeSession rightNode;
 				while(
-					size < MAX_NODE_SIZE && // 指定数量结果
-					leftPos + rightPos < nodeSize // 轮询整个列表
+					// 指定数量结果
+					size < MAX_NODE_SIZE &&
+					// 轮询整个列表
+					leftPos + rightPos < nodeSize
 				) {
 					leftNode = this.select(index - leftPos, nodeSize);
 					if(leftNode.useable()) {
