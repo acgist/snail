@@ -99,6 +99,38 @@ class NodeContextTest extends Performance {
 		this.log(target);
 	}
 
+	@Test
+	void testNodeId() {
+		this.cost();
+		final var listA = new ArrayList<String>();
+		final var listB = new ArrayList<String>();
+		final var listC = new ArrayList<String>();
+		final var listD = new ArrayList<String>();
+		final var listE = new ArrayList<String>();
+		for (int index = 0; index < Short.MAX_VALUE; index++) {
+			listA.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("124.31.75.21")));
+			listB.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("21.75.31.124")));
+			listC.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("65.23.51.170")));
+			listD.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("84.124.73.14")));
+			listE.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("43.213.53.83")));
+		}
+		this.costed();
+//		IP           rand  example node ID
+//		============ ===== ==========================================
+//		124.31.75.21   1   5fbfbf  f10c5d6a4ec8a88e4c6ab4c28b95eee4 01
+		assertTrue(listA.stream().filter(value -> value.endsWith("01")).allMatch(value -> value.startsWith("5fbfb")));
+//		21.75.31.124  86   5a3ce9  c14e7a08645677bbd1cfe7d8f956d532 56
+		assertTrue(listB.stream().filter(value -> value.endsWith("56")).allMatch(value -> value.startsWith("5a3ce")));
+//		65.23.51.170  22   a5d432  20bc8f112a3d426c84764f8c2a1150e6 16
+		assertTrue(listC.stream().filter(value -> value.endsWith("16")).allMatch(value -> value.startsWith("a5d43")));
+//		84.124.73.14  65   1b0321  dd1bb1fe518101ceef99462b947a01ff 41
+		assertTrue(listD.stream().filter(value -> value.endsWith("41")).allMatch(value -> value.startsWith("1b032")));
+//		43.213.53.83  90   e56f6c  bf5b7c4be0237986d5243b87aa6d5130 5a
+		assertTrue(listE.stream().filter(value -> value.endsWith("5a")).allMatch(value -> value.startsWith("e56f6")));
+		this.log(StringUtils.hex(NodeContext.getInstance().buildNodeId("65.23.51.170")));
+		this.log(StringUtils.hex(NodeContext.getInstance().buildNodeId("::FFFF")));
+	}
+	
 	private String buildId() {
 		final byte[] bytes = new byte[20];
 		final Random random = new Random();
