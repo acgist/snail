@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
@@ -97,24 +96,18 @@ public final class NodeContext implements IContext {
 	 * @return 系统NodeId
 	 */
 	private byte[] buildNodeId() {
-		final String ipExt = SystemConfig.getExternalIPAddress();
-		if(StringUtils.isEmpty(ipExt)) {
-			LOGGER.debug("生成系统NodeId：完全随机生成");
-			return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
-		} else {
-			LOGGER.debug("生成系统NodeId：根据IP生成");
-			return this.buildNodeId(ipExt);
-		}
+		return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
 	}
 
 	/**
-	 * <p>通过IP地址生成NodeId</p>
+	 * <p>通过IP生成系统NodeId</p>
 	 * 
 	 * @param ip IP
 	 * 
 	 * @return NodeId
 	 */
 	public byte[] buildNodeId(String ip) {
+		LOGGER.debug("生成系统NodeId：{}", ip);
 		final byte[] mask;
 		final byte[] ipBytes = NetUtils.ipToBytes(ip);
 		if (ipBytes.length == NetUtils.IPV4_BYTES_LENGTH) {
@@ -126,22 +119,21 @@ public final class NodeContext implements IContext {
 		for (int index = 0; index < length; ++index) {
 			ipBytes[index] &= mask[index];
 		}
+		final CRC32C crc32c = new CRC32C();
 		final Random random = NumberUtils.random();
 		final byte rand = (byte) (random.nextInt() & 0xFF);
 		final byte r = (byte) (rand & 0x07);
 		ipBytes[0] |= r << 5;
-		final CRC32C crc32c = new CRC32C();
 		crc32c.update(ipBytes, 0, length);
 		final int crc = (int) (crc32c.getValue() & 0xFFFFFFFF);
-		final byte[] nodeId = new byte[DhtConfig.NODE_ID_LENGTH];
-		nodeId[0] = (byte) ((crc >> 24) & 0xFF);
-		nodeId[1] = (byte) ((crc >> 16) & 0xFF);
-		nodeId[2] = (byte) (((crc >> 8) & 0xF8) | (random.nextInt() & 0x07));
+		this.nodeId[0] = (byte) ((crc >> 24) & 0xFF);
+		this.nodeId[1] = (byte) ((crc >> 16) & 0xFF);
+		this.nodeId[2] = (byte) (((crc >> 8) & 0xF8) | (random.nextInt() & 0x07));
 		for (int index = NODE_ID_RANDOM_BEGIN; index < NODE_ID_RANDOM_END; ++index) {
-			nodeId[index] = (byte) random.nextInt();
+			this.nodeId[index] = (byte) random.nextInt();
 		}
-		nodeId[19] = rand;
-		return nodeId;
+		this.nodeId[19] = rand;
+		return this.nodeId;
 	}
 	
 	/**

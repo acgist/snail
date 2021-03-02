@@ -65,11 +65,11 @@ public final class CryptConfig {
 		 */
 		PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide),
 		/**
-		 * <p>兼容：偏爱明文</p>
+		 * <p>偏爱明文</p>
 		 */
 		PREFER_PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide | CryptAlgo.ARC4.provide),
 		/**
-		 * <p>兼容：偏爱加密</p>
+		 * <p>偏爱加密</p>
 		 */
 		PREFER_ENCRYPT(true, CryptAlgo.ARC4.provide | CryptAlgo.PLAINTEXT.provide),
 		/**
@@ -139,22 +139,22 @@ public final class CryptConfig {
 	 * <p>推荐长度：160</p>
 	 * <p>超过180只能增加计算时间：并不能提高安全性</p>
 	 */
-	public static final int PRIVATE_KEY_LENGTH = 20;
+	public static final int PRIVATE_KEY_LENGTH = 128;
 	/**
 	 * <p>最大随机填充长度：{@value}</p>
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**
-	 * <p>VC长度：{@value}</p>
-	 */
-	public static final int VC_LENGTH = 8;
-	/**
 	 * <p>VC数据</p>
 	 * <p>默认填充：0x00</p>
-	 * 
-	 * @see #VC_LENGTH
 	 */
 	public static final byte[] VC = {0, 0, 0, 0, 0, 0, 0, 0};
+	/**
+	 * <p>VC长度：{@value}</p>
+	 * 
+	 * @see #VC
+	 */
+	public static final int VC_LENGTH = VC.length;
 	/**
 	 * <p>默认加密策略</p>
 	 * 

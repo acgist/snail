@@ -9,6 +9,7 @@ import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -57,6 +58,7 @@ public final class StunService {
 		PeerConfig.nat();
 		NatContext.getInstance().stun();
 		SystemConfig.setExternalIPAddress(externalIPAddress);
+		NodeContext.getInstance().buildNodeId(externalIPAddress);
 		SystemConfig.setTorrentPortExt(port);
 	}
 

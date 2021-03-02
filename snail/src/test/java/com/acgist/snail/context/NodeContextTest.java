@@ -101,6 +101,7 @@ class NodeContextTest extends Performance {
 
 	@Test
 	void testNodeId() {
+		LoggerConfig.off();
 		this.cost();
 		final var listA = new ArrayList<String>();
 		final var listB = new ArrayList<String>();
@@ -127,8 +128,7 @@ class NodeContextTest extends Performance {
 		assertTrue(listD.stream().filter(value -> value.endsWith("41")).allMatch(value -> value.startsWith("1b032")));
 //		43.213.53.83  90   e56f6c  bf5b7c4be0237986d5243b87aa6d5130 5a
 		assertTrue(listE.stream().filter(value -> value.endsWith("5a")).allMatch(value -> value.startsWith("e56f6")));
-		this.log(StringUtils.hex(NodeContext.getInstance().buildNodeId("65.23.51.170")));
-		this.log(StringUtils.hex(NodeContext.getInstance().buildNodeId("::FFFF")));
+		NodeContext.getInstance().buildNodeId("::FFFF");
 	}
 	
 	private String buildId() {

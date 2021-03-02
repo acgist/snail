@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.net.http.HttpClient;
@@ -280,6 +281,7 @@ public final class UpnpService {
 			LOGGER.warn("UPNP端口映射失败：多重路由环境");
 		} else {
 			SystemConfig.setExternalIPAddress(externalIPAddress);
+			NodeContext.getInstance().buildNodeId(externalIPAddress);
 			this.addMapping();
 		}
 	}
