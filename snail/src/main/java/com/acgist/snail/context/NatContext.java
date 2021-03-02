@@ -104,6 +104,7 @@ public final class NatContext implements IContext {
 		} else {
 			LOGGER.debug("已是公网IP地址：忽略NAT设置");
 			SystemConfig.setExternalIPAddress(NetUtils.LOCAL_HOST_ADDRESS);
+			NodeContext.getInstance().buildNodeId(NetUtils.LOCAL_HOST_ADDRESS);
 		}
 	}
 	
