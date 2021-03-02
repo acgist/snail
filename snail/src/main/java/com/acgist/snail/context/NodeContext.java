@@ -53,13 +53,13 @@ public final class NodeContext implements IContext {
 	 */
 	private static final byte[] IPV6_MASK = NumberUtils.longToBytes(0x0103070F1F3F7FFFL);
 	/**
-	 * <p>NodeId随机开始位置：{@value}</p>
+	 * <p>NodeId随机填充位置：{@value}</p>
 	 */
-	private static final int NODE_ID_RANDOM_BEGIN = 3;
+	private static final int NODE_ID_RANDOM_INDEX = 3;
 	/**
-	 * <p>NodeId随机结束位置：{@value}</p>
+	 * <p>NodeId随机填充长度：{@value}</p>
 	 */
-	private static final int NODE_ID_RANDOM_END = 19;
+	private static final int NODE_ID_RANDOM_LENGTH = 16;
 	
 	/**
 	 * <p>当前客户端的NodeId</p>
@@ -125,13 +125,11 @@ public final class NodeContext implements IContext {
 		final byte r = (byte) (rand & 0x07);
 		ipBytes[0] |= r << 5;
 		crc32c.update(ipBytes, 0, length);
-		final int crc = (int) (crc32c.getValue() & 0xFFFFFFFF);
+		final int crc = (int) crc32c.getValue();
 		this.nodeId[0] = (byte) ((crc >> 24) & 0xFF);
 		this.nodeId[1] = (byte) ((crc >> 16) & 0xFF);
 		this.nodeId[2] = (byte) (((crc >> 8) & 0xF8) | (random.nextInt() & 0x07));
-		for (int index = NODE_ID_RANDOM_BEGIN; index < NODE_ID_RANDOM_END; ++index) {
-			this.nodeId[index] = (byte) random.nextInt();
-		}
+		System.arraycopy(ArrayUtils.random(NODE_ID_RANDOM_LENGTH), 0, this.nodeId, NODE_ID_RANDOM_INDEX, NODE_ID_RANDOM_LENGTH);
 		this.nodeId[19] = rand;
 		return this.nodeId;
 	}
