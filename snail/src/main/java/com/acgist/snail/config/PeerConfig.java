@@ -245,9 +245,9 @@ public final class PeerConfig extends PropertiesConfig {
 			builder.append("0".repeat(PEER_ID_VERSION_LENGTH - version.length()));
 		}
 		builder.append(SymbolConfig.Symbol.MINUS.toString());
-		final String peerIdPrefix = builder.toString();
-		final int peerIdPrefixLength = peerIdPrefix.length();
-		System.arraycopy(peerIdPrefix.getBytes(), 0, peerIds, 0, peerIdPrefixLength);
+		final byte[] peerIdPrefix = builder.toString().getBytes();
+		final int peerIdPrefixLength = peerIdPrefix.length;
+		System.arraycopy(peerIdPrefix, 0, peerIds, 0, peerIdPrefixLength);
 		// 后缀：随机填充
 		final int paddingLength = PeerConfig.PEER_ID_LENGTH - peerIdPrefixLength;
 		final byte[] padding = ArrayUtils.random(paddingLength);
