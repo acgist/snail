@@ -6,10 +6,10 @@
 
 <p align="center">
 	<a target="_blank" href="https://openjdk.java.net">
-		<img alt="Java" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&color=yellow&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600" />
+		<img alt="Java" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600" />
 	</a>
 	<a target="_blank" href="https://openjfx.io">
-		<img alt="JavaFX" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=JavaFX&color=yellow&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='javafx.version']&cacheSeconds=3600" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=JavaFX&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='javafx.version']&cacheSeconds=3600" />
 	</a>
 	<a target="_blank" href="https://github.com/acgist/snail">
 		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?style=flat-square&label=Github%20stars&color=crimson" />
@@ -19,10 +19,10 @@
 	</a>
 	<br />
 	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/acgist/snail/build?style=flat-square" />
-	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square&color=yellow" />
-	<img alt="Maven Central" src="https://img.shields.io/maven-central/v/com.acgist/snail?style=flat-square&color=yellow" />
-	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?style=flat-square" />
-	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square" />
+	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square&color=orange" />
+	<img alt="Maven Central" src="https://img.shields.io/maven-central/v/com.acgist/snail?style=flat-square&color=orange" />
+	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?style=flat-square&color=blue" />
+	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square&color=blue" />
 </p>
 
 ----

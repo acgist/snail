@@ -148,7 +148,7 @@ public final class PeerUtils {
 	 * 
 	 * @return HTTP编码
 	 * 
-	 * @see #needEncode(char)
+	 * @see #noneEncode(char)
 	 */
 	public static final String urlEncode(byte[] bytes) {
 		char value;
