@@ -226,9 +226,9 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取所有Tracker服务器</p>
+	 * <p>获取默认Tracker服务器</p>
 	 * 
-	 * @return 所有Tracker服务器
+	 * @return 默认Tracker服务器
 	 */
 	public List<String> announces() {
 		return this.announces;
