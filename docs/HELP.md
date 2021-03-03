@@ -81,8 +81,8 @@
 
 ### 环境
 
-* Java：16+
-* Maven：3.6.0+
+* [![Java](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version'])](http://openjdk.java.net/)
+* [Maven](https://maven.apache.org/)
 * 系统支持：win、mac、linux
 
 ### 编译
