@@ -135,13 +135,13 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>注册DHT默认节点</p>
+	 * <p>注册默认DHT节点</p>
 	 */
 	private void register() {
 		final var defaultNodes = DhtConfig.getInstance().nodes();
 		if(MapUtils.isNotEmpty(defaultNodes)) {
 			defaultNodes.forEach((nodeId, address) -> {
-				LOGGER.debug("注册默认节点：{}-{}", nodeId, address);
+				LOGGER.debug("注册默认DHT节点：{}-{}", nodeId, address);
 				final int index = address.lastIndexOf(':');
 				if(index != -1) {
 					final String host = address.substring(0, index);
@@ -150,7 +150,7 @@ public final class NodeContext implements IContext {
 						this.newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
 					}
 				} else {
-					LOGGER.warn("节点格式错误：{}-{}", nodeId, address);
+					LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
 				}
 			});
 		}

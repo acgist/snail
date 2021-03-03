@@ -77,8 +77,8 @@ public final class DhtContext implements IContext {
 	private void register() {
 		LOGGER.debug("注册DHT服务：定时任务");
 		SystemThreadContext.timerFixedDelay(
-			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
-			DhtConfig.DHT_REQUEST_CLEAN_INTERVAL,
+			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,
+			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,
 			TimeUnit.MINUTES,
 			this::timeout
 		);
