@@ -81,7 +81,7 @@
 
 ### 环境
 
-[![Java](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version'])](http://openjdk.java.net/)
+[![Java](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600)](http://openjdk.java.net/)
 [![Maven](https://img.shields.io/badge/Maven-3.6.0+-007EC6?style=flat-square)](https://maven.apache.org/)
 ![系统](https://img.shields.io/badge/系统-win%20%7C%20mac%20%7C%20linux-007EC6?style=flat-square)
 
