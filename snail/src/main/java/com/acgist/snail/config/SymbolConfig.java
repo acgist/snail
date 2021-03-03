@@ -27,7 +27,7 @@ public final class SymbolConfig {
 		 */
 		DOT('.'),
 		/**
-		 * <>零</p>
+		 * <p>零</p>
 		 */
 		ZERO('0'),
 		/**

@@ -18,7 +18,7 @@ public abstract class Server<T extends Channel> {
 	 */
 	public static final int PORT_AUTO = 0;
 	/**
-	 * <p>本机地址：{@value}</p>
+	 * <p>本机地址</p>
 	 */
 	public static final String ADDR_LOCAL = null;
 	/**

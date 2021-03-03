@@ -22,7 +22,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>文件路径分隔符：{@value}</p>
+	 * <p>文件路径分隔符</p>
 	 */
 	public static final String SEPARATOR = SymbolConfig.Symbol.SLASH.toString();
 	/**

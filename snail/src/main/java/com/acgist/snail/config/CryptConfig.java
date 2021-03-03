@@ -150,7 +150,7 @@ public final class CryptConfig {
 	 */
 	public static final byte[] VC = {0, 0, 0, 0, 0, 0, 0, 0};
 	/**
-	 * <p>VC长度：{@value}</p>
+	 * <p>VC长度</p>
 	 * 
 	 * @see #VC
 	 */
