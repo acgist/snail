@@ -6,16 +6,16 @@
 
 <p align="center">
 	<a target="_blank" href="https://openjdk.java.net">
-		<img alt="Java" src="https://img.shields.io/badge/Java-16-yellow.svg?style=flat-square" />
+		<img alt="Java" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']" />
 	</a>
 	<a target="_blank" href="https://openjfx.io">
-		<img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-16-yellow.svg?style=flat-square" />
+		<img alt="JavaFX" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=JavaFX&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='javafx.version']" />
 	</a>
 	<a target="_blank" href="https://github.com/acgist/snail">
-		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?style=flat-square" />
+		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?style=flat-square&label=Github%20stars" />
 	</a>
 	<a target="_blank" href="https://gitee.com/acgist/snail">
-		<img alt="Gitee stars" src="https://gitee.com/acgist/snail/badge/star.svg?theme=dark" />
+		<img alt="Gitee stars" src="https://img.shields.io/badge/dynamic/json?style=flat-square&label=Gitee%20stars&url=https://gitee.com/api/v5/repos/acgist/snail&query=$.stargazers_count" />
 	</a>
 	<br />
 	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/acgist/snail/build?style=flat-square" />
