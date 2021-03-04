@@ -142,7 +142,7 @@ public final class StatisticsController extends Controller {
 	 */
 	private Filter filter = Filter.SYSTEM;
 	/**
-	 * <p>隐藏未知客户端</p>
+	 * <p>是否隐藏未知客户端</p>
 	 */
 	private boolean hiddenUnknownClient = false;
 	
