@@ -22,6 +22,8 @@ class DownloadConfigTest extends Performance {
 		assertNotEquals(buffer / 4, DownloadConfig.getUploadBufferByte());
 		assertNotEquals(buffer, DownloadConfig.getDownloadBufferByte());
 		assertEquals(String.valueOf(buffer), EntityContext.getInstance().findConfigByName("acgist.download.buffer").getValue());
+		assertEquals(16, DownloadConfig.getMemoryBufferByte(16));
+		assertEquals(DownloadConfig.getMemoryBufferByte(), DownloadConfig.getMemoryBufferByte(1024 * 1024 * 1024));
 	}
 	
 }
