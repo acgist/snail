@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.NodeContext;
@@ -48,6 +49,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.FlowPane;
@@ -139,6 +141,10 @@ public final class StatisticsController extends Controller {
 	 * <p>统计筛选</p>
 	 */
 	private Filter filter = Filter.SYSTEM;
+	/**
+	 * <p>隐藏未知客户端</p>
+	 */
+	private boolean hiddenUnknownClient = false;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -424,6 +430,13 @@ public final class StatisticsController extends Controller {
 		final var pieCharts = peers.stream()
 			.collect(Collectors.groupingBy(PeerSession::clientName, Collectors.counting()))
 			.entrySet().stream()
+			.filter(entry -> {
+				if(this.hiddenUnknownClient) {
+					return !PeerConfig.UNKNOWN.equals(entry.getKey());
+				} else {
+					return true;
+				}
+			})
 			// 排序：数量倒序
 			.sorted((source, target) -> Long.compare(target.getValue(), source.getValue()))
 			.map(entity -> new PieChart.Data(entity.getKey(), entity.getValue()))
@@ -431,6 +444,7 @@ public final class StatisticsController extends Controller {
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieCharts);
 		final String title = String.format("总量：%d", peers.size());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
+		pieChart.setOnMouseClicked(this.clientClickEvent);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();
 		statisticsBoxNode.add(pieChart);
@@ -791,6 +805,14 @@ public final class StatisticsController extends Controller {
 	 * <p>选择BT任务事件</p>
 	 */
 	private EventHandler<ActionEvent> selectInfoHashsEvent = event -> this.buildSelectStatistics();
+	
+	/**
+	 * <p>客户端统计点击事件</p>
+	 */
+	private EventHandler<MouseEvent> clientClickEvent = event -> {
+		this.hiddenUnknownClient = !this.hiddenUnknownClient;
+		this.buildSelectClientStatistics();
+	};
 	
 	/**
 	 * <p>BT任务InfoHash</p>
