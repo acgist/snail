@@ -183,16 +183,16 @@ public class DhtResponse extends DhtMessage {
 	}
 
 	/**
-	 * <p>获取错误代码</p>
+	 * <p>获取错误编码</p>
 	 * 
-	 * @return 错误代码
+	 * @return 错误编码
 	 */
 	public int errorCode() {
 		final var value = this.getErrorMessage(0);
 		if(value instanceof Number number) {
 			return number.intValue();
 		} else {
-			LOGGER.warn("DHT不支持的错误代码类型：{}", value);
+			LOGGER.warn("DHT不支持的错误编码类型：{}", value);
 		}
 		return ErrorCode.CODE_201.code();
 	}

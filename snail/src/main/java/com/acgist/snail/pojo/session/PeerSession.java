@@ -205,9 +205,9 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	}
 
 	/**
-	 * <p>判断是否未知客户端名称</p>
+	 * <p>判断是否未知终端</p>
 	 * 
-	 * @return 是否未知客户端名称
+	 * @return 是否未知终端
 	 */
 	public boolean unknownClientName() {
 		return

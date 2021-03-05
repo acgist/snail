@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.net.torrent.peer.DhtExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.DontHaveExtensionMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.HolepunchMessageHnadler;
+import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
+import com.acgist.snail.net.torrent.peer.extension.UploadOnlyExtensionMessageHandler;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.PeerUtils;
 
@@ -47,13 +51,7 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	public static final int PEER_ID_LENGTH = 20;
 	/**
-	 * <p>保留位长度：{@value}</p>
-	 */
-	public static final int RESERVED_LENGTH = 8;
-	/**
 	 * <p>保留位</p>
-	 * 
-	 * @see #RESERVED_LENGTH
 	 * 
 	 * @see #RESERVED_DHT_PROTOCOL
 	 * @see #RESERVED_PEER_EXCHANGE
@@ -62,6 +60,12 @@ public final class PeerConfig extends PropertiesConfig {
 	 * @see #RESERVED_EXTENSION_PROTOCOL
 	 */
 	public static final byte[] RESERVED = {0, 0, 0, 0, 0, 0, 0, 0};
+	/**
+	 * <p>保留位长度</p>
+	 * 
+	 * @see #RESERVED
+	 */
+	public static final int RESERVED_LENGTH = RESERVED.length;
 	/**
 	 * <p>DHT协议保留位：{@value}</p>
 	 * <p>[7]-0x01：DHT Protocol</p>
@@ -224,7 +228,7 @@ public final class PeerConfig extends PropertiesConfig {
 	private PeerConfig() {
 		super(CLIENT_NAME_CONFIG);
 		this.peerId = this.buildPeerId();
-		this.peerIdUrl = this.buildPeerIdUrl();
+		this.peerIdUrl = PeerUtils.urlEncode(this.peerId);
 	}
 	
 	/**
@@ -234,15 +238,16 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	private byte[] buildPeerId() {
 		final byte[] peerIds = new byte[PeerConfig.PEER_ID_LENGTH];
-		final StringBuilder builder = new StringBuilder(8);
 		// 前缀：-ASXXXX-
+		final StringBuilder builder = new StringBuilder(8);
 		builder.append(SymbolConfig.Symbol.MINUS.toString()).append(PEER_ID_PREFIX);
-		final String version = SystemConfig.getVersion().replace(".", "");
-		if(version.length() > PEER_ID_VERSION_LENGTH) {
+		final String version = SystemConfig.getVersion().replace(SymbolConfig.Symbol.DOT.toString(), "");
+		final int versionLength = version.length();
+		if(versionLength > PEER_ID_VERSION_LENGTH) {
 			builder.append(version.substring(0, PEER_ID_VERSION_LENGTH));
 		} else {
 			builder.append(version);
-			builder.append("0".repeat(PEER_ID_VERSION_LENGTH - version.length()));
+			builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(PEER_ID_VERSION_LENGTH - versionLength));
 		}
 		builder.append(SymbolConfig.Symbol.MINUS.toString());
 		final byte[] peerIdPrefix = builder.toString().getBytes();
@@ -253,15 +258,6 @@ public final class PeerConfig extends PropertiesConfig {
 		final byte[] padding = ArrayUtils.random(paddingLength);
 		System.arraycopy(padding, 0, peerIds, peerIdPrefixLength, paddingLength);
 		return peerIds;
-	}
-	
-	/**
-	 * <p>生成PeerIdUrl</p>
-	 * 
-	 * @return PeerIdUrl
-	 */
-	private String buildPeerIdUrl() {
-		return PeerUtils.urlEncode(this.peerId);
 	}
 	
 	/**
@@ -311,7 +307,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>Peer协议消息类型</p>
+	 * <p>协议消息类型</p>
 	 * <p>协议链接：http://www.bittorrent.org/beps/bep_0004.html</p>
 	 * 
 	 * @author acgist
@@ -424,7 +420,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>Peer来源</p>
+	 * <p>来源</p>
 	 * 
 	 * @author acgist
 	 */
@@ -492,7 +488,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>Peer扩展协议消息类型</p>
+	 * <p>扩展协议消息类型</p>
 	 * 
 	 * @author acgist
 	 */
@@ -500,26 +496,38 @@ public final class PeerConfig extends PropertiesConfig {
 		
 		/**
 		 * <p>握手</p>
+		 * 
+		 * @see ExtensionMessageHandler
 		 */
 		HANDSHAKE((byte) 0x00, "handshake", true, false),
 		/**
 		 * <p>ut_pex</p>
+		 * 
+		 * @see PeerExchangeMessageHandler
 		 */
 		UT_PEX((byte) 0x01, "ut_pex", true, true),
 		/**
 		 * <p>ut_metadata</p>
+		 * 
+		 * @see MetadataMessageHandler
 		 */
 		UT_METADATA((byte) 0x02, "ut_metadata", true, true),
 		/**
 		 * <p>ut_holepunch</p>
+		 * 
+		 * @see HolepunchMessageHnadler
 		 */
 		UT_HOLEPUNCH((byte) 0x03, "ut_holepunch", true, true),
 		/**
 		 * <p>upload_only</p>
+		 * 
+		 * @see UploadOnlyExtensionMessageHandler
 		 */
 		UPLOAD_ONLY((byte) 0x04, "upload_only", true, true),
 		/**
 		 * <p>lt_donthave</p>
+		 * 
+		 * @see DontHaveExtensionMessageHandler
 		 */
 		LT_DONTHAVE((byte) 0x05, "lt_donthave", true, true);
 
@@ -538,7 +546,7 @@ public final class PeerConfig extends PropertiesConfig {
 		private final boolean support;
 		/**
 		 * <p>是否通知</p>
-		 * <p>握手是否通知Peer支持扩展</p>
+		 * <p>握手是否通知支持扩展</p>
 		 */
 		private final boolean notice;
 		
@@ -633,7 +641,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>Metadata扩展协议消息类型</p>
+	 * <p>Metadata协议消息类型</p>
 	 * 
 	 * @author acgist
 	 */
@@ -674,11 +682,11 @@ public final class PeerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取扩展协议消息类型</p>
+		 * <p>通过消息ID获取Metadata协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 扩展协议消息类型
+		 * @return Metadata协议消息类型
 		 */
 		public static final MetadataType of(byte id) {
 			final var types = MetadataType.values();
@@ -693,7 +701,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>Holepunch扩展协议消息类型</p>
+	 * <p>Holepunch协议消息类型</p>
 	 * 
 	 * @author acgist
 	 */
@@ -734,11 +742,11 @@ public final class PeerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>通过消息ID获取扩展协议消息类型</p>
+		 * <p>通过消息ID获取Holepunch协议消息类型</p>
 		 * 
 		 * @param id 消息ID
 		 * 
-		 * @return 扩展协议消息类型
+		 * @return Holepunch协议消息类型
 		 */
 		public static final HolepunchType of(byte id) {
 			final var types = HolepunchType.values();
@@ -753,7 +761,7 @@ public final class PeerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>Holepunch扩展协议错误编码</p>
+	 * <p>Holepunch协议错误编码</p>
 	 * 
 	 * @author acgist
 	 */

@@ -268,7 +268,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 * @param type 消息类型
 	 * @param host Peer地址
 	 * @param port Peer端口
-	 * @param errorCode 错误编码（null：没有错误消息）
+	 * @param errorCode 错误编码
 	 * 
 	 * @return 消息
 	 * 
