@@ -71,8 +71,8 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_A = "a";
 	/**
-	 * <p>响应错误：{@value}</p>
-	 * <p>响应错误类型：{@link Map}</p>
+	 * <p>错误编码：{@value}</p>
+	 * <p>错误编码类型：{@link Map}</p>
 	 * 
 	 * @see ErrorCode
 	 */
@@ -173,7 +173,7 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>DHT请求类型</p>
+	 * <p>请求类型</p>
 	 * 
 	 * @author acgist
 	 */
@@ -249,9 +249,9 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>DHT响应错误</p>
-	 * <p>数据格式：{@link List}</p>
-	 * <p>信息格式：[0]=错误编码；[1]=错误描述；</p>
+	 * <p>错误编码</p>
+	 * <p>数据类型：{@link List}</p>
+	 * <p>数据格式：[0]=错误编码；[1]=错误描述；</p>
 	 * 
 	 * @author acgist
 	 */
