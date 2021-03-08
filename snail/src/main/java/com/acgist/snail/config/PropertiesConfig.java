@@ -19,7 +19,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>配置文件</p>
- * <p>读取配置文件并提供读取方法</p>
  * 
  * @author acgist
  */
@@ -29,7 +28,6 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * <p>配置信息</p>
-	 * <p>配置读取完成可以使用{@link #release()}释放资源</p>
 	 */
 	protected final Properties properties;
 
@@ -45,11 +43,13 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * <p>加载配置文件</p>
-	 * <p>优先加载用户工作目录配置（UserDir），如果加载失败则加载默认配置（Resource）。</p>
 	 * 
 	 * @param path 配置文件相对路径
 	 * 
 	 * @return 配置信息
+	 * 
+	 * @see #loadFromUserDir(String)
+	 * @see #loadFromResource(String)
 	 */
 	private static final Properties load(String path) {
 		Properties properties = loadFromUserDir(path);
@@ -72,7 +72,6 @@ public abstract class PropertiesConfig {
 	private static final Properties loadFromUserDir(String path) {
 		final File file = FileUtils.userDirFile(path);
 		if(file == null || !file.exists()) {
-			// 文件不存在
 			return null;
 		}
 		Properties properties = null;
@@ -94,7 +93,6 @@ public abstract class PropertiesConfig {
 	 */
 	private static final Properties loadFromResource(String path) {
 		if(PropertiesConfig.class.getResource(path) == null) {
-			// 资源不存在
 			return null;
 		}
 		Properties properties = null;
@@ -110,7 +108,7 @@ public abstract class PropertiesConfig {
 	/**
 	 * <p>判断配置是否加载成功</p>
 	 * 
-	 * @return true-成功；false-失败；
+	 * @return 是否加载成功
 	 */
 	protected final boolean hasProperties() {
 		return this.properties != null;
@@ -140,7 +138,6 @@ public abstract class PropertiesConfig {
 	
 	/**
 	 * <p>读取{@link String}配置</p>
-	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
 	 * 
@@ -177,7 +174,6 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * <p>读取{@link Boolean}配置</p>
-	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
 	 * 
@@ -221,7 +217,6 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * <p>读取{@link Integer}配置</p>
-	 * <p>没有配置默认返回：{@code null}</p>
 	 * 
 	 * @param name 配置名称
 	 * 
