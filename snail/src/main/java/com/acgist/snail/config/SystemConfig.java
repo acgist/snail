@@ -14,16 +14,8 @@ public final class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	
-	/**
-	 * <p>单例对象</p>
-	 */
 	private static final SystemConfig INSTANCE = new SystemConfig();
 	
-	/**
-	 * <p>获取单例对象</p>
-	 * 
-	 * @return 单例对象
-	 */
 	public static final SystemConfig getInstance() {
 		return INSTANCE;
 	}
@@ -33,7 +25,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	/**
-	 * <p>IP和端口占用字节大小：{@value}</p>
+	 * <p>IP端口占用字节大小：{@value}</p>
 	 */
 	public static final int IP_PORT_LENGTH = 6;
 	/**
@@ -52,7 +44,6 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
 	 * <p>TCP消息缓冲大小：{@value}</p>
-	 * <p>默认：Piece交换Slice大小一样</p>
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
@@ -61,7 +52,7 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
 	 * <p>最大的网络包大小：{@value}</p>
-	 * <p>如果创建byte[]和ByteBuffer对象的长度是由外部数据决定时需要验证长度：防止太长导致内存泄漏</p>
+	 * <p>校验网络数据大小：防止太长导致内存泄漏</p>
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
@@ -71,7 +62,6 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int MIN_DOWNLOAD_BUFFER_KB = 16;
 	/**
 	 * <p>默认数据传输大小：{@value}</p>
-	 * <p>默认：系统最小下载速度</p>
 	 * 
 	 * @see #MIN_DOWNLOAD_BUFFER_KB
 	 */
@@ -142,7 +132,8 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 	/**
-	 * <p>系统默认编码（file.encoding）：{@value}</p>
+	 * <p>系统默认编码：{@value}</p>
+	 * <p>启动参数：-D file.encoding=UTF-8</p>
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	
@@ -280,9 +271,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private String externalIPAddress;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
 	}
@@ -313,7 +301,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.haveInterval = this.getInteger("acgist.have.interval", 30);
 		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
 		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
-		this.nameEnAndVersion = this.nameEn + " " + this.version;
+		this.nameEnAndVersion = this.nameEn + SymbolConfig.Symbol.SPACE.toString() + this.version;
 	}
 
 	/**
@@ -455,9 +443,10 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>获取BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
-	 * <p>如果不存在返回{@linkplain #getTorrentPort() 本地端口}</p>
 	 * 
 	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
+	 * 
+	 * @see #getTorrentPort()
 	 */
 	public static final int getTorrentPortExt() {
 		if(INSTANCE.torrentPortExt == 0) {
@@ -468,7 +457,6 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	/**
 	 * <p>设置BT服务端口（外网端口：Peer、DHT、UTP、STUN）</p>
-	 * <p>本地端口和外网端口可能不一致</p>
 	 * 
 	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
