@@ -50,19 +50,6 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtpMessageHandler.class);
 	
 	/**
-	 * <p>UTP消息请求头默认长度：{@value}</p>
-	 */
-	private static final int UTP_HEADER_LENGTH = 20;
-	/**
-	 * <p>UTP消息请求头最小长度：{@value}</p>
-	 */
-	private static final int UTP_HEADER_MIN_LENGTH = 20;
-	/**
-	 * <p>UTP扩展消息最小长度：{@value}</p>
-	 */
-	private static final int UTP_EXT_MIN_LENGTH = 2;
-	
-	/**
 	 * <p>是否连接</p>
 	 * <p>不能使用方法{@link #available()}判断是否可用：发送方法判断这个状态导致发送连接消息失败</p>
 	 */
@@ -174,7 +161,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		if(buffer.remaining() < UTP_HEADER_MIN_LENGTH) {
+		if(buffer.remaining() < UtpConfig.HEADER_MIN_LENGTH) {
 			throw new NetException("处理UTP消息错误（长度）：" + buffer.remaining());
 		}
 		// 类型版本
@@ -199,7 +186,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		// 响应编号
 		final short acknr = buffer.getShort();
 		// 扩展消息
-		if(extension != 0 && buffer.remaining() >= UTP_EXT_MIN_LENGTH) {
+		if(extension != 0 && buffer.remaining() >= UtpConfig.EXTENSION_MIN_LENGTH) {
 			final short extLength = buffer.getShort();
 			if(extLength <= 0 || buffer.remaining() < extLength) {
 				throw new NetException("处理UTP消息错误（扩展长度）：" + extLength);
@@ -265,8 +252,8 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		int remaining;
 		while((remaining = buffer.remaining()) > 0) {
 			// UDP拆包
-			if(remaining > UtpConfig.UTP_PACKET_MAX_LENGTH) {
-				bytes = new byte[UtpConfig.UTP_PACKET_MAX_LENGTH];
+			if(remaining > UtpConfig.PACKET_MAX_LENGTH) {
+				bytes = new byte[UtpConfig.PACKET_MAX_LENGTH];
 			} else {
 				bytes = new byte[remaining];
 			}
@@ -353,7 +340,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void data(UtpWindowData windowData) {
 		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
 		final int now = windowData.updateGetTimestamp();
-		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.DATA, windowData.getLength() + UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.DATA, windowData.getLength() + UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - this.recvWindow.timestamp());
@@ -410,7 +397,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void state(int timestamp, short acknr) {
 		LOGGER.debug("发送响应消息：{}", acknr);
 		final int now = DateUtils.timestampUs();
-		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.STATE, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.STATE, UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(now);
 		buffer.putInt(now - timestamp);
@@ -441,7 +428,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private void fin() {
 		LOGGER.debug("发送结束消息：{}", this.socketAddress);
-		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.FIN, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.FIN, UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -472,7 +459,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private void reset() {
 		LOGGER.debug("发送重置消息：{}", this.socketAddress);
-		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.RESET, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.RESET, UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.sendId);
 		buffer.putInt(DateUtils.timestampUs());
 		buffer.putInt(0);
@@ -505,7 +492,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void syn() {
 		LOGGER.debug("发送握手消息：{}", this.socketAddress);
 		final UtpWindowData windowData = this.sendWindow.build();
-		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.SYN, UTP_HEADER_LENGTH);
+		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.SYN, UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.recvId);
 		buffer.putInt(windowData.updateGetTimestamp());
 		buffer.putInt(0);
