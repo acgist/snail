@@ -5,8 +5,6 @@ import com.acgist.snail.config.SystemConfig;
 /**
  * <p>网络包大小异常</p>
  * 
- * @see SystemConfig#MAX_NET_BUFFER_LENGTH
- * 
  * @author acgist
  */
 public final class PacketSizeException extends NetException {
@@ -48,6 +46,8 @@ public final class PacketSizeException extends NetException {
 	}
 	
 	/**
+	 * <p>网络包大小异常</p>
+	 * 
 	 * @param size 网络包大小
 	 */
 	public PacketSizeException(int size) {
@@ -55,6 +55,8 @@ public final class PacketSizeException extends NetException {
 	}
 
 	/**
+	 * <p>网络包大小异常</p>
+	 * 
 	 * @param message 错误信息
 	 */
 	public PacketSizeException(String message) {
@@ -62,6 +64,8 @@ public final class PacketSizeException extends NetException {
 	}
 
 	/**
+	 * <p>网络包大小异常</p>
+	 * 
 	 * @param cause 原始异常
 	 */
 	public PacketSizeException(Throwable cause) {
@@ -69,6 +73,8 @@ public final class PacketSizeException extends NetException {
 	}
 	
 	/**
+	 * <p>网络包大小异常</p>
+	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */

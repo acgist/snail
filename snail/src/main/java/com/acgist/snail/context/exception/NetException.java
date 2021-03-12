@@ -14,6 +14,8 @@ public class NetException extends Exception {
 	}
 
 	/**
+	 * <p>网络异常</p>
+	 * 
 	 * @param message 错误信息
 	 */
 	public NetException(String message) {
@@ -21,6 +23,8 @@ public class NetException extends Exception {
 	}
 
 	/**
+	 * <p>网络异常</p>
+	 * 
 	 * @param cause 原始异常
 	 */
 	public NetException(Throwable cause) {
@@ -28,6 +32,8 @@ public class NetException extends Exception {
 	}
 	
 	/**
+	 * <p>网络异常</p>
+	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */

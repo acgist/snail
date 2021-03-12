@@ -36,6 +36,8 @@ public class EntityException extends IllegalArgumentException {
 	}
 
 	/**
+	 * <p>实体异常</p>
+	 * 
 	 * @param message 错误信息
 	 */
 	public EntityException(String message) {
@@ -43,6 +45,8 @@ public class EntityException extends IllegalArgumentException {
 	}
 
 	/**
+	 * <p>实体异常</p>
+	 * 
 	 * @param cause 原始异常
 	 */
 	public EntityException(Throwable cause) {
@@ -50,6 +54,8 @@ public class EntityException extends IllegalArgumentException {
 	}
 	
 	/**
+	 * <p>实体异常</p>
+	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */
