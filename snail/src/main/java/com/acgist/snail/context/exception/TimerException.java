@@ -25,6 +25,8 @@ public final class TimerException extends IllegalArgumentException {
 	}
 	
 	/**
+	 * <p>定时任务时间周期异常</p>
+	 * 
 	 * @param time 时间周期
 	 */
 	public TimerException(long time) {
@@ -32,6 +34,8 @@ public final class TimerException extends IllegalArgumentException {
 	}
 
 	/**
+	 * <p>定时任务时间周期异常</p>
+	 * 
 	 * @param message 错误信息
 	 */
 	public TimerException(String message) {
@@ -39,6 +43,8 @@ public final class TimerException extends IllegalArgumentException {
 	}
 
 	/**
+	 * <p>定时任务时间周期异常</p>
+	 * 
 	 * @param cause 原始异常
 	 */
 	public TimerException(Throwable cause) {
@@ -46,6 +52,8 @@ public final class TimerException extends IllegalArgumentException {
 	}
 
 	/**
+	 * <p>定时任务时间周期异常</p>
+	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */
