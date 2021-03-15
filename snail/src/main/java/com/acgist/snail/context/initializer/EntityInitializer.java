@@ -1,23 +1,16 @@
 package com.acgist.snail.context.initializer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.EntityContext;
 
 /**
- * <p>初始化实体上下文</p>
+ * <p>实体初始化器</p>
  * 
  * @author acgist
  */
 public final class EntityInitializer extends Initializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EntityInitializer.class);
-	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private EntityInitializer() {
+		super("实体");
 	}
 	
 	public static final EntityInitializer newInstance() {
@@ -26,7 +19,6 @@ public final class EntityInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.debug("初始化实体上下文");
 		EntityContext.getInstance().load();
 	}
 	

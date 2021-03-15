@@ -13,7 +13,7 @@ class InitializerTest extends Performance {
 	@Test
 	void testInitializer() {
 		final AtomicBoolean init = new AtomicBoolean(false);
-		new Initializer() {
+		new Initializer("ACGIST") {
 			@Override
 			protected void init() {
 				init.set(true);
