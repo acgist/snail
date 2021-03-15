@@ -1,23 +1,16 @@
 package com.acgist.snail.context.initializer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.NatContext;
 
 /**
- * <p>初始化NAT</p>
+ * <p>NAT初始化器</p>
  * 
  * @author acgist
  */
 public final class NatInitializer extends Initializer {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(NatInitializer.class);
-	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private NatInitializer() {
+		super("NAT");
 	}
 	
 	public static final NatInitializer newInstance() {
@@ -26,7 +19,6 @@ public final class NatInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		LOGGER.debug("初始化NAT");
 		NatContext.getInstance().register();
 	}
 

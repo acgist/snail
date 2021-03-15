@@ -10,7 +10,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 
 /**
- * <p>初始化</p>
+ * <p>初始化器</p>
  * 
  * @author acgist
  */
@@ -19,51 +19,63 @@ public abstract class Initializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	
 	/**
-	 * <p>初始化延迟时间（单位：秒）</p>
+	 * <p>名称</p>
+	 */
+	private final String name;
+	/**
+	 * <p>延迟时间（单位：秒）</p>
 	 * 
 	 * @see #asyn()
 	 */
 	private final int delay;
 
-	protected Initializer() {
-		this(0);
+	/**
+	 * <p>初始化器</p>
+	 * 
+	 * @param name 名称
+	 */
+	protected Initializer(String name) {
+		this(name, 0);
 	}
 	
 	/**
+	 * <p>初始化器</p>
+	 * 
+	 * @param name 名称
 	 * @param delay 延迟时间（单位：秒）
 	 */
-	protected Initializer(int delay) {
+	protected Initializer(String name, int delay) {
+		this.name = name;
 		this.delay = delay;
 	}
 
 	/**
-	 * <p>同步初始化</p>
+	 * <p>同步执行初始方法</p>
 	 */
 	public final void sync() {
 		try {
+			LOGGER.debug("同步执行初始方法：{}", this.name);
 			this.init();
 		} catch (NetException | DownloadException e) {
-			LOGGER.error("同步初始化异常", e);
+			LOGGER.error("同步执行初始方法异常：{}", this.name, e);
 		}
 	}
 	
 	/**
-	 * <p>异步初始化</p>
+	 * <p>异步执行初始方法</p>
 	 */
 	public final void asyn() {
-		// 异步任务
 		final Runnable runnable = () -> {
 			try {
+				LOGGER.debug("异步执行初始方法：{}", this.name);
 				this.init();
 			} catch (NetException | DownloadException e) {
-				LOGGER.error("异步初始化异常", e);
+				LOGGER.error("异步执行初始方法异常：{}", this.name, e);
 			}
 		};
 		if(this.delay <= 0) {
-			// 立即初始化
 			SystemThreadContext.submit(runnable);
 		} else {
-			// 延迟初始化
 			SystemThreadContext.timer(
 				this.delay,
 				TimeUnit.SECONDS,
@@ -73,7 +85,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * <p>初始化</p>
+	 * <p>初始方法</p>
 	 * 
 	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
