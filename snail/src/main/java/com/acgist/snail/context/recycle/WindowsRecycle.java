@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.NumberUtils;
@@ -50,6 +51,8 @@ public final class WindowsRecycle extends Recycle {
 	private String deleteInfoFilePath;
 
 	/**
+	 * <p>Windows回收站</p>
+	 * 
 	 * @param path 文件路径
 	 */
 	public WindowsRecycle(String path) {
@@ -63,9 +66,10 @@ public final class WindowsRecycle extends Recycle {
 	 */
 	private void buildRecycle() {
 		// 获取盘符
-		final String disk = this.path.substring(0, 1).toUpperCase();
+		final int diskIndex = this.path.indexOf(SymbolConfig.Symbol.COLON.toChar());
+		final String disk = this.path.substring(0, diskIndex + 1).toUpperCase();
 		// 获取回收站上级目录
-		final String recycleFolder = FileUtils.file(disk + ":", RECYCLE_FOLDER);
+		final String recycleFolder = FileUtils.file(disk, RECYCLE_FOLDER);
 		final File recycleFile = new File(recycleFolder);
 		if(!recycleFile.exists()) {
 			throw new IllegalArgumentException("回收站上级目录不存在：" + recycleFolder);
@@ -73,7 +77,7 @@ public final class WindowsRecycle extends Recycle {
 		// 获取当前用户回收站文件目录
 		final File[] files = recycleFile.listFiles();
 		for (File file : files) {
-			// 其他用户回收站没有权限查看：获取不到文件列表
+			// 获取不到回收站文件列表：其他用户没有权限查看
 			if(file.listFiles() != null) {
 				this.recyclePath = file.getAbsolutePath();
 				LOGGER.debug("回收站路径：{}", this.recyclePath);
@@ -83,21 +87,24 @@ public final class WindowsRecycle extends Recycle {
 	}
 	
 	/**
-	 * <p>设置删除信息：删除文件、删除信息文件</p>
+	 * <p>设置删除信息</p>
 	 */
 	private void buildRecycleInfo() {
-		String ext = null;
 		String name = NumberUtils.build().toString();
 		if(this.file.isFile()) {
-			ext = FileUtils.fileExt(this.path);
-		}
-		if(ext != null) {
-			name = name + "." + ext;
+			final String ext = FileUtils.fileExt(this.path);
+			if(ext != null) {
+				name = name + SymbolConfig.Symbol.DOT.toString() + ext;
+			}
 		}
 		this.deleteFilePath = FileUtils.file(this.recyclePath, FILE_PREFIX + name);
 		this.deleteInfoFilePath = FileUtils.file(this.recyclePath, INFO_PREFIX + name);
-		// TODO：换行
-		LOGGER.debug("删除文件路径：{}，删除信息文件路径：{}", this.deleteFilePath, this.deleteInfoFilePath);
+		LOGGER.debug("""
+			删除文件路径：{}
+			删除信息文件路径：{}""",
+			this.deleteFilePath,
+			this.deleteInfoFilePath
+		);
 	}
 	
 	/**
@@ -129,9 +136,9 @@ public final class WindowsRecycle extends Recycle {
 	 * @throws IOException IO异常
 	 */
 	private byte[] buildDeleteInfo() throws IOException {
+		final ByteBuffer buffer = ByteBuffer.allocate(8);
 		final String path = FileUtils.systemSeparator(this.path);
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		final ByteBuffer buffer = ByteBuffer.allocate(8);
 		// 设置大小端：默认CPU
 		buffer.order(ByteOrder.nativeOrder());
 		// 固定值
@@ -162,7 +169,6 @@ public final class WindowsRecycle extends Recycle {
 	
 	/**
 	 * <p>写入删除信息数据</p>
-	 * <p>注意：CPU大小端</p>
 	 * 
 	 * @param out 字符流
 	 * @param value 数据
