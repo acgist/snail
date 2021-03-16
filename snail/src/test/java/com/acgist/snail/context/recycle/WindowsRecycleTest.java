@@ -19,7 +19,7 @@ class WindowsRecycleTest extends Performance {
 
 	@Test
 	void testDelete() throws IOException {
-		final String path = "E:/snail/tmp/" + System.currentTimeMillis();
+		final String path = "E:/snail/tmp/" + System.currentTimeMillis() + ".acgist";
 		FileUtils.write(path, "acgist".repeat(1024).getBytes());
 		final File file = new File(path);
 		file.createNewFile();
