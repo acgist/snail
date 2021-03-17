@@ -18,7 +18,6 @@ import com.acgist.snail.utils.NumberUtils;
 
 /**
  * <p>DHT上下文</p>
- * <p>管理DHT请求</p>
  * 
  * @author acgist
  */
@@ -50,7 +49,7 @@ public final class DhtContext implements IContext {
 	private static final String TOKEN_CHARACTER = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	/**
-	 * <p>当前客户端的Token</p>
+	 * <p>Token</p>
 	 */
 	private final byte[] token;
 	/**
@@ -62,9 +61,6 @@ public final class DhtContext implements IContext {
 	 */
 	private final List<DhtRequest> requests;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private DhtContext() {
 		this.token = this.buildToken();
 		this.requests = new LinkedList<>();
@@ -85,40 +81,42 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取系统Token</p>
+	 * <p>获取Token</p>
 	 * 
-	 * @return 系统Token
+	 * @return Token
 	 */
 	public byte[] token() {
 		return this.token;
 	}
 	
 	/**
-	 * <p>生成系统Token</p>
+	 * <p>生成Token</p>
 	 * 
-	 * @return 系统Token
+	 * @return Token
 	 */
 	private byte[] buildToken() {
-		LOGGER.debug("生成系统Token");
 		final byte[] token = new byte[TOKEN_LENGTH];
-		final byte[] tokens = TOKEN_CHARACTER.getBytes();
-		final int length = tokens.length;
+		final byte[] bytes = TOKEN_CHARACTER.getBytes();
+		final int length = bytes.length;
 		final Random random = NumberUtils.random();
 		for (int index = 0; index < TOKEN_LENGTH; index++) {
-			token[index] = tokens[random.nextInt(length)];
+			token[index] = bytes[random.nextInt(length)];
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("生成Token：{}", new String(token));
 		}
 		return token;
 	}
 	
 	/**
-	 * <p>生成一个两字节的消息ID</p>
+	 * <p>生成消息ID</p>
 	 * 
 	 * @return 消息ID
 	 */
 	public byte[] buildRequestId() {
 		final byte[] bytes = new byte[2];
 		synchronized (this) {
-			if(++this.requestId >= MAX_ID_VALUE) {
+			if (++this.requestId >= MAX_ID_VALUE) {
 				this.requestId = MIN_ID_VALUE;
 			}
 			bytes[0] = (byte) ((this.requestId >> 8) & 0xFF);
@@ -129,18 +127,18 @@ public final class DhtContext implements IContext {
 	
 	/**
 	 * <p>放入请求</p>
-	 * <p>如果请求列表中有相同ID的请求删除旧请求</p>
 	 * 
 	 * @param request 请求
 	 */
 	public void request(DhtRequest request) {
-		if(request == null) {
+		if (request == null) {
 			return;
 		}
 		synchronized (this.requests) {
+			// 删除旧的请求
 			final DhtRequest oldRequest = this.remove(request.getT());
-			if(oldRequest != null) {
-				LOGGER.warn("旧DHT请求没有收到响应（删除）");
+			if (oldRequest != null) {
+				LOGGER.debug("删除没有收到响应DHT请求：{}", oldRequest);
 			}
 			this.requests.add(request);
 		}
@@ -148,23 +146,24 @@ public final class DhtContext implements IContext {
 	
 	/**
 	 * <p>设置响应</p>
-	 * <p>删除响应对应的请求并返回，同时设置对应节点为可用状态。</p>
 	 * 
 	 * @param response 响应
 	 * 
 	 * @return 请求
 	 */
 	public DhtRequest response(DhtResponse response) {
-		if(response == null) {
+		if (response == null) {
 			return null;
 		}
-		// 设置节点为可用状态
+		// 设置节点可用状态
 		NodeContext.getInstance().available(response.getNodeId());
 		DhtRequest request;
 		synchronized (this.requests) {
+			// 删除请求
 			request = this.remove(response.getT());
 		}
-		if(request != null) {
+		if (request != null) {
+			// 设置响应
 			request.setResponse(response);
 		}
 		return request;
@@ -190,7 +189,7 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>移除并返回请求</p>
+	 * <p>删除并返回删除的请求</p>
 	 * 
 	 * @param id 消息ID
 	 * 
