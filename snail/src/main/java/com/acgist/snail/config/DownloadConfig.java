@@ -154,13 +154,13 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private void initFromEntity() {
 		final EntityContext entityContext = EntityContext.getInstance();
-		this.path = this.getString(entityContext.findConfigByName(DOWNLOAD_PATH), this.path);
-		this.size = this.getInteger(entityContext.findConfigByName(DOWNLOAD_SIZE), this.size);
-		this.notice = this.getBoolean(entityContext.findConfigByName(DOWNLOAD_NOTICE), this.notice);
-		this.delete = this.getBoolean(entityContext.findConfigByName(DOWNLOAD_DELETE), this.delete);
-		this.buffer = this.getInteger(entityContext.findConfigByName(DOWNLOAD_BUFFER), this.buffer);
-		this.lastPath = this.getString(entityContext.findConfigByName(DOWNLOAD_LAST_PATH), this.lastPath);
-		this.memoryBuffer = this.getInteger(entityContext.findConfigByName(DOWNLOAD_MEMORY_BUFFER), this.memoryBuffer);
+		this.path = this.getString(entityContext.findConfig(DOWNLOAD_PATH), this.path);
+		this.size = this.getInteger(entityContext.findConfig(DOWNLOAD_SIZE), this.size);
+		this.notice = this.getBoolean(entityContext.findConfig(DOWNLOAD_NOTICE), this.notice);
+		this.delete = this.getBoolean(entityContext.findConfig(DOWNLOAD_DELETE), this.delete);
+		this.buffer = this.getInteger(entityContext.findConfig(DOWNLOAD_BUFFER), this.buffer);
+		this.lastPath = this.getString(entityContext.findConfig(DOWNLOAD_LAST_PATH), this.lastPath);
+		this.memoryBuffer = this.getInteger(entityContext.findConfig(DOWNLOAD_MEMORY_BUFFER), this.memoryBuffer);
 	}
 	
 	/**

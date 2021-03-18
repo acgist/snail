@@ -163,7 +163,7 @@ public final class TaskContext implements IContext {
 	public void load() {
 		final EntityContext entityContext = EntityContext.getInstance();
 		// 加载异常删除重新创建数组
-		final List<TaskEntity> list = new ArrayList<>(entityContext.allTask());
+		final List<TaskEntity> list = entityContext.allTask();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.forEach(entity -> {
 				try {

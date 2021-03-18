@@ -40,7 +40,7 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>实体文件名称：{@value}</p>
+	 * <p>实体文件：{@value}</p>
 	 */
 	private static final String ENTITY_FILE_PATH = "./config/snail.entities";
 
@@ -53,9 +53,6 @@ public final class EntityContext implements IContext {
 	 */
 	private final List<ConfigEntity> configEntities;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private EntityContext() {
 		this.taskEntities = new ArrayList<>();
 		this.configEntities = new ArrayList<>();
@@ -67,7 +64,7 @@ public final class EntityContext implements IContext {
 	 * @return 所有任务列表
 	 */
 	public List<TaskEntity> allTask() {
-		return this.taskEntities;
+		return new ArrayList<>(this.taskEntities);
 	}
 	
 	/**
@@ -76,11 +73,11 @@ public final class EntityContext implements IContext {
 	 * @return 所有配置列表
 	 */
 	public List<ConfigEntity> allConfig() {
-		return this.configEntities;
+		return new ArrayList<>(this.configEntities);
 	}
 	
 	/**
-	 * <p>验证设置保存信息</p>
+	 * <p>设置保存信息</p>
 	 * 
 	 * @param entity 实体
 	 */
@@ -94,7 +91,7 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>验证设置更新信息</p>
+	 * <p>设置更新信息</p>
 	 * 
 	 * @param entity 实体
 	 */
@@ -130,7 +127,6 @@ public final class EntityContext implements IContext {
 	
 	/**
 	 * <p>删除任务</p>
-	 * <p>删除文件时优先使用回收站，如果不支持回收站直接删除文件。</p>
 	 * 
 	 * @param entity 任务
 	 * 
@@ -138,17 +134,16 @@ public final class EntityContext implements IContext {
 	 */
 	public boolean delete(TaskEntity entity) {
 		EntityException.requireNotNull(entity);
-		LOGGER.debug("删除任务：{}", entity.getName());
-		// 删除文件
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("删除任务：{}", entity.getName());
+		}
 		if(DownloadConfig.getDelete()) {
+			// 删除文件
 			final var file = entity.getFile();
-			final boolean success = RecycleContext.recycle(file);
-			if(!success) {
-				LOGGER.debug("不支持回收站直接删除文件：{}", file);
+			if(!RecycleContext.recycle(file)) {
 				FileUtils.delete(file);
 			}
 		}
-		// 删除数据
 		return this.delete(entity.getId());
 	}
 	
@@ -183,6 +178,7 @@ public final class EntityContext implements IContext {
 	 * @return 是否删除成功
 	 */
 	public boolean delete(ConfigEntity entity) {
+		EntityException.requireNotNull(entity);
 		return this.delete(entity.getId());
 	}
 	
@@ -193,7 +189,7 @@ public final class EntityContext implements IContext {
 	 * 
 	 * @return 配置
 	 */
-	public ConfigEntity findConfigByName(String name) {
+	public ConfigEntity findConfig(String name) {
 		synchronized (this) {
 			return this.configEntities.stream()
 				.filter(entity -> entity.getName().equals(name))
@@ -203,30 +199,14 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>根据配置名称删除配置</p>
-	 * <p>配置不存在时删除失败</p>
-	 * 
-	 * @param name 配置名称
-	 * 
-	 * @return 是否删除成功
-	 */
-	public boolean deleteConfigByName(String name) {
-		final ConfigEntity entity = this.findConfigByName(name);
-		if(entity != null) {
-			return this.delete(entity.getId());
-		}
-		return false;
-	}
-	
-	/**
-	 * <p>合并配置</p>
-	 * <p>配置存在更新，反之新建。</p>
+	 * <p>根据配置名称合并配置</p>
+	 * <p>配置存在更新反之新建</p>
 	 * 
 	 * @param name 配置名称
 	 * @param value 配置值
 	 */
 	public void mergeConfig(String name, String value) {
-		ConfigEntity entity = this.findConfigByName(name);
+		ConfigEntity entity = this.findConfig(name);
 		if(entity == null) {
 			entity = new ConfigEntity();
 			entity.setName(name);
@@ -283,8 +263,10 @@ public final class EntityContext implements IContext {
 						LOGGER.warn("未知实体类型：{}", object);
 					}
 				});
-				LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());
-				LOGGER.debug("加载配置实体数量：{}", this.configEntities.size());
+				if(LOGGER.isDebugEnabled()) {
+					LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());
+					LOGGER.debug("加载配置实体数量：{}", this.configEntities.size());
+				}
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			LOGGER.error("加载实体异常", e);
