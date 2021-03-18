@@ -3,7 +3,6 @@ package com.acgist.snail.context;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -112,40 +111,26 @@ class EntityContextTest extends Performance {
 
 	@Test
 	@Order(6)
-	void testFindConfigByName() {
+	void testFindConfig() {
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
 		EntityContext.getInstance().save(entity);
-		final var config = EntityContext.getInstance().findConfigByName("acgist");
+		final var config = EntityContext.getInstance().findConfig("acgist");
 		assertNotNull(config);
 		this.log(config.getName() + "=" + config.getValue());
 	}
 	
 	@Test
 	@Order(7)
-	void testDeleteConfigByName() {
-		final ConfigEntity entity = new ConfigEntity();
-		entity.setName("acgist");
-		entity.setValue("测试");
-		EntityContext.getInstance().save(entity);
-		assertNotNull(EntityContext.getInstance().findConfigByName("acgist"));
-		while(EntityContext.getInstance().findConfigByName("acgist") != null) {
-			EntityContext.getInstance().deleteConfigByName("acgist");
-		}
-		assertNull(EntityContext.getInstance().findConfigByName("acgist"));
-	}
-	
-	@Test
-	@Order(8)
 	void testMergeConfig() {
 		EntityContext.getInstance().allConfig().forEach(this::log);
 		EntityContext.getInstance().mergeConfig("acgist", "1234");
 		EntityContext.getInstance().allConfig().forEach(this::log);
-		assertEquals("1234", EntityContext.getInstance().findConfigByName("acgist").getValue());
+		assertEquals("1234", EntityContext.getInstance().findConfig("acgist").getValue());
 		EntityContext.getInstance().mergeConfig("acgist", "4321");
 		EntityContext.getInstance().allConfig().forEach(this::log);
-		assertEquals("4321", EntityContext.getInstance().findConfigByName("acgist").getValue());
+		assertEquals("4321", EntityContext.getInstance().findConfig("acgist").getValue());
 	}
 	
 }
