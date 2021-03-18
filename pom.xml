@@ -4,16 +4,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
-	<!--
-	版本配置：
-		pom.xml
-		snail/pom.xml
-		snail-javafx/pom.xml
-		snail/src/main/resources/config/system.properties
-	编译命令：mvn -e clean package|install|deploy
-	编译系统：-D javafx.platform=win|mac|linux
-	-->
-	
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.acgist</groupId>
@@ -33,7 +23,7 @@
 		<!-- Java版本 -->
 		<java.version>16</java.version>
 		<!-- JavaFX版本 -->
-		<javafx.version>16-ea+1</javafx.version>
+		<javafx.version>16</javafx.version>
 		<!-- 依赖版本 -->
 		<slf4j.version>1.7.30</slf4j.version>
 		<!-- JUnit版本 -->
