@@ -123,9 +123,6 @@ public final class GuiContext implements IContext {
 	 */
 	private IMessageSender extendGuiMessageSender;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private GuiContext() {
 	}
 	
