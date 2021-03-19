@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -77,7 +78,7 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		final List<String> pathList = readPath(path, encoding);
 		file.setPath(pathList);
 		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, ATTR_PATH_UTF8);
-		final List<String> pathUtf8List = readPath(pathUtf8, null);
+		final List<String> pathUtf8List = readPath(pathUtf8, SystemConfig.CHARSET_UTF8);
 		file.setPathUtf8(pathUtf8List);
 		file.paddingFile = readPaddingFile(pathList, pathUtf8List);
 		return file;
