@@ -95,7 +95,7 @@ class GuiContextTest extends Performance {
 //				map.put("url", "下载地址或者种子文件路径");
 				// BT任务
 //				map.put("files", "B编码下载文件列表");
-				map.put("url", "https://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip");
+				map.put("url", "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-10/v10.0.4/bin/apache-tomcat-10.0.4.zip");
 				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
 			} else if(message.equalsIgnoreCase(Type.TASK_LIST.name())) {
 				client.send(ApplicationMessage.message(Type.TASK_LIST, message));
