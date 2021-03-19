@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.GuiEvent.Type;
@@ -48,15 +49,14 @@ public final class GuiContext implements IContext {
 	public enum Mode {
 		
 		/**
-		 * <p>本地模式：本地GUI</p>
-		 * <p>本地GUI：JavaFX</p>
+		 * <p>本地模式：本地GUI（JavaFX）</p>
 		 */
 		NATIVE,
 		/**
 		 * <p>后台模式：扩展GUI</p>
-		 * <p>扩展GUI：自定义实现，通过系统消息和系统通知来完成系统管理和任务管理。</p>
+		 * <p>通过系统消息和系统通知来完成系统管理和任务管理</p>
 		 * 
-		 * @see com.acgist.snail.pojo.message.ApplicationMessage.Type
+		 * @see ApplicationMessage.Type
 		 */
 		EXTEND;
 		
@@ -99,31 +99,32 @@ public final class GuiContext implements IContext {
 	
 	/**
 	 * <p>运行模式</p>
-	 * <p>默认：本地GUI</p>
 	 */
 	private Mode mode = Mode.NATIVE;
 	/**
 	 * <p>选择下载文件列表（B编码）</p>
 	 * 
-	 * @see Type#MULTIFILE
+	 * @see GuiEvent.Type#MULTIFILE
 	 */
 	private String files;
 	/**
 	 * <p>扩展GUI阻塞锁</p>
 	 * <p>使用扩展GUI时阻止程序关闭</p>
 	 */
-	private final Object lock = new Object();
-	/**
-	 * <p>事件Map</p>
-	 * <p>事件类型=事件</p>
-	 */
-	private final Map<GuiEvent.Type, GuiEvent> events = new EnumMap<>(GuiEvent.Type.class);
+	private final Object lock;
 	/**
 	 * <p>扩展GUI消息代理</p>
 	 */
 	private IMessageSender extendGuiMessageSender;
+	/**
+	 * <p>事件Map</p>
+	 * <p>事件类型=事件</p>
+	 */
+	private final Map<GuiEvent.Type, GuiEvent> events;
 	
 	private GuiContext() {
+		this.lock = new Object();
+		this.events = new EnumMap<>(GuiEvent.Type.class);
 	}
 	
 	/**
@@ -139,7 +140,7 @@ public final class GuiContext implements IContext {
 	}
 
 	/**
-	 * <p>注册所有GUI事件适配器</p>
+	 * <p>注册GUI事件默认适配器</p>
 	 */
 	public static final void registerAdapter() {
 		GuiContext.register(new ShowEventAdapter());
@@ -163,10 +164,10 @@ public final class GuiContext implements IContext {
 	 */
 	public GuiContext init(String ... args) {
 		if(args == null) {
-			// 没有参数
+			LOGGER.debug("没有设置启动参数");
 		} else {
 			if(LOGGER.isInfoEnabled()) {
-				LOGGER.info("启动参数：{}", String.join(",", args));
+				LOGGER.info("启动参数：{}", String.join(SymbolConfig.Symbol.COMMA.toString(), args));
 			}
 			String value;
 			for (String arg : args) {
@@ -176,7 +177,7 @@ public final class GuiContext implements IContext {
 					this.mode = Mode.EXTEND;
 				}
 			}
-			LOGGER.info("运行模式：{}", this.mode);
+			LOGGER.debug("运行模式：{}", this.mode);
 		}
 		return this;
 	}
@@ -268,17 +269,6 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>选择下载文件</p>
-	 * 
-	 * @param taskSession 任务信息
-	 * 
-	 * @return GuiContext
-	 */
-	public GuiContext multifile(ITaskSession taskSession) {
-		return this.event(Type.MULTIFILE, taskSession);
-	}
-	
-	/**
 	 * <p>响应消息</p>
 	 * 
 	 * @param message 消息
@@ -287,6 +277,17 @@ public final class GuiContext implements IContext {
 	 */
 	public GuiContext response(String message) {
 		return this.event(Type.RESPONSE, message);
+	}
+	
+	/**
+	 * <p>选择下载文件</p>
+	 * 
+	 * @param taskSession 任务信息
+	 * 
+	 * @return GuiContext
+	 */
+	public GuiContext multifile(ITaskSession taskSession) {
+		return this.event(Type.MULTIFILE, taskSession);
 	}
 	
 	/**
@@ -317,15 +318,15 @@ public final class GuiContext implements IContext {
 	 */
 	public GuiContext event(GuiEvent.Type type, Object ... args) {
 		if(type == null) {
+			LOGGER.warn("错误GUI事件：{}", type);
+			return this;
+		}
+		final GuiEvent event = this.events.get(type);
+		if(event == null) {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
 		}
 		LOGGER.debug("执行GUI事件：{}", type);
-		final GuiEvent event = this.events.get(type);
-		if(event == null) {
-			LOGGER.warn("GUI事件没有注册：{}", type);
-			return this;
-		}
 		event.execute(this.mode, args);
 		return this;
 	}
