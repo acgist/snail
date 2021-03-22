@@ -50,73 +50,80 @@ class EntityContextTest extends Performance {
 		entity.setName("测试");
 		entity.setType(Type.HTTP);
 		entity.setFileType(FileType.VIDEO);
-		EntityContext.getInstance().save(entity);
+		final var context = EntityContext.getInstance();
+		context.save(entity);
 		assertNotNull(entity.getId());
-		assertThrows(EntityException.class, () -> EntityContext.getInstance().save(entity));
+		assertThrows(EntityException.class, () -> context.save(entity));
 	}
 
 	@Test
 	@Order(1)
 	void testUpdateTask() {
 		final TaskEntity entity = new TaskEntity();
-		assertThrows(EntityException.class, () -> EntityContext.getInstance().update(entity));
+		final var context = EntityContext.getInstance();
+		assertThrows(EntityException.class, () -> context.update(entity));
 		entity.setName("测试");
 		entity.setType(Type.HTTP);
 		entity.setFileType(FileType.VIDEO);
 		final Date modifyDate = new Date(System.currentTimeMillis() - 1000);
 		entity.setModifyDate(modifyDate);
-		EntityContext.getInstance().save(entity);
-		EntityContext.getInstance().update(entity);
+		context.save(entity);
+		context.update(entity);
 		assertNotEquals(modifyDate.getTime(), entity.getModifyDate().getTime());
 	}
 	
 	@Test
 	@Order(2)
 	void testDeleteTask() {
-		final var list = new ArrayList<>(EntityContext.getInstance().allTask());
-		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
+		final var context = EntityContext.getInstance();
+		final var list = new ArrayList<>(context.allTask());
+		list.forEach(entity -> assertTrue(context.delete(entity)));
 	}
 	
 	@Test
 	@Order(3)
 	void testSaveConfig() {
+		final var context = EntityContext.getInstance();
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
-		EntityContext.getInstance().save(entity);
+		context.save(entity);
 		assertNotNull(entity.getId());
-		assertThrows(EntityException.class, () -> EntityContext.getInstance().save(entity));
+		assertThrows(EntityException.class, () -> context.save(entity));
 	}
 
 	@Test
 	@Order(4)
 	void testUpdateConfig() {
+		final var context = EntityContext.getInstance();
 		final ConfigEntity entity = new ConfigEntity();
-		assertThrows(EntityException.class, () -> EntityContext.getInstance().update(entity));
+		assertThrows(EntityException.class, () -> context.update(entity));
 		entity.setName("acgist");
 		entity.setValue("测试");
 		final Date modifyDate = new Date(System.currentTimeMillis() - 1000);
 		entity.setModifyDate(modifyDate);
-		EntityContext.getInstance().save(entity);
-		EntityContext.getInstance().update(entity);
+		context.save(entity);
+		context.update(entity);
 		assertNotEquals(modifyDate.getTime(), entity.getModifyDate().getTime());
 	}
 	
 	@Test
 	@Order(5)
 	void testDeleteConfig() {
-		final var list = new ArrayList<>(EntityContext.getInstance().allConfig());
-		list.forEach(entity -> assertTrue(EntityContext.getInstance().delete(entity)));
+		final var context = EntityContext.getInstance();
+		final var list = new ArrayList<>(context.allConfig());
+		list.forEach(entity -> assertTrue(context.delete(entity)));
 	}
 
 	@Test
 	@Order(6)
 	void testFindConfig() {
+		final var context = EntityContext.getInstance();
 		final ConfigEntity entity = new ConfigEntity();
 		entity.setName("acgist");
 		entity.setValue("测试");
-		EntityContext.getInstance().save(entity);
-		final var config = EntityContext.getInstance().findConfig("acgist");
+		context.save(entity);
+		final var config = context.findConfig("acgist");
 		assertNotNull(config);
 		this.log(config.getName() + "=" + config.getValue());
 	}
@@ -124,13 +131,14 @@ class EntityContextTest extends Performance {
 	@Test
 	@Order(7)
 	void testMergeConfig() {
-		EntityContext.getInstance().allConfig().forEach(this::log);
-		EntityContext.getInstance().mergeConfig("acgist", "1234");
-		EntityContext.getInstance().allConfig().forEach(this::log);
-		assertEquals("1234", EntityContext.getInstance().findConfig("acgist").getValue());
-		EntityContext.getInstance().mergeConfig("acgist", "4321");
-		EntityContext.getInstance().allConfig().forEach(this::log);
-		assertEquals("4321", EntityContext.getInstance().findConfig("acgist").getValue());
+		final var context = EntityContext.getInstance();
+		context.allConfig().forEach(this::log);
+		context.mergeConfig("acgist", "1234");
+		context.allConfig().forEach(this::log);
+		assertEquals("1234", context.findConfig("acgist").getValue());
+		context.mergeConfig("acgist", "4321");
+		context.allConfig().forEach(this::log);
+		assertEquals("4321", context.findConfig("acgist").getValue());
 	}
 	
 }

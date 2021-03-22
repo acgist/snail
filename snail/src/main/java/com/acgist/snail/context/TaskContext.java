@@ -103,10 +103,11 @@ public final class TaskContext implements IContext {
 	 */
 	public void remove(ITaskSession taskSession) {
 		synchronized (this.tasks) {
-			LOGGER.debug("删除下载任务：{}", taskSession.getName());
-			this.tasks.remove(taskSession); // 删除任务
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("删除下载任务：{}", taskSession.getName());
+			}
+			this.tasks.remove(taskSession);
 		}
-		// 刷新任务列表
 		GuiContext.getInstance().refreshTaskList();
 	}
 	

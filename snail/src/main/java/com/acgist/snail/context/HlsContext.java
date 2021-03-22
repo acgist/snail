@@ -37,9 +37,6 @@ public final class HlsContext implements IContext {
 	 */
 	private final Map<String, HlsSession> sessions;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private HlsContext() {
 		this.m3u8s = new ConcurrentHashMap<>();
 		this.sessions = new ConcurrentHashMap<>();
@@ -52,9 +49,7 @@ public final class HlsContext implements IContext {
 	 * @param m3u8 M3U8
 	 */
 	public void m3u8(String id, M3u8 m3u8) {
-		if(id != null && m3u8 != null) {
-			this.m3u8s.put(id, m3u8);
-		}
+		this.m3u8s.put(id, m3u8);
 	}
 	
 	/**
@@ -73,10 +68,12 @@ public final class HlsContext implements IContext {
 	/**
 	 * <p>删除HLS任务信息</p>
 	 * 
-	 * @param taskSession HLS任务信息
+	 * @param taskSession 任务信息
 	 */
 	public void remove(ITaskSession taskSession) {
-		LOGGER.debug("移除HLS任务：{}", taskSession.getName());
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("删除HLS任务信息：{}", taskSession.getName());
+		}
 		final String id = taskSession.getId();
 		this.m3u8s.remove(id);
 		this.sessions.remove(id);
