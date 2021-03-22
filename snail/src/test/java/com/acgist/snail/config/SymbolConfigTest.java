@@ -1,6 +1,6 @@
 package com.acgist.snail.config;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class SymbolConfigTest extends Performance {
 	void testSymbolConfig() {
 		final var values = SymbolConfig.Symbol.values();
 		for (SymbolConfig.Symbol symbol : values) {
-			assertTrue((symbol + "").equals(symbol.toString()));
+			assertEquals(symbol + "", symbol.toString());
 			this.log(symbol);
 			this.log(symbol.toChar());
 			this.log(symbol.toString());
