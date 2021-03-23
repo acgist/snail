@@ -9,12 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.IMessageHandler;
 
 /**
  * <p>消息代理上下文</p>
- * <p>主要管理接收连接</p>
  * 
  * @author acgist
  */
@@ -29,16 +27,20 @@ public final class MessageHandlerContext implements IContext {
 	}
 	
 	/**
+	 * <p>处理无效消息执行周期（秒）：{@value}</p>
+	 */
+	private static final int USELESS_INTERVAL = 60;
+	
+	/**
 	 * <p>消息代理列表</p>
 	 */
 	private final List<IMessageHandler> handlers;
 	
 	private MessageHandlerContext() {
 		this.handlers = new ArrayList<>();
-		final int interval = SystemConfig.getPeerOptimizeInterval();
 		SystemThreadContext.timerFixedDelay(
-			interval,
-			interval,
+			USELESS_INTERVAL,
+			USELESS_INTERVAL,
 			TimeUnit.SECONDS,
 			this::useless
 		);
@@ -47,11 +49,11 @@ public final class MessageHandlerContext implements IContext {
 	/**
 	 * <p>管理消息代理</p>
 	 * 
-	 * @param receiver 消息代理
+	 * @param handler 消息代理
 	 */
-	public void newInstance(IMessageHandler receiver) {
+	public void newInstance(IMessageHandler handler) {
 		synchronized (this.handlers) {
-			this.handlers.add(receiver);
+			this.handlers.add(handler);
 		}
 	}
 
@@ -61,7 +63,9 @@ public final class MessageHandlerContext implements IContext {
 	private void useless() {
 		final List<IMessageHandler> uselessList = new ArrayList<>();
 		synchronized (this.handlers) {
-			LOGGER.debug("开始处理无效消息代理：{}", this.handlers.size());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("开始处理无效消息代理：{}", this.handlers.size());
+			}
 			IMessageHandler handler;
 			final Iterator<IMessageHandler> iterator = this.handlers.iterator();
 			while(iterator.hasNext()) {
@@ -77,7 +81,9 @@ public final class MessageHandlerContext implements IContext {
 					iterator.remove();
 				}
 			}
-			LOGGER.debug("处理完成无效消息代理：{}", this.handlers.size());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("处理完成无效消息代理：{}-{}", this.handlers.size(), uselessList.size());
+			}
 		}
 		uselessList.forEach(IMessageHandler::close);
 	}

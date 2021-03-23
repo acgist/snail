@@ -64,14 +64,6 @@ public final class DhtContext implements IContext {
 	private DhtContext() {
 		this.token = this.buildToken();
 		this.requests = new LinkedList<>();
-		this.register();
-	}
-	
-	/**
-	 * <p>注册DHT服务</p>
-	 */
-	private void register() {
-		LOGGER.debug("注册DHT服务：定时任务");
 		SystemThreadContext.timerFixedDelay(
 			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,
 			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,

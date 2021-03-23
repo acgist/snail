@@ -162,7 +162,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * <p>DHT请求超时周期（分钟）：{@value}</p>
+	 * <p>DHT请求超时执行周期（分钟）：{@value}</p>
 	 */
 	public static final int DHT_REQUEST_TIMEOUT_INTERVAL = 10;
 	

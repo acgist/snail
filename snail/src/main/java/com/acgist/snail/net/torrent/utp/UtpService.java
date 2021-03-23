@@ -32,9 +32,9 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	}
 	
 	/**
-	 * <p>UTP超时定时任务执行周期（秒）：{@value}</p>
+	 * <p>UTP超时执行周期（秒）：{@value}</p>
 	 */
-	private static final int UTP_INTERVAL = 10;
+	private static final int UTP_TIMEOUT_INTERVAL = 10;
 	
 	/**
 	 * <p>连接ID</p>
@@ -59,22 +59,14 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	private UtpService() {
 		this.context = MessageHandlerContext.getInstance();
 		this.utpMessageHandlers = new ConcurrentHashMap<>();
-		this.register();
-	}
-	
-	/**
-	 * <p>注册UTP服务</p>
-	 */
-	private void register() {
-		LOGGER.debug("注册UTP服务：定时任务");
 		SystemThreadContext.timerFixedDelay(
-			UTP_INTERVAL,
-			UTP_INTERVAL,
+			UTP_TIMEOUT_INTERVAL,
+			UTP_TIMEOUT_INTERVAL,
 			TimeUnit.SECONDS,
 			this::timeout
 		);
 	}
-
+	
 	@Override
 	public void handle(DatagramChannel channel) {
 		this.channel = channel;
