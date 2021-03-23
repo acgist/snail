@@ -31,8 +31,6 @@ class VerifyTest extends Performance {
 		final String systemConfigPath = basePath + "snail/src/main/resources/config/system.properties";
 		final String parentPomVersion = xml(parentPomPath, "version");
 		this.log("当前版本：{}", parentPomVersion);
-		final String acgistVersion = xml(parentPomPath, "acgist.version");
-		assertEquals(parentPomVersion, acgistVersion);
 		final String snailPomVersion = xml(snailPomPath, "version");
 		assertEquals(parentPomVersion, snailPomVersion);
 		final String snailJavaFXPomVersion = xml(snailJavaFXPomPath, "version");
