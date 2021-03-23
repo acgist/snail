@@ -495,6 +495,7 @@
 		<system>Gitee Issues</system>
 	</issueManagement>
 	
+	<!-- mvn clean package deploy -P release -D skipTests -->
 	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<distributionManagement>
@@ -508,14 +509,6 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 			<name>Nexus Snapshot Repository</name>
 		</snapshotRepository>
-		<!-- Github需要关闭插件：gpg、nexus -->
-		<!--
-		<repository>
-			<id>github</id>
-			<url>https://maven.pkg.github.com/acgist/snail</url>
-			<name>Github Repository</name>
-		</repository>
-		-->
 	</distributionManagement>
 
 </project>
