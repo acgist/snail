@@ -19,7 +19,7 @@ public final class ThreadUtils {
 	 * <p>线程休眠</p>
 	 * <p>注意：sleep不释放锁，wait会释放锁。</p>
 	 * 
-	 * @param millis 休眠时间（单位：毫秒）
+	 * @param millis 休眠时间（毫秒）
 	 */
 	public static final void sleep(long millis) {
 		try {

@@ -10,7 +10,7 @@ import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
 public final class LocalServiceDiscoveryInitializer extends Initializer {
 
 	/**
-	 * <p>延迟时间（单位：秒）：{@value}</p>
+	 * <p>延迟时间（秒）：{@value}</p>
 	 */
 	private static final int DELAY = 6;
 	

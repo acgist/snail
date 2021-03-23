@@ -47,14 +47,6 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(TTL, lsdHost());
 		this.handle();
-		this.register();
-	}
-
-	/**
-	 * <p>注册本地发现服务</p>
-	 */
-	private void register() {
-		LOGGER.debug("注册本地发现服务：定时任务");
 		final int interval = SystemConfig.getLsdInterval();
 		SystemThreadContext.timerFixedDelay(
 			interval,

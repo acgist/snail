@@ -48,7 +48,7 @@ public final class DateUtils {
 	 * <p>格式化时间</p>
 	 * <p>保留两个时间单位</p>
 	 * 
-	 * @param seconds 时间（单位：秒）
+	 * @param seconds 时间（秒）
 	 * 
 	 * @return XX天XX小时、XX小时XX分钟、XX分钟XX秒
 	 */

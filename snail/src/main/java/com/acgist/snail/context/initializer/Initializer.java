@@ -23,7 +23,7 @@ public abstract class Initializer {
 	 */
 	private final String name;
 	/**
-	 * <p>延迟时间（单位：秒）</p>
+	 * <p>延迟时间（秒）</p>
 	 * 
 	 * @see #asyn()
 	 */
@@ -42,7 +42,7 @@ public abstract class Initializer {
 	 * <p>初始化器</p>
 	 * 
 	 * @param name 名称
-	 * @param delay 延迟时间（单位：秒）
+	 * @param delay 延迟时间（秒）
 	 */
 	protected Initializer(String name, int delay) {
 		this.name = name;
