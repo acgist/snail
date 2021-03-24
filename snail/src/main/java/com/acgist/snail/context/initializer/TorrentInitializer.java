@@ -23,9 +23,9 @@ public final class TorrentInitializer extends Initializer {
 	@Override
 	protected void init() {
 		PeerConfig.getInstance();
-		TorrentServer.getInstance();
-		PeerServer.getInstance();
 		UtpService.getInstance();
+		PeerServer.getInstance();
+		TorrentServer.getInstance();
 	}
 
 }

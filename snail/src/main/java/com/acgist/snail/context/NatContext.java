@@ -15,8 +15,6 @@ import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>NAT（内网穿透）上下文</p>
- * <p>已是公网IP不会进行内网穿透</p>
- * <p>优先使用UPNP进行端口映射，UPNP映射失败后使用STUN。</p>
  * 
  * @author acgist
  */
@@ -57,8 +55,7 @@ public final class NatContext implements IContext {
 	 */
 	private static final long UPNP_TIMEOUT = 4L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * <p>注册NAT执行周期（秒）：{@value}</p>
-	 * <p>如果NAT注册失败下次执行周期</p>
+	 * <p>注册NAT服务执行周期（秒）：{@value}</p>
 	 */
 	private static final int NAT_INTERVAL = 10;
 	
@@ -71,38 +68,35 @@ public final class NatContext implements IContext {
 	 */
 	private final Object upnpLock = new Object();
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private NatContext() {
 	}
 	
 	/**
 	 * <p>注册NAT服务</p>
 	 * <p>必须外部调用不能单例注册：导致不能唤醒</p>
+	 * <p>公网IP地址不用穿透，优先使用UPNP进行端口映射，如果映射失败使用STUN穿透。</p>
 	 */
 	public void register() {
 		if(this.type != Type.NONE) {
 			LOGGER.debug("注册NAT服务成功：{}", this.type);
 			return;
 		}
-		LOGGER.debug("注册NAT服务");
 		if(NetUtils.localIP(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp();
 			if(UpnpService.getInstance().useable()) {
-				LOGGER.debug("UPNP映射成功");
 				this.type = Type.UPNP;
 			} else {
-				LOGGER.debug("UPNP映射失败：使用STUN映射");
 				StunService.getInstance().mapping();
 			}
 			if(this.type == Type.NONE) {
-				LOGGER.info("注册NAT服务下次执行时间：{}", NAT_INTERVAL);
+				LOGGER.debug("注册NAT服务失败：{}", NAT_INTERVAL);
 				SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
+			} else {
+				LOGGER.debug("注册NAT服务成功：{}", this.type);
 			}
 		} else {
-			LOGGER.debug("已是公网IP地址：忽略NAT设置");
+			LOGGER.debug("注册NAT服务成功：已是公网IP地址");
 			SystemConfig.setExternalIPAddress(NetUtils.LOCAL_HOST_ADDRESS);
 			NodeContext.getInstance().buildNodeId(NetUtils.LOCAL_HOST_ADDRESS);
 		}
