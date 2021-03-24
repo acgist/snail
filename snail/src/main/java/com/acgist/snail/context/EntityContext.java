@@ -277,11 +277,13 @@ public final class EntityContext implements IContext {
 	 * <p>保存实体</p>
 	 */
 	public void persistent() {
-		LOGGER.debug("保存实体");
 		final List<Entity> list = new ArrayList<>();
 		synchronized (this) {
 			list.addAll(this.taskEntities);
 			list.addAll(this.configEntities);
+		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("保存实体：{}", list.size());
 		}
 		final File file = new File(ENTITY_FILE_PATH);
 		FileUtils.buildParentFolder(file);
