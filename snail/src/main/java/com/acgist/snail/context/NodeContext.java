@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
@@ -41,7 +42,7 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>Node查找时返回的Node列表长度：{@value}</p>
+	 * <p>Node查找时返回的列表长度：{@value}</p>
 	 */
 	private static final int MAX_NODE_SIZE = 8;
 	/**
@@ -62,19 +63,15 @@ public final class NodeContext implements IContext {
 	private static final int NODE_ID_RANDOM_LENGTH = 16;
 	
 	/**
-	 * <p>当前客户端的NodeId</p>
+	 * <p>NodeId</p>
 	 */
 	private final byte[] nodeId;
 	/**
 	 * <p>节点列表</p>
-	 * <p>不要使用LinkedList，大量使用索引操作所以性能很差。</p>
-	 * <p>如果节点数量很大建议使用其他数据结构</p>
+	 * <p>不要使用LinkedList：大量使用索引操作所以性能很差（如果节点数量很大建议使用其他数据结构）</p>
 	 */
 	private final List<NodeSession> nodes;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private NodeContext() {
 		this.nodeId = this.buildNodeId();
 		this.nodes = new ArrayList<>();
@@ -82,32 +79,32 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取系统NodeId</p>
+	 * <p>获取NodeId</p>
 	 * 
-	 * @return 系统NodeId
+	 * @return NodeId
 	 */
 	public byte[] nodeId() {
 		return this.nodeId;
 	}
 	
 	/**
-	 * <p>生成系统NodeId</p>
+	 * <p>生成NodeId</p>
 	 * 
-	 * @return 系统NodeId
+	 * @return NodeId
 	 */
 	private byte[] buildNodeId() {
 		return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
 	}
 
 	/**
-	 * <p>通过IP生成系统NodeId</p>
+	 * <p>通过IP生成NodeId</p>
 	 * 
 	 * @param ip IP
 	 * 
 	 * @return NodeId
 	 */
 	public byte[] buildNodeId(String ip) {
-		LOGGER.debug("生成系统NodeId：{}", ip);
+		LOGGER.debug("生成NodeId：{}", ip);
 		final byte[] mask;
 		final byte[] ipBytes = NetUtils.ipToBytes(ip);
 		if (ipBytes.length == NetUtils.IPV4_BYTES_LENGTH) {
@@ -141,9 +138,9 @@ public final class NodeContext implements IContext {
 		final var defaultNodes = DhtConfig.getInstance().nodes();
 		if(MapUtils.isNotEmpty(defaultNodes)) {
 			defaultNodes.forEach((nodeId, address) -> {
-				LOGGER.debug("注册默认DHT节点：{}-{}", nodeId, address);
-				final int index = address.lastIndexOf(':');
+				final int index = address.lastIndexOf(SymbolConfig.Symbol.COLON.toChar());
 				if(index != -1) {
+					LOGGER.debug("注册默认DHT节点：{}-{}", nodeId, address);
 					final String host = address.substring(0, index);
 					final String port = address.substring(index + 1);
 					if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
@@ -172,6 +169,8 @@ public final class NodeContext implements IContext {
 	 * <p>超过最大保存数量：删除验证节点和多余节点</p>
 	 * 
 	 * @return 所有节点拷贝
+	 * 
+	 * @see #nodes()
 	 */
 	public List<NodeSession> resize() {
 		synchronized (this.nodes) {
@@ -179,10 +178,9 @@ public final class NodeContext implements IContext {
 			if(size < DhtConfig.MAX_NODE_SIZE) {
 				return this.nodes();
 			}
-			LOGGER.debug("整理节点长度：{}", size);
+			NodeSession session;
 			final Random random = NumberUtils.random();
 			final Iterator<NodeSession> iterator = this.nodes.iterator();
-			NodeSession session;
 			while(iterator.hasNext()) {
 				session = iterator.next();
 				switch (session.getStatus()) {
@@ -193,6 +191,7 @@ public final class NodeContext implements IContext {
 					}
 					break;
 				case VERIFY:
+					// 验证状态剔除
 					iterator.remove();
 					break;
 				default:
@@ -200,13 +199,16 @@ public final class NodeContext implements IContext {
 					break;
 				}
 			}
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("整理节点长度：{}-{}", size, this.nodes.size());
+			}
 			return this.nodes();
 		}
 	}
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>先验证状态，通过验证后加入系统节点列表，设置为可用状态。</p>
+	 * <p>需要验证节点状态</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -217,7 +219,6 @@ public final class NodeContext implements IContext {
 		final DhtClient client = DhtClient.newInstance(host, port);
 		final NodeSession nodeSession = client.ping();
 		if(nodeSession != null) {
-			// 标记可用
 			nodeSession.setStatus(NodeSession.Status.AVAILABLE);
 		}
 		return nodeSession;
@@ -225,7 +226,7 @@ public final class NodeContext implements IContext {
 	
 	/**
 	 * <p>添加DHT节点</p>
-	 * <p>加入时不验证状态，使用时才验证。</p>
+	 * <p>不用验证节点状态</p>
 	 * 
 	 * @param nodeId 节点ID
 	 * @param host 地址
@@ -235,20 +236,19 @@ public final class NodeContext implements IContext {
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
 		synchronized (this.nodes) {
-			final int[] nodeIndex = this.selectNode(nodeId);
+			final int[] nodeIndex = this.close(nodeId);
 			final int index = nodeIndex[0];
 			final int signum = nodeIndex[1];
-			// 完全匹配
 			if(signum == 0) {
 				return this.nodes.get(index);
 			}
 			final NodeSession nodeSession = NodeSession.newInstance(nodeId, host, port);
 			if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
-				if(LOGGER.isDebugEnabled()) {
-					LOGGER.debug("添加Node：{}-{}-{}", StringUtils.hex(nodeId), nodeSession.getHost(), nodeSession.getPort());
-				}
+				LOGGER.debug("添加Node：{}", nodeSession);
 				// 添加指定节点位置
 				this.nodes.add(index, nodeSession);
+			} else {
+				LOGGER.debug("添加Node失败：{}", nodeSession);
 			}
 			return nodeSession;
 		}
@@ -267,7 +267,7 @@ public final class NodeContext implements IContext {
 	
 	/**
 	 * <p>查找节点列表</p>
-	 * <p>如果节点数据很大，可以优化算法，分片进行查询。</p>
+	 * <p>如果节点数据很大：可以使用分片查找或者二分查找算法</p>
 	 * 
 	 * @param target InfoHash或者NodeId
 	 * 
@@ -283,7 +283,7 @@ public final class NodeContext implements IContext {
 					.collect(Collectors.toList());
 			} else {
 				closeNodes = new ArrayList<>();
-				final int[] nodeIndex = this.selectNode(target);
+				final int[] nodeIndex = this.close(target);
 				final int index = nodeIndex[0];
 				int size = 0;
 				int leftPos = 0;
@@ -302,12 +302,12 @@ public final class NodeContext implements IContext {
 						// 前面添加防止乱序
 						closeNodes.add(0, leftNode);
 					}
+					leftPos++;
 					rightNode = this.select(index + rightPos, nodeSize);
 					if(rightNode.useable()) {
 						size++;
 						closeNodes.add(rightNode);
 					}
-					leftPos++;
 					rightPos++;
 				}
 			}
@@ -339,7 +339,7 @@ public final class NodeContext implements IContext {
 	 */
 	private NodeSession select(int index, int nodeSize) {
 		if(index < 0) {
-			index = nodeSize + index;
+			index = index + nodeSize;
 		} else if(index >= nodeSize) {
 			index = index - nodeSize;
 		}
@@ -364,14 +364,32 @@ public final class NodeContext implements IContext {
 	
 	/**
 	 * <p>查找最近节点信息</p>
-	 * <p>节点索引：最近节点索引</p>
-	 * <p>节点标记：等于零时表示完全匹配</p>
+	 * 
+	 * <table border="1">
+	 * 	<caption>节点标记</caption>
+	 * 	<tr>
+	 * 		<th>标记</th>
+	 * 		<th>描述</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>正数</td>
+	 * 		<td>节点索引ID小于返回节点ID</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>0</td>
+	 * 		<td>节点索引ID等于返回节点ID</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>负数</td>
+	 * 		<td>节点索引ID大于返回节点ID</td>
+	 * 	</tr>
+	 * </table>
 	 * 
 	 * @param nodeId 节点ID
 	 * 
-	 * @return 最近节点信息：节点索引、节点标记
+	 * @return 最近节点信息：[ 节点索引, 节点标记 ]
 	 */
-	private int[] selectNode(byte[] nodeId) {
+	private int[] close(byte[] nodeId) {
 		int index = 0;
 		int signum = 1;
 		NodeSession nodeSession;
@@ -379,7 +397,6 @@ public final class NodeContext implements IContext {
 			nodeSession = this.nodes.get(jndex);
 			signum = Arrays.compareUnsigned(nodeId, nodeSession.getId());
 			if(signum > 0) {
-				// 尾部添加
 				index = jndex + 1;
 			} else {
 				break;
