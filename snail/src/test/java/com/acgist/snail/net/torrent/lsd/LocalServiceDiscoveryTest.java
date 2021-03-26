@@ -32,10 +32,10 @@ class LocalServiceDiscoveryTest extends Performance {
 		entity.setSize(0L);
 		TorrentContext.getInstance().newTorrentSession(this.hashA, null).magnet(TaskSession.newInstance(entity));
 		assertNotNull(server);
-		while(!PeerContext.getInstance().hasPeerSession(this.hashA)) {
+		while(!PeerContext.getInstance().isNotEmpty(this.hashA)) {
 			ThreadUtils.sleep(1000);
 		}
-		assertTrue(PeerContext.getInstance().hasPeerSession(this.hashA));
+		assertTrue(PeerContext.getInstance().isNotEmpty(this.hashA));
 	}
 	
 	@Test

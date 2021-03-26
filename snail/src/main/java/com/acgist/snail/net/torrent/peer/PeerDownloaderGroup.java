@@ -121,7 +121,7 @@ public final class PeerDownloaderGroup {
 		final PeerContext peerContext = PeerContext.getInstance();
 		final String infoHashHex = this.torrentSession.infoHashHex();
 		while(this.taskSession.statusDownload()) {
-			if(peerContext.hasPeerSession(infoHashHex)) {
+			if(peerContext.isNotEmpty(infoHashHex)) {
 				break;
 			}
 			ThreadUtils.sleep(SystemConfig.ONE_SECOND_MILLIS);
