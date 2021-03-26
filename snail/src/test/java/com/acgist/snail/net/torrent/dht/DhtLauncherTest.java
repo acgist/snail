@@ -31,7 +31,7 @@ class DhtLauncherTest extends Performance {
 		PeerContext.getInstance().newPeerSession(infoHashHex, StatisticsContext.getInstance().statistics(), "128.0.0.1", 18888, Source.CONNECT);
 		launcher.run();
 		this.log(NodeContext.getInstance().nodes().size());
-		assertTrue(PeerContext.getInstance().hasPeerSession(infoHashHex));
+		assertTrue(PeerContext.getInstance().isNotEmpty(infoHashHex));
 	}
 	
 }
