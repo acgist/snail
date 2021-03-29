@@ -44,9 +44,6 @@ public final class TaskContext implements IContext {
 	 */
 	private final ProtocolContext protocolContext;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private TaskContext() {
 		this.tasks = new ArrayList<>(DownloadConfig.getSize());
 		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
@@ -82,7 +79,7 @@ public final class TaskContext implements IContext {
 				if(taskSession == null) {
 					throw new DownloadException("任务信息为空");
 				}
-				// 任务添加必须创建下载器
+				// 任务添加必须新建下载器
 				taskSession.buildDownloader();
 				if(this.tasks.contains(taskSession)) {
 					LOGGER.debug("任务已经存在：{}", taskSession.getName());
@@ -163,7 +160,7 @@ public final class TaskContext implements IContext {
 	 */
 	public void load() {
 		final EntityContext entityContext = EntityContext.getInstance();
-		// 加载异常删除重新创建数组
+		// 加载异常删除重新新建数组
 		final List<TaskEntity> list = entityContext.allTask();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.forEach(entity -> {

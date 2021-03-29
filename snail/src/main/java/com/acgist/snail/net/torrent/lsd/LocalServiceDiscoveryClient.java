@@ -36,7 +36,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	}
 
 	/**
-	 * <p>创建本地发现客户端</p>
+	 * <p>新建本地发现客户端</p>
 	 */
 	public static final LocalServiceDiscoveryClient newInstance() {
 		return new LocalServiceDiscoveryClient(NetUtils.buildSocketAddress(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT));
@@ -67,7 +67,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	}
 	
 	/**
-	 * <p>创建本地发现消息</p>
+	 * <p>新建本地发现消息</p>
 	 * 
 	 * @param infoHashs InfoHash数组
 	 * 

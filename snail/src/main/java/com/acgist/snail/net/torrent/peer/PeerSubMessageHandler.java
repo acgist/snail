@@ -1053,7 +1053,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	}
 	
 	/**
-	 * <p>发送扩展消息：pex</p>
+	 * <p>发送扩展消息：PEX</p>
 	 * 
 	 * @param bytes 消息
 	 * 
@@ -1115,7 +1115,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * <p>消息格式：length_prefix message_id payload</p>
 	 * <p>length_prefix：message_id.length + payload.length</p>
 	 * <p>message_id：{@linkplain Type 消息类型ID}</p>

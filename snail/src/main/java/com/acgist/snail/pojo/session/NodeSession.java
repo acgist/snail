@@ -65,7 +65,7 @@ public final class NodeSession implements Comparable<NodeSession> {
 	}
 	
 	/**
-	 * <p>创建DHT节点信息</p>
+	 * <p>新建DHT节点信息</p>
 	 * 
 	 * @param id 节点ID
 	 * @param host 节点地址

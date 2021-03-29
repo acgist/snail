@@ -107,7 +107,7 @@ public final class MagnetProtocol extends Protocol {
 	}
 	
 	/**
-	 * <p>创建下载目录</p>
+	 * <p>新建下载目录</p>
 	 */
 	private void buildFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile());

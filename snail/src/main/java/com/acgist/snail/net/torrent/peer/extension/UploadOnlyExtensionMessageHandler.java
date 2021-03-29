@@ -34,7 +34,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	}
 
 	/**
-	 * <p>创建uploadOnly扩展协议代理</p>
+	 * <p>新建uploadOnly扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param extensionMessageHandler 扩展消息代理

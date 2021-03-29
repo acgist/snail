@@ -161,9 +161,9 @@ public abstract class PeerConnect implements IPeerConnect {
 	}
 	
 	/**
-	 * <p>发送pex消息</p>
+	 * <p>发送PEX消息</p>
 	 * 
-	 * @param bytes Pex消息
+	 * @param bytes PEX消息
 	 * 
 	 * @see PeerSubMessageHandler#pex(byte[])
 	 */

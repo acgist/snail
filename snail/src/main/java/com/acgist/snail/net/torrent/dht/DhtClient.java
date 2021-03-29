@@ -28,7 +28,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建DHT客户端</p>
+	 * <p>新建DHT客户端</p>
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -40,7 +40,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建DHT客户端</p>
+	 * <p>新建DHT客户端</p>
 	 * 
 	 * @param socketAddress 地址
 	 * 

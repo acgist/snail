@@ -63,7 +63,7 @@ public final class KeyValueWrapper {
 	}
 
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @return {@link KeyValueWrapper}
 	 */
@@ -72,7 +72,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param content 解码数据
 	 * 
@@ -83,7 +83,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param data 编码数据
 	 * 
@@ -94,7 +94,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
@@ -106,7 +106,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
@@ -119,7 +119,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符

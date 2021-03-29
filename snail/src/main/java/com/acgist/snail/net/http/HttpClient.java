@@ -523,7 +523,7 @@ public final class HttpClient {
 	}
 	
 	/**
-	 * <p>创建请求连接</p>
+	 * <p>新建请求连接</p>
 	 * 
 	 * @param connectTimeout 连接超时时间（毫秒）
 	 * @param receiveTimeout 响应超时时间（毫秒）
@@ -593,9 +593,6 @@ public final class HttpClient {
 
 		private static final SnailHostnameVerifier INSTANCE = new SnailHostnameVerifier();
 		
-		/**
-		 * <p>禁止创建实例</p>
-		 */
 		private SnailHostnameVerifier() {
 		}
 		
@@ -616,9 +613,6 @@ public final class HttpClient {
 
 		private static final SnailTrustManager INSTANCE = new SnailTrustManager();
 
-		/**
-		 * <p>禁止创建实例</p>
-		 */
 		private SnailTrustManager() {
 		}
 		

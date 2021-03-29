@@ -75,7 +75,7 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * <p>创建请求队列</p>
+	 * <p>新建请求队列</p>
 	 */
 	private void buildQueues() {
 		for (int index = 0; index < QUEUE_SIZE; index++) {

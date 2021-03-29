@@ -50,7 +50,7 @@ public final class TorrentBuilder {
 	}
 	
 	/**
-	 * <p>创建种子文件Builder</p>
+	 * <p>新建种子文件Builder</p>
 	 * 
 	 * @param infoHash InfoHash
 	 * @param trackers Tracker服务器
@@ -62,7 +62,7 @@ public final class TorrentBuilder {
 	}
 	
 	/**
-	 * <p>创建种子文件</p>
+	 * <p>新建种子文件</p>
 	 * 
 	 * @param path 保存目录
 	 * 
@@ -77,7 +77,7 @@ public final class TorrentBuilder {
 	}
 
 	/**
-	 * <p>创建种子信息</p>
+	 * <p>新建种子信息</p>
 	 * 
 	 * @return 种子信息
 	 */

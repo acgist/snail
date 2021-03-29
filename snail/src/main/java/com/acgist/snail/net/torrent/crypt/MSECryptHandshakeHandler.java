@@ -173,7 +173,7 @@ public final class MSECryptHandshakeHandler {
 	}
 
 	/**
-	 * <p>创建加密代理</p>
+	 * <p>新建加密代理</p>
 	 * 
 	 * @param peerUnpackMessageCodec Peer消息处理器
 	 * @param peerSubMessageHandler Peer消息代理

@@ -33,7 +33,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 
 	/**
-	 * <p>创建HLS任务下载器</p>
+	 * <p>新建HLS任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 

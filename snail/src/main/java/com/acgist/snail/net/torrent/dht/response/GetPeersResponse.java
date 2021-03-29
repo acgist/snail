@@ -41,7 +41,7 @@ public final class GetPeersResponse extends DhtResponse {
 	}
 	
 	/**
-	 * <p>创建响应</p>
+	 * <p>新建响应</p>
 	 * 
 	 * @param request 请求
 	 * 
@@ -52,7 +52,7 @@ public final class GetPeersResponse extends DhtResponse {
 	}
 
 	/**
-	 * <p>创建响应</p>
+	 * <p>新建响应</p>
 	 * 
 	 * @param response 响应
 	 * 

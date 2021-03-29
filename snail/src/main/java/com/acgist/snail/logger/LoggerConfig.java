@@ -29,9 +29,6 @@ public final class LoggerConfig {
 		INSTANCE.init();
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private LoggerConfig() {
 	}
 	

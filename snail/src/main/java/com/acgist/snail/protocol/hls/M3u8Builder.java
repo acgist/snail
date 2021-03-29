@@ -152,7 +152,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建M3U8解析器</p>
+	 * <p>新建M3U8解析器</p>
 	 * 
 	 * @param file 描述文件
 	 * @param source 原始链接地址
@@ -170,7 +170,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建M3U8解析器</p>
+	 * <p>新建M3U8解析器</p>
 	 * 
 	 * @param content 描述信息
 	 * @param source 原始链接地址
@@ -257,7 +257,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建M3U8信息</p>
+	 * <p>新建M3U8信息</p>
 	 * 
 	 * @return {@link M3u8}
 	 * 
@@ -306,7 +306,7 @@ public final class M3u8Builder {
 	}
 
 	/**
-	 * <p>创建加密套件</p>
+	 * <p>新建加密套件</p>
 	 * 
 	 * @return 加密套件
 	 * 
@@ -335,7 +335,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建加密套件</p>
+	 * <p>新建加密套件</p>
 	 * 
 	 * @param iv IV
 	 * @param uri URI
@@ -357,7 +357,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建IV</p>
+	 * <p>新建IV</p>
 	 * 
 	 * @param iv IV
 	 * 
@@ -388,7 +388,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建序列号IV</p>
+	 * <p>新建序列号IV</p>
 	 * 
 	 * @return IV
 	 */
@@ -413,7 +413,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建加密套件</p>
+	 * <p>新建加密套件</p>
 	 * 
 	 * @param iv IV
 	 * @param secret 密钥
@@ -436,7 +436,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>创建多级M3U8链接</p>
+	 * <p>新建多级M3U8链接</p>
 	 * 
 	 * @return 多级M3U8链接
 	 */

@@ -48,7 +48,7 @@ public final class PropertyDescriptor {
 	}
 	
 	/**
-	 * <p>创建对象属性工具</p>
+	 * <p>新建对象属性工具</p>
 	 * 
 	 * @param instance 对象
 	 * 

@@ -21,7 +21,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * <p>创建菜单</p>
+	 * <p>新建菜单</p>
 	 * 
 	 * @param value 名称
 	 * 
@@ -32,7 +32,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * <p>创建菜单</p>
+	 * <p>新建菜单</p>
 	 * 
 	 * @param value 名称
 	 * @param icon 图标
@@ -51,7 +51,7 @@ public abstract class Menu extends ContextMenu {
 	}
 	
 	/**
-	 * <p>创建所有菜单</p>
+	 * <p>新建所有菜单</p>
 	 */
 	protected abstract void buildMenus();
 	

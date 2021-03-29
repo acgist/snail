@@ -32,7 +32,7 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建UTP客户端</p>
+	 * <p>新建UTP客户端</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param peerSubMessageHandler Peer消息代理

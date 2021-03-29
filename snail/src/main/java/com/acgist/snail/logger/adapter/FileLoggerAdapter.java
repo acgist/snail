@@ -40,7 +40,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	}
 
 	/**
-	 * <p>创建文件输出流</p>
+	 * <p>新建文件输出流</p>
 	 * 
 	 * @return 文件输出流
 	 */
@@ -76,7 +76,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	}
 	
 	/**
-	 * <p>创建日志文件</p>
+	 * <p>新建日志文件</p>
 	 * 
 	 * @return 日志文件
 	 */
@@ -88,7 +88,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 	}
 	
 	/**
-	 * <p>创建上级目录</p>
+	 * <p>新建上级目录</p>
 	 * 
 	 * @param file 日志文件
 	 */

@@ -108,7 +108,7 @@ public final class MagnetBuilder {
 		int index;
 		String key;
 		String value;
-		// 不能解码：空格创建URI抛出异常
+		// 不能解码：空格新建URI抛出异常
 		final URI uri = URI.create(this.url);
 		final String[] querys = uri.getSchemeSpecificPart().substring(1).split(SymbolConfig.Symbol.AND.toString());
 		for (String query : querys) {
@@ -132,7 +132,7 @@ public final class MagnetBuilder {
 		if(this.magnet.supportDownload()) {
 			return this.magnet;
 		}
-		throw new DownloadException("磁力链接创建失败：" + this.url);
+		throw new DownloadException("磁力链接新建失败：" + this.url);
 	}
 	
 	/**

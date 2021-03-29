@@ -28,9 +28,6 @@ public final class StunService {
 		return INSTANCE;
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private StunService() {
 	}
 

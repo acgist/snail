@@ -92,9 +92,6 @@ public final class SystemContext implements IContext {
 	 */
 	private final String osName;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private SystemContext() {
 		this.osName = System.getProperty("os.name");
 	}

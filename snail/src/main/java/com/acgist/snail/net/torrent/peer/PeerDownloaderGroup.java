@@ -19,7 +19,7 @@ import com.acgist.snail.utils.ThreadUtils;
 
 /**
  * <p>PeerDownloader组</p>
- * <p>主要功能：创建PeerDownloader、剔除劣质PeerDownloader</p>
+ * <p>主要功能：新建PeerDownloader、剔除劣质PeerDownloader</p>
  * 
  * @author acgist
  */
@@ -28,21 +28,21 @@ public final class PeerDownloaderGroup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerDownloaderGroup.class);
 	
 	/**
-	 * <p>同时创建PeerDownloader数量：{@value}</p>
+	 * <p>同时新建PeerDownloader数量：{@value}</p>
 	 * <p>如果TorrentSession是固定线程池：不要超过线程池的大小</p>
 	 */
 	private static final int BUILD_SIZE = 3;
 	/**
-	 * <p>单次创建PeerDownloader最大数量：{@value}</p>
+	 * <p>单次新建PeerDownloader最大数量：{@value}</p>
 	 */
 	private static final int MAX_BUILD_SIZE = 64;
 	
 	/**
-	 * <p>是否继续创建</p>
+	 * <p>是否继续新建</p>
 	 */
 	private final AtomicBoolean build;
 	/**
-	 * <p>创建信号量</p>
+	 * <p>新建信号量</p>
 	 */
 	private final Semaphore buildSemaphore;
 	/**
@@ -70,7 +70,7 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * <p>创建PeerDownloader组</p>
+	 * <p>新建PeerDownloader组</p>
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 
@@ -129,12 +129,12 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * <p>创建PeerDownloader列表</p>
+	 * <p>新建PeerDownloader列表</p>
 	 */
 	private void buildPeerDownloaders() {
-		LOGGER.debug("创建PeerDownloader");
+		LOGGER.debug("新建PeerDownloader");
 		int size = 0;
-		// 重置创建状态
+		// 重置新建状态
 		this.build.set(true);
 		// 重置信号量
 		this.buildSemaphore.drainPermits();
@@ -142,7 +142,7 @@ public final class PeerDownloaderGroup {
 		while(this.build.get()) {
 			this.acquire();
 			if(!this.build.get()) {
-				LOGGER.debug("不能继续创建PeerDownloader：退出循环");
+				LOGGER.debug("不能继续新建PeerDownloader：退出循环");
 				break;
 			}
 			this.torrentSession.submit(() -> {
@@ -150,22 +150,22 @@ public final class PeerDownloaderGroup {
 				try {
 					success = this.buildPeerDownloader();
 				} catch (Exception e) {
-					LOGGER.error("创建PeerDownloader异常", e);
+					LOGGER.error("新建PeerDownloader异常", e);
 				} finally {
 					this.release(success);
 				}
 			});
 			if(++size >= MAX_BUILD_SIZE) {
-				LOGGER.debug("不能继续创建PeerDownloader：超过单次创建最大数量");
+				LOGGER.debug("不能继续新建PeerDownloader：超过单次新建最大数量");
 				break;
 			}
 		}
 	}
 	
 	/**
-	 * <p>创建PeerDownloader</p>
+	 * <p>新建PeerDownloader</p>
 	 * 
-	 * @return 是否继续创建
+	 * @return 是否继续新建
 	 */
 	private boolean buildPeerDownloader() {
 		if(!this.taskSession.statusDownload()) {
@@ -288,9 +288,9 @@ public final class PeerDownloaderGroup {
 	}
 	
 	/**
-	 * <p>释放信号量：设置创建状态</p>
+	 * <p>释放信号量：设置新建状态</p>
 	 * 
-	 * @param build 是否继续创建
+	 * @param build 是否继续新建
 	 */
 	private void release(boolean build) {
 		this.build.set(build);

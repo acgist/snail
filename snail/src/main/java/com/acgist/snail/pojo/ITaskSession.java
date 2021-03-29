@@ -89,7 +89,7 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	IDownloader downloader();
 	
 	/**
-	 * <p>创建下载器</p>
+	 * <p>新建下载器</p>
 	 * 
 	 * @return 下载器
 	 * 

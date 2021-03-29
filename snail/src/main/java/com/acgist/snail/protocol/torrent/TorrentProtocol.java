@@ -116,7 +116,7 @@ public final class TorrentProtocol extends Protocol {
 	@Override
 	protected void release(boolean success) {
 		if(!success && this.torrentSession != null) {
-			// 删除创建文件
+			// 删除新建文件
 			FileUtils.delete(this.taskEntity.getFile());
 			// 清除种子信息
 			TorrentContext.getInstance().remove(this.torrentSession.infoHashHex());
@@ -152,7 +152,7 @@ public final class TorrentProtocol extends Protocol {
 	}
 	
 	/**
-	 * <p>创建下载目录</p>
+	 * <p>新建下载目录</p>
 	 */
 	private void buildFolder() {
 		FileUtils.buildFolder(this.taskEntity.getFile());

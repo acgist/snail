@@ -26,7 +26,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 
 	/**
-	 * <p>创建BT任务下载器</p>
+	 * <p>新建BT任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 

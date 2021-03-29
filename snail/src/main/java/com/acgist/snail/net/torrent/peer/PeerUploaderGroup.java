@@ -40,7 +40,7 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * <p>创建PeerUploader组</p>
+	 * <p>新建PeerUploader组</p>
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 
@@ -61,7 +61,7 @@ public final class PeerUploaderGroup {
 	}
 	
 	/**
-	 * <p>创建Peer接入连接</p>
+	 * <p>新建Peer接入连接</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param peerSubMessageHandler Peer消息代理

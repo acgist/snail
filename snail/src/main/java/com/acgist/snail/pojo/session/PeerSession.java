@@ -675,18 +675,18 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	}
 	
 	/**
-	 * <p>获取Pex来源</p>
+	 * <p>获取PEX来源</p>
 	 * 
-	 * @return Pex来源
+	 * @return PEX来源
 	 */
 	public PeerSession pexSource() {
 		return this.pexSource;
 	}
 	
 	/**
-	 * <p>设置Pex来源</p>
+	 * <p>设置PEX来源</p>
 	 * 
-	 * @param pexSource Pex来源
+	 * @param pexSource PEX来源
 	 */
 	public void pexSource(PeerSession pexSource) {
 		this.pexSource = pexSource;

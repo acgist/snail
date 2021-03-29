@@ -53,7 +53,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建M-SEARCH消息</p>
+	 * <p>新建M-SEARCH消息</p>
 	 * 
 	 * @return 消息
 	 */

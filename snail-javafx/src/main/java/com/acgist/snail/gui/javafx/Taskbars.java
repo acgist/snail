@@ -32,7 +32,7 @@ public final class Taskbars {
 	}
 	
 	/**
-	 * <p>创建助手</p>
+	 * <p>新建助手</p>
 	 * 
 	 * @param window 窗口
 	 * 

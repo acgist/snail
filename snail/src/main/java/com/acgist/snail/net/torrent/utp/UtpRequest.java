@@ -22,7 +22,7 @@ public final record UtpRequest(
 ) {
 
 	/**
-	 * <p>创建UTP请求</p>
+	 * <p>新建UTP请求</p>
 	 * 
 	 * @param buffer 请求数据
 	 * @param messageDecoder 消息处理器

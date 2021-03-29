@@ -77,7 +77,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建FTP客户端</p>
+	 * <p>新建FTP客户端</p>
 	 * 
 	 * @param host 服务器地址
 	 * @param port 服务器端口
@@ -92,7 +92,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 
 	/**
-	 * <p>创建FTP客户端</p>
+	 * <p>新建FTP客户端</p>
 	 * 
 	 * @param url 链接
 	 * 

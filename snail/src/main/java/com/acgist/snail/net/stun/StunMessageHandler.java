@@ -310,7 +310,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * <p>创建绑定消息</p>
+	 * <p>新建绑定消息</p>
 	 * 
 	 * @param messageType 消息类型
 	 * @param message 属性消息
@@ -322,7 +322,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param methodType 方法类型
 	 * @param messageType 消息类型
@@ -341,7 +341,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	}
 
 	/**
-	 * <p>创建属性消息</p>
+	 * <p>新建属性消息</p>
 	 * 
 	 * @param attributeType 属性类型
 	 * @param value 消息

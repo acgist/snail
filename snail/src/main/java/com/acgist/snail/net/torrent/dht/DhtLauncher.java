@@ -42,7 +42,7 @@ public final class DhtLauncher implements Runnable {
 	}
 	
 	/**
-	 * <p>创建DHT定时任务</p>
+	 * <p>新建DHT定时任务</p>
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 

@@ -720,7 +720,7 @@ public final class StatisticsController extends Controller {
 	}
 	
 	/**
-	 * <p>创建系统信息节点</p>
+	 * <p>新建系统信息节点</p>
 	 * 
 	 * @param name 名称
 	 * @param info 信息
@@ -739,7 +739,7 @@ public final class StatisticsController extends Controller {
 	}
 	
 	/**
-	 * <p>创建统计信息节点</p>
+	 * <p>新建统计信息节点</p>
 	 * 
 	 * @param message 统计信息
 	 * 
@@ -754,7 +754,7 @@ public final class StatisticsController extends Controller {
 	}
 	
 	/**
-	 * <p>创建画图颜色描述节点</p>
+	 * <p>新建画图颜色描述节点</p>
 	 * 
 	 * @param tabs 颜色描述
 	 * @param colors 颜色
@@ -774,7 +774,7 @@ public final class StatisticsController extends Controller {
 	}
 	
 	/**
-	 * <p>创建饼状图</p>
+	 * <p>新建饼状图</p>
 	 * 
 	 * @param title 标题
 	 * @param pieChartData 饼状图数据

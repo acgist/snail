@@ -84,7 +84,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	 */
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
-			throw new DownloadException("创建TaskSession失败（entity）");
+			throw new DownloadException("新建TaskSession失败（entity）");
 		}
 		return new TaskSession(entity);
 	}

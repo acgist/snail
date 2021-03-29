@@ -144,7 +144,7 @@ public final class TorrentSession {
 	 */
 	private TorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建TorrentSession失败（InfoHash）");
+			throw new DownloadException("新建TorrentSession失败（InfoHash）");
 		}
 		this.torrent = torrent;
 		this.infoHash = infoHash;
@@ -670,7 +670,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>创建已经下载Piece位图</p>
+	 * <p>新建已经下载Piece位图</p>
 	 * 
 	 * @return 已经下载Piece位图
 	 */
@@ -1021,7 +1021,7 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>创建Peer接入连接</p>
+	 * <p>新建Peer接入连接</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param peerSubMessageHandler Peer消息代理

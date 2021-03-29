@@ -366,7 +366,7 @@ public abstract class Protocol {
 	public abstract boolean available();
 	
 	/**
-	 * <p>创建下载器</p>
+	 * <p>新建下载器</p>
 	 * 
 	 * @param taskSession 下载任务
 	 * 
@@ -375,7 +375,7 @@ public abstract class Protocol {
 	public abstract IDownloader buildDownloader(ITaskSession taskSession);
 	
 	/**
-	 * <p>创建下载任务</p>
+	 * <p>新建下载任务</p>
 	 * 
 	 * @param url 下载链接
 	 * 
@@ -404,7 +404,7 @@ public abstract class Protocol {
 	}
 
 	/**
-	 * <p>创建下载任务</p>
+	 * <p>新建下载任务</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */

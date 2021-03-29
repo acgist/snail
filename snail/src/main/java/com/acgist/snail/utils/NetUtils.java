@@ -338,7 +338,7 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>创建Socket地址</p>
+	 * <p>新建Socket地址</p>
 	 * 
 	 * @param port 端口
 	 * 
@@ -349,7 +349,7 @@ public final class NetUtils {
 	}
 	
 	/**
-	 * <p>创建Socket地址</p>
+	 * <p>新建Socket地址</p>
 	 * <p>注意：如果HOST是域名可能出现DNS查询超时</p>
 	 * 
 	 * @param host 地址

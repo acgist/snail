@@ -115,7 +115,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>创建头部信息解析器</p>
+	 * <p>新建头部信息解析器</p>
 	 * 
 	 * @param content 头部信息
 	 * 
@@ -126,7 +126,7 @@ public class HeaderWrapper {
 	}
 
 	/**
-	 * <p>创建头部信息解析器</p>
+	 * <p>新建头部信息解析器</p>
 	 * 
 	 * @param headerSeparator 分隔符
 	 * @param headerPadding 填充符
@@ -139,7 +139,7 @@ public class HeaderWrapper {
 	}
 
 	/**
-	 * <p>创建头部信息构建器</p>
+	 * <p>新建头部信息构建器</p>
 	 * 
 	 * @param protocol 协议
 	 * 
@@ -150,7 +150,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>创建头部信息构建器</p>
+	 * <p>新建头部信息构建器</p>
 	 * 
 	 * @param protocol 协议
 	 * @param headers 头部信息
@@ -162,7 +162,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>创建头部信息构建器</p>
+	 * <p>新建头部信息构建器</p>
 	 * 
 	 * @param headerSeparator 分隔符
 	 * @param headerPadding 填充符
@@ -175,7 +175,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>创建头部信息构建器</p>
+	 * <p>新建头部信息构建器</p>
 	 * 
 	 * @param headerSeparator 分隔符
 	 * @param headerPadding 填充符
@@ -318,7 +318,7 @@ public class HeaderWrapper {
 	}
 	
 	/**
-	 * <p>创建头部信息文本</p>
+	 * <p>新建头部信息文本</p>
 	 * 
 	 * @return 头部信息文本
 	 */

@@ -51,7 +51,7 @@ public final class UtpWindowData {
 	}
 	
 	/**
-	 * <p>创建窗口数据</p>
+	 * <p>新建窗口数据</p>
 	 * 
 	 * @param seqnr 请求编号
 	 * @param timestamp 时间戳（微秒）

@@ -41,7 +41,7 @@ public final class DescriptionWrapper {
 	}
 
 	/**
-	 * <p>创建下载描述包装器</p>
+	 * <p>新建下载描述包装器</p>
 	 * 
 	 * @param list 选择文件列表
 	 * 
@@ -60,7 +60,7 @@ public final class DescriptionWrapper {
 	}
 	
 	/**
-	 * <p>创建下载描述包装器</p>
+	 * <p>新建下载描述包装器</p>
 	 * 
 	 * @param value 选择文件列表（B编码）
 	 * 

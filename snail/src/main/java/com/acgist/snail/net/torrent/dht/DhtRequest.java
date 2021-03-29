@@ -53,7 +53,7 @@ public class DhtRequest extends DhtMessage {
 	private DhtResponse response;
 	
 	/**
-	 * <p>创建请求</p>
+	 * <p>新建请求</p>
 	 * <p>生成NodeId</p>
 	 * 
 	 * @param q 请求类型

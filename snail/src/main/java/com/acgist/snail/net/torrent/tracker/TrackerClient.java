@@ -19,7 +19,7 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 	}
 	
 	/**
-	 * <p>创建Tracker客户端</p>
+	 * <p>新建Tracker客户端</p>
 	 * 
 	 * @param socketAddress 地址
 	 * 

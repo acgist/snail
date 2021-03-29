@@ -40,7 +40,7 @@ public final class TrackerLauncherGroup {
 	}
 	
 	/**
-	 * <p>创建Tracker执行器组</p>
+	 * <p>新建Tracker执行器组</p>
 	 * 
 	 * @param torrentSession BT任务信息
 	 * 
