@@ -21,7 +21,7 @@ public final class RecycleContext implements IContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecycleContext.class);
 	
 	/**
-	 * <p>回收站创建器</p>
+	 * <p>回收站构建器</p>
 	 */
 	private static final Function<String, Recycle> BUILDER;
 	
@@ -36,14 +36,11 @@ public final class RecycleContext implements IContext {
 		}
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private RecycleContext() {
 	}
 	
 	/**
-	 * <p>创建回收站</p>
+	 * <p>新建回收站</p>
 	 * 
 	 * @param path 文件路径
 	 * 

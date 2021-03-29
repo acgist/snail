@@ -118,18 +118,18 @@ public final class WindowsRecycle extends Recycle {
 	}
 
 	/**
-	 * <p>创建删除信息文件</p>
+	 * <p>新建删除信息文件</p>
 	 */
 	private void buildDeleteInfoFile() {
 		try {
 			FileUtils.write(this.deleteInfoFilePath, this.buildDeleteInfo());
 		} catch (IOException e) {
-			LOGGER.error("创建删除信息文件异常", e);
+			LOGGER.error("新建删除信息文件异常", e);
 		}
 	}
 	
 	/**
-	 * <p>创建删除信息</p>
+	 * <p>新建删除信息</p>
 	 * 
 	 * @return 删除信息
 	 * 

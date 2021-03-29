@@ -210,7 +210,7 @@ public final class GuiContext implements IContext {
 	}
 
 	/**
-	 * <p>创建窗口</p>
+	 * <p>新建窗口</p>
 	 * 
 	 * @return GuiContext
 	 */
