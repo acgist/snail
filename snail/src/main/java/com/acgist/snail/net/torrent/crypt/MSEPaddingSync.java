@@ -42,7 +42,7 @@ public final class MSEPaddingSync {
 	}
 	
 	/**
-	 * <p>创建同步工具</p>
+	 * <p>新建同步工具</p>
 	 * 
 	 * @param count Padding数据数量
 	 * 

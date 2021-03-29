@@ -31,7 +31,7 @@ public final class PeerClient extends TcpClient<PeerMessageHandler> {
 	}
 
 	/**
-	 * <p>创建Peer客户端</p>
+	 * <p>新建Peer客户端</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param peerSubMessageHandler Peer消息代理

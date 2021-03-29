@@ -77,7 +77,7 @@ public final class TorrentController extends Controller {
 	}
 
 	/**
-	 * <p>创建文件选择树形菜单</p>
+	 * <p>新建文件选择树形菜单</p>
 	 * 
 	 * @param taskSession 任务信息
 	 */
@@ -101,7 +101,7 @@ public final class TorrentController extends Controller {
 	}
 	
 	/**
-	 * <p>创建树形菜单</p>
+	 * <p>新建树形菜单</p>
 	 * 
 	 * @return 树形菜单
 	 */

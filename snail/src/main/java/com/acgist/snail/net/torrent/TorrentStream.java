@@ -145,7 +145,7 @@ public final class TorrentStream {
 		if(LOGGER.isDebugEnabled()) {
 			final int downloadPieceSize = this.pieces.cardinality();
 			LOGGER.debug("""
-				创建文件流：{}
+				新建文件流：{}
 				文件大小：{}
 				Piece大小：{}
 				文件开始偏移：{}
@@ -170,7 +170,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>创建文件流</p>
+	 * <p>新建文件流</p>
 	 * 
 	 * @param pieceLength Piece大小
 	 * @param path 文件路径
@@ -188,7 +188,7 @@ public final class TorrentStream {
 	}
 	
 	/**
-	 * <p>创建文件流</p>
+	 * <p>新建文件流</p>
 	 * 
 	 * @return 文件流
 	 * 
@@ -199,7 +199,7 @@ public final class TorrentStream {
 		try {
 			return new RandomAccessFile(this.filePath, STREAM_MODE);
 		} catch (FileNotFoundException e) {
-			throw new DownloadException("创建文件流失败：" + this.filePath, e);
+			throw new DownloadException("新建文件流失败：" + this.filePath, e);
 		}
 	}
 	
@@ -294,7 +294,7 @@ public final class TorrentStream {
 				verify = false;
 				end = this.lastPiecePos();
 			}
-			// 快速循环挑选Piece：创建Piece数据消耗性能
+			// 快速循环挑选Piece：新建Piece数据消耗性能
 			final byte[] hash = this.torrentStreamGroup.pieceHash(index);
 			return TorrentPiece.newInstance(this.pieceLength, index, begin, end, hash, verify);
 		}

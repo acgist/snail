@@ -65,14 +65,14 @@ class HttpClientTest extends Performance {
 			try {
 				URI.create(url).toURL();
 			} catch (MalformedURLException e) {
-				this.log("创建URL异常", e);
+				this.log("新建URL异常", e);
 			}
 		});
 		this.costed(100000, () -> {
 			try {
 				new URL(url);
 			} catch (MalformedURLException e) {
-				this.log("创建URL异常", e);
+				this.log("新建URL异常", e);
 			}
 		});
 	}

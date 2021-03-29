@@ -29,7 +29,7 @@ public final record ScrapeMessage (
 ) {
 	
 	/**
-	 * <p>创建Tracker刮擦响应消息</p>
+	 * <p>新建Tracker刮擦响应消息</p>
 	 * 
 	 * @param id ID
 	 * @param seeder 做种Peer数量

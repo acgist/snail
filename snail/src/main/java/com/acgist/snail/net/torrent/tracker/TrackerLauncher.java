@@ -57,7 +57,7 @@ public final class TrackerLauncher {
 	}
 	
 	/**
-	 * <p>创建TrackerLauncher</p>
+	 * <p>新建TrackerLauncher</p>
 	 * 
 	 * @param session Tracker信息
 	 * @param torrentSession BT任务信息

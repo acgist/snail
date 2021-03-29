@@ -30,7 +30,7 @@ public abstract class GuiEvent {
 		 */
 		EXIT,
 		/**
-		 * <p>创建窗口</p>
+		 * <p>新建窗口</p>
 		 */
 		BUILD,
 		/**

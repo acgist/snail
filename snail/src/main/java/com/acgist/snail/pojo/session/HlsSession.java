@@ -85,7 +85,7 @@ public final class HlsSession {
 	}
 	
 	/**
-	 * <p>创建HLS任务信息</p>
+	 * <p>新建HLS任务信息</p>
 	 * 
 	 * @param m3u8 M3U8
 	 * @param taskSession 任务信息

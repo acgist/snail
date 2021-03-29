@@ -197,7 +197,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param bitSet 数据
 	 * 
@@ -208,7 +208,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param length 数据长度
 	 * @param bitSets 数据数组
@@ -221,7 +221,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param wh 填充高宽
 	 * @param col 列数
@@ -236,7 +236,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param wh 填充高宽
 	 * @param col 列数
@@ -252,7 +252,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param wh 填充高宽
 	 * @param col 列数
@@ -269,7 +269,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建工具</p>
+	 * <p>新建工具</p>
 	 * 
 	 * @param wh 填充高宽
 	 * @param col 列数
@@ -305,7 +305,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建画布、画笔，画出背景和边框。</p>
+	 * <p>新建画布、画笔，画出背景和边框。</p>
 	 * 
 	 * @return CanvasPainter
 	 */
@@ -314,7 +314,7 @@ public final class CanvasPainter {
 	}
 	
 	/**
-	 * <p>创建画布、画笔，画出背景和边框。</p>
+	 * <p>新建画布、画笔，画出背景和边框。</p>
 	 * 
 	 * @param canvas 画布
 	 * 
@@ -326,7 +326,7 @@ public final class CanvasPainter {
 			this.width = this.col * (this.wh + BORDER_WH) + BORDER_WH;
 			// 高度：行数 * (高度 + 边框) + 底边框
 			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH;
-			// 创建画布
+			// 新建画布
 			this.canvas = new Canvas(this.width, this.height);
 			if(this.mouseSelect != null) {
 				this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
@@ -336,7 +336,7 @@ public final class CanvasPainter {
 		} else {
 			this.canvas = canvas;
 		}
-		// 创建画笔
+		// 新建画笔
 		this.graphics = this.canvas.getGraphicsContext2D();
 		this.drawBackground();
 		this.drawBorder();
@@ -499,7 +499,7 @@ public final class CanvasPainter {
 	 * @return 画布
 	 */
 	public Canvas canvas() {
-		Objects.requireNonNull(this.canvas, "没有创建画布");
+		Objects.requireNonNull(this.canvas, "没有新建画布");
 		return this.canvas;
 	}
 	

@@ -26,7 +26,7 @@ public final class PeerDownloader extends PeerConnect {
 	}
 	
 	/**
-	 * <p>创建Peer下载</p>
+	 * <p>新建Peer下载</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
@@ -93,7 +93,7 @@ public final class PeerDownloader extends PeerConnect {
 	private boolean holepunchConnect(boolean utpRetry) {
 		// Peer不可以直接连接：使用holepunch协议连接
 		if(!this.peerSession.outgo()) {
-			// 中继：Pex来源
+			// 中继：PEX来源
 			final PeerSession pexSource = this.peerSession.pexSource();
 			if(
 				pexSource != null &&

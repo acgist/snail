@@ -56,7 +56,7 @@ public final class TorrentSelector {
 	}
 	
 	/**
-	 * <p>创建BT任务下载文件选择器</p>
+	 * <p>新建BT任务下载文件选择器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param download 下载按钮
@@ -69,7 +69,7 @@ public final class TorrentSelector {
 	}
 
 	/**
-	 * <p>创建文件菜单</p>
+	 * <p>新建文件菜单</p>
 	 * 
 	 * @param torrentFile 文件
 	 */
@@ -82,7 +82,7 @@ public final class TorrentSelector {
 			// 包含路径
 			final StringBuilder parentPath = new StringBuilder("");
 			final String[] paths = path.split(TorrentFile.SEPARATOR);
-			// 创建路径菜单：数量大时forEach效率很低
+			// 新建路径菜单：数量大时forEach效率很低
 			for (int index = 0; index < paths.length - 1; index++) {
 				final String value = paths[index];
 				parentPath.append(value).append(TorrentFile.SEPARATOR);
@@ -90,12 +90,12 @@ public final class TorrentSelector {
 			}
 			fileName = paths[paths.length - 1];
 		}
-		// 创建文件菜单
+		// 新建文件菜单
 		this.buildTreeItem(parent, path, fileName, size);
 	}
 	
 	/**
-	 * <p>创建文件菜单</p>
+	 * <p>新建文件菜单</p>
 	 * 
 	 * @param parent 上级节点
 	 * @param path 文件路径
@@ -107,7 +107,7 @@ public final class TorrentSelector {
 	private TreeItem<HBox> buildTreeItem(TreeItem<HBox> parent, String path, String name, Long size) {
 		final Selector oldSelector = this.selectors.get(path);
 		if(oldSelector != null) {
-			// 如果已经创建跳过（路径菜单可能重复）
+			// 如果已经新建跳过（路径菜单可能重复）
 			return oldSelector.getTreeItem();
 		}
 		final CheckBox nameCheckBox = new CheckBox(name);

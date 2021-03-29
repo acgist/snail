@@ -11,7 +11,7 @@ import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import javafx.application.Platform;
 
 /**
- * <p>GUI创建窗口事件</p>
+ * <p>GUI新建窗口事件</p>
  * 
  * @author acgist
  */
@@ -30,7 +30,7 @@ public final class BuildEvent extends BuildEventAdapter {
 	
 	@Override
 	protected void executeNative(Object ... args) {
-		LOGGER.debug("创建GUI窗口");
+		LOGGER.debug("新建GUI窗口");
 		Platform.startup(() -> {});
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();

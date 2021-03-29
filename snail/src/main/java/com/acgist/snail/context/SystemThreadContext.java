@@ -92,9 +92,6 @@ public final class SystemThreadContext implements IContext {
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
 	}
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private SystemThreadContext() {
 	}
 	
@@ -156,7 +153,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建固定线程池</p>
+	 * <p>新建固定线程池</p>
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param maxPoolSize 最大线程数量
@@ -178,7 +175,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建缓存线程池</p>
+	 * <p>新建缓存线程池</p>
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param keepAliveTime 线程空闲时间（秒）
@@ -198,7 +195,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建定时线程池</p>
+	 * <p>新建定时线程池</p>
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param name 线程池名称
@@ -213,7 +210,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建线程池工厂</p>
+	 * <p>新建线程池工厂</p>
 	 * 
 	 * @param poolName 线程池名称
 	 * 

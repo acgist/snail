@@ -55,7 +55,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建holepunch扩展协议代理</p>
+	 * <p>新建holepunch扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
@@ -248,7 +248,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param host Peer地址
@@ -263,7 +263,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param host Peer地址

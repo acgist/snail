@@ -147,7 +147,7 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>创建发送窗口</p>
+	 * <p>新建发送窗口</p>
 	 * 
 	 * @return {@link UtpWindow}
 	 */
@@ -156,7 +156,7 @@ public final class UtpWindow {
 	}
 	
 	/**
-	 * <p>创建接收窗口</p>
+	 * <p>新建接收窗口</p>
 	 * 
 	 * @param messageDecoder 窗口消息处理器
 	 * 
@@ -213,7 +213,7 @@ public final class UtpWindow {
 			// 最后发送时间
 			this.timestamp = DateUtils.timestampUs();
 			final UtpWindowData windowData = this.storage(this.timestamp, this.seqnr, data);
-			// 创建完成递增
+			// 新建完成递增
 			this.seqnr++;
 			return windowData;
 		}

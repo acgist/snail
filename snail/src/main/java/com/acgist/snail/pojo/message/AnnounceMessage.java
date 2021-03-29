@@ -41,7 +41,7 @@ public final record AnnounceMessage (
 ) {
 	
 	/**
-	 * <p>创建UDP Tracker声明响应消息</p>
+	 * <p>新建UDP Tracker声明响应消息</p>
 	 * 
 	 * @param id ID
 	 * @param interval 下次请求等待时间
@@ -59,7 +59,7 @@ public final record AnnounceMessage (
 	}
 	
 	/**
-	 * <p>创建HTTP Tracker声明响应消息</p>
+	 * <p>新建HTTP Tracker声明响应消息</p>
 	 * 
 	 * @param id ID
 	 * @param trackerId TrackerId

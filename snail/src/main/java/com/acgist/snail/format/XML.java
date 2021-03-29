@@ -49,14 +49,11 @@ public final class XML {
 	 */
 	private Document document;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private XML() {
 	}
 	
 	/**
-	 * <p>创建XML</p>
+	 * <p>新建XML</p>
 	 * 
 	 * @return XML
 	 */
@@ -66,7 +63,7 @@ public final class XML {
 		try {
 			xml.document = factory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("创建XML异常", e);
+			LOGGER.error("新建XML异常", e);
 		}
 		return xml;
 	}
@@ -109,7 +106,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建文档创建工厂</p>
+	 * <p>新建文档构造工厂</p>
 	 * 
 	 * @return {@link DocumentBuilderFactory}
 	 */
@@ -124,7 +121,7 @@ public final class XML {
 			factory.setXIncludeAware(false);
 			factory.setExpandEntityReferences(false);
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("创建DocumentBuilderFactory异常", e);
+			LOGGER.error("新建DocumentBuilderFactory异常", e);
 		}
 		return factory;
 	}
@@ -137,7 +134,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建节点</p>
+	 * <p>新建节点</p>
 	 * 
 	 * @param node 上级节点
 	 * @param name 节点名称
@@ -151,7 +148,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建节点</p>
+	 * <p>新建节点</p>
 	 * 
 	 * @param node 上级节点
 	 * @param name 节点名称
@@ -166,7 +163,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建节点</p>
+	 * <p>新建节点</p>
 	 * 
 	 * @param node 上级节点
 	 * @param name 节点名称
@@ -181,7 +178,7 @@ public final class XML {
 	}
 	
 	/**
-	 * <p>创建节点</p>
+	 * <p>新建节点</p>
 	 * 
 	 * @param node 上级节点
 	 * @param name 节点名称

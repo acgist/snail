@@ -16,7 +16,7 @@ public final class PingRequest extends DhtRequest {
 	}
 	
 	/**
-	 * <p>创建请求</p>
+	 * <p>新建请求</p>
 	 * 
 	 * @return 请求
 	 */

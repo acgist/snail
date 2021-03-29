@@ -169,7 +169,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * 
@@ -180,7 +180,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param body 消息内容
@@ -192,7 +192,7 @@ public class ApplicationMessage {
 	}
 	
 	/**
-	 * <p>创建响应消息</p>
+	 * <p>新建响应消息</p>
 	 * 
 	 * @param body 消息内容
 	 * 

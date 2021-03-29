@@ -151,7 +151,7 @@ public final class TorrentContext implements IContext {
 	 */
 	private TorrentSession newTorrentSession(InfoHash infoHash, Torrent torrent) throws DownloadException {
 		if(infoHash == null) {
-			throw new DownloadException("创建TorrentSession失败（InfoHash为空）");
+			throw new DownloadException("新建TorrentSession失败（InfoHash为空）");
 		}
 		final String infoHashHex = infoHash.infoHashHex();
 		var torrentSession = this.torrentSessions.get(infoHashHex);

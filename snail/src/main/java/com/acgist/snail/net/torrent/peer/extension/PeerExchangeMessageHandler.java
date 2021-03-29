@@ -77,7 +77,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * <p>创建PEX扩展协议代理</p>
+	 * <p>新建PEX扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer
 	 * @param torrentSession BT任务信息
@@ -95,17 +95,17 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * <p>发送消息：pex</p>
+	 * <p>发送消息：PEX</p>
 	 * 
 	 * @param bytes 消息
 	 */
 	public void pex(byte[] bytes) {
-		LOGGER.debug("发送pex消息");
+		LOGGER.debug("发送PEX消息");
 		this.pushMessage(bytes);
 	}
 	
 	/**
-	 * <p>处理消息：pex</p>
+	 * <p>处理消息：PEX</p>
 	 * 
 	 * @param buffer 消息
 	 * 
@@ -114,12 +114,12 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 * TODO：IPv6
 	 */
 	private void pex(ByteBuffer buffer) throws PacketSizeException {
-		LOGGER.debug("处理pex消息");
+		LOGGER.debug("处理PEX消息");
 		final var decoder = BEncodeDecoder.newInstance(buffer);
 		decoder.nextMap();
 		if(decoder.isEmpty()) {
 			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("处理pex消息错误（格式）：{}", decoder.oddString());
+				LOGGER.warn("处理PEX消息错误（格式）：{}", decoder.oddString());
 			}
 			return;
 		}
@@ -145,7 +145,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	}
 	
 	/**
-	 * <p>创建pex消息</p>
+	 * <p>新建PEX消息</p>
 	 * 
 	 * @param optimize 优质Peer列表
 	 * 

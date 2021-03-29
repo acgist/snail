@@ -173,7 +173,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>创建扩展协议代理</p>
+	 * <p>新建扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息
@@ -340,7 +340,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>发送pex消息</p>
+	 * <p>发送PEX消息</p>
 	 * 
 	 * @param bytes 消息
 	 * 
@@ -353,7 +353,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>处理pex消息</p>
+	 * <p>处理PEX消息</p>
 	 * 
 	 * @param buffer 消息
 	 * 
@@ -490,7 +490,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	}
 	
 	/**
-	 * <p>创建扩展消息</p>
+	 * <p>新建扩展消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param bytes 消息数据

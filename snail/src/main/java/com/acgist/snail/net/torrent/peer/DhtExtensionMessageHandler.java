@@ -47,7 +47,7 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	}
 
 	/**
-	 * <p>创建DHT扩展协议代理</p>
+	 * <p>新建DHT扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息

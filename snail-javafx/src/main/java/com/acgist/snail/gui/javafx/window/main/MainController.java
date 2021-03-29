@@ -139,7 +139,7 @@ public final class MainController extends Controller {
 	}
 
 	/**
-	 * <p>创建没有下载任务时的提示信息</p>
+	 * <p>新建没有下载任务时的提示信息</p>
 	 * 
 	 * @return 提示信息
 	 */

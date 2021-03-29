@@ -246,7 +246,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>发送pex消息</p>
+	 * <p>发送PEX消息</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
@@ -258,7 +258,7 @@ public final class PeerContext implements IContext {
 			.collect(Collectors.toList());
 		final byte[] message = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(ArrayUtils.isEmpty(message)) {
-			LOGGER.debug("发送pex消息失败：没有数据");
+			LOGGER.debug("发送PEX消息失败：没有数据");
 			return;
 		}
 		sessions.forEach(session -> {
@@ -268,7 +268,7 @@ public final class PeerContext implements IContext {
 			}
 		});
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送pex消息：{}", sessions.size());
+			LOGGER.debug("发送PEX消息：{}", sessions.size());
 		}
 	}
 	

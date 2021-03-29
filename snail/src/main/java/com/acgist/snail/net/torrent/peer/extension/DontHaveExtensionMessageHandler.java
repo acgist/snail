@@ -31,7 +31,7 @@ public final class DontHaveExtensionMessageHandler extends ExtensionTypeMessageH
 	}
 
 	/**
-	 * <p>创建dontHave扩展协议代理</p>
+	 * <p>新建dontHave扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param extensionMessageHandler 扩展协议代理

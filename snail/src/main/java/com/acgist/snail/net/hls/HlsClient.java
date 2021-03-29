@@ -177,7 +177,7 @@ public final class HlsClient implements Runnable {
 	}
 
 	/**
-	 * <p>创建{@linkplain #input 输入流}</p>
+	 * <p>新建{@linkplain #input 输入流}</p>
 	 * 
 	 * @param downloadSize 已经下载大小
 	 * 
@@ -195,12 +195,12 @@ public final class HlsClient implements Runnable {
 			this.range = headers.range();
 			this.input = Channels.newChannel(client.response());
 		} else {
-			throw new NetException("HLS客户端输入流创建失败");
+			throw new NetException("HLS客户端输入流新建失败");
 		}
 	}
 	
 	/**
-	 * <p>创建{@linkplain #output 输出流}</p>
+	 * <p>新建{@linkplain #output 输出流}</p>
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -217,7 +217,7 @@ public final class HlsClient implements Runnable {
 			}
 			this.output = Channels.newChannel(outputStream);
 		} catch (FileNotFoundException e) {
-			throw new NetException("HLS客户端输出流创建失败", e);
+			throw new NetException("HLS客户端输出流新建失败", e);
 		}
 	}
 

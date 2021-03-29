@@ -43,7 +43,7 @@ public final class UpnpRequest {
 	}
 	
 	/**
-	 * <p>创建请求</p>
+	 * <p>新建请求</p>
 	 * 
 	 * @param serviceType 服务类型
 	 * 

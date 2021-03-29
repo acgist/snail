@@ -122,7 +122,7 @@ public final class TorrentStreamGroup {
 	}
 	
 	/**
-	 * <p>创建文件流组</p>
+	 * <p>新建文件流组</p>
 	 * 
 	 * @param folder 任务下载目录
 	 * @param files 任务文件列表
@@ -214,7 +214,7 @@ public final class TorrentStreamGroup {
 						}
 					}
 				} catch (Exception e) {
-					LOGGER.error("创建TorrentStream异常：{}", filePath, e);
+					LOGGER.error("新建TorrentStream异常：{}", filePath, e);
 				}
 				pos += fileSize;
 			}

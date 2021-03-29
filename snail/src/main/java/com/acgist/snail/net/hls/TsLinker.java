@@ -63,7 +63,7 @@ public final class TsLinker {
 	}
 	
 	/**
-	 * <p>创建TS连接器</p>
+	 * <p>新建TS连接器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param path 文件路径

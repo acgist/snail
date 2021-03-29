@@ -39,7 +39,7 @@ public final class TcpAcceptHandler<T extends TcpMessageHandler> implements Comp
 	}
 	
 	/**
-	 * <p>创建TCP消息接收代理</p>
+	 * <p>新建TCP消息接收代理</p>
 	 * 
 	 * @param <T> 消息代理类型
 	 * 

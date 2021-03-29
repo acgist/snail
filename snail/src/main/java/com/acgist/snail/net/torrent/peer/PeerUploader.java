@@ -27,7 +27,7 @@ public final class PeerUploader extends PeerConnect {
 	}
 	
 	/**
-	 * <p>创建Peer接入</p>
+	 * <p>新建Peer接入</p>
 	 * 
 	 * @param peerSession Peer信息
 	 * @param torrentSession BT任务信息

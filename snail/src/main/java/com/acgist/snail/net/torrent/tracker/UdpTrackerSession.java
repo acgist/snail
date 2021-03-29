@@ -70,7 +70,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建UDP Tracker信息</p>
+	 * <p>新建UDP Tracker信息</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -153,7 +153,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建连接消息</p>
+	 * <p>新建连接消息</p>
 	 * 
 	 * @return 连接消息
 	 */
@@ -189,7 +189,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建刮擦消息</p>
+	 * <p>新建刮擦消息</p>
 	 * 
 	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息

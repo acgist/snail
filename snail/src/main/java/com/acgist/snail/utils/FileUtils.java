@@ -371,7 +371,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建上级目录</p>
+	 * <p>新建上级目录</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -382,7 +382,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建目录</p>
+	 * <p>新建目录</p>
 	 * 
 	 * @param path 文件路径
 	 * 
@@ -393,7 +393,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建上级目录</p>
+	 * <p>新建上级目录</p>
 	 * 
 	 * @param file 文件
 	 * 
@@ -404,7 +404,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * <p>创建目录</p>
+	 * <p>新建目录</p>
 	 * 
 	 * @param file 文件
 	 */

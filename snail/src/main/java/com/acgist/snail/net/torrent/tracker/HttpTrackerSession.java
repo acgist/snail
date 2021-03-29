@@ -64,7 +64,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 
 	/**
-	 * <p>创建HTTP Tracker信息</p>
+	 * <p>新建HTTP Tracker信息</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -152,7 +152,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 	
 	/**
-	 * <p>创建刮擦消息</p>
+	 * <p>新建刮擦消息</p>
 	 * 
 	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息

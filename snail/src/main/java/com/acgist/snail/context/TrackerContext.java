@@ -263,7 +263,7 @@ public final class TrackerContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建TrackerSession列表</p>
+	 * <p>新建TrackerSession列表</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
@@ -284,7 +284,7 @@ public final class TrackerContext implements IContext {
 	}
 
 	/**
-	 * <p>创建TrackerSession列表</p>
+	 * <p>新建TrackerSession列表</p>
 	 * 
 	 * @param announceUrls 声明地址集合
 	 * 
@@ -311,8 +311,7 @@ public final class TrackerContext implements IContext {
 	}
 	
 	/**
-	 * <p>创建TrackerSession</p>
-	 * <p>通过传入的声明地址创建TrackerSession，如果没有被创建则创建TrackerSession并返回，反之直接返回已经创建的TrackerSession。</p>
+	 * <p>新建TrackerSession</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -327,6 +326,7 @@ public final class TrackerContext implements IContext {
 		final Optional<TrackerSession> optional = this.trackerSessions.values().stream()
 			.filter(client -> client.equalsAnnounceUrl(announceUrl))
 			.findFirst();
+		// 已经存在直接返回
 		if(optional.isPresent()) {
 			return optional.get();
 		}
@@ -337,8 +337,7 @@ public final class TrackerContext implements IContext {
 	}
 
 	/**
-	 * <p>创建TrackerSession代理</p>
-	 * <p>如果第一次创建失败将链接使用URL解码后再次创建</p>
+	 * <p>新建TrackerSession代理</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -359,7 +358,7 @@ public final class TrackerContext implements IContext {
 	}
 
 	/**
-	 * <p>创建TrackerSession</p>
+	 * <p>新建TrackerSession</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 

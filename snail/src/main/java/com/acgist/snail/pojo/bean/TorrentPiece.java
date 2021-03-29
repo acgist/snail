@@ -82,7 +82,7 @@ public final class TorrentPiece {
 	}
 
 	/**
-	 * <p>创建Piece下载信息</p>
+	 * <p>新建Piece下载信息</p>
 	 * 
 	 * @param pieceLength Piece大小
 	 * @param index Piece索引

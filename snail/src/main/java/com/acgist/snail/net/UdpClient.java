@@ -17,7 +17,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends Client<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpClient.class);
 	
 	/**
-	 * <p>创建客户端时自动打开通道</p>
+	 * <p>新建客户端时自动打开通道</p>
 	 * 
 	 * @param name 客户端名称
 	 * @param handler 消息代理

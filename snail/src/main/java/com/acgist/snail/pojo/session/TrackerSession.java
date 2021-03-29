@@ -155,7 +155,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	public abstract void scrape(Integer sid, TorrentSession torrentSession) throws NetException;
 	
 	/**
-	 * <p>创建声明消息</p>
+	 * <p>新建声明消息</p>
 	 * 
 	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息
@@ -181,7 +181,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 	}
 	
 	/**
-	 * <p>创建声明消息</p>
+	 * <p>新建声明消息</p>
 	 * 
 	 * @param sid {@link TrackerLauncher#id()}
 	 * @param torrentSession BT任务信息

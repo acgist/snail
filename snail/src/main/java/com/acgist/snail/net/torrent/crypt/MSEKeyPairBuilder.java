@@ -28,14 +28,11 @@ public final class MSEKeyPairBuilder {
 	 */
 	private static final String FORMAT = "MSE";
 
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private MSEKeyPairBuilder() {
 	}
 	
 	/**
-	 * <p>创建MSE密钥对Builder</p>
+	 * <p>新建MSE密钥对Builder</p>
 	 * 
 	 * @return MSE密钥对Builder
 	 */
@@ -44,7 +41,7 @@ public final class MSEKeyPairBuilder {
 	}
 
 	/**
-	 * <p>创建密钥对</p>
+	 * <p>新建密钥对</p>
 	 * 
 	 * @return 密钥对
 	 */
@@ -120,16 +117,13 @@ public final class MSEKeyPairBuilder {
 		 */
 		private final MSEPublicKey publicKey;
 
-		/**
-		 * <p>禁止创建实例</p>
-		 */
 		private MSEPrivateKey() {
 			this.value = this.buildPrivateKey();
 			this.publicKey = this.buildPublicKey();
 		}
 
 		/**
-		 * <p>创建私钥数据</p>
+		 * <p>新建私钥数据</p>
 		 * <pre>Xa Xb</pre>
 		 * 
 		 * @return 私钥数据
@@ -140,7 +134,7 @@ public final class MSEKeyPairBuilder {
 		}
 		
 		/**
-		 * <p>创建公钥</p>
+		 * <p>新建公钥</p>
 		 * <pre>
 		 * Pubkey of A: Ya = (G^Xa) mod P
 		 * Pubkey of B: Yb = (G^Xb) mod P
@@ -153,7 +147,7 @@ public final class MSEKeyPairBuilder {
 		}
 		
 		/**
-		 * <p>创建DH Secret</p>
+		 * <p>新建DH Secret</p>
 		 * <pre>DH Secret: S = (Ya^Xb) mod P = (Yb^Xa) mod P</pre>
 		 * 
 		 * @param publicKey 公钥数据

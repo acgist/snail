@@ -123,7 +123,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>创建B编码解码器</p>
+	 * <p>新建B编码解码器</p>
 	 * 
 	 * @param bytes 数据
 	 * 
@@ -134,7 +134,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>创建B编码解码器</p>
+	 * <p>新建B编码解码器</p>
 	 * 
 	 * @param content 数据
 	 * 
@@ -146,7 +146,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>创建B编码解码器</p>
+	 * <p>新建B编码解码器</p>
 	 * 
 	 * @param buffer 数据
 	 * 

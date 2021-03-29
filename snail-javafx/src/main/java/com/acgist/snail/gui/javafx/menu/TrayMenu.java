@@ -145,7 +145,7 @@ public final class TrayMenu extends Menu {
 	}
 	
 	/**
-	 * <p>创建托盘菜单容器</p>
+	 * <p>新建托盘菜单容器</p>
 	 * 
 	 * @return 容器
 	 */

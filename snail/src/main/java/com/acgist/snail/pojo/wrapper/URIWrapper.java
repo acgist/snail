@@ -91,7 +91,7 @@ public final class URIWrapper {
 	}
 	
 	/**
-	 * <p>创建URI包装器</p>
+	 * <p>新建URI包装器</p>
 	 * 
 	 * @param uri 链接地址
 	 * 
@@ -102,7 +102,7 @@ public final class URIWrapper {
 	}
 	
 	/**
-	 * <p>创建URI包装器</p>
+	 * <p>新建URI包装器</p>
 	 * 
 	 * @param uri 链接地址
 	 * @param defaultPort 默认端口
@@ -114,7 +114,7 @@ public final class URIWrapper {
 	}
 	
 	/**
-	 * <p>创建URI包装器</p>
+	 * <p>新建URI包装器</p>
 	 * 
 	 * @param uri 链接地址
 	 * @param defaultPort 默认端口

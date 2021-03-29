@@ -503,7 +503,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	}
 
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param size 消息长度

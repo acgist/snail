@@ -63,7 +63,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * <p>创建请求客户端加解密套件</p>
+	 * <p>新建请求客户端加解密套件</p>
 	 * 
 	 * @param secret DH Secret
 	 * @param infoHash InfoHash
@@ -78,12 +78,12 @@ public final class MSECipher {
 		try {
 			return new MSECipher(sendKey, recvKey);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
-			throw new NetException("创建加密套件失败", e);
+			throw new NetException("新建加密套件失败", e);
 		}
 	}
 	
 	/**
-	 * <p>创建接入客户端加解密套件</p>
+	 * <p>新建接入客户端加解密套件</p>
 	 * 
 	 * @param secret DH Secret
 	 * @param infoHash InfoHash
@@ -98,7 +98,7 @@ public final class MSECipher {
 		try {
 			return new MSECipher(recvKey, sendKey);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
-			throw new NetException("创建加密套件失败", e);
+			throw new NetException("新建加密套件失败", e);
 		}
 	}
 
@@ -195,7 +195,7 @@ public final class MSECipher {
 	}
 	
 	/**
-	 * <p>创建请求客户端加密Key</p>
+	 * <p>新建请求客户端加密Key</p>
 	 * 
 	 * @param secret DH Secret
 	 * @param skey InfoHash
@@ -207,7 +207,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * <p>创建接入客户端加密Key</p>
+	 * <p>新建接入客户端加密Key</p>
 	 * 
 	 * @param secret DH Secret
 	 * @param skey InfoHash
@@ -219,7 +219,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * <p>创建Key</p>
+	 * <p>新建Key</p>
 	 * 
 	 * @param key keyA | keyB
 	 * @param secret DH Secret
@@ -236,7 +236,7 @@ public final class MSECipher {
 	}
 
 	/**
-	 * <p>创建Cipher</p>
+	 * <p>新建Cipher</p>
 	 * 
 	 * @param mode 模式
 	 * @param transformation 算法

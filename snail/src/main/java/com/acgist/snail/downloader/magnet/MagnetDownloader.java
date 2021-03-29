@@ -21,7 +21,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	}
 	
 	/**
-	 * <p>创建磁力链接任务下载器</p>
+	 * <p>新建磁力链接任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 

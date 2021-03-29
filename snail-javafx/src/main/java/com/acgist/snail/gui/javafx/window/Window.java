@@ -168,7 +168,7 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
-	 * <p>创建窗口</p>
+	 * <p>新建窗口</p>
 	 * 
 	 * @param stage 容器
 	 * @param modality 模态

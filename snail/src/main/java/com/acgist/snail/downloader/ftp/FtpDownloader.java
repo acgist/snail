@@ -29,7 +29,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 	}
 
 	/**
-	 * <p>创建FTP任务下载器</p>
+	 * <p>新建FTP任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 

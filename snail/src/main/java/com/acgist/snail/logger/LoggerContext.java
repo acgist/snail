@@ -36,9 +36,6 @@ public final class LoggerContext implements ILoggerFactory {
 	 */
 	private final List<LoggerAdapter> adapters;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private LoggerContext() {
 		this.loggers = new ConcurrentHashMap<>();
 		final String adapter = LoggerConfig.getAdapter();

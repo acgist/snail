@@ -17,7 +17,7 @@ public final class FindNodeRequest extends DhtRequest {
 	}
 	
 	/**
-	 * <p>创建请求</p>
+	 * <p>新建请求</p>
 	 * 
 	 * @param target NodeId或者InfoHash
 	 * 

@@ -134,9 +134,6 @@ public final class JSON {
 	 */
 	private static boolean lazy = true;
 	
-	/**
-	 * <p>禁止创建实例</p>
-	 */
 	private JSON() {
 	}
 	

@@ -43,7 +43,7 @@ public class DhtResponse extends DhtMessage {
 	private final List<Object> e;
 
 	/**
-	 * <p>创建响应</p>
+	 * <p>新建响应</p>
 	 * <p>生成NodeId</p>
 	 * 
 	 * @param t 节点ID

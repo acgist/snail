@@ -75,7 +75,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建Metadata扩展协议代理</p>
+	 * <p>新建Metadata扩展协议代理</p>
 	 * 
 	 * @param peerSession Peer
 	 * @param torrentSession BT任务信息
@@ -227,7 +227,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	}
 	
 	/**
-	 * <p>创建消息</p>
+	 * <p>新建消息</p>
 	 * 
 	 * @param type 消息类型
 	 * @param piece Slice索引

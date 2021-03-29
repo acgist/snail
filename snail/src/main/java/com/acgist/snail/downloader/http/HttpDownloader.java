@@ -25,7 +25,7 @@ public final class HttpDownloader extends SingleFileDownloader {
 	}
 
 	/**
-	 * <p>创建HTTP任务下载器</p>
+	 * <p>新建HTTP任务下载器</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 
