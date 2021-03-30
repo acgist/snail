@@ -15,12 +15,12 @@ class RecycleContextTest extends Performance {
 
 	@Test
 	void testRecycleContext() {
-		assertNotNull(RecycleContext.newInstance("E://snail/tmp.txt"));
+		assertNotNull(RecycleContext.newInstance("E://snail/tmp/tmp.txt"));
 	}
 	
 	@Test
 	void testRecycle() throws IOException {
-		final String path = "E://snail/" + System.currentTimeMillis() + ".txt";
+		final String path = "E://snail/tmp/" + System.currentTimeMillis() + ".txt";
 		final File file = new File(path);
 		file.createNewFile();
 		assertTrue(file.exists());

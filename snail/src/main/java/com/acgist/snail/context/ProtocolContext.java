@@ -39,10 +39,11 @@ public final class ProtocolContext implements IContext {
 	 * <p>可用状态锁</p>
 	 * <p>协议没有加载完成阻塞所有获取协议线程</p>
 	 */
-	private final AtomicBoolean availableLock = new AtomicBoolean(false);
+	private final AtomicBoolean availableLock;
 	
 	private ProtocolContext() {
 		this.protocols = new ArrayList<>();
+		this.availableLock = new AtomicBoolean(false);
 	}
 	
 	/**

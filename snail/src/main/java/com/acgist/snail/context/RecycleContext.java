@@ -54,20 +54,20 @@ public final class RecycleContext implements IContext {
 	}
 	
 	/**
-	 * <p>使用回收站删除文件</p>
+	 * <p>回收站删除文件</p>
 	 * 
-	 * @param filePath 文件路径
+	 * @param path 文件路径
 	 * 
 	 * @return 是否删除成功
 	 */
-	public static final boolean recycle(final String filePath) {
-		if(StringUtils.isEmpty(filePath)) {
-			LOGGER.warn("删除文件路径错误：{}", filePath);
+	public static final boolean recycle(final String path) {
+		if(StringUtils.isEmpty(path)) {
+			LOGGER.warn("回收站删除文件失败（路径错误）：{}", path);
 			return false;
 		}
-		final var recycle = RecycleContext.newInstance(filePath);
+		final var recycle = RecycleContext.newInstance(path);
 		if(recycle == null) {
-			// 不支持回收站
+			LOGGER.debug("回收站删除文件失败（不支持）：{}", path);
 			return false;
 		}
 		return recycle.delete();
