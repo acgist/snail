@@ -207,6 +207,7 @@ public final class Snail {
 		 * @throws DownloadException 下载异常
 		 */
 		public synchronized Snail build(boolean sync) {
+			LOGGER.debug("创建Snail：{}", sync);
 			if(INSTANCE.available) {
 				return INSTANCE;
 			}
