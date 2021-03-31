@@ -61,6 +61,8 @@ public final class SystemContext implements IContext {
 		private final String[] osNames;
 
 		/**
+		 * <p>系统类型</p>
+		 * 
 		 * @param osNames 系统名称
 		 */
 		private SystemType(String ... osNames) {
@@ -68,9 +70,9 @@ public final class SystemContext implements IContext {
 		}
 
 		/**
-		 * <p>获取当前系统类型</p>
+		 * <p>获取系统类型</p>
 		 * 
-		 * @return 当前系统类型
+		 * @return 系统类型
 		 */
 		public static final SystemType local() {
 			final String osName = SystemContext.osName();
@@ -81,7 +83,7 @@ public final class SystemContext implements IContext {
 					}
 				}
 			}
-			LOGGER.warn("未知系统：{}", osName);
+			LOGGER.warn("未知系统类型：{}", osName);
 			return null;
 		}
 		
@@ -109,6 +111,9 @@ public final class SystemContext implements IContext {
 	 */
 	public static final void info() {
 		final var runtime = Runtime.getRuntime();
+		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
+		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());
+		final String maxMemory = FileUtils.formatSize(runtime.maxMemory());
 		LOGGER.info("操作系统名称：{}", System.getProperty("os.name"));
 		LOGGER.info("操作系统架构：{}", System.getProperty("os.arch"));
 		LOGGER.info("操作系统版本：{}", System.getProperty("os.version"));
@@ -117,9 +122,6 @@ public final class SystemContext implements IContext {
 		LOGGER.info("Java主目录：{}", System.getProperty("java.home"));
 		LOGGER.info("Java库目录：{}", System.getProperty("java.library.path"));
 		LOGGER.info("虚拟机名称：{}", System.getProperty("java.vm.name"));
-		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
-		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());
-		final String maxMemory = FileUtils.formatSize(runtime.maxMemory());
 		LOGGER.info("虚拟机空闲内存：{}", freeMemory);
 		LOGGER.info("虚拟机已用内存：{}", totalMemory);
 		LOGGER.info("虚拟机最大内存：{}", maxMemory);
@@ -134,7 +136,6 @@ public final class SystemContext implements IContext {
 	 * @return Snail
 	 */
 	public static final Snail build() {
-		LOGGER.info("系统初始化");
 		return SnailBuilder.newBuilder()
 			.loadTask()
 			.application()
