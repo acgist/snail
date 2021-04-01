@@ -38,7 +38,7 @@ public final class MessageHandlerContext implements IContext {
 	
 	private MessageHandlerContext() {
 		this.handlers = new ArrayList<>();
-		SystemThreadContext.timerFixedDelay(
+		SystemThreadContext.timerAtFixedDelay(
 			USELESS_INTERVAL,
 			USELESS_INTERVAL,
 			TimeUnit.SECONDS,
