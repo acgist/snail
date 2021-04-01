@@ -335,7 +335,7 @@ public final class TorrentSession {
 	private void loadPeerDownloaderGroupTimer() {
 		// 任务加载完成立即执行
 		final int peerOptimizeInterval = SystemConfig.getPeerOptimizeInterval();
-		this.peerDownloaderGroupTimer = this.timerFixedDelay(
+		this.peerDownloaderGroupTimer = this.timerAtFixedDelay(
 			0L,
 			peerOptimizeInterval,
 			TimeUnit.SECONDS,
@@ -355,7 +355,7 @@ public final class TorrentSession {
 	 */
 	private void loadPeerUploaderGroupTimer() {
 		final int peerOptimizeInterval = SystemConfig.getPeerOptimizeInterval();
-		this.peerUploaderGroupTimer = this.timerFixedDelay(
+		this.peerUploaderGroupTimer = this.timerAtFixedDelay(
 			peerOptimizeInterval,
 			peerOptimizeInterval,
 			TimeUnit.SECONDS,
@@ -384,7 +384,7 @@ public final class TorrentSession {
 	private void loadTrackerLauncherGroupTimer() {
 		// 任务加载完成立即执行
 		final int trackerInterval = SystemConfig.getTrackerInterval();
-		this.trackerLauncherGroupTimer = this.timerFixedDelay(
+		this.trackerLauncherGroupTimer = this.timerAtFixedDelay(
 			0L,
 			trackerInterval,
 			TimeUnit.SECONDS,
@@ -411,7 +411,7 @@ public final class TorrentSession {
 	 */
 	private void loadDhtLauncherTimer() {
 		final int dhtInterval = SystemConfig.getDhtInterval();
-		this.dhtLauncherTimer = this.timerFixedDelay(
+		this.dhtLauncherTimer = this.timerAtFixedDelay(
 			dhtInterval,
 			dhtInterval,
 			TimeUnit.SECONDS,
@@ -424,7 +424,7 @@ public final class TorrentSession {
 	 */
 	private void loadPexTimer() {
 		final int pexInterval = SystemConfig.getPexInterval();
-		this.pexTimer = this.timerFixedDelay(
+		this.pexTimer = this.timerAtFixedDelay(
 			pexInterval,
 			pexInterval,
 			TimeUnit.SECONDS,
@@ -439,7 +439,7 @@ public final class TorrentSession {
 	 */
 	private void loadHaveTimer() {
 		final int haveInterval = SystemConfig.getHaveInterval();
-		this.haveTimer = this.timerFixedDelay(
+		this.haveTimer = this.timerAtFixedDelay(
 			haveInterval,
 			haveInterval,
 			TimeUnit.SECONDS,
@@ -457,46 +457,17 @@ public final class TorrentSession {
 	}
 	
 	/**
-	 * <p>定时任务（单次执行）</p>
-	 * 
-	 * @param delay 延迟时间
-	 * @param unit 时间单位
-	 * @param runnable 任务
-	 * 
-	 * @return 定时任务
-	 */
-	public ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		return this.executorTimer.schedule(runnable, delay, unit);
-	}
-	
-	/**
 	 * <p>定时任务（重复执行）</p>
+	 * <p>固定周期（周期受到执行时间影响）</p>
 	 * 
 	 * @param delay 延迟时间
-	 * @param period 执行周期
+	 * @param period 周期时间
 	 * @param unit 时间单位
 	 * @param runnable 任务
 	 * 
 	 * @return 定时任务
 	 */
-	public ScheduledFuture<?> timerAtFixedRate(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		TimerException.verify(period);
-		return this.executorTimer.scheduleAtFixedRate(runnable, delay, period, unit);
-	}
-	
-	/**
-	 * <p>定时任务（重复执行）</p>
-	 * 
-	 * @param delay 延迟时间
-	 * @param period 执行周期
-	 * @param unit 时间单位
-	 * @param runnable 任务
-	 * 
-	 * @return 定时任务
-	 */
-	public ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public ScheduledFuture<?> timerAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerException.verify(delay);
 		TimerException.verify(period);
 		return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);

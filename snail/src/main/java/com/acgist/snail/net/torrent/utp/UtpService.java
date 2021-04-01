@@ -59,7 +59,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	private UtpService() {
 		this.context = MessageHandlerContext.getInstance();
 		this.utpMessageHandlers = new ConcurrentHashMap<>();
-		SystemThreadContext.timerFixedDelay(
+		SystemThreadContext.timerAtFixedDelay(
 			UTP_TIMEOUT_INTERVAL,
 			UTP_TIMEOUT_INTERVAL,
 			TimeUnit.SECONDS,

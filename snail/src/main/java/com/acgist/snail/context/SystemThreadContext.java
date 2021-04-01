@@ -20,7 +20,6 @@ import com.acgist.snail.context.exception.TimerException;
 
 /**
  * <p>系统线程上下文</p>
- * <p>所有线程都是守护线程</p>
  * 
  * @author acgist
  */
@@ -29,52 +28,52 @@ public final class SystemThreadContext implements IContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
 	/**
-	 * <p>系统线程：{@value}</p>
+	 * <p>系统线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD = "Snail-Thread";
 	/**
-	 * <p>Costed线程：{@value}</p>
+	 * <p>Costed线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_COSTED = SNAIL_THREAD + "-Costed";
 	/**
-	 * <p>BT线程：{@value}</p>
+	 * <p>BT线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
 	/**
-	 * <p>HLS线程：{@value}</p>
+	 * <p>HLS线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_HLS = SNAIL_THREAD + "-HLS";
 	/**
-	 * <p>定时线程：{@value}</p>
+	 * <p>定时线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
 	/**
-	 * <p>BT定时线程：{@value}</p>
+	 * <p>BT定时线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD_BT + "-Timer";
 	/**
-	 * <p>UTP队列线程：{@value}</p>
+	 * <p>UTP队列线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_UTP_QUEUE = SNAIL_THREAD + "-UTP-Queue";
 	/**
-	 * <p>下载器线程：{@value}</p>
+	 * <p>UDP服务端线程名称：{@value}</p>
 	 */
-	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
+	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	/**
-	 * <p>TCP客户端线程：{@value}</p>
+	 * <p>TCP客户端线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
 	/**
-	 * <p>TCP服务端线程：{@value}</p>
+	 * <p>TCP服务端线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
 	/**
-	 * <p>UDP服务端线程：{@value}</p>
+	 * <p>下载器线程名称：{@value}</p>
 	 */
-	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
+	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
 	
 	/**
-	 * <p>系统线程池：加快系统运行、防止卡顿</p>
+	 * <p>系统线程池：异步执行、防止卡顿</p>
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
@@ -84,12 +83,12 @@ public final class SystemThreadContext implements IContext {
 	/**
 	 * <p>任务拒绝执行处理</p>
 	 */
-	public static final RejectedExecutionHandler REJECTED_HANDLER = (runnable, executor) -> LOGGER.error("任务拒绝执行：{}-{}", runnable, executor);
+	public static final RejectedExecutionHandler REJECTED_HANDLER;
 	
 	static {
-		LOGGER.debug("初始化系统线程池");
 		EXECUTOR = newExecutor(4, 20, 1000, 60L, SNAIL_THREAD);
 		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
+		REJECTED_HANDLER = (runnable, executor) -> LOGGER.warn("任务拒绝执行：{}-{}", runnable, executor);
 	}
 	
 	private SystemThreadContext() {
@@ -146,7 +145,7 @@ public final class SystemThreadContext implements IContext {
 	 * 
 	 * @return 定时任务
 	 */
-	public static final ScheduledFuture<?> timerFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+	public static final ScheduledFuture<?> timerAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
 		TimerException.verify(delay);
 		TimerException.verify(period);
 		return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
@@ -161,7 +160,7 @@ public final class SystemThreadContext implements IContext {
 	 * @param keepAliveTime 线程空闲时间（秒）
 	 * @param name 线程池名称
 	 * 
-	 * @return 线程池
+	 * @return 固定线程池
 	 */
 	public static final ExecutorService newExecutor(int minPoolSize, int maxPoolSize, int queueSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
@@ -170,7 +169,7 @@ public final class SystemThreadContext implements IContext {
 			keepAliveTime,
 			TimeUnit.SECONDS,
 			new LinkedBlockingQueue<Runnable>(queueSize),
-			SystemThreadContext.newThreadFactory(name)
+			newThreadFactory(name)
 		);
 	}
 	
@@ -181,16 +180,17 @@ public final class SystemThreadContext implements IContext {
 	 * @param keepAliveTime 线程空闲时间（秒）
 	 * @param name 线程池名称
 	 * 
-	 * @return 线程池
+	 * @return 缓存线程池
 	 */
 	public static final ExecutorService newCacheExecutor(int minPoolSize, long keepAliveTime, String name) {
 		return new ThreadPoolExecutor(
 			minPoolSize,
-			Short.MAX_VALUE, // 最大线程数量
+			Short.MAX_VALUE,
 			keepAliveTime,
 			TimeUnit.SECONDS,
-			new SynchronousQueue<Runnable>(), // 禁止添加队列
-			SystemThreadContext.newThreadFactory(name)
+			// 禁止添加队列
+			new SynchronousQueue<Runnable>(),
+			newThreadFactory(name)
 		);
 	}
 	
@@ -205,7 +205,7 @@ public final class SystemThreadContext implements IContext {
 	public static final ScheduledExecutorService newTimerExecutor(int minPoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
 			minPoolSize,
-			SystemThreadContext.newThreadFactory(name)
+			newThreadFactory(name)
 		);
 	}
 	
@@ -220,7 +220,8 @@ public final class SystemThreadContext implements IContext {
 		return runnable -> {
 			final Thread thread = new Thread(runnable);
 			thread.setName(poolName);
-			thread.setDaemon(true); // 守护线程
+			// 守护线程
+			thread.setDaemon(true);
 			return thread;
 		};
 	}
@@ -254,8 +255,8 @@ public final class SystemThreadContext implements IContext {
 	
 	/**
 	 * <p>关闭线程池</p>
-	 * <p>立即关闭：调用正在运行的任务线程的interrupt方法，队列任务不会被执行，不能继续添加任务。</p>
 	 * <p>正常关闭：不能继续添加任务，已经添加和正在执行的任务都会执行。</p>
+	 * <p>立即关闭：调用正在运行任务线程interrupt方法，队列任务不会执行，不能继续添加任务。</p>
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param executor 线程池
@@ -295,8 +296,8 @@ public final class SystemThreadContext implements IContext {
 	
 	/**
 	 * <p>关闭定时任务</p>
-	 * <p>立即关闭：正在运行的任务将被取消执行</p>
 	 * <p>正常关闭：正在运行的任务不会取消执行</p>
+	 * <p>立即关闭：正在运行的任务将被取消执行</p>
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param scheduledFuture 定时任务

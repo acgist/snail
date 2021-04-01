@@ -45,7 +45,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 		this.join(TTL, lsdHost());
 		this.handle();
 		final int interval = SystemConfig.getLsdInterval();
-		SystemThreadContext.timerFixedDelay(
+		SystemThreadContext.timerAtFixedDelay(
 			interval,
 			interval,
 			TimeUnit.SECONDS,
