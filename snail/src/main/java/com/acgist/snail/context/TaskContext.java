@@ -39,15 +39,10 @@ public final class TaskContext implements IContext {
 	 * <p>下载器线程池</p>
 	 */
 	private final ExecutorService executor;
-	/**
-	 * <p>下载协议上下文</p>
-	 */
-	private final ProtocolContext protocolContext;
 	
 	private TaskContext() {
 		this.tasks = new ArrayList<>(DownloadConfig.getSize());
 		this.executor = SystemThreadContext.newCacheExecutor(0, 60L, SystemThreadContext.SNAIL_THREAD_DOWNLOADER);
-		this.protocolContext = ProtocolContext.getInstance();
 	}
 	
 	/**
@@ -60,14 +55,14 @@ public final class TaskContext implements IContext {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		final var session = this.protocolContext.buildTaskSession(url);
+		final var session = ProtocolContext.getInstance().buildTaskSession(url);
 		session.start();
 		return session;
 	}
 	
 	/**
 	 * <p>添加下载任务</p>
-	 * <p>只添加下载任务，不修改任务状态。</p>
+	 * <p>只添加下载任务不修改任务状态</p>
 	 * 
 	 * @param taskSession 任务信息
 	 * 
@@ -82,10 +77,12 @@ public final class TaskContext implements IContext {
 				// 任务添加必须新建下载器
 				taskSession.buildDownloader();
 				if(this.tasks.contains(taskSession)) {
-					LOGGER.debug("任务已经存在：{}", taskSession.getName());
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("任务已经存在：{}", taskSession.getName());
+					}
 				} else {
-					this.tasks.add(taskSession); // 添加任务
-					GuiContext.getInstance().refreshTaskList(); // 刷新任务列表
+					this.tasks.add(taskSession);
+					GuiContext.getInstance().refreshTaskList();
 				}
 			}
 		} else {
@@ -120,11 +117,7 @@ public final class TaskContext implements IContext {
 	}
 		
 	/**
-	 * <dl>
-	 * 	<dt>刷新下载任务</dt>
-	 * 	<dd>如果小于下载数量：增加下载任务线程</dd>
-	 * 	<dd>如果大于下载数量：减小下载任务线程</dd>
-	 * </dl>
+	 * <p>刷新下载任务</p>
 	 */
 	public void refresh() {
 		synchronized (this.tasks) {
@@ -134,17 +127,14 @@ public final class TaskContext implements IContext {
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(downloadCount == downloadSize) {
-				// 等于：不操作
 				LOGGER.debug("下载任务数量正常：{}-{}", downloadSize, downloadCount);
 			} else if(downloadCount > downloadSize) {
-				// 大于：暂停部分下载任务
 				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
 				this.tasks.stream()
 					.filter(ITaskSession::statusDownload)
 					.skip(downloadSize)
 					.forEach(ITaskSession::await);
 			} else {
-				// 小于：开始部分下载任务
 				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
 				this.tasks.stream()
 					.filter(ITaskSession::statusAwait)
@@ -160,7 +150,6 @@ public final class TaskContext implements IContext {
 	 */
 	public void load() {
 		final EntityContext entityContext = EntityContext.getInstance();
-		// 加载异常删除重新新建数组
 		final List<TaskEntity> list = entityContext.allTask();
 		if(CollectionUtils.isNotEmpty(list)) {
 			list.forEach(entity -> {
@@ -173,17 +162,16 @@ public final class TaskContext implements IContext {
 					entityContext.delete(entity);
 				}
 			});
-			// 刷新下载
 			this.refresh();
 		}
 	}
 	
 	/**
 	 * <p>关闭任务上下文</p>
-	 * <p>暂停所有任务、关闭下载线程池</p>
 	 */
 	public void shutdown() {
 		LOGGER.debug("关闭任务上下文");
+		// 暂停所有任务
 		synchronized (this.tasks) {
 			this.tasks.stream()
 				.filter(ITaskSession::statusRunning)
