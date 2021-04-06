@@ -38,7 +38,7 @@ public final class TorrentContext implements IContext {
 	}
 	
 	/**
-	 * <p>BT任务MAP</p>
+	 * <p>BT任务信息MAP</p>
 	 * <p>InfoHashHex=BT任务信息</p>
 	 */
 	private final Map<String, TorrentSession> torrentSessions;
@@ -48,20 +48,20 @@ public final class TorrentContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有的InfoHash拷贝</p>
+	 * <p>获取所有InfoHash拷贝</p>
 	 * 
-	 * @return 所有的InfoHash拷贝
+	 * @return 所有InfoHash拷贝
 	 */
 	public List<InfoHash> allInfoHash() {
 		return this.torrentSessions.values().stream()
-			.map(session -> session.infoHash())
+			.map(TorrentSession::infoHash)
 			.collect(Collectors.toList());
 	}
 
 	/**
-	 * <p>获取所有的TorrentSession拷贝</p>
+	 * <p>获取所有TorrentSession拷贝</p>
 	 * 
-	 * @return 所有的TorrentSession拷贝
+	 * @return 所有TorrentSession拷贝
 	 */
 	public List<TorrentSession> allTorrentSession() {
 		return this.torrentSessions.values().stream()
@@ -80,31 +80,45 @@ public final class TorrentContext implements IContext {
 	}
 	
 	/**
-	 * <p>删除TorrentSession</p>
+	 * <p>删除BT任务信息</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
+	 * 
+	 * @return BT任务信息
 	 */
-	public void remove(String infoHashHex) {
-		LOGGER.debug("删除种子信息：{}", infoHashHex);
-		this.torrentSessions.remove(infoHashHex);
+	public TorrentSession remove(String infoHashHex) {
+		LOGGER.debug("删除BT任务信息：{}", infoHashHex);
+		return this.torrentSessions.remove(infoHashHex);
 	}
 	
 	/**
-	 * <p>判断是否存在下载任务</p>
+	 * <p>判断BT任务信息是否存在</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
-	 * @return 任务是否存在
+	 * @return 是否存在
 	 */
 	public boolean exist(String infoHashHex) {
 		return this.torrentSessions.containsKey(infoHashHex);
 	}
+
+	/**
+	 * <p>新建TorrentSession</p>
+	 * 
+	 * @param path 种子文件路径
+	 * 
+	 * @return BT任务信息
+	 * 
+	 * @throws DownloadException 下载异常
+	 */
+	public TorrentSession newTorrentSession(String path) throws DownloadException {
+		final Torrent torrent = loadTorrent(path);
+		return this.newTorrentSession(torrent.infoHash(), torrent);
+	}
 	
 	/**
 	 * <p>新建TorrentSession</p>
-	 * <p>如果已存在InfoHashHex：直接返回</p>
-	 * <p>如果不存在InfoHashHex：优先使用path加载，如果path为空时使用InfoHashHex加载。</p>
-	 * <p>使用InfoHashHex加载的BT任务信息用于磁力链接下载</p>
+	 * <p>种子文件路径可以为空：磁力链接只要InfoHashHex</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param path 种子文件路径
@@ -124,20 +138,6 @@ public final class TorrentContext implements IContext {
 			return this.newTorrentSession(path);
 		}
 	}
-
-	/**
-	 * <p>新建TorrentSession</p>
-	 * 
-	 * @param path 种子文件路径
-	 * 
-	 * @return BT任务信息
-	 * 
-	 * @throws DownloadException 下载异常
-	 */
-	public TorrentSession newTorrentSession(String path) throws DownloadException {
-		final Torrent torrent = loadTorrent(path);
-		return this.newTorrentSession(torrent.infoHash(), torrent);
-	}
 	
 	/**
 	 * <p>新建TorrentSession</p>
@@ -154,7 +154,7 @@ public final class TorrentContext implements IContext {
 			throw new DownloadException("新建TorrentSession失败（InfoHash为空）");
 		}
 		final String infoHashHex = infoHash.infoHashHex();
-		var torrentSession = this.torrentSessions.get(infoHashHex);
+		var torrentSession = this.torrentSession(infoHashHex);
 		if(torrentSession == null) {
 			torrentSession = TorrentSession.newInstance(infoHash, torrent);
 			this.torrentSessions.put(infoHashHex, torrentSession);
@@ -174,7 +174,7 @@ public final class TorrentContext implements IContext {
 	public static final Torrent loadTorrent(String path) throws DownloadException {
 		final File file = new File(path);
 		if(!file.exists()) {
-			throw new DownloadException("种子文件不存在");
+			throw new DownloadException("不存在的种子文件");
 		}
 		try {
 			final var bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
@@ -189,8 +189,6 @@ public final class TorrentContext implements IContext {
 			final var infoHash = InfoHash.newInstance(BEncodeEncoder.encodeMap(info));
 			torrent.infoHash(infoHash);
 			return torrent;
-		} catch (DownloadException e) {
-			throw e;
 		} catch (NetException | IOException e) {
 			throw new DownloadException("种子文件加载失败", e);
 		}
