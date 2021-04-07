@@ -29,7 +29,6 @@ import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>Tracker上下文</p>
- * <p>管理TrackerSession和TrackerLauncher</p>
  * 
  * @author acgist
  */
@@ -44,13 +43,8 @@ public final class TrackerContext implements IContext {
 	}
 
 	/**
-	 * <p>任务Tracker最大数量</p>
-	 */
-	private static final int MAX_TRACKER_SIZE = SystemConfig.getTrackerSize();
-	
-	/**
 	 * <p>TrackerSession Map</p>
-	 * <p>{@link TrackerSession#id()}=Tracker信息</p>
+	 * <p>{@link TrackerSession#id()}=TrackerSession</p>
 	 */
 	private final Map<Integer, TrackerSession> trackerSessions;
 	/**
@@ -75,7 +69,9 @@ public final class TrackerContext implements IContext {
 	 */
 	public TrackerLauncher buildTrackerLauncher(TrackerSession trackerSession, TorrentSession torrentSession) {
 		final TrackerLauncher launcher = TrackerLauncher.newInstance(trackerSession, torrentSession);
-		LOGGER.debug("加载TrackerLauncher：{}-{}，announceUrl：{}", launcher.id(), trackerSession.id(), trackerSession.announceUrl());
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("加载TrackerLauncher：{}-{}-{}", launcher.id(), trackerSession.id(), trackerSession.announceUrl());
+		}
 		this.trackerLaunchers.put(launcher.id(), launcher);
 		return launcher;
 	}
@@ -136,12 +132,12 @@ public final class TrackerContext implements IContext {
 				LOGGER.debug("""
 					收到刮擦响应消息：{}
 					做种Peer数量：{}
-					完成Peer数量：{}
-					下载Peer数量：{}""",
+					下载Peer数量：{}
+					完成Peer数量：{}""",
 					trackerLauncher.announceUrl(),
 					message.seeder(),
-					message.completed(),
-					message.leecher()
+					message.leecher(),
+					message.completed()
 				);
 			}
 		} else {
@@ -214,24 +210,26 @@ public final class TrackerContext implements IContext {
 
 	/**
 	 * <p>获取TrackerSession列表</p>
-	 * <p>非私有种子如果TrackerSession列表长度不足则使用系统TrackerSession填充</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * @param announceUrls 声明地址集合
 	 * @param privateTorrent 是否是私有种子
 	 * 
 	 * @return TrackerSession列表
+	 * 
+	 * @see #sessions(int, List)
 	 */
 	public List<TrackerSession> sessions(String announceUrl, List<String> announceUrls, boolean privateTorrent) {
 		final List<TrackerSession> sessions = this.buildTrackerSession(announceUrl, announceUrls);
 		if(privateTorrent) {
-			LOGGER.debug("私有种子：不补充Tracker");
+			LOGGER.debug("私有种子：禁止补充Tracker");
 			return sessions;
 		}
 		final int size = sessions.size();
-		if(size < MAX_TRACKER_SIZE) {
-			final var subjoin = this.sessions(MAX_TRACKER_SIZE - size, sessions);
-			if(!subjoin.isEmpty()) {
+		final int maxSize = SystemConfig.getTrackerSize();
+		if(size < maxSize) {
+			final var subjoin = this.sessions(maxSize - size, sessions);
+			if(CollectionUtils.isNotEmpty(subjoin)) {
 				sessions.addAll(subjoin);
 			}
 		}
@@ -240,7 +238,6 @@ public final class TrackerContext implements IContext {
 	
 	/**
 	 * <p>补充TrackerSession</p>
-	 * <p>补充权重最大的客户端</p>
 	 * 
 	 * @param size 补充数量
 	 * @param sessions 现有客户端
@@ -249,8 +246,9 @@ public final class TrackerContext implements IContext {
 	 */
 	private List<TrackerSession> sessions(int size, List<TrackerSession> sessions) {
 		return this.trackerSessions.values().stream()
-			.filter(client -> client.available() && (sessions != null && !sessions.contains(client)))
-			.sorted() // 排序
+			.filter(client -> client.available() && !sessions.contains(client))
+			// 排序：权重
+			.sorted()
 			.limit(size)
 			.collect(Collectors.toList());
 	}
@@ -289,22 +287,15 @@ public final class TrackerContext implements IContext {
 	 * @param announceUrls 声明地址集合
 	 * 
 	 * @return TrackerSession列表
+	 * 
+	 * @see #buildTrackerSession(String)
 	 */
 	private List<TrackerSession> buildTrackerSession(List<String> announceUrls) {
 		if(announceUrls == null) {
 			announceUrls = new ArrayList<>();
 		}
 		return announceUrls.stream()
-			.map(announceUrl -> {
-				try {
-					return this.buildTrackerSession(announceUrl.trim());
-				} catch (NetException e) {
-					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
-				} catch (Exception e) {
-					LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
-				}
-				return null;
-			})
+			.map(announceUrl -> this.buildTrackerSession(announceUrl.trim()))
 			.filter(Objects::nonNull)
 			.filter(TrackerSession::available)
 			.collect(Collectors.toList());
@@ -317,23 +308,30 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @return TrackerSession
 	 * 
-	 * @throws NetException 网络异常
+	 * @see #buildTrackerSessionProxy(String)
 	 */
-	private TrackerSession buildTrackerSession(String announceUrl) throws NetException {
+	private TrackerSession buildTrackerSession(String announceUrl) {
 		if(StringUtils.isEmpty(announceUrl)) {
 			return null;
 		}
 		final Optional<TrackerSession> optional = this.trackerSessions.values().stream()
 			.filter(client -> client.equalsAnnounceUrl(announceUrl))
 			.findFirst();
-		// 已经存在直接返回
 		if(optional.isPresent()) {
 			return optional.get();
 		}
-		final TrackerSession session = this.buildSessionProxy(announceUrl);
-		this.trackerSessions.put(session.id(), session);
-		LOGGER.debug("注册TrackerSession：ID：{}，AnnounceUrl：{}", session.id(), session.announceUrl());
-		return session;
+		try {
+			final TrackerSession session = this.buildTrackerSessionProxy(announceUrl);
+			this.trackerSessions.put(session.id(), session);
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("注册TrackerSession：{}-{}", session.id(), session.announceUrl());
+			}
+		} catch (NetException e) {
+			LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
+		} catch (Exception e) {
+			LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
+		}
+		return null;
 	}
 
 	/**
@@ -344,12 +342,14 @@ public final class TrackerContext implements IContext {
 	 * @return TrackerSession
 	 * 
 	 * @throws NetException 网络异常
+	 * 
+	 * @see #buildTrackerSessionProtocol(String)
 	 */
-	private TrackerSession buildSessionProxy(final String announceUrl) throws NetException {
-		TrackerSession session = this.buildSession(announceUrl);
+	private TrackerSession buildTrackerSessionProxy(final String announceUrl) throws NetException {
+		TrackerSession session = this.buildTrackerSessionProtocol(announceUrl);
 		if(session == null) {
-			// URL解码
-			session = this.buildSession(UrlUtils.decode(announceUrl));
+			// 注册失败URL解码重试
+			session = this.buildTrackerSessionProtocol(UrlUtils.decode(announceUrl));
 		}
 		if(session == null) {
 			throw new NetException("未知Tracker协议：" + announceUrl);
@@ -358,7 +358,7 @@ public final class TrackerContext implements IContext {
 	}
 
 	/**
-	 * <p>新建TrackerSession</p>
+	 * <p>新建TrackerSession协议</p>
 	 * 
 	 * @param announceUrl 声明地址
 	 * 
@@ -366,7 +366,7 @@ public final class TrackerContext implements IContext {
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	private TrackerSession buildSession(final String announceUrl) throws NetException {
+	private TrackerSession buildTrackerSessionProtocol(final String announceUrl) throws NetException {
 		if(Protocol.Type.HTTP.verify(announceUrl)) {
 			return HttpTrackerSession.newInstance(announceUrl);
 		} else if(Protocol.Type.UDP.verify(announceUrl)) {
