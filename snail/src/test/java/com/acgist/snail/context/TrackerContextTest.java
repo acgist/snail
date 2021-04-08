@@ -28,5 +28,12 @@ class TrackerContextTest extends Performance {
 		assertNotNull(TrackerContext.getInstance().sessions("acgist://www.acgist.com"));
 		assertNotEquals(0, TrackerContext.getInstance().sessions("acgist://www.acgist.com").size());
 	}
+
+	@Test
+	void testSessions() {
+		TrackerContext.getInstance().sessions("https://www.acgist.com/tracker/announce").forEach(session -> {
+			this.log(session);
+		});
+	}
 	
 }
