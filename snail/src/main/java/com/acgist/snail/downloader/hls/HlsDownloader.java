@@ -55,7 +55,6 @@ public final class HlsDownloader extends MultifileDownloader {
 			this.hlsSession.release();
 			if(this.completed) {
 				this.tsLink();
-				// 直接删除任务信息
 				this.delete();
 			}
 		}
@@ -90,12 +89,12 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 	
 	/**
-	 * <p>文件连接</p>
-	 * <p>任务完成时连接TS文件</p>
+	 * <p>连接文件</p>
 	 */
 	private void tsLink() {
-		LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
-		// 连接文件
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
+		}
 		final TsLinker linker = TsLinker.newInstance(
 			this.taskSession.getName(),
 			this.taskSession.getFile(),
