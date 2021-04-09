@@ -64,7 +64,7 @@ public abstract class MultifileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>开始下载</p>
+	 * <p>加载下载</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
