@@ -42,7 +42,7 @@ public final class FtpDownloader extends SingleFileDownloader {
 	@Override
 	public void release() {
 		if(this.client != null) {
-			this.client.close(); // 关闭FTP客户端
+			this.client.close();
 		}
 		IoUtils.close(this.input);
 		IoUtils.close(this.output);
@@ -51,14 +51,12 @@ public final class FtpDownloader extends SingleFileDownloader {
 	
 	@Override
 	protected void buildInput() throws NetException {
-		// FTP客户端
 		this.client = FtpClient.newInstance(this.taskSession.getUrl());
-		final boolean success = this.client.connect(); // 建立连接
+		final boolean success = this.client.connect();
 		if(success) {
-			// 已经下载大小
 			final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 			this.input = Channels.newChannel(this.client.download(downloadSize));
-			if(this.client.range()) { // 支持断点续传
+			if(this.client.range()) {
 				this.taskSession.downloadSize(downloadSize);
 			} else {
 				this.taskSession.downloadSize(0L);

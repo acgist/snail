@@ -55,8 +55,7 @@ public final class HlsDownloader extends MultifileDownloader {
 			this.hlsSession.release();
 			if(this.completed) {
 				this.tsLink();
-				this.delete();
-			} else if(this.statusDelete()) {
+				// 任务完成直接删除任务信息
 				this.delete();
 			}
 		}
