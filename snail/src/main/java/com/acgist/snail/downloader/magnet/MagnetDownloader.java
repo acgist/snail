@@ -33,7 +33,7 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 
 	@Override
 	public void release() {
-		// 不要删除任务信息：留着转为BT任务继续使用
+		// 不要删除任务信息：转为BT任务继续使用
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseMagnet();
 		}
