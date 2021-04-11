@@ -326,6 +326,7 @@ public final class TrackerContext implements IContext {
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("注册TrackerSession：{}-{}", session.id(), session.announceUrl());
 			}
+			return session;
 		} catch (NetException e) {
 			LOGGER.error("注册TrackerSession异常：{}", announceUrl, e);
 		} catch (Exception e) {
