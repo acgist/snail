@@ -93,14 +93,11 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void release() {
+		// 不要删除任务信息：做种
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload();
 			this.statistics.resetDownloadSpeed();
 			this.torrentSession.updatePieces(true);
-			// 任务没有删除：做种
-			if(this.statusDelete()) {
-				this.delete();
-			}
 		}
 		super.release();
 	}

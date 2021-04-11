@@ -306,22 +306,22 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	@Override
 	public void delete() {
 		if(this.statusDelete()) {
-			// 任务已经删除不修改状态
+			// 任务已经处于删除状态
 			return;
 		}
 		if(this.statusDownload()) {
+			// 正在下载：标记删除下载结束释放资源
 			this.deleteLock.set(true);
-			// 正在下载：标记删除下载结束自动释放
 			this.updateStatus(Status.DELETE);
 			this.lockDelete();
-		} else if(this.downloader != null) {
-			// 没有下载：直接删除
-			this.downloader.delete();
 		}
-		// 删除下载任务
-		TaskContext.getInstance().remove(this);
 		// 删除旧下载器
-		this.downloader = null;
+		if(this.downloader != null) {
+			this.downloader.delete();
+			this.downloader = null;
+		}
+		// 删除任务
+		TaskContext.getInstance().remove(this);
 		// 删除实体
 		EntityContext.getInstance().delete(this.entity);
 	}
