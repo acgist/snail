@@ -6,7 +6,6 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.SingleFileDownloader;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
@@ -42,25 +41,17 @@ public final class HttpDownloader extends SingleFileDownloader {
 		super.release();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see HttpHeaderWrapper#HEADER_RANGE
-	 */
 	@Override
 	protected void buildInput() throws NetException {
-		// 已经下载大小
 		final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
-		// HTTP客户端
 		final var client = HttpClient
 			.newDownloader(this.taskSession.getUrl())
 			.range(downloadSize)
 			.get();
-		// 请求成功和部分请求成功
 		if(client.downloadable()) {
 			final var headers = client.responseHeader();
 			this.input = Channels.newChannel(client.response());
-			if(headers.range()) { // 支持断点续传
+			if(headers.range()) {
 				this.taskSession.downloadSize(downloadSize);
 			} else {
 				this.taskSession.downloadSize(0L);
