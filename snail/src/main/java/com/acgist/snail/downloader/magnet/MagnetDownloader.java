@@ -8,6 +8,7 @@ import com.acgist.snail.pojo.ITaskSession;
 /**
  * <p>磁力链接任务下载器</p>
  * <p>下载原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。</p>
+ * <p>下载完成不要删除任务信息：转为BT任务继续使用</p>
  * 
  * @author acgist
  */
@@ -33,7 +34,6 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 
 	@Override
 	public void release() {
-		// 不要删除任务信息：转为BT任务继续使用
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseMagnet();
 		}

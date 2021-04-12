@@ -11,6 +11,7 @@ import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * <p>BT任务下载器</p>
+ * <p>下载完成不要删除任务信息：做种</p>
  * 
  * @author acgist
  */
@@ -39,17 +40,18 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	public void refresh() throws DownloadException {
 		super.refresh();
-		// 文件没有更改
+		// 下载文件是否更改
 		boolean unchange = true;
+		// 加载任务下载文件
 		if(this.torrentSession != null) {
 			// 任务信息已经加载：重新加载下载文件信息
 			unchange = this.torrentSession.reload() <= 0;
 		} else if(this.statusCompleted()) {
-			// 任务信息没有加载（软件重启）：任务完成加载任务信息
+			// 任务信息没有加载：任务完成加载任务信息
 			unchange = false;
 			this.torrentSession = this.loadTorrentSession();
 		}
-		// 如果任务没有完成修改数据开始下载自动加载任务
+		// 任务没有加载：开始下载自动加载任务
 		if(this.statusCompleted()) {
 			// 完成任务校验数据
 			if(unchange) {
@@ -64,10 +66,10 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 				GuiContext.getInstance().alert("修改成功", "重新开始下载任务");
 			}
 		} else if(this.torrentSession != null) {
-			// 任务没有完成并且任务重启可能为空：开始下载自动加载
 			// 没有完成：校验下载状态
 			this.torrentSession.checkCompletedAndDone();
 		}
+		// 任务没有加载：开始下载自动加载任务
 	}
 	
 	@Override
@@ -79,7 +81,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 				// 任务信息没有加载
 				this.torrentSession = this.loadTorrentSession();
 			}
-			// BT文件校验
+			// 校验BT文件
 			verify = this.torrentSession.verify();
 			if(verify) {
 				LOGGER.debug("BT任务文件校验成功");
@@ -93,7 +95,6 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	
 	@Override
 	public void release() {
-		// 不要删除任务信息：做种
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload();
 			this.statistics.resetDownloadSpeed();
