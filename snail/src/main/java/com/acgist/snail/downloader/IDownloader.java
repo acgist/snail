@@ -51,7 +51,6 @@ public interface IDownloader extends Runnable, ITaskSessionStatus {
 
 	/**
 	 * <p>标记失败</p>
-	 * <p>更新任务状态（{@linkplain Status#FAIL 失败}）、提示失败信息</p>
 	 * 
 	 * @param message 失败信息
 	 */
