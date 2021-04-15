@@ -41,11 +41,8 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	 * @throws DownloadException 下载异常
 	 */
 	protected TorrentSession loadTorrentSession() throws DownloadException {
-		final var torrentPath = this.taskSession.getTorrent();
-		// 加载磁力链接信息
 		final var magnet = MagnetBuilder.newInstance(this.taskSession.getUrl()).build();
-		final var infoHashHex = magnet.getHash();
-		return TorrentContext.getInstance().newTorrentSession(infoHashHex, torrentPath);
+		return TorrentContext.getInstance().newTorrentSession(magnet.getHash(), this.taskSession.getTorrent());
 	}
 	
 	@Override

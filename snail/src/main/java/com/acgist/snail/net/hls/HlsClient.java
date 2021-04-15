@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -207,15 +208,16 @@ public final class HlsClient implements Runnable {
 	private void buildOutput() throws NetException {
 		try {
 			final int bufferSize = DownloadConfig.getMemoryBufferByte(this.size);
-			BufferedOutputStream outputStream;
+			OutputStream outputStream;
 			if(this.range) {
 				// 支持断点续传
-				outputStream = new BufferedOutputStream(new FileOutputStream(this.path, true), bufferSize);
+				outputStream = new FileOutputStream(this.path, true);
 			} else {
 				// 不支持断点续传
-				outputStream = new BufferedOutputStream(new FileOutputStream(this.path), bufferSize);
+				outputStream = new FileOutputStream(this.path);
 			}
-			this.output = Channels.newChannel(outputStream);
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream, bufferSize);
+			this.output = Channels.newChannel(bufferedOutputStream);
 		} catch (FileNotFoundException e) {
 			throw new NetException("HLS客户端输出流新建失败", e);
 		}
