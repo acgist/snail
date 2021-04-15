@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -25,7 +26,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>快速失败时间（毫秒）：{@value}</p>
-	 * <p>注意：不建议超过任务删除锁等待时间</p>
+	 * <p>注意：建议不要超过任务删除等待时间</p>
 	 */
 	private static final long FAST_CHECK_TIME = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	
@@ -85,7 +86,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	@Override
 	public void unlockDownload() {
 		super.unlockDownload();
-		// 快速失败
+		// 快速失败检测
 		if(System.currentTimeMillis() - this.fastCheckTime > FAST_CHECK_TIME) {
 			IoUtils.close(this.input);
 		}
@@ -93,24 +94,24 @@ public abstract class SingleFileDownloader extends Downloader {
 
 	/**
 	 * <p>新建{@linkplain #output 输出流}</p>
-	 * <p>通过判断任务已经下载大小判断是否支持断点续传</p>
+	 * <p>通过判断任务已经下载大小验证是否支持断点续传</p>
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	protected void buildOutput() throws DownloadException {
 		try {
 			final long size = this.taskSession.downloadSize();
-			final long fileSize = this.taskSession.getSize();
-			final int bufferSize = DownloadConfig.getMemoryBufferByte(fileSize);
-			BufferedOutputStream outputStream;
-			if(size == 0L) {
-				// 不支持断点续传
-				outputStream = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile()), bufferSize);
-			} else {
+			final int bufferSize = DownloadConfig.getMemoryBufferByte(this.taskSession.getSize());
+			OutputStream outputStream;
+			if(size > 0L) {
 				// 支持断点续传
-				outputStream = new BufferedOutputStream(new FileOutputStream(this.taskSession.getFile(), true), bufferSize);
+				outputStream = new FileOutputStream(this.taskSession.getFile(), true);
+			} else {
+				// 不支持断点续传
+				outputStream = new FileOutputStream(this.taskSession.getFile());
 			}
-			this.output = Channels.newChannel(outputStream);
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream, bufferSize);
+			this.output = Channels.newChannel(bufferedOutputStream);
 		} catch (FileNotFoundException e) {
 			throw new DownloadException("下载文件打开失败", e);
 		}
@@ -118,7 +119,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	
 	/**
 	 * <p>新建{@linkplain #input 输入流}</p>
-	 * <p>验证是否支持断点续传，如果支持重新设置任务已经下载大小。</p>
+	 * <p>验证是否支持断点续传：如果支持重新设置任务已经下载大小</p>
 	 * 
 	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常
