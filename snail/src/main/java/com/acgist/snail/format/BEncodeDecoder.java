@@ -19,31 +19,7 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>B编码解码器</p>
  * 
- * <table border="1">
- * 	<caption>类型</caption>
- * 	<tr>
- * 		<th>符号</th>
- * 		<th>类型</th>
- * 	</tr>
- * 	<tr>
- * 		<td align="center">{@code i}</td>
- * 		<td>数值：{@link Long}</td>
- * 	</tr>
- * 	<tr>
- * 		<td align="center">{@code l}</td>
- * 		<td>列表：{@link List}</td>
- * 	</tr>
- * 	<tr>
- * 		<td align="center">{@code d}</td>
- * 		<td>字典：{@link Map}</td>
- * 	</tr>
- * 	<tr>
- * 		<td align="center">{@code e}</td>
- * 		<td>结尾</td>
- * 	</tr>
- * </table>
- * <p>所有类型除了Long，其他均为byte[]，需要自己进行类型转换。</p>
- * <p>使用以下方法进行解析：{@link #nextType()}、{@link #nextMap()}、{@link #nextList()}</p>
+ * <p>除了Long其他类型均为byte[]</p>
  * 
  * @author acgist
  */
@@ -93,6 +69,10 @@ public final class BEncodeDecoder {
 	 * <p>分隔符：{@value}</p>
 	 */
 	public static final char SEPARATOR = ':';
+	/**
+	 * <p>B编码最短数据长度</p>
+	 */
+	private static final int MIN_CONTENT_LENGTH = 2;
 	
 	/**
 	 * <p>数据类型</p>
@@ -107,7 +87,7 @@ public final class BEncodeDecoder {
 	 */
 	private Map<String, Object> map;
 	/**
-	 * <p>原始数据（不需要关闭）</p>
+	 * <p>原始数据</p>
 	 */
 	private final ByteArrayInputStream inputStream;
 	
@@ -116,7 +96,7 @@ public final class BEncodeDecoder {
 	 */
 	private BEncodeDecoder(byte[] bytes) {
 		Objects.requireNonNull(bytes, "B编码内容错误");
-		if(bytes.length < 2) {
+		if(bytes.length < MIN_CONTENT_LENGTH) {
 			throw new IllegalArgumentException("B编码内容错误");
 		}
 		this.inputStream = new ByteArrayInputStream(bytes);
@@ -127,7 +107,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @param bytes 数据
 	 * 
-	 * @return B编码解码器
+	 * @return {@link BEncodeDecoder}
 	 */
 	public static final BEncodeDecoder newInstance(byte[] bytes) {
 		return new BEncodeDecoder(bytes);
@@ -138,7 +118,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @param content 数据
 	 * 
-	 * @return B编码解码器
+	 * @return {@link BEncodeDecoder}
 	 */
 	public static final BEncodeDecoder newInstance(String content) {
 		Objects.requireNonNull(content, "B编码内容错误");
@@ -150,7 +130,7 @@ public final class BEncodeDecoder {
 	 * 
 	 * @param buffer 数据
 	 * 
-	 * @return B编码解码器
+	 * @return {@link BEncodeDecoder}
 	 */
 	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
 		Objects.requireNonNull(buffer, "B编码内容错误");
@@ -184,10 +164,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取下一个数据类型</p>
-	 * <p>同时解析下一个数据</p>
+	 * <p>解析数据并获取数据类型</p>
 	 * 
-	 * @return 下一个数据类型
+	 * @return 数据类型
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
@@ -195,7 +174,6 @@ public final class BEncodeDecoder {
 		// 是否含有数据
 		final boolean noneData = this.inputStream == null || this.inputStream.available() <= 0;
 		if(noneData) {
-			LOGGER.warn("B编码没有数据");
 			this.type = Type.NONE;
 			return this.type;
 		}
@@ -218,10 +196,10 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取下一个List</p>
-	 * <p>如果下一个数据类型不是{@link List}返回空{@link List}</p>
+	 * <p>获取List</p>
+	 * <p>如果数据类型不是List返回空List</p>
 	 * 
-	 * @return 下一个List
+	 * @return List
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
@@ -234,10 +212,10 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取下一个Map</p>
-	 * <p>如果下一个数据类型不是{@link Map}返回空{@link Map}</p>
+	 * <p>获取Map</p>
+	 * <p>如果数据类型不是Map返回空Map</p>
 	 * 
-	 * @return 下一个Map
+	 * @return Map
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 */
@@ -250,9 +228,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取剩余所有数据</p>
+	 * <p>读取剩余所有字节数组</p>
 	 * 
-	 * @return 剩余所有数据
+	 * @return 剩余所有字节数组
 	 */
 	public byte[] oddBytes() {
 		if(this.inputStream == null) {
@@ -262,9 +240,11 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * <p>读取剩余所有数据并转为字符串</p>
+	 * <p>读取剩余所有字符串</p>
 	 * 
-	 * @return 剩余所有数据字符串
+	 * @return 剩余所有字符串
+	 * 
+	 * @see #oddBytes()
 	 */
 	public String oddString() {
 		return new String(this.oddBytes());
@@ -326,8 +306,7 @@ public final class BEncodeDecoder {
 				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lengthBuilder.append(indexChar);
 				case SEPARATOR -> {
 					if(lengthBuilder.length() > 0) {
-						final byte[] bytes = readBytes(lengthBuilder, inputStream);
-						list.add(bytes);
+						list.add(readBytes(lengthBuilder, inputStream));
 					} else {
 						LOGGER.warn("B编码错误（长度）：{}", lengthBuilder);
 					}
@@ -422,7 +401,7 @@ public final class BEncodeDecoder {
 		}
 		final int length = Integer.parseInt(number);
 		PacketSizeException.verify(length);
-		lengthBuilder.setLength(0); // 清空长度
+		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];
 		try {
 			final int readLength = inputStream.read(bytes);
@@ -663,7 +642,6 @@ public final class BEncodeDecoder {
 	
 	/**
 	 * <p>获取Map</p>
-	 * <p>使用LinkedHashMap防止乱序（乱序后计算的Hash值将会改变）</p>
 	 * 
 	 * @param map 数据
 	 * @param key 键
@@ -678,8 +656,9 @@ public final class BEncodeDecoder {
 		if(result == null) {
 			return Map.of();
 		}
+		// 使用LinkedHashMap防止乱序
 		return result.entrySet().stream()
-			.map(entry -> Map.entry(entry.getKey() == null ? null : entry.getKey().toString(), entry.getValue()))
+			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 	

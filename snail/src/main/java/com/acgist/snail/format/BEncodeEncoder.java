@@ -14,18 +14,7 @@ import com.acgist.snail.format.BEncodeDecoder.Type;
 
 /**
  * <p>B编码编码器</p>
- * <p>支持数据类型：Number、String、byte[]</p>
- * <pre>
- * encoder
- * 	.newList().put("1").put("2").flush()
- * 	.newMap().put("a", "b").put("c", "d").flush()
- * 	.toString();
- * 
- * encoder
- * 	.write(List.of("a", "b"))
- * 	.write(Map.of("1", "2"))
- * 	.toString();
- * </pre>
+ * <p>支持数据类型：Number、String、byte[]、List、Map</p>
  * 
  * @author acgist
  */
@@ -46,7 +35,7 @@ public final class BEncodeEncoder {
 	 */
 	private BEncodeDecoder.Type type;
 	/**
-	 * <p>输出数据（不需要关闭）</p>
+	 * <p>输出数据</p>
 	 */
 	private final ByteArrayOutputStream outputStream;
 	
@@ -54,6 +43,11 @@ public final class BEncodeEncoder {
 		this.outputStream = new ByteArrayOutputStream();
 	}
 	
+	/**
+	 * <p>新建B编码编码器</p>
+	 * 
+	 * @return {@link BEncodeEncoder}
+	 */
 	public static final BEncodeEncoder newInstance() {
 		return new BEncodeEncoder();
 	}
@@ -263,18 +257,20 @@ public final class BEncodeEncoder {
 	}
 	
 	/**
-	 * <p>获取字符数据</p>
+	 * <p>获取字节数组</p>
 	 * 
-	 * @return 字符数据
+	 * @return 字节数组
 	 */
 	public byte[] bytes() {
 		return this.outputStream.toByteArray();
 	}
 
 	/**
-	 * <p>将数据转为字符串</p>
+	 * <p>获取字符串</p>
 	 * 
 	 * @return 字符串
+	 * 
+	 * @see #bytes()
 	 */
 	@Override
 	public String toString() {

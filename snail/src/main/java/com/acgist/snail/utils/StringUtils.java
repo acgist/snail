@@ -291,12 +291,12 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>字符串转为对应编码的字符数组</p>
+	 * <p>字符串转为对应编码的字节数组</p>
 	 * 
 	 * @param message 字符串
 	 * @param charset 编码
 	 * 
-	 * @return 字符数组
+	 * @return 字节数组
 	 */
 	public static final byte[] toBytes(String message, String charset) {
 		if (charset == null) {
