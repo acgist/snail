@@ -1,6 +1,7 @@
 package com.acgist.snail.format;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedHashMap;
@@ -84,6 +85,11 @@ class BEncodeTest extends Performance {
 		assertEquals("l1:11:2e", list);
 	}
 
+	@Test
+	void testException() throws PacketSizeException {
+		assertThrows(IllegalArgumentException.class, () -> BEncodeDecoder.newInstance("l"));
+	}
+	
 	@Test
 	void testCosted() {
 		final long costed = this.costed(100000, () -> {
