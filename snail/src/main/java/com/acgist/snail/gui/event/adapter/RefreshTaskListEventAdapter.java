@@ -22,7 +22,7 @@ public class RefreshTaskListEventAdapter extends GuiEvent {
 	
 	@Override
 	protected void executeExtend(Object ... args) {
-		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.REFRESH_TASK_LIST);
+		final ApplicationMessage message = ApplicationMessage.Type.REFRESH_TASK_LIST.build();
 		GuiContext.getInstance().sendExtendGuiMessage(message);
 	}
 

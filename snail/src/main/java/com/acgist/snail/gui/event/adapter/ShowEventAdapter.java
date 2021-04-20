@@ -22,7 +22,7 @@ public class ShowEventAdapter extends GuiEvent {
 
 	@Override
 	protected void executeExtend(Object ... args) {
-		final ApplicationMessage message = ApplicationMessage.message(ApplicationMessage.Type.SHOW);
+		final ApplicationMessage message = ApplicationMessage.Type.SHOW.build();
 		GuiContext.getInstance().sendExtendGuiMessage(message);
 	}
 

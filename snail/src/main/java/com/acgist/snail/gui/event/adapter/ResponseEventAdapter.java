@@ -45,7 +45,7 @@ public class ResponseEventAdapter extends GuiEventArgs {
 	 * @param message 消息
 	 */
 	protected void executeExtendExtend(String message) {
-		final ApplicationMessage applicationMessage = ApplicationMessage.message(ApplicationMessage.Type.RESPONSE, message);
+		final ApplicationMessage applicationMessage = ApplicationMessage.Type.RESPONSE.build(message);
 		GuiContext.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 	

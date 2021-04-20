@@ -16,8 +16,6 @@ public abstract class GuiEventArgs extends GuiEvent {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GuiEventArgs.class);
 
 	/**
-	 * <p>GUI事件扩展</p>
-	 * 
 	 * @param type 事件类型
 	 * @param name 事件名称
 	 */
@@ -58,11 +56,11 @@ public abstract class GuiEventArgs extends GuiEvent {
 	 */
 	protected final boolean check(Object[] args, int minLength, int maxLength) {
 		if(args == null) {
-			LOGGER.warn("{}参数格式错误：{}", args);
+			LOGGER.warn("参数格式错误：{}-{}", this.name, args);
 			return false;
 		}
 		if(args.length < minLength || args.length > maxLength) {
-			LOGGER.warn("{}参数格式错误（长度）：{}", args);
+			LOGGER.warn("参数格式错误（长度）：{}-{}", this.name, args);
 			return false;
 		}
 		return true;
@@ -90,7 +88,12 @@ public abstract class GuiEventArgs extends GuiEvent {
 	 * @return 参数
 	 */
 	protected final Object getArg(Object[] args, int index, Object defaultValue) {
-		return args.length > index ? args[index] : defaultValue;
+		if(args.length > index) {
+			final Object arg = args[index];
+			return arg == null ? defaultValue : arg;
+		} else {
+			return defaultValue;
+		}
 	}
 	
 	/**

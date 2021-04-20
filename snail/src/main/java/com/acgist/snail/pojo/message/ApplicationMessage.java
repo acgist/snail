@@ -24,6 +24,14 @@ public class ApplicationMessage {
 	 * <p>成功：{@value}</p>
 	 */
 	public static final String SUCCESS = "success";
+	/**
+	 * <p>消息类型</p>
+	 */
+	private static final String MESSAGE_TYPE = "type";
+	/**
+	 * <p>消息内容</p>
+	 */
+	private static final String MESSAGE_BODY = "body";
 
 	/**
 	 * <p>系统消息、系统通知类型</p>
@@ -120,6 +128,26 @@ public class ApplicationMessage {
 			return null;
 		}
 		
+		/**
+		 * <p>新建消息</p>
+		 * 
+		 * @return 系统消息
+		 */
+		public ApplicationMessage build() {
+			return this.build(null);
+		}
+		
+		/**
+		 * <p>新建消息</p>
+		 * 
+		 * @param body 消息内容
+		 * 
+		 * @return 系统消息
+		 */
+		public ApplicationMessage build(String body) {
+			return new ApplicationMessage(this, body);
+		}
+		
 	}
 
 	/**
@@ -154,52 +182,18 @@ public class ApplicationMessage {
 			if(decoder.isEmpty()) {
 				return null;
 			}
-			final String type = decoder.getString("type");
-			final String body = decoder.getString("body");
+			final String type = decoder.getString(MESSAGE_TYPE);
+			final String body = decoder.getString(MESSAGE_BODY);
 			final Type messageType = Type.of(type);
 			if(messageType == null) {
 				LOGGER.debug("系统消息类型错误：{}", type);
 				return null;
 			}
-			return ApplicationMessage.message(messageType, body);
+			return messageType.build(body);
 		} catch (NetException e) {
 			LOGGER.error("读取系统文本消息异常：{}", content, e);
 		}
 		return null;
-	}
-	
-	/**
-	 * <p>新建消息</p>
-	 * 
-	 * @param type 消息类型
-	 * 
-	 * @return 系统消息
-	 */
-	public static final ApplicationMessage message(Type type) {
-		return message(type, null);
-	}
-	
-	/**
-	 * <p>新建消息</p>
-	 * 
-	 * @param type 消息类型
-	 * @param body 消息内容
-	 * 
-	 * @return 系统消息
-	 */
-	public static final ApplicationMessage message(Type type, String body) {
-		return new ApplicationMessage(type, body);
-	}
-	
-	/**
-	 * <p>新建响应消息</p>
-	 * 
-	 * @param body 消息内容
-	 * 
-	 * @return 系统消息
-	 */
-	public static final ApplicationMessage response(String body) {
-		return message(Type.RESPONSE, body);
 	}
 	
 	/**
@@ -224,9 +218,9 @@ public class ApplicationMessage {
 	public String toString() {
 		final var encoder = BEncodeEncoder.newInstance()
 			.newMap()
-			.put("type", this.type.name());
+			.put(MESSAGE_TYPE, this.type.name());
 		if(this.body != null) {
-			encoder.put("body", this.body);
+			encoder.put(MESSAGE_BODY, this.body);
 		}
 		return encoder.flush().toString();
 	}

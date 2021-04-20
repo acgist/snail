@@ -18,6 +18,19 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 	/**
 	 * <p>消息类型</p>
 	 */
+	public static final String MESSAGE_TYPE = "type";
+	/**
+	 * <p>消息标题</p>
+	 */
+	public static final String MESSAGE_TITLE = "title";
+	/**
+	 * <p>消息内容</p>
+	 */
+	public static final String MESSAGE_MESSAGE = "message";
+	
+	/**
+	 * <p>消息类型</p>
+	 */
 	protected final ApplicationMessage.Type messageType;
 	
 	/**
@@ -65,12 +78,12 @@ public abstract class GuiEventMessage extends GuiEventArgs {
 	 */
 	protected void executeExtendExtend(GuiContext.MessageType type, String title, String message) {
 		final Map<String, String> map = Map.of(
-			"type", type.name(),
-			"title", title,
-			"message", message
+			GuiEventMessage.MESSAGE_TYPE, type.name(),
+			GuiEventMessage.MESSAGE_TITLE, title,
+			GuiEventMessage.MESSAGE_MESSAGE, message
 		);
 		final String body = BEncodeEncoder.encodeMapString(map);
-		final ApplicationMessage applicationMessage = ApplicationMessage.message(this.messageType, body);
+		final ApplicationMessage applicationMessage = this.messageType.build(body);
 		GuiContext.getInstance().sendExtendGuiMessage(applicationMessage);
 	}
 

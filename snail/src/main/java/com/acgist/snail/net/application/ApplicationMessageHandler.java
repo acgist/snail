@@ -18,6 +18,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.event.GuiEventMessage;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.IMessageEncoder;
@@ -151,15 +152,15 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	}
 	
 	/**
-	 * <p>GUI注册</p>
+	 * <p>扩展GUI注册</p>
 	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
 	 */
 	private void onGui() {
 		final boolean success = GuiContext.getInstance().extendGuiMessageHandler(this);
 		if(success) {
-			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		} else {
-			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 		}
 	}
 
@@ -170,7 +171,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onText(ApplicationMessage message) {
-		this.send(ApplicationMessage.response(message.getBody()));
+		this.send(ApplicationMessage.Type.RESPONSE.build(message.getBody()));
 	}
 	
 	/**
@@ -209,8 +210,8 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		try {
 			final var decoder = BEncodeDecoder.newInstance(body);
 			decoder.nextMap();
-			if(decoder.isEmpty()) { // 空数据返回失败
-				this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
+			if(decoder.isEmpty()) {
+				this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 				return;
 			}
 			final String url = decoder.getString("url");
@@ -219,9 +220,9 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 				GuiContext.getInstance().files(files); // 设置选择文件
 				TaskContext.getInstance().download(url); // 开始下载任务
 			}
-			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
-			this.send(ApplicationMessage.response(e.getMessage()));
+			this.send(ApplicationMessage.Type.RESPONSE.build(e.getMessage()));
 		}
 	}
 
@@ -234,7 +235,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			.map(ITaskSession::taskMessage)
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
-		this.send(ApplicationMessage.response(body));
+		this.send(ApplicationMessage.Type.RESPONSE.build(body));
 	}
 
 	/**
@@ -246,13 +247,13 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private void onTaskStart(ApplicationMessage message) {
 		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
-			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 		} else {
 			try {
 				optional.get().start();
-				this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+				this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 			} catch (DownloadException e) {
-				this.send(ApplicationMessage.response(e.getMessage()));
+				this.send(ApplicationMessage.Type.RESPONSE.build(e.getMessage()));
 			}
 		}
 	}
@@ -266,10 +267,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private void onTaskPause(ApplicationMessage message) {
 		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
-			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 		} else {
 			optional.get().pause();
-			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		}
 	}
 	
@@ -282,10 +283,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private void onTaskDelete(ApplicationMessage message) {
 		final var optional = this.selectTaskSession(message);
 		if(optional.isEmpty()) {
-			this.send(ApplicationMessage.response(ApplicationMessage.FAIL));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 		} else {
 			optional.get().delete();
-			this.send(ApplicationMessage.response(ApplicationMessage.SUCCESS));
+			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		}
 	}
 	
@@ -313,10 +314,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
 			decoder.nextMap();
-			final String type = decoder.getString("type");
-			final String title = decoder.getString("title");
-			final String content = decoder.getString("message");
-			GuiContext.getInstance().alert(title, content, GuiContext.MessageType.valueOf(type));
+			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
+			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
+			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
+			GuiContext.getInstance().alert(title, content, GuiContext.MessageType.of(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理窗口消息异常", e);
 		}
@@ -332,10 +333,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
 			decoder.nextMap();
-			final String type = decoder.getString("type");
-			final String title = decoder.getString("title");
-			final String content = decoder.getString("message");
-			GuiContext.getInstance().notice(title, content, GuiContext.MessageType.valueOf(type));
+			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
+			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
+			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
+			GuiContext.getInstance().notice(title, content, GuiContext.MessageType.of(type));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示消息异常", e);
 		}
@@ -373,7 +374,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @return 任务信息
 	 */
 	private Optional<ITaskSession> selectTaskSession(ApplicationMessage message) {
-		final String body = message.getBody(); // 任务ID
+		final String body = message.getBody();
 		return TaskContext.getInstance().allTask().stream()
 			.filter(session -> session.getId().equals(body))
 			.findFirst();
