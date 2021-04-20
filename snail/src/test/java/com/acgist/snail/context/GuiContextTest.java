@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.GuiContext.MessageType;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.event.GuiEventMessage;
 import com.acgist.snail.net.application.ApplicationClient;
-import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.message.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
@@ -75,19 +75,35 @@ class GuiContextTest extends Performance {
 		final ApplicationClient client = ApplicationClient.newInstance();
 		client.connect();
 		// 注册GUI
-		client.send(ApplicationMessage.message(Type.GUI, message));
+		client.send(Type.GUI.build(message));
 		assertNotNull(client);
 		while ((message = scanner.nextLine()) != null) {
 			if(message.equalsIgnoreCase(Type.TEXT.name())) {
-				client.send(ApplicationMessage.message(Type.TEXT, message));
+				client.send(Type.TEXT.build(message));
 			} else if(message.equalsIgnoreCase(Type.CLOSE.name())) {
-				client.send(ApplicationMessage.message(Type.CLOSE, message));
+				client.send(Type.CLOSE.build(message));
 				client.close();
 				break;
 			} else if(message.equalsIgnoreCase(Type.NOTIFY.name())) {
-				client.send(ApplicationMessage.message(Type.NOTIFY, message));
+				client.send(Type.NOTIFY.build(message));
+			} else if(message.equalsIgnoreCase(Type.ALERT.name())) {
+				final Map<String, String> map = Map.of(
+					GuiEventMessage.MESSAGE_TYPE, GuiContext.MessageType.INFO.name(),
+					GuiEventMessage.MESSAGE_TITLE, "测试",
+					GuiEventMessage.MESSAGE_MESSAGE, message
+				);
+				final String body = BEncodeEncoder.encodeMapString(map);
+				client.send(Type.ALERT.build(body));
+			} else if(message.equalsIgnoreCase(Type.NOTICE.name())) {
+				final Map<String, String> map = Map.of(
+					GuiEventMessage.MESSAGE_TYPE, GuiContext.MessageType.INFO.name(),
+					GuiEventMessage.MESSAGE_TITLE, "测试",
+					GuiEventMessage.MESSAGE_MESSAGE, message
+				);
+				final String body = BEncodeEncoder.encodeMapString(map);
+				client.send(Type.NOTICE.build(body));
 			} else if(message.equalsIgnoreCase(Type.SHUTDOWN.name())) {
-				client.send(ApplicationMessage.message(Type.SHUTDOWN, message));
+				client.send(Type.SHUTDOWN.build(message));
 				client.close();
 				break;
 			} else if(message.equalsIgnoreCase(Type.TASK_NEW.name())) {
@@ -96,17 +112,17 @@ class GuiContextTest extends Performance {
 				// BT任务
 //				map.put("files", "B编码下载文件列表");
 				map.put("url", "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-10/v10.0.4/bin/apache-tomcat-10.0.4.zip");
-				client.send(ApplicationMessage.message(Type.TASK_NEW, BEncodeEncoder.encodeMapString(map)));
+				client.send(Type.TASK_NEW.build(BEncodeEncoder.encodeMapString(map)));
 			} else if(message.equalsIgnoreCase(Type.TASK_LIST.name())) {
-				client.send(ApplicationMessage.message(Type.TASK_LIST, message));
+				client.send(Type.TASK_LIST.build(message));
 			} else if(message.equalsIgnoreCase(Type.TASK_START.name())) {
-				client.send(ApplicationMessage.message(Type.TASK_START, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+				client.send(Type.TASK_START.build("37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else if(message.equalsIgnoreCase(Type.TASK_PAUSE.name())) {
-				client.send(ApplicationMessage.message(Type.TASK_PAUSE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+				client.send(Type.TASK_PAUSE.build("37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else if(message.equalsIgnoreCase(Type.TASK_DELETE.name())) {
-				client.send(ApplicationMessage.message(Type.TASK_DELETE, "37f48162-d306-4fff-b161-f1231a3f7e48"));
+				client.send(Type.TASK_DELETE.build("37f48162-d306-4fff-b161-f1231a3f7e48"));
 			} else {
-				client.send(ApplicationMessage.message(Type.TEXT, message));
+				client.send(Type.TEXT.build(message));
 			}
 		}
 		scanner.close();

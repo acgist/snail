@@ -90,6 +90,23 @@ public final class GuiContext implements IContext {
 		 */
 		ERROR;
 		
+		/**
+		 * <p>获取消息类型</p>
+		 * 
+		 * @param value 消息类型
+		 * 
+		 * @return 消息类型
+		 */
+		public static final MessageType of(String value) {
+			final var types = MessageType.values();
+			for (MessageType type : types) {
+				if(type.name().equalsIgnoreCase(value)) {
+					return type;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	/**

@@ -13,13 +13,13 @@ class ApplicationMessageTest extends Performance {
 
 	@Test
 	void testApplicationMessage() {
-		var message = ApplicationMessage.message(Type.ALERT);
+		var message = Type.ALERT.build();
 		this.log(message.toString());
 		assertNotNull(message.toString());
 		final var alert = ApplicationMessage.valueOf(message.toString());
 		assertNull(alert.getBody());
 		assertEquals(Type.ALERT, alert.getType());
-		message = ApplicationMessage.response("acgist");
+		message = ApplicationMessage.Type.RESPONSE.build("acgist");
 		final var response = ApplicationMessage.valueOf(message.toString());
 		assertEquals("acgist", response.getBody());
 		assertEquals(Type.RESPONSE, response.getType());
