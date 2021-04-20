@@ -113,7 +113,6 @@ public final class XML {
 	private static final DocumentBuilderFactory buildFactory() {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
-			// 防止实体注入
 			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
 			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -127,6 +126,8 @@ public final class XML {
 	}
 
 	/**
+	 * <p>获取文档</p>
+	 * 
 	 * @return 文档
 	 */
 	public Document document() {
@@ -258,11 +259,11 @@ public final class XML {
 	 * @return XML
 	 */
 	public String xml(boolean format) {
-		try(final Writer writer = new StringWriter()) { // 可以不用关闭
+		try(final Writer writer = new StringWriter()) {
 			final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-			final DOMImplementationLS ementation = (DOMImplementationLS) registry.getDOMImplementation("LS");
-			final LSOutput output = ementation.createLSOutput();
-			final LSSerializer serializer = ementation.createLSSerializer();
+			final DOMImplementationLS domImplementation = (DOMImplementationLS) registry.getDOMImplementation("LS");
+			final LSOutput output = domImplementation.createLSOutput();
+			final LSSerializer serializer = domImplementation.createLSSerializer();
 			output.setEncoding(SystemConfig.DEFAULT_CHARSET);
 			output.setCharacterStream(writer);
 			if(format) {
