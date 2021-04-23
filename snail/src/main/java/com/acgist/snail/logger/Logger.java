@@ -91,7 +91,7 @@ public final class Logger implements org.slf4j.Logger {
 	/**
 	 * <p>判断是否支持日志级别</p>
 	 * 
-	 * @param level 日志级别
+	 * @param level 级别
 	 * 
 	 * @return 是否支持
 	 */
