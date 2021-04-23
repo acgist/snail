@@ -91,7 +91,7 @@ public final class Logger implements org.slf4j.Logger {
 	/**
 	 * <p>判断是否支持日志级别</p>
 	 * 
-	 * @param level 级别
+	 * @param level 日志级别
 	 * 
 	 * @return 是否支持
 	 */
@@ -116,51 +116,11 @@ public final class Logger implements org.slf4j.Logger {
 	 * 
 	 * @param level 级别
 	 * @param format 日志
-	 * @param arg 参数
-	 */
-	private void log(Level level, String format, Object arg) {
-		if(this.isEnabled(level)) {
-			this.output(level, MessageFormatter.format(format, arg));
-		}
-	}
-	
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param format 日志
-	 * @param arga 参数
-	 * @param argb 参数
-	 */
-	private void log(Level level, String format, Object arga, Object argb) {
-		if(this.isEnabled(level)) {
-			this.output(level, MessageFormatter.format(format, arga, argb));
-		}
-	}
-	
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param format 日志
 	 * @param args 参数
 	 */
 	private void log(Level level, String format, Object ... args) {
 		if(this.isEnabled(level)) {
 			this.output(level, MessageFormatter.arrayFormat(format, args));
-		}
-	}
-	
-	/**
-	 * <p>记录日志</p>
-	 * 
-	 * @param level 级别
-	 * @param message 日志
-	 * @param t 异常
-	 */
-	private void log(Level level, String message, Throwable t) {
-		if(this.isEnabled(level)) {
-			this.output(level, MessageFormatter.format(message, t));
 		}
 	}
 	
