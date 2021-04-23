@@ -20,11 +20,11 @@ public abstract class LoggerAdapter {
 	protected OutputStream errorOutput;
 	/**
 	 * <p>是否可用</p>
-	 * <p>输出流关闭后不再继续记录日志</p>
 	 */
-	private volatile boolean available = true;
+	private volatile boolean available;
 
 	protected LoggerAdapter() {
+		this.available = true;
 	}
 
 	/**
