@@ -28,6 +28,11 @@ public final class LoggerContext implements ILoggerFactory {
 	}
 
 	/**
+	 * <p>错误日志文件</p>
+	 */
+	private static final String ERROR_LOG_FILE = "logs/snail.error.log";
+	
+	/**
 	 * <p>日志对象</p>
 	 */
 	private final Map<String, Logger> loggers;
@@ -92,7 +97,7 @@ public final class LoggerContext implements ILoggerFactory {
 	 */
 	public static final void error(Throwable t) {
 		try(
-			final var outputStream = new FileOutputStream(new File("logs/snail.logger.log"), true);
+			final var outputStream = new FileOutputStream(new File(ERROR_LOG_FILE), true);
 			final var printWriter = new PrintWriter(outputStream);
 		) {
 			t.printStackTrace(printWriter);

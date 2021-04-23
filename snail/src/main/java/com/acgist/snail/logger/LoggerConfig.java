@@ -61,15 +61,13 @@ public final class LoggerConfig {
 	 * <p>初始化配置</p>
 	 */
 	private void init() {
-		Properties properties = null;
+		final Properties properties = new Properties();
 		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), StandardCharsets.UTF_8)) {
-			properties = new Properties();
 			properties.load(input);
 		} catch (IOException e) {
 			LoggerContext.error(e);
 		}
-		final Level level = this.of(properties.getProperty("logger.level"));
-		this.levelInt = level.toInt();
+		this.levelInt = this.level(properties.getProperty("logger.level")).toInt();
 		this.system = properties.getProperty("logger.system");
 		this.adapter = properties.getProperty("logger.adapter");
 		this.fileName = properties.getProperty("logger.file.name");
@@ -80,18 +78,19 @@ public final class LoggerConfig {
 	/**
 	 * <p>日志级别转换</p>
 	 * 
-	 * @param levelValue 日志级别
+	 * @param value 日志级别
 	 * 
 	 * @return 日志级别
 	 */
-	private Level of(String levelValue) {
+	private Level level(String value) {
 		final Level[] levels = Level.values();
 		for (Level level : levels) {
-			if(level.name().equalsIgnoreCase(levelValue)) {
+			if(level.name().equalsIgnoreCase(value)) {
 				return level;
 			}
 		}
-		return Level.DEBUG; // 默认：DEBUG
+		// 默认：DEBUG
+		return Level.DEBUG;
 	}
 	
 	/**

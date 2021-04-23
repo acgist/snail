@@ -39,22 +39,6 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 		this.errorOutput = output;
 	}
 
-	/**
-	 * <p>新建文件输出流</p>
-	 * 
-	 * @return 文件输出流
-	 */
-	private OutputStream buildOutput() {
-		final int fileBuffer = LoggerConfig.getFileBuffer();
-		final File file = this.buildFile();
-		try {
-			return new BufferedOutputStream(new FileOutputStream(file, true), fileBuffer);
-		} catch (IOException e) {
-			LoggerContext.error(e);
-		}
-		return null;
-	}
-	
 	@Override
 	public void release() {
 		super.release();
@@ -72,6 +56,22 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * <p>新建文件输出流</p>
+	 * 
+	 * @return 文件输出流
+	 */
+	private OutputStream buildOutput() {
+		final int fileBuffer = LoggerConfig.getFileBuffer();
+		final File file = this.buildFile();
+		try {
+			return new BufferedOutputStream(new FileOutputStream(file, true), fileBuffer);
+		} catch (IOException e) {
+			LoggerContext.error(e);
+		}
+		return null;
 	}
 	
 	/**
