@@ -247,7 +247,7 @@ public final class MSECryptHandshakeHandler {
 					this.receiveConfirmPadding();
 					break;
 				default:
-					LOGGER.warn("加密握手失败（未适配步骤）：{}", this.step);
+					LOGGER.warn("加密握手失败（步骤未适配）：{}", this.step);
 					break;
 				}
 			}
