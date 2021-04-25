@@ -69,11 +69,11 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	
 	@Override
 	public void onMessage(String message) {
-		message = message.trim();
 		if(StringUtils.isEmpty(message)) {
 			LOGGER.warn("系统消息错误：{}", message);
 			return;
 		}
+		message = message.trim();
 		final ApplicationMessage applicationMessage = ApplicationMessage.valueOf(message);
 		if(applicationMessage == null) {
 			LOGGER.warn("系统消息错误（格式）：{}", message);
@@ -88,12 +88,13 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void execute(ApplicationMessage message) {
-		if(message.getType() == null) {
-			LOGGER.warn("系统消息错误（未知类型）：{}", message.getType());
+		final ApplicationMessage.Type type = message.getType();
+		if(type == null) {
+			LOGGER.warn("系统消息错误（未知类型）：{}", type);
 			return;
 		}
 		LOGGER.debug("处理系统消息：{}", message);
-		switch (message.getType()) {
+		switch (type) {
 		case GUI:
 			this.onGui();
 			break;
@@ -146,14 +147,16 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			this.onResponse(message);
 			break;
 		default:
-			LOGGER.warn("系统消息错误（类型未适配）：{}", message.getType());
+			LOGGER.warn("系统消息错误（类型未适配）：{}", type);
 			break;
 		}
 	}
 	
 	/**
 	 * <p>扩展GUI注册</p>
-	 * <p>将当前连接的消息代理注册为GUI消息代理，需要使用{@linkplain Mode#EXTEND 后台模式}启动。</p>
+	 * <p>将当前连接的消息代理注册为GUI消息代理</p>
+	 * 
+	 * @see Mode#EXTEND
 	 */
 	private void onGui() {
 		final boolean success = GuiContext.getInstance().extendGuiMessageHandler(this);
@@ -166,7 +169,6 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 
 	/**
 	 * <p>文本消息</p>
-	 * <p>原样返回文本</p>
 	 * 
 	 * @param message 系统消息
 	 */
@@ -217,8 +219,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
 			synchronized (this) {
-				GuiContext.getInstance().files(files); // 设置选择文件
-				TaskContext.getInstance().download(url); // 开始下载任务
+				// 设置选择文件
+				GuiContext.getInstance().files(files);
+				// 开始下载任务
+				TaskContext.getInstance().download(url);
 			}
 			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
@@ -314,6 +318,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
 			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("窗口消息错误：{}", message);
+				return;
+			}
 			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
 			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
 			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
@@ -333,6 +341,10 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
 			decoder.nextMap();
+			if(decoder.isEmpty()) {
+				LOGGER.warn("提示消息错误：{}", message);
+				return;
+			}
 			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
 			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
 			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
