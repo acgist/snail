@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.logger.LoggerConfig;
 import com.acgist.snail.utils.Performance;
 
 class LineMessageCodecTest extends Performance {
@@ -20,6 +21,7 @@ class LineMessageCodecTest extends Performance {
 	
 	@Test
 	void testCosted() {
+		LoggerConfig.off();
 		final LineMessageCodec codec = new LineMessageCodec(new PrintMessageHandler(), "-");
 		final long costed = this.costed(100000, () -> {
 			try {
@@ -28,7 +30,7 @@ class LineMessageCodecTest extends Performance {
 				this.log("处理异常", e);
 			}
 		});
-		assertTrue(costed < 10000);
+		assertTrue(costed < 1000);
 	}
 	
 }
