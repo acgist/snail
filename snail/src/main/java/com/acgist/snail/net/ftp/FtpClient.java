@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.TcpClient;
@@ -14,7 +15,6 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP客户端</p>
- * <p>登陆成功后发送FEAT指令，如果服务器支持UTF8指令，使用UTF-8编码，否者使用GBK编码。</p>
  * 
  * @author acgist
  */
@@ -107,9 +107,10 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	public boolean connect() {
 		this.handler.resetLock();
 		this.connect = this.connect(this.host, this.port);
-		this.handler.lock(); // 锁定：等待FTP欢迎消息
+		// 锁定：等待FTP欢迎消息
+		this.handler.lock();
 		if(this.connect) {
-			this.login(); // 登陆
+			this.login();
 			if(this.handler.login()) {
 				this.charset();
 			} else {
@@ -143,13 +144,17 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	public InputStream download(Long downloadSize) throws NetException {
 		this.checkConnect();
 		synchronized (this) {
-			this.changeMode();
-			this.command("TYPE I"); // 设置数据模式：二进制
+			// 切换被动模式
+			this.command("PASV");
+			// 设置数据模式：二进制
+			this.command("TYPE I");
 			if(downloadSize != null && downloadSize > 0L) {
-				this.command("REST " + downloadSize); // 断点续传位置
+				// 断点续传位置
+				this.command("REST " + downloadSize);
 			}
-			this.command("RETR " + this.filePath); // 下载文件
-			final var input = this.handler.inputStream(); // 文件流
+			// 下载文件
+			this.command("RETR " + this.filePath);
+			final var input = this.handler.inputStream();
 			if(input == null) {
 				throw new NetException(this.failMessage("打开FTP文件流失败"));
 			}
@@ -222,23 +227,26 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	public Long size() throws NetException {
 		this.checkConnect();
 		synchronized (this) {
-			this.changeMode();
-			this.command("TYPE A"); // 切换数据模式：ASCII
-			this.command("LIST " + this.filePath); // 列出文件信息
+			// 切换被动模式
+			this.command("PASV");
+			// 切换数据模式：ASCII
+			this.command("TYPE A");
+			// 列出文件信息
+			this.command("LIST " + this.filePath);
 			final InputStream inputStream = this.handler.inputStream();
-			final String data = StringUtils.ofInputStream(inputStream, this.handler.charset());
-			if(data == null) {
+			final String message = StringUtils.ofInputStream(inputStream, this.handler.charset());
+			if(message == null) {
 				throw new NetException(this.failMessage("未知错误"));
 			}
 			// 去掉多余空格
-			final String[] datas = Stream.of(data.split(" "))
+			final String[] messages = Stream.of(message.split(SymbolConfig.Symbol.SPACE.toString()))
 				.map(String::trim)
 				.filter(StringUtils::isNotEmpty)
 				.toArray(String[]::new);
-			if(datas.length == MS_DOS_LENGTH) {
-				return Long.valueOf(datas[2]);
-			} else if(datas.length == UNIX_LENGTH) {
-				return Long.valueOf(datas[4]);
+			if(messages.length == MS_DOS_LENGTH) {
+				return Long.valueOf(messages[2]);
+			} else if(messages.length == UNIX_LENGTH) {
+				return Long.valueOf(messages[4]);
 			} else {
 				throw new NetException("读取FTP文件大小失败");
 			}
@@ -257,15 +265,11 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 		return this.handler.range();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>发送退出命令</p>
-	 */
 	@Override
 	public void close() {
 		if(this.connect) {
-			this.command("QUIT", false); // 退出命令
+			// 发送退出命令
+			this.command("QUIT", false);
 		}
 		this.connect = false;
 		super.close();
@@ -283,17 +287,12 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * <p>设置编码</p>
 	 */
 	private void charset() {
-		this.command("FEAT"); // 列出扩展命令
+		// 列出扩展命令
+		this.command("FEAT");
 		if(SystemConfig.CHARSET_UTF8.equals(this.handler.charset())) {
-			this.command("OPTS UTF8 ON"); // 设置UTF8
+			// 设置UTF8
+			this.command("OPTS UTF8 ON");
 		}
-	}
-	
-	/**
-	 * <p>切换被动模式</p>
-	 */
-	private void changeMode() {
-		this.command("PASV");
 	}
 	
 	/**

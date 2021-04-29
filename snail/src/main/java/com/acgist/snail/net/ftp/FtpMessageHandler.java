@@ -122,12 +122,16 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 			// 进入被动模式：打开文件下载Socket
 			this.release(); // 释放旧的资源
 			// 被动模式格式：227 Entering Passive Mode (127,0,0,1,36,158).
-			final int opening = message.indexOf('(');
-			final int closing = message.indexOf(')', opening + 1);
+			final int opening = message.indexOf(SymbolConfig.Symbol.OPEN_PARENTHESIS.toChar());
+			final int closing = message.indexOf(SymbolConfig.Symbol.CLOSE_PARENTHESIS.toChar(), opening + 1);
 			if (opening >= 0 && closing > opening) {
 				final String data = message.substring(opening + 1, closing);
-				final StringTokenizer tokenizer = new StringTokenizer(data, ",");
-				final String host = tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken() + "." + tokenizer.nextToken();
+				final StringTokenizer tokenizer = new StringTokenizer(data, SymbolConfig.Symbol.COMMA.toString());
+				final String host =
+					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+					tokenizer.nextToken();
 				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 				try {
 					this.inputSocket = new Socket();
