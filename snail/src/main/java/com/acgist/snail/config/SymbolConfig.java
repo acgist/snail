@@ -93,7 +93,31 @@ public final class SymbolConfig {
 		/**
 		 * <p>回车符</p>
 		 */
-		CARRIAGE_RETURN('\r');
+		CARRIAGE_RETURN('\r'),
+		/**
+		 * <p>左花括号</p>
+		 */
+		OPEN_BRACE('{'),
+		/**
+		 * <p>右花括号</p>
+		 */
+		CLOSE_BRACE('}'),
+		/**
+		 * <p>左方括号</p>
+		 */
+		OPEN_BRACKET('['),
+		/**
+		 * <p>右方括号</p>
+		 */
+		CLOSE_BRACKET(']'),
+		/**
+		 * <p>左圆括号</p>
+		 */
+		OPEN_PARENTHESIS('('),
+		/**
+		 * <p>右圆括号</p>
+		 */
+		CLOSE_PARENTHESIS(')');
 		
 		/**
 		 * <p>字符值</p>
