@@ -91,7 +91,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		} else {
 			LOGGER.debug("处理FTP消息：{}", message);
 			switch (code) {
-				case DATA_CONNECTION_OPEN, FILE_STATUS_OKAY -> this.openInputStream(message);
+				case DATA_CONNECTION_OPEN, FILE_STATUS_OKAY -> this.openInputStream();
 				case SYSTEM_STATUS -> this.systemStatus(message);
 				case READY_FOR_NEW_USER -> this.readyForNewUser(message);
 				case FILE_ACTION_SUCCESS -> this.fileActionSuccess(message);
@@ -216,12 +216,10 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	/**
 	 * <p>打开输入流</p>
 	 * 
-	 * @param message 信息
-	 * 
 	 * @see CommandCode#DATA_CONNECTION_OPEN
 	 * @see CommandCode#FILE_STATUS_OKAY
 	 */
-	private void openInputStream(String message) {
+	private void openInputStream() {
 		if(this.inputSocket == null) {
 			this.failMessage = "没有切换被动模式";
 		} else {
