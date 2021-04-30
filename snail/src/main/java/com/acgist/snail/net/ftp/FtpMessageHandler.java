@@ -20,7 +20,6 @@ import com.acgist.snail.net.codec.MultilineMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>FTP消息代理</p>
@@ -33,7 +32,6 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	
 	/**
 	 * <p>多行消息正则表达式：{@value}</p>
-	 * <p>返回多行消息FTP命令：FEAT</p>
 	 */
 	private static final String MULTILINE_REGEX = "\\d{3} .*";
 	
@@ -87,78 +85,27 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 
 	@Override
 	public void onMessage(String message) {
-		LOGGER.debug("处理FTP消息：{}", message);
-		if(StringUtils.startsWith(message, "530 ")) {
-			// 登陆失败
-			this.login = false;
-			this.failMessage = "登陆失败";
-		} else if(StringUtils.startsWith(message, "550 ")) {
-			// 文件不存在
-			this.failMessage = "文件不存在";
-		} else if(StringUtils.startsWith(message, "421 ")) {
-			// 打开连接失败
-			this.failMessage = "打开连接失败";
-		} else if(StringUtils.startsWith(message, "350 ")) {
-			// 支持断点续传
-			this.range = true;
-		} else if(StringUtils.startsWith(message, "220 ")) {
-			// 退出系统
-		} else if(StringUtils.startsWith(message, "230 ")) {
-			// 登陆成功
-			this.login = true;
-		} else if(StringUtils.startsWith(message, "226 ")) {
-			// 下载完成
-		} else if(StringUtils.startsWith(message, "502 ")) {
-			// 不支持命令
-			LOGGER.debug("处理FTP消息错误（不支持命令）：{}", message);
-		} else if(StringUtils.startsWith(message, "211-")) {
-			// 系统状态：扩展命令FEAT
-			// 判断是否支持UTF8指令
-			if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
-				this.charset = SystemConfig.CHARSET_UTF8;
-				LOGGER.debug("设置FTP编码：{}", this.charset);
-			}
-		} else if(StringUtils.startsWith(message, "227 ")) {
-			// 进入被动模式：打开文件下载Socket
-			this.release(); // 释放旧的资源
-			// 被动模式格式：227 Entering Passive Mode (127,0,0,1,36,158).
-			final int opening = message.indexOf(SymbolConfig.Symbol.OPEN_PARENTHESIS.toChar());
-			final int closing = message.indexOf(SymbolConfig.Symbol.CLOSE_PARENTHESIS.toChar(), opening + 1);
-			if (opening >= 0 && closing > opening) {
-				final String data = message.substring(opening + 1, closing);
-				final StringTokenizer tokenizer = new StringTokenizer(data, SymbolConfig.Symbol.COMMA.toString());
-				final String host =
-					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-					tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-					tokenizer.nextToken();
-				final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
-				try {
-					this.inputSocket = new Socket();
-					this.inputSocket.setSoTimeout(SystemConfig.DOWNLOAD_TIMEOUT_MILLIS);
-					this.inputSocket.connect(NetUtils.buildSocketAddress(host, port), SystemConfig.CONNECT_TIMEOUT_MILLIS);
-				} catch (IOException e) {
-					this.failMessage = "打开文件下载Socket失败";
-					LOGGER.error("打开文件下载Socket异常：{}-{}", host, port, e);
-				}
-			}
-		} else if(
-			StringUtils.startsWith(message, "125 ") ||
-			StringUtils.startsWith(message, "150 ")
-		) {
-			// 打开下载文件连接
-			if(this.inputSocket == null) {
-				this.failMessage = "没有切换被动模式";
-			} else {
-				try {
-					this.inputStream = this.inputSocket.getInputStream();
-				} catch (IOException e) {
-					this.failMessage = "打开文件输出流失败";
-					LOGGER.error("打开文件输出流异常", e);
-				}
+		final CommandCode code = CommandCode.of(message);
+		if(code == null) {
+			LOGGER.debug("FTP消息没有适配：{}", message);
+		} else {
+			LOGGER.debug("处理FTP消息：{}", message);
+			switch (code) {
+				case DATA_CONNECTION_OPEN, FILE_STATUS_OKAY -> this.openInputStream(message);
+				case SYSTEM_STATUS -> this.systemStatus(message);
+				case READY_FOR_NEW_USER -> this.readyForNewUser(message);
+				case FILE_ACTION_SUCCESS -> this.fileActionSuccess(message);
+				case PASSIVE_MODE -> this.passiveMode(message);
+				case LOGIN_SUCCESS -> this.loginSuccess();
+				case FILE_ACTION_PENDING -> this.fileActionPending();
+				case CONNECTION_CLOSED -> this.connectionClosed();
+				case NOT_SUPPORT_COMMAND -> this.notSupportCommand(message);
+				case NOT_LOGIN -> this.notLogin();
+				case FILE_UNAVAILABLE -> this.fileUnavailable();
+				default -> LOGGER.warn("FTP状态码没有适配：{}-{}", code, message);
 			}
 		}
-		this.unlock(); // 释放命令锁
+		this.unlock();
 	}
 	
 	/**
@@ -190,7 +137,6 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	
 	/**
 	 * <p>获取错误信息</p>
-	 * <p>如果没有错误信息返回默认错误信息</p>
 	 * 
 	 * @param defaultMessage 默认错误信息
 	 * 
@@ -226,11 +172,6 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		IoUtils.close(this.inputSocket);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>释放文件下载资源和关闭命令通道</p>
-	 */
 	@Override
 	public void close() {
 		this.release();
@@ -270,6 +211,154 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 			this.lock.set(true);
 			this.lock.notifyAll();
 		}
+	}
+	
+	/**
+	 * <p>打开输入流</p>
+	 * 
+	 * @param message 信息
+	 * 
+	 * @see CommandCode#DATA_CONNECTION_OPEN
+	 * @see CommandCode#FILE_STATUS_OKAY
+	 */
+	private void openInputStream(String message) {
+		if(this.inputSocket == null) {
+			this.failMessage = "没有切换被动模式";
+		} else {
+			try {
+				this.inputStream = this.inputSocket.getInputStream();
+			} catch (IOException e) {
+				this.failMessage = "打开输入流失败";
+				LOGGER.error("打开输入流异常", e);
+			}
+		}
+	}
+	
+	/**
+	 * <p>系统状态或者系统帮助</p>
+	 * <p>扩展命令FEAT（多行文本）</p>
+	 * 
+	 * @param message 消息
+	 * 
+	 * @see CommandCode#SYSTEM_STATUS
+	 */
+	private void systemStatus(String message) {
+		// 判断是否支持UTF8指令
+		if(message.toUpperCase().contains(SystemConfig.CHARSET_UTF8)) {
+			this.charset = SystemConfig.CHARSET_UTF8;
+			LOGGER.debug("设置FTP编码：{}", this.charset);
+		}
+	}
+	
+	/**
+	 * <p>准备迎接新的用户</p>
+	 * 
+	 * @param message 消息
+	 * 
+	 * @see CommandCode#READY_FOR_NEW_USER
+	 */
+	private void readyForNewUser(String message) {
+		LOGGER.debug("准备迎接新的用户：{}", message);
+	}
+	
+	/**
+	 * <p>文件操作成功</p>
+	 * 
+	 * @param message 消息
+	 * 
+	 * @see CommandCode#FILE_ACTION_SUCCESS
+	 */
+	private void fileActionSuccess(String message) {
+		LOGGER.debug("文件操作成功：{}", message);
+	}
+	
+	/**
+	 * <p>被动模式</p>
+	 * 
+	 * @param message 消息
+	 * 
+	 * @see CommandCode#PASSIVE_MODE
+	 */
+	private void passiveMode(String message) {
+		this.release();
+		// 被动模式格式：227 Entering Passive Mode (127,0,0,1,36,158).
+		final int opening = message.indexOf(SymbolConfig.Symbol.OPEN_PARENTHESIS.toChar());
+		final int closing = message.indexOf(SymbolConfig.Symbol.CLOSE_PARENTHESIS.toChar(), opening + 1);
+		if (opening >= 0 && closing > opening) {
+			final String data = message.substring(opening + 1, closing);
+			final StringTokenizer tokenizer = new StringTokenizer(data, SymbolConfig.Symbol.COMMA.toString());
+			final String host =
+				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
+				tokenizer.nextToken();
+			final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
+			try {
+				this.inputSocket = new Socket();
+				this.inputSocket.setSoTimeout(SystemConfig.DOWNLOAD_TIMEOUT_MILLIS);
+				this.inputSocket.connect(NetUtils.buildSocketAddress(host, port), SystemConfig.CONNECT_TIMEOUT_MILLIS);
+			} catch (IOException e) {
+				this.failMessage = "打开输入流Socket失败";
+				LOGGER.error("打开输入流Socket异常：{}-{}", host, port, e);
+			}
+		}
+	}
+	
+	/**
+	 * <p>登录系统</p>
+	 * 
+	 * @see CommandCode#LOGIN_SUCCESS
+	 */
+	private void loginSuccess() {
+		this.login = true;
+	}
+	
+	/**
+	 * <p>等待文件操作（支持断点续传）</p>
+	 * 
+	 * @see CommandCode#FILE_ACTION_PENDING
+	 */
+	private void fileActionPending() {
+		this.range = true;
+	}
+	
+	/**
+	 * <p>连接已经关闭</p>
+	 * 
+	 * @see CommandCode#CONNECTION_CLOSED
+	 */
+	private void connectionClosed() {
+		this.failMessage = "打开连接失败";
+	}
+	
+	/**
+	 * <p>不支持的命令</p>
+	 * 
+	 * @param message 消息
+	 * 
+	 * @see CommandCode#NOT_SUPPORT_COMMAND
+	 */
+	private void notSupportCommand(String message) {
+		LOGGER.debug("不支持的命令：{}", message);
+	}
+	
+	/**
+	 * <p>没有登录</p>
+	 * 
+	 * @see CommandCode#NOT_LOGIN
+	 */
+	private void notLogin() {
+		this.login = false;
+		this.failMessage = "没有登录";
+	}
+	
+	/**
+	 * <p>文件无效</p>
+	 * 
+	 * @see CommandCode#FILE_UNAVAILABLE
+	 */
+	private void fileUnavailable() {
+		this.failMessage = "文件无效";
 	}
 
 }
