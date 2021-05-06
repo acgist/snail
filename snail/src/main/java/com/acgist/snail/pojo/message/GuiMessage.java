@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.message;
 
+import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.gui.event.GuiEventMessage;
@@ -17,7 +18,7 @@ public final record GuiMessage(
 	/**
 	 * <p>消息类型</p>
 	 */
-	String type,
+	GuiContext.MessageType type,
 	/**
 	 * <p>消息标题</p>
 	 */
@@ -47,7 +48,7 @@ public final record GuiMessage(
 		final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
 		final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
 		final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
-		return new GuiMessage(type, title, content);
+		return new GuiMessage(GuiContext.MessageType.of(type), title, content);
 	}
 	
 }
