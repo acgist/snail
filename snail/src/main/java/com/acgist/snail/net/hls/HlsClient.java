@@ -42,7 +42,6 @@ public final class HlsClient implements Runnable {
 	private final String path;
 	/**
 	 * <p>文件大小</p>
-	 * <p>通过HTTP HEAD请求获取</p>
 	 */
 	private long size;
 	/**
@@ -82,15 +81,11 @@ public final class HlsClient implements Runnable {
 
 	@Override
 	public void run() {
-		if(this.completed) {
-			LOGGER.debug("HLS任务已经完成：{}", this.link);
-			return;
-		}
-		if(!this.hlsSession.downloadable()) {
+		if(!this.downloadable()) {
 			LOGGER.debug("HLS任务不能下载：{}", this.link);
 			return;
 		}
-		LOGGER.debug("下载文件：{}", this.link);
+		LOGGER.debug("HLS任务下载文件：{}", this.link);
 		// 已经下载大小
 		long downloadSize = FileUtils.fileSize(this.path);
 		this.completed = this.checkCompleted(downloadSize);
@@ -121,7 +116,7 @@ public final class HlsClient implements Runnable {
 					}
 				}
 			} catch (Exception e) {
-				LOGGER.error("HLS下载异常：{}", this.link, e);
+				LOGGER.error("HLS任务下载异常：{}", this.link, e);
 			}
 		}
 		this.release();
@@ -147,15 +142,14 @@ public final class HlsClient implements Runnable {
 	}
 	
 	/**
-	 * <p>校验是否完成</p>
-	 * <p>文件是否存在、大小是否正确</p>
+	 * <p>校验是否下载完成</p>
 	 * 
 	 * @param downloadSize 已经下载大小
 	 * 
-	 * @return 是否完成
+	 * @return 是否下载完成
 	 */
 	private boolean checkCompleted(final long downloadSize) {
-		// 如果文件已经完成直接返回完成
+		// 如果文件已经下载完成直接返回
 		if(this.completed) {
 			return this.completed;
 		}
@@ -168,7 +162,6 @@ public final class HlsClient implements Runnable {
 				.newInstance(this.link)
 				.head()
 				.responseHeader();
-			// 文件实际大小
 			this.size = header.fileSize();
 			return this.size == downloadSize;
 		} catch (NetException e) {
@@ -185,12 +178,10 @@ public final class HlsClient implements Runnable {
 	 * @throws NetException 网络异常
 	 */
 	private void buildInput(final long downloadSize) throws NetException {
-		// HTTP客户端
 		final var client = HttpClient
 			.newDownloader(this.link)
 			.range(downloadSize)
 			.get();
-		// 请求成功和部分请求成功
 		if(client.downloadable()) {
 			final var headers = client.responseHeader();
 			this.range = headers.range();
