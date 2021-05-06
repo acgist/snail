@@ -320,7 +320,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 				LOGGER.warn("窗口消息错误：{}", message);
 				return;
 			}
-			GuiContext.getInstance().alert(guiMessage.title(), guiMessage.message(), GuiContext.MessageType.of(guiMessage.type()));
+			GuiContext.getInstance().alert(guiMessage.title(), guiMessage.message(), guiMessage.type());
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理窗口消息异常", e);
 		}
@@ -338,7 +338,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 				LOGGER.warn("提示消息错误：{}", message);
 				return;
 			}
-			GuiContext.getInstance().notice(guiMessage.title(), guiMessage.message(), GuiContext.MessageType.of(guiMessage.type()));
+			GuiContext.getInstance().notice(guiMessage.title(), guiMessage.message(), guiMessage.type());
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示消息异常", e);
 		}
