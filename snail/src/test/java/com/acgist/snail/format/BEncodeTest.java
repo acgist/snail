@@ -91,6 +91,23 @@ class BEncodeTest extends Performance {
 	}
 	
 	@Test
+	void testEmpty() throws PacketSizeException {
+		var decoder = BEncodeDecoder.newInstance("d1:11:2e");
+		assertTrue(decoder.isEmpty());
+		decoder.nextType();
+		assertTrue(decoder.isNotEmpty());
+		decoder = BEncodeDecoder.newInstance("de");
+		assertEquals(BEncodeDecoder.Type.MAP, decoder.nextType());
+		assertTrue(decoder.isEmpty());
+		decoder = BEncodeDecoder.newInstance("le");
+		assertEquals(BEncodeDecoder.Type.LIST, decoder.nextType());
+		assertTrue(decoder.isEmpty());
+		decoder = BEncodeDecoder.newInstance("xx");
+		decoder.nextType();
+		assertTrue(decoder.isEmpty());
+	}
+	
+	@Test
 	void testCosted() {
 		final long costed = this.costed(100000, () -> {
 			BEncodeEncoder.encodeMapString(Map.of("1", "2"));
