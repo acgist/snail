@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -145,13 +147,14 @@ public final class BEncodeDecoder {
 	 * @return 是否没有数据
 	 */
 	public boolean isEmpty() {
-		if(this.type == Type.LIST) {
-			return this.list == null;
-		} else if(this.type == Type.MAP) {
-			return this.map == null;
-		} else {
+		if(this.type == null) {
 			return true;
 		}
+		return switch (this.type) {
+			case MAP -> MapUtils.isEmpty(this.map);
+			case LIST -> CollectionUtils.isEmpty(this.list);
+			default -> true;
+		};
 	}
 	
 	/**
