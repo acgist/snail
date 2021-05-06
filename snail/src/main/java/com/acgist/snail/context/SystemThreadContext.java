@@ -189,7 +189,7 @@ public final class SystemThreadContext implements IContext {
 			keepAliveTime,
 			TimeUnit.SECONDS,
 			// 禁止添加队列
-			new SynchronousQueue<Runnable>(),
+			new SynchronousQueue<>(),
 			newThreadFactory(name)
 		);
 	}
