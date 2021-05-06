@@ -18,7 +18,6 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.event.GuiEventMessage;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.IMessageEncoder;
@@ -26,6 +25,7 @@ import com.acgist.snail.net.codec.LineMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.pojo.message.GuiMessage;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -314,18 +314,13 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onAlert(ApplicationMessage message) {
-		final String body = message.getBody();
-		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
+			final GuiMessage guiMessage = GuiMessage.of(message);
+			if(guiMessage == null) {
 				LOGGER.warn("窗口消息错误：{}", message);
 				return;
 			}
-			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
-			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
-			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
-			GuiContext.getInstance().alert(title, content, GuiContext.MessageType.of(type));
+			GuiContext.getInstance().alert(guiMessage.title(), guiMessage.message(), GuiContext.MessageType.of(guiMessage.type()));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理窗口消息异常", e);
 		}
@@ -337,18 +332,13 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 * @param message 系统消息
 	 */
 	private void onNotice(ApplicationMessage message) {
-		final String body = message.getBody();
-		final var decoder = BEncodeDecoder.newInstance(body);
 		try {
-			decoder.nextMap();
-			if(decoder.isEmpty()) {
+			final GuiMessage guiMessage = GuiMessage.of(message);
+			if(guiMessage == null) {
 				LOGGER.warn("提示消息错误：{}", message);
 				return;
 			}
-			final String type = decoder.getString(GuiEventMessage.MESSAGE_TYPE);
-			final String title = decoder.getString(GuiEventMessage.MESSAGE_TITLE);
-			final String content = decoder.getString(GuiEventMessage.MESSAGE_MESSAGE);
-			GuiContext.getInstance().notice(title, content, GuiContext.MessageType.of(type));
+			GuiContext.getInstance().notice(guiMessage.title(), guiMessage.message(), GuiContext.MessageType.of(guiMessage.type()));
 		} catch (PacketSizeException e) {
 			LOGGER.warn("处理提示消息异常", e);
 		}
