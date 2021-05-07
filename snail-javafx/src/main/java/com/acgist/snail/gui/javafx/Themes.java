@@ -46,9 +46,9 @@ public final class Themes {
 	 */
 	public static final Color COLOR_GRAY = Color.rgb(0xCC, 0xCC, 0xCC);
 	/**
-	 * <p>灰色：可用</p>
+	 * <p>蓝色：可用</p>
 	 */
-	public static final Color COLOR_BLUD = Color.rgb(0, 153, 204);
+	public static final Color COLOR_BLUD = Color.rgb(0x00, 0x99, 0xCC);
 	/**
 	 * <p>绿色：可用</p>
 	 */
