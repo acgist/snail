@@ -22,17 +22,13 @@ public final class WindowsTheme implements ITheme {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsTheme.class);
 
 	/**
-	 * <p>Windows主题颜色PATH</p>
-	 */
-	private static final String THEME_COLOR_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\History\\Colors";
-	/**
 	 * <p>Windows主题颜色KEY</p>
 	 */
 	private static final String THEME_COLOR_KEY = "ColorHistory0";
 	/**
-	 * <p>Windows获取主题颜色命令</p>
+	 * <p>Windows主题颜色PATH</p>
 	 */
-	private static final String THEME_COLOR_COMMAND = String.format("REG QUERY %s /v %s", THEME_COLOR_PATH, THEME_COLOR_KEY);
+	private static final String THEME_COLOR_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\History\\Colors";
 	
 	private WindowsTheme() {
 	}
@@ -49,8 +45,12 @@ public final class WindowsTheme implements ITheme {
 	@Override
 	public Color systemThemeColor() {
 		Process process = null;
+		final ProcessBuilder builder = new ProcessBuilder();
 		try {
-			process = Runtime.getRuntime().exec(THEME_COLOR_COMMAND);
+			// 查询命令：REG QUERY HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\History\Colors /v ColorHistory0
+			process = builder.command("REG", "QUERY", THEME_COLOR_PATH, "/v", THEME_COLOR_KEY)
+				.redirectErrorStream(true)
+				.start();
 			return this.process(process);
 		} catch (Exception e) {
 			LOGGER.error("获取Windows主题颜色异常", e);
