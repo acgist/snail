@@ -53,7 +53,7 @@ public final class TsLinker {
 	 * @param name 任务名称
 	 * @param path 文件路径
 	 * @param cipher 加密套件
-	 * @param links 文件链接列表
+	 * @param links 文件列表
 	 */
 	private TsLinker(String name, String path, Cipher cipher, List<String> links) {
 		this.name = name;
@@ -63,14 +63,14 @@ public final class TsLinker {
 	}
 	
 	/**
-	 * <p>新建TS连接器</p>
+	 * <p>新建TS文件连接器</p>
 	 * 
 	 * @param name 任务名称
 	 * @param path 文件路径
 	 * @param cipher 加密套件
-	 * @param links 文件链接列表
+	 * @param links 文件列表
 	 * 
-	 * @return TS连接器
+	 * @return TS文件连接器
 	 */
 	public static final TsLinker newInstance(String name, String path, Cipher cipher, List<String> links) {
 		return new TsLinker(name, path, cipher, links);
@@ -114,7 +114,7 @@ public final class TsLinker {
 		try(final var input = new FileInputStream(file)) {
 			while((length = input.read(bytes)) >= 0) {
 				if(crypt) {
-					final byte[] decrypt = this.cipher.update(bytes);
+					final byte[] decrypt = this.cipher.update(bytes, 0, length);
 					output.write(decrypt, 0, decrypt.length);
 				} else {
 					output.write(bytes, 0, length);
