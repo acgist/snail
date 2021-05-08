@@ -245,8 +245,7 @@ public final class HttpClient {
 	}
 	
 	/**
-	 * <p>启用长连接</p>
-	 * <p>系统默认使用长连接</p>
+	 * <p>启用长连接（默认）</p>
 	 * 
 	 * @return {@link HttpClient}
 	 */
@@ -436,7 +435,7 @@ public final class HttpClient {
 	
 	/**
 	 * <p>获取响应数据流</p>
-	 * <p>使用完成需要关闭（归还连接）：下次相同地址端口继续使用</p>
+	 * <p>使用完成需要关闭（归还连接）：下次相同地址端口继续使用（复用底层Socket）</p>
 	 * 
 	 * @return 响应数据流
 	 * 
@@ -513,7 +512,7 @@ public final class HttpClient {
 	
 	/**
 	 * <p>关闭连接</p>
-	 * <p>管理连接和底层Socket：不能保持长连接</p>
+	 * <p>关闭连接和底层Socket：不能保持长连接</p>
 	 * 
 	 * @return {@link HttpClient}
 	 */
@@ -565,7 +564,7 @@ public final class HttpClient {
 	/**
 	 * <p>新建SSLContext</p>
 	 * 
-	 * @return SSLContext
+	 * @return {@link SSLContext}
 	 */
 	private static final SSLContext buildSSLContext() {
 		try {
