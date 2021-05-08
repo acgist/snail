@@ -97,19 +97,13 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		}
 		LOGGER.debug("处理holepunch消息：{}", holepunchType);
 		switch (holepunchType) {
-		case RENDEZVOUS:
-			this.onRendezvous(host, port);
-			break;
-		case CONNECT:
-			this.onConnect(host, port);
-			break;
-		case ERROR:
-			final int errorCode = buffer.getInt();
-			this.onError(host, port, errorCode);
-			break;
-		default:
-			LOGGER.warn("处理holepunch消息错误（类型未适配）：{}", holepunchType);
-			break;
+			case RENDEZVOUS -> this.onRendezvous(host, port);
+			case CONNECT -> this.onConnect(host, port);
+			case ERROR -> {
+				final int errorCode = buffer.getInt();
+				this.onError(host, port, errorCode);
+			}
+			default -> LOGGER.warn("处理holepunch消息错误（类型未适配）：{}", holepunchType);
 		}
 	}
 	

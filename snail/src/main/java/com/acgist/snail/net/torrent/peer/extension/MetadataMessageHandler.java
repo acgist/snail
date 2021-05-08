@@ -105,18 +105,10 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		}
 		LOGGER.debug("处理metadata消息：{}", metadataType);
 		switch (metadataType) {
-		case REQUEST:
-			this.request(decoder);
-			break;
-		case DATA:
-			this.data(decoder);
-			break;
-		case REJECT:
-			this.reject(decoder);
-			break;
-		default:
-			LOGGER.warn("处理metadata消息错误（类型未适配）：{}", metadataType);
-			break;
+			case REQUEST -> this.request(decoder);
+			case DATA -> this.data(decoder);
+			case REJECT -> this.reject(decoder);
+			default -> LOGGER.warn("处理metadata消息错误（类型未适配）：{}", metadataType);
 		}
 	}
 	

@@ -472,27 +472,13 @@ public final class StatisticsController extends Controller {
 			}
 			peer.sources().forEach(source -> {
 				switch (source) {
-				case DHT:
-					dhtCount.incrementAndGet();
-					break;
-				case PEX:
-					pexCount.incrementAndGet();
-					break;
-				case LSD:
-					lsdCount.incrementAndGet();
-					break;
-				case TRACKER:
-					trackerCount.incrementAndGet();
-					break;
-				case CONNECT:
-					connectCount.incrementAndGet();
-					break;
-				case HOLEPUNCH:
-					holepunchCount.incrementAndGet();
-					break;
-				default:
-					LOGGER.warn("未知来源：{}", source);
-					break;
+					case DHT -> dhtCount.incrementAndGet();
+					case PEX -> pexCount.incrementAndGet();
+					case LSD -> lsdCount.incrementAndGet();
+					case TRACKER -> trackerCount.incrementAndGet();
+					case CONNECT -> connectCount.incrementAndGet();
+					case HOLEPUNCH -> holepunchCount.incrementAndGet();
+					default -> LOGGER.warn("未知来源：{}", source);
 				}
 			});
 		});
