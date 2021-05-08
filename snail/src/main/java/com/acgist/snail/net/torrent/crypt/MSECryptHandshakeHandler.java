@@ -633,23 +633,13 @@ public final class MSECryptHandshakeHandler {
 		Strategy selected = null;
 		if (plaintext || crypt) {
 			// 本地策略
-			switch (CryptConfig.STRATEGY) {
-			case PLAINTEXT:
-				selected = plaintext ? Strategy.PLAINTEXT : null;
-				break;
-			case PREFER_PLAINTEXT:
-				selected = plaintext ? Strategy.PLAINTEXT : Strategy.ENCRYPT;
-				break;
-			case PREFER_ENCRYPT:
-				selected = crypt ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
-				break;
-			case ENCRYPT:
-				selected = crypt ? Strategy.ENCRYPT : null;
-				break;
-			default:
-				selected = CryptConfig.STRATEGY.crypt() ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
-				break;
-			}
+			selected = switch (CryptConfig.STRATEGY) {
+				case PLAINTEXT -> plaintext ? Strategy.PLAINTEXT : null;
+				case PREFER_PLAINTEXT -> plaintext ? Strategy.PLAINTEXT : Strategy.ENCRYPT;
+				case PREFER_ENCRYPT -> crypt ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
+				case ENCRYPT -> crypt ? Strategy.ENCRYPT : null;
+				default -> CryptConfig.STRATEGY.crypt() ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
+			};
 		}
 		if (selected == null) {
 			throw new NetException("加密握手失败（未知加密协商）：" + provide);
