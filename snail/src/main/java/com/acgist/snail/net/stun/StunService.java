@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.StunConfig;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NatContext;
 import com.acgist.snail.context.NodeContext;
@@ -70,7 +71,7 @@ public final class StunService {
 			LOGGER.warn("STUN服务器格式错误：{}", server);
 			return null;
 		}
-		final String[] values = server.split(":");
+		final String[] values = server.split(SymbolConfig.Symbol.COLON.toString());
 		if(values.length == 1) {
 			// 格式：stun1.l.google.com
 			if(StringUtils.isNotEmpty(values[0])) {

@@ -22,6 +22,7 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
@@ -326,8 +327,8 @@ public final class HttpClient {
 		} else {
 			// 请求表单数据
 			final String body = data.entrySet().stream()
-				.map(entry -> entry.getKey() + "=" + UrlUtils.encode(entry.getValue()))
-				.collect(Collectors.joining("&"));
+				.map(entry -> entry.getKey() + SymbolConfig.Symbol.EQUALS.toString() + UrlUtils.encode(entry.getValue()))
+				.collect(Collectors.joining(SymbolConfig.Symbol.AND.toString()));
 			return this.execute(Method.POST, body);
 		}
 	}

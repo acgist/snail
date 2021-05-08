@@ -96,24 +96,16 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 			response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
 		} else {
 			LOGGER.debug("处理DHT请求：{}", type);
-			switch (type) {
-			case PING:
-				response = this.ping(request);
-				break;
-			case FIND_NODE:
-				response = this.findNode(request);
-				break;
-			case GET_PEERS:
-				response = this.getPeers(request);
-				break;
-			case ANNOUNCE_PEER:
-				response = this.announcePeer(request);
-				break;
-			default:
-				LOGGER.warn("处理DHT请求失败（类型未适配）：{}", type);
-				response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
-				break;
-			}
+			response = switch (type) {
+				case PING -> this.ping(request);
+				case FIND_NODE -> this.findNode(request);
+				case GET_PEERS -> this.getPeers(request);
+				case ANNOUNCE_PEER -> this.announcePeer(request);
+				default -> {
+					LOGGER.warn("处理DHT请求失败（类型未适配）：{}", type);
+					yield DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
+				}
+			};
 		}
 		this.pushMessage(response, socketAddress);
 	}
@@ -140,21 +132,11 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		}
 		LOGGER.debug("处理DHT响应：{}", type);
 		switch (type) {
-		case PING:
-			this.ping(request, response);
-			break;
-		case FIND_NODE:
-			this.findNode(request, response);
-			break;
-		case GET_PEERS:
-			this.getPeers(request, response);
-			break;
-		case ANNOUNCE_PEER:
-			this.announcePeer(request, response);
-			break;
-		default:
-			LOGGER.warn("处理DHT响应失败（类型未适配）：{}", type);
-			break;
+			case PING -> this.ping(request, response);
+			case FIND_NODE -> this.findNode(request, response);
+			case GET_PEERS -> this.getPeers(request, response);
+			case ANNOUNCE_PEER -> this.announcePeer(request, response);
+			default -> LOGGER.warn("处理DHT响应失败（类型未适配）：{}", type);
 		}
 	}
 	

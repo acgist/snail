@@ -195,27 +195,13 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		LOGGER.debug("处理扩展消息类型：{}", extensionType);
 		switch (extensionType) {
-		case HANDSHAKE:
-			this.handshake(buffer);
-			break;
-		case UT_PEX:
-			this.pex(buffer);
-			break;
-		case UT_METADATA:
-			this.metadata(buffer);
-			break;
-		case UT_HOLEPUNCH:
-			this.holepunch(buffer);
-			break;
-		case UPLOAD_ONLY:
-			this.uploadOnly(buffer);
-			break;
-		case LT_DONTHAVE:
-			this.dontHave(buffer);
-			break;
-		default:
-			LOGGER.warn("处理扩展消息错误（类型未适配）：{}", extensionType);
-			break;
+			case HANDSHAKE -> this.handshake(buffer);
+			case UT_PEX -> this.pex(buffer);
+			case UT_METADATA -> this.metadata(buffer);
+			case UT_HOLEPUNCH -> this.holepunch(buffer);
+			case UPLOAD_ONLY -> this.uploadOnly(buffer);
+			case LT_DONTHAVE -> this.dontHave(buffer);
+			default -> LOGGER.warn("处理扩展消息错误（类型未适配）：{}", extensionType);
 		}
 	}
 	
