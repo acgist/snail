@@ -17,8 +17,8 @@ class HttpClientTest extends Performance {
 
 	@Test
 	void testCode() throws NetException {
-		var client = HttpClient.newInstance("http://localhost:8080/timeout", 5000, 5000).get();
-//		var client = HttpClient.newInstance("https://gitee.com").get();
+		var client = HttpClient.newInstance("https://gitee.com").get();
+//		var client = HttpClient.newInstance("http://localhost:8080/timeout", 5000, 5000).get();
 		assertEquals(200, client.code());
 		this.log(client.code());
 		this.log(client.responseToString());
