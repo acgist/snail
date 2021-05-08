@@ -95,60 +95,24 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 		}
 		LOGGER.debug("处理系统消息：{}", message);
 		switch (type) {
-		case GUI:
-			this.onGui();
-			break;
-		case TEXT:
-			this.onText(message);
-			break;
-		case CLOSE:
-			this.onClose();
-			break;
-		case NOTIFY:
-			this.onNotify();
-			break;
-		case SHUTDOWN:
-			this.onShutdown();
-			break;
-		case TASK_NEW:
-			this.onTaskNew(message);
-			break;
-		case TASK_LIST:
-			this.onTaskList();
-			break;
-		case TASK_START:
-			this.onTaskStart(message);
-			break;
-		case TASK_PAUSE:
-			this.onTaskPause(message);
-			break;
-		case TASK_DELETE:
-			this.onTaskDelete(message);
-			break;
-		case SHOW:
-			this.onShow();
-			break;
-		case HIDE:
-			this.onHide();
-			break;
-		case ALERT:
-			this.onAlert(message);
-			break;
-		case NOTICE:
-			this.onNotice(message);
-			break;
-		case REFRESH_TASK_LIST:
-			this.onRefreshTaskList();
-			break;
-		case REFRESH_TASK_STATUS:
-			this.onRefreshTaskStatus();
-			break;
-		case RESPONSE:
-			this.onResponse(message);
-			break;
-		default:
-			LOGGER.warn("系统消息错误（类型未适配）：{}", type);
-			break;
+			case GUI -> this.onGui();
+			case TEXT -> this.onText(message);
+			case CLOSE -> this.onClose();
+			case NOTIFY -> this.onNotify();
+			case SHUTDOWN -> this.onShutdown();
+			case TASK_NEW -> this.onTaskNew(message);
+			case TASK_LIST -> this.onTaskList();
+			case TASK_START -> this.onTaskStart(message);
+			case TASK_PAUSE -> this.onTaskPause(message);
+			case TASK_DELETE -> this.onTaskDelete(message);
+			case SHOW -> this.onShow();
+			case HIDE -> this.onHide();
+			case ALERT -> this.onAlert(message);
+			case NOTICE -> this.onNotice(message);
+			case REFRESH_TASK_LIST -> this.onRefreshTaskList();
+			case REFRESH_TASK_STATUS -> this.onRefreshTaskStatus();
+			case RESPONSE -> this.onResponse(message);
+			default -> LOGGER.warn("系统消息错误（类型未适配）：{}", type);
 		}
 	}
 	

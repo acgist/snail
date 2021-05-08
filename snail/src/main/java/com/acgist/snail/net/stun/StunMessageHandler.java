@@ -161,18 +161,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		buffer.get(bytes);
 		final ByteBuffer message = ByteBuffer.wrap(bytes);
 		switch (attributeType) {
-		case MAPPED_ADDRESS:
-			this.mappedAddress(message);
-			break;
-		case XOR_MAPPED_ADDRESS:
-			this.xorMappedAddress(message);
-			break;
-		case ERROR_CODE:
-			this.errorCode(message);
-			break;
-		default:
-			LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}", attributeType);
-			break;
+			case MAPPED_ADDRESS -> this.mappedAddress(message);
+			case XOR_MAPPED_ADDRESS -> this.xorMappedAddress(message);
+			case ERROR_CODE -> this.errorCode(message);
+			default -> LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}", attributeType);
 		}
 	}
 	
@@ -281,7 +273,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			LOGGER.warn("处理STUN消息-ERROR_CODE错误（长度）：{}", buffer);
 			return;
 		}
-		buffer.getShort(); // 去掉保留位
+		// 去掉保留位
+		buffer.getShort();
 		final byte clazz = (byte) (buffer.get() & 0B0000_0111);
 		final byte number = buffer.get();
 		String message = null;
@@ -332,10 +325,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 */
 	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] message) {
 		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.HEADER_LENGTH_STUN + message.length);
-		buffer.putShort(messageType.of(methodType)); // Message Type
-		buffer.putShort((short) message.length); // Message Length
-		buffer.putInt(StunConfig.MAGIC_COOKIE); // Magic Cookie
-		buffer.put(ArrayUtils.random(StunConfig.TRANSACTION_ID_LENGTH)); // Transaction ID
+		buffer.putShort(messageType.of(methodType));
+		buffer.putShort((short) message.length);
+		buffer.putInt(StunConfig.MAGIC_COOKIE);
+		buffer.put(ArrayUtils.random(StunConfig.TRANSACTION_ID_LENGTH));
 		buffer.put(message);
 		return buffer.array();
 	}

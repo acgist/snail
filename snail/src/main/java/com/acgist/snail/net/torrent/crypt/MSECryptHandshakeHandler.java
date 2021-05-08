@@ -632,7 +632,8 @@ public final class MSECryptHandshakeHandler {
 		final boolean crypt = (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
 		Strategy selected = null;
 		if (plaintext || crypt) {
-			switch (CryptConfig.STRATEGY) { // 本地策略
+			// 本地策略
+			switch (CryptConfig.STRATEGY) {
 			case PLAINTEXT:
 				selected = plaintext ? Strategy.PLAINTEXT : null;
 				break;
