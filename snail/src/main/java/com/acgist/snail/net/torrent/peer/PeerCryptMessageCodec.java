@@ -26,7 +26,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 	private final MSECryptHandshakeHandler mseCryptHandshakeHandler;
 	
 	/**
-	 * @param peerUnpackMessageCodec Peer消息处理器：拆包
+	 * @param peerUnpackMessageCodec Peer消息处理器
 	 * @param peerSubMessageHandler Peer消息代理
 	 */
 	public PeerCryptMessageCodec(PeerUnpackMessageCodec peerUnpackMessageCodec, PeerSubMessageHandler peerSubMessageHandler) {

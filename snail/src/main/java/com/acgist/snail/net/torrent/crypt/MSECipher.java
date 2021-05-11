@@ -68,7 +68,7 @@ public final class MSECipher {
 	 * @param secret DH Secret
 	 * @param infoHash InfoHash
 	 * 
-	 * @return 加解密套件
+	 * @return MSE加解密套件
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -88,7 +88,7 @@ public final class MSECipher {
 	 * @param secret DH Secret
 	 * @param infoHash InfoHash
 	 * 
-	 * @return 加解密套件
+	 * @return MSE加解密套件
 	 * 
 	 * @throws NetException 网络异常
 	 */
@@ -109,7 +109,7 @@ public final class MSECipher {
 	 */
 	public void encrypt(ByteBuffer buffer) {
 		try {
-			boolean flip = true; // 标记状态
+			boolean flip = true;
 			if(buffer.position() != 0) {
 				flip = false;
 				buffer.flip();
@@ -155,7 +155,7 @@ public final class MSECipher {
 	 */
 	public void decrypt(ByteBuffer buffer) {
 		try {
-			boolean flip = true; // 标记状态
+			boolean flip = true;
 			if(buffer.position() != 0) {
 				flip = false;
 				buffer.flip();
@@ -251,7 +251,8 @@ public final class MSECipher {
 	private Cipher buildCipher(int mode, String transformation, Key key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 		final Cipher cipher = Cipher.getInstance(transformation);
 		cipher.init(mode, key);
-		cipher.update(new byte[1024]); // 丢弃1024字节
+		// 丢弃1024字节
+		cipher.update(new byte[1024]);
 		return cipher;
 	}
 
