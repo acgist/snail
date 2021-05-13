@@ -71,7 +71,8 @@ public final class MSEPaddingSync {
 		}
 		// 开始新的同步数据
 		if(this.length == -1) {
-			if(buffer.remaining() < 2) { // 数据长度不够
+			if(buffer.remaining() < 2) {
+				// 数据长度不够
 				return false;
 			}
 			// 获取数据长度

@@ -31,6 +31,17 @@ class MSECipherTest extends Performance {
 		this.log(senderDecryptData);
 		assertArrayEquals(data, senderDecryptData);
 	}
+	
+	@Test
+	void testMSECipherEquals() throws NetException {
+		final byte[] secret = ArrayUtils.random(16);
+		final InfoHash infoHash = InfoHash.newInstance(ArrayUtils.random(20));
+		final var sender = MSECipher.newSender(secret, infoHash);
+		final var recver = MSECipher.newRecver(secret, infoHash);
+		final byte[] data = ArrayUtils.random(20);
+		assertArrayEquals(sender.decrypt(data), recver.encrypt(data));
+		assertArrayEquals(sender.encrypt(data), recver.decrypt(data));
+	}
 
 	@Test
 	void testCosted() throws NetException {
