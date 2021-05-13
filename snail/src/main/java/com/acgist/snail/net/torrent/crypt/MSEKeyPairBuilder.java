@@ -64,17 +64,12 @@ public final class MSEKeyPairBuilder {
 		 * <p>公钥数据</p>
 		 */
 		private final BigInteger value;
-		/**
-		 * <p>公钥数据</p>
-		 */
-		private final byte[] encoded;
 
 		/**
 		 * @param value 公钥数据
 		 */
 		private MSEPublicKey(BigInteger value) {
 			this.value = value;
-			this.encoded = NumberUtils.encodeBigInteger(value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 
 		@Override
@@ -89,7 +84,7 @@ public final class MSEKeyPairBuilder {
 
 		@Override
 		public byte[] getEncoded() {
-			return this.encoded;
+			return NumberUtils.encodeBigInteger(this.value, CryptConfig.PUBLIC_KEY_LENGTH);
 		}
 		
 		@Override
