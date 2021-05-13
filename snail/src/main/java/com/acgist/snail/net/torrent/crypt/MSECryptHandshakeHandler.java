@@ -26,7 +26,6 @@ import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>MSE握手代理</p>
@@ -533,9 +532,7 @@ public final class MSECryptHandshakeHandler {
 		LOGGER.debug("加密握手（接收加密协议协商Padding）步骤：{}", this.step);
 		final boolean success = this.msePaddingSync.sync(this.buffer);
 		if(success) {
-			if(LOGGER.isDebugEnabled()) {
-				this.msePaddingSync.allPadding().forEach(bytes -> LOGGER.debug("加密握手（接收加密协议协商Padding）：{}", StringUtils.hex(bytes)));
-			}
+			LOGGER.debug("加密握手（接收加密协议协商Padding）：{}", this.msePaddingSync);
 			this.sendConfirm();
 		}
 	}
@@ -610,9 +607,7 @@ public final class MSECryptHandshakeHandler {
 		LOGGER.debug("加密握手（接收确认加密协议Padding）步骤：{}", this.step);
 		final boolean success = this.msePaddingSync.sync(this.buffer);
 		if(success) {
-			if(LOGGER.isDebugEnabled()) {
-				this.msePaddingSync.allPadding().forEach(bytes -> LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", StringUtils.hex(bytes)));
-			}
+			LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", this.msePaddingSync);
 			this.completed(this.strategy.crypt());
 		}
 	}
