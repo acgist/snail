@@ -44,13 +44,4 @@ public final class FindNodeRequest extends DhtRequest {
 		return response;
 	}
 	
-	/**
-	 * <p>获取NodeId或者InfoHash</p>
-	 * 
-	 * @return NodeId或者InfoHash
-	 */
-	public byte[] getTarget() {
-		return this.getBytes(DhtConfig.KEY_TARGET);
-	}
-
 }

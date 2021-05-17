@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.dht;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,7 +61,7 @@ class DhtClientTest extends Performance {
 				break;
 			}
 		}
-		assertFalse(size != NodeContext.getInstance().nodes().size());
+		assertTrue(size != NodeContext.getInstance().nodes().size());
 	}
 	
 	@Test
