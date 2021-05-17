@@ -52,13 +52,11 @@ public final class FindNodeResponse extends DhtResponse {
 	
 	/**
 	 * <p>获取节点列表</p>
-	 * <p>同时加入系统</p>
 	 * 
 	 * @return 节点列表
 	 */
 	public List<NodeSession> getNodes() {
-		final byte[] bytes = this.getBytes(DhtConfig.KEY_NODES);
-		return deserializeNodes(bytes);
+		return this.deserializeNodes(DhtConfig.KEY_NODES);
 	}
 	
 }

@@ -130,7 +130,19 @@ public class DhtResponse extends DhtMessage {
 
 	/**
 	 * <p>反序列化节点列表</p>
-	 * <p>节点自动加入系统</p>
+	 * 
+	 * @param key 参数名称
+	 * 
+	 * @return 节点列表
+	 * 
+	 * @see #deserializeNodes(byte[])
+	 */
+	protected List<NodeSession> deserializeNodes(String key) {
+		return deserializeNodes(this.getBytes(key));
+	}
+	
+	/**
+	 * <p>反序列化节点列表</p>
 	 * 
 	 * @param bytes 节点数据
 	 * 
@@ -138,7 +150,7 @@ public class DhtResponse extends DhtMessage {
 	 * 
 	 * @see #deserializeNode(ByteBuffer)
 	 */
-	protected static final List<NodeSession> deserializeNodes(byte[] bytes) {
+	private static final List<NodeSession> deserializeNodes(byte[] bytes) {
 		if(bytes == null) {
 			return List.of();
 		}
@@ -156,7 +168,6 @@ public class DhtResponse extends DhtMessage {
 	
 	/**
 	 * <p>反序列化节点</p>
-	 * <p>节点自动加入系统</p>
 	 * 
 	 * @param buffer 消息
 	 * 

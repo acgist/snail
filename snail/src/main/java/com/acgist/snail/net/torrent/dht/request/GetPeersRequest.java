@@ -59,7 +59,6 @@ public final class GetPeersRequest extends DhtRequest {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
-		// 查找Peer
 		if(torrentSession != null) {
 			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
 			final var list = PeerContext.getInstance().listPeerSession(infoHashHex);
@@ -67,8 +66,8 @@ public final class GetPeersRequest extends DhtRequest {
 				// 返回Peer
 				needNodes = false;
 				final var values = list.stream()
-					.filter(PeerSession::available) // 可用
-					.filter(PeerSession::connected) // 连接
+					.filter(PeerSession::available)
+					.filter(PeerSession::connected)
 					.limit(DhtConfig.GET_PEER_SIZE)
 					.map(peer -> {
 						buffer.putInt(NetUtils.ipToInt(peer.host()));
@@ -82,21 +81,12 @@ public final class GetPeersRequest extends DhtRequest {
 		} else {
 			LOGGER.debug("查找Peer种子信息不存在：{}", infoHashHex);
 		}
-		// 没有Peer返回Node节点
 		if(needNodes) {
+			// 返回Node
 			final var nodes = NodeContext.getInstance().findNode(infoHash);
 			response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		}
 		return response;
 	}
 	
-	/**
-	 * <p>获取InfoHash</p>
-	 * 
-	 * @return InfoHash
-	 */
-	public byte[] getInfoHash() {
-		return this.getBytes(DhtConfig.KEY_INFO_HASH);
-	}
-
 }
