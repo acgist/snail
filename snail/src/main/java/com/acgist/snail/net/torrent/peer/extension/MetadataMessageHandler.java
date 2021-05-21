@@ -89,12 +89,9 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 
 	@Override
 	public void doMessage(ByteBuffer buffer) throws NetException {
-		final var decoder = BEncodeDecoder.newInstance(buffer);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(buffer).next();
 		if(decoder.isEmpty()) {
-			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("处理metadata消息错误（格式）：{}", decoder.oddString());
-			}
+			LOGGER.warn("处理metadata消息错误（格式）：{}", decoder);
 			return;
 		}
 		final Byte typeId = decoder.getByte(ARG_MSG_TYPE);
@@ -213,9 +210,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 * @param decoder 消息
 	 */
 	private void reject(BEncodeDecoder decoder) {
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("处理metadata消息-reject：{}", decoder.oddString());
-		}
+		LOGGER.debug("处理metadata消息-reject：{}", decoder);
 	}
 	
 	/**

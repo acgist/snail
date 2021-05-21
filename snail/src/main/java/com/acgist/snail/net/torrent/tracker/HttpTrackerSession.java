@@ -87,10 +87,9 @@ public final class HttpTrackerSession extends TrackerSession {
 			throw new NetException("HTTP Tracker声明失败");
 		}
 		final var body = client.responseToBytes();
-		final var decoder = BEncodeDecoder.newInstance(body);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(body).next();
 		if(decoder.isEmpty()) {
-			throw new NetException("HTTP Tracker声明消息错误（格式）：" + decoder.oddString());
+			throw new NetException("HTTP Tracker声明消息错误（格式）：" + new String(body));
 		}
 		final var message = convertAnnounceMessage(sid, decoder);
 		// 初始化跟踪器ID
@@ -121,10 +120,9 @@ public final class HttpTrackerSession extends TrackerSession {
 			throw new NetException("HTTP Tracker刮擦失败");
 		}
 		final var body = client.responseToBytes();
-		final var decoder = BEncodeDecoder.newInstance(body);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(body).next();
 		if(decoder.isEmpty()) {
-			throw new NetException("HTTP Tracker刮擦消息错误（格式）：" + decoder.oddString());
+			throw new NetException("HTTP Tracker刮擦消息错误（格式）：" + new String(body));
 		}
 		final var messages = convertScrapeMessage(sid, decoder);
 		messages.forEach(TrackerContext.getInstance()::scrape);

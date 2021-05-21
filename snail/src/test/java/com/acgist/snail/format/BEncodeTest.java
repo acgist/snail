@@ -1,6 +1,7 @@
 package com.acgist.snail.format;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,7 +37,7 @@ class BEncodeTest extends Performance {
 					this.log(key + "=" + new String((byte[]) value));
 				}
 			});
-		final String odd = decoder.oddString();
+		final String odd = decoder.toString();
 		this.log(odd);
 		assertEquals("xxxx", odd);
 		assertTrue(map.size() == 1);
@@ -104,6 +105,16 @@ class BEncodeTest extends Performance {
 		assertTrue(decoder.isEmpty());
 		decoder = BEncodeDecoder.newInstance("xx");
 		decoder.nextType();
+		assertTrue(decoder.isEmpty());
+	}
+	
+	@Test
+	void testNext() throws PacketSizeException {
+		var decoder = BEncodeDecoder.newInstance("d1:11:2e").next();
+		assertFalse(decoder.isEmpty());
+		decoder = BEncodeDecoder.newInstance("de").next();
+		assertTrue(decoder.isEmpty());
+		decoder = BEncodeDecoder.newInstance("le").next();
 		assertTrue(decoder.isEmpty());
 	}
 	

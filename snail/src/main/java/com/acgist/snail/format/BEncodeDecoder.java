@@ -167,6 +167,20 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
+	 * <p>解析数据</p>
+	 * 
+	 * @return {@link BEncodeDecoder}
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see #nextType()
+	 */
+	public BEncodeDecoder next() throws PacketSizeException {
+		this.nextType();
+		return this;
+	}
+	
+	/**
 	 * <p>解析数据并获取数据类型</p>
 	 * 
 	 * @return 数据类型
@@ -199,12 +213,13 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取List</p>
-	 * <p>如果数据类型不是List返回空List</p>
+	 * <p>解析数据并获取List</p>
 	 * 
 	 * @return List
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see #nextType()
 	 */
 	public List<Object> nextList() throws PacketSizeException {
 		final var nextType = this.nextType();
@@ -215,12 +230,13 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取Map</p>
-	 * <p>如果数据类型不是Map返回空Map</p>
+	 * <p>解析数据并获取Map</p>
 	 * 
 	 * @return Map
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
+	 * 
+	 * @see #nextType()
 	 */
 	public Map<String, Object> nextMap() throws PacketSizeException {
 		final var nextType = this.nextType();
@@ -240,17 +256,6 @@ public final class BEncodeDecoder {
 			return new byte[0];
 		}
 		return this.inputStream.readAllBytes();
-	}
-
-	/**
-	 * <p>读取剩余所有字符串</p>
-	 * 
-	 * @return 剩余所有字符串
-	 * 
-	 * @see #oddBytes()
-	 */
-	public String oddString() {
-		return new String(this.oddBytes());
 	}
 
 	/**
@@ -663,6 +668,11 @@ public final class BEncodeDecoder {
 		return result.entrySet().stream()
 			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+	}
+	
+	@Override
+	public String toString() {
+		return new String(this.oddBytes());
 	}
 	
 }

@@ -60,12 +60,9 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		final var decoder = BEncodeDecoder.newInstance(buffer);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(buffer).next();
 		if(decoder.isEmpty()) {
-			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("处理DHT消息错误（格式）：{}", decoder.oddString());
-			}
+			LOGGER.warn("处理DHT消息错误（格式）：{}", decoder);
 			return;
 		}
 		final String y = decoder.getString(DhtConfig.KEY_Y);

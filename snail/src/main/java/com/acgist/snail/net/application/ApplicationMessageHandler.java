@@ -174,8 +174,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	private void onTaskNew(ApplicationMessage message) {
 		final String body = message.getBody();
 		try {
-			final var decoder = BEncodeDecoder.newInstance(body);
-			decoder.nextMap();
+			final var decoder = BEncodeDecoder.newInstance(body).next();
 			if(decoder.isEmpty()) {
 				this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.FAIL));
 				return;
