@@ -32,13 +32,14 @@ public final class DhtLauncher implements Runnable {
 	 * <p>Peer客户端节点队列</p>
 	 * <p>支持DHT协议的Peer客户端节点</p>
 	 */
-	private final List<InetSocketAddress> peerNodes = new ArrayList<>();
+	private final List<InetSocketAddress> peerNodes;
 	
 	/**
 	 * @param torrentSession BT任务信息
 	 */
 	private DhtLauncher(TorrentSession torrentSession) {
 		this.infoHash = torrentSession.infoHash();
+		this.peerNodes = new ArrayList<>();
 	}
 	
 	/**
