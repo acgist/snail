@@ -177,8 +177,7 @@ public class ApplicationMessage {
 	 */
 	public static final ApplicationMessage valueOf(String content) {
 		try {
-			final var decoder = BEncodeDecoder.newInstance(content);
-			decoder.nextMap();
+			final var decoder = BEncodeDecoder.newInstance(content).next();
 			if(decoder.isEmpty()) {
 				return null;
 			}

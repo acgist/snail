@@ -178,8 +178,7 @@ public final class TorrentContext implements IContext {
 		}
 		try {
 			final var bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-			final var decoder = BEncodeDecoder.newInstance(bytes);
-			decoder.nextMap();
+			final var decoder = BEncodeDecoder.newInstance(bytes).next();
 			if(decoder.isEmpty()) {
 				throw new DownloadException("种子文件格式错误");
 			}

@@ -115,12 +115,9 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 */
 	private void pex(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理PEX消息");
-		final var decoder = BEncodeDecoder.newInstance(buffer);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(buffer).next();
 		if(decoder.isEmpty()) {
-			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("处理PEX消息错误（格式）：{}", decoder.oddString());
-			}
+			LOGGER.warn("处理PEX消息错误（格式）：{}", decoder);
 			return;
 		}
 		final byte[] added = decoder.getBytes(ADDED);

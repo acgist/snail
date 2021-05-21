@@ -40,8 +40,7 @@ public final record GuiMessage(
 	 */
 	public static final GuiMessage of(ApplicationMessage message) throws PacketSizeException {
 		final String body = message.getBody();
-		final var decoder = BEncodeDecoder.newInstance(body);
-		decoder.nextMap();
+		final var decoder = BEncodeDecoder.newInstance(body).next();
 		if(decoder.isEmpty()) {
 			return null;
 		}
