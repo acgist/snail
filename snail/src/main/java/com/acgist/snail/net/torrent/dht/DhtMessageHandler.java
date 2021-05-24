@@ -243,15 +243,12 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final GetPeersResponse getPeersResponse = GetPeersResponse.newInstance(response);
-		// 处理Peer
 		if(getPeersResponse.hasPeers()) {
 			getPeersResponse.getPeers(infoHashHex);
 		}
-		// 处理节点
 		if(getPeersResponse.hasNodes()) {
 			getPeersResponse.getNodes();
 		}
-		// 发送声明消息
 		final byte[] token = getPeersResponse.getToken();
 		if(token != null) {
 			final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
@@ -302,7 +299,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * @param response 响应
 	 */
 	private void announcePeer(DhtRequest request, DhtResponse response) {
-		LOGGER.debug("收到DHT AnnouncePeer响应");
+		LOGGER.debug("处理DHT响应：AnnouncePeer");
 	}
 
 	/**
@@ -324,10 +321,6 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 	 * @param socketAddress 地址
 	 */
 	private void pushMessage(DhtMessage message, InetSocketAddress socketAddress) {
-		if(message == null) {
-			LOGGER.warn("发送DHT消息失败：{}", message);
-			return;
-		}
 		final ByteBuffer buffer = ByteBuffer.wrap(message.toBytes());
 		try {
 			this.send(buffer, socketAddress);
