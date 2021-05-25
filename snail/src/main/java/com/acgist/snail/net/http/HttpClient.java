@@ -327,7 +327,7 @@ public final class HttpClient {
 		} else {
 			// 请求表单数据
 			final String body = data.entrySet().stream()
-				.map(entry -> entry.getKey() + SymbolConfig.Symbol.EQUALS.toString() + UrlUtils.encode(entry.getValue()))
+				.map(entry -> SymbolConfig.Symbol.EQUALS.join(entry.getKey(), UrlUtils.encode(entry.getValue())))
 				.collect(Collectors.joining(SymbolConfig.Symbol.AND.toString()));
 			return this.execute(Method.POST, body);
 		}

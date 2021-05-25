@@ -94,7 +94,7 @@ public final class WindowsRecycle extends Recycle {
 		if(this.file.isFile()) {
 			final String ext = FileUtils.fileExt(this.path);
 			if(ext != null) {
-				name = name + SymbolConfig.Symbol.DOT.toString() + ext;
+				name = SymbolConfig.Symbol.DOT.join(name, ext);
 			}
 		}
 		this.deleteFilePath = FileUtils.file(this.recyclePath, FILE_PREFIX + name);

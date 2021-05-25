@@ -340,7 +340,7 @@ public final class DhtConfig extends PropertiesConfig {
 			.filter(NodeSession::useable)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),
-				node -> node.getHost() + SymbolConfig.Symbol.COLON.toString() + node.getPort()
+				node -> SymbolConfig.Symbol.COLON.join(node.getHost(), node.getPort())
 			));
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("保存DHT节点配置：{}", data.size());

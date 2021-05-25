@@ -285,11 +285,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 		if (opening >= 0 && closing > opening) {
 			final String data = message.substring(opening + 1, closing);
 			final StringTokenizer tokenizer = new StringTokenizer(data, SymbolConfig.Symbol.COMMA.toString());
-			final String host =
-				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-				tokenizer.nextToken() + SymbolConfig.Symbol.DOT.toString() +
-				tokenizer.nextToken();
+			final String host = SymbolConfig.Symbol.DOT.join(tokenizer.nextToken(), tokenizer.nextToken(), tokenizer.nextToken(), tokenizer.nextToken());
 			final int port = (Integer.parseInt(tokenizer.nextToken()) << 8) + Integer.parseInt(tokenizer.nextToken());
 			try {
 				this.inputSocket = new Socket();

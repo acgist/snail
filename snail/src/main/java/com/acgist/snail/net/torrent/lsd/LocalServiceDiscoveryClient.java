@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.PeerConfig;
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpClient;
@@ -57,7 +58,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 			return;
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送本地发现消息（InfoHash）：{}", String.join(",", infoHashs));
+			LOGGER.debug("发送本地发现消息（InfoHash）：{}", SymbolConfig.Symbol.COMMA.join(infoHashs));
 		}
 		try {
 			this.send(this.buildMessage(infoHashs));
@@ -77,7 +78,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 		final String peerId = StringUtils.hex(PeerConfig.getInstance().peerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, LocalServiceDiscoveryServer.lsdHost() + ":" + LocalServiceDiscoveryServer.LSD_PORT)
+			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT))
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_PORT, String.valueOf(SystemConfig.getTorrentPort()))
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_COOKIE, peerId);
 		for (String infoHash : infoHashs) {

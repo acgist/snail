@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.pojo.wrapper.HeaderWrapper;
@@ -60,7 +61,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private String buildMSearch() {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header("HOST", UpnpServer.upnpHost() + ":" + UpnpServer.UPNP_PORT)
+			.header("HOST", SymbolConfig.Symbol.COLON.join(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT))
 			.header("ST", UpnpServer.UPNP_ROOT_DEVICE)
 			.header("MAN", "\"ssdp:discover\"")
 			.header("MX", "3");

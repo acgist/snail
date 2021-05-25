@@ -196,10 +196,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		if(this.statusCompleted()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
-			return
-				FileUtils.formatSize(this.downloadSize()) +
-				SymbolConfig.Symbol.SLASH.toString() +
-				FileUtils.formatSize(this.getSize());
+			return SymbolConfig.Symbol.SLASH.join(FileUtils.formatSize(this.downloadSize()), FileUtils.formatSize(this.getSize()));
 		}
 	}
 
