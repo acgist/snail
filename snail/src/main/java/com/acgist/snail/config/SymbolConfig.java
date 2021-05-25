@@ -1,5 +1,7 @@
 package com.acgist.snail.config;
 
+import java.util.StringJoiner;
+
 /**
  * <p>符号配置</p>
  * 
@@ -134,6 +136,42 @@ public final class SymbolConfig {
 		private Symbol(char value) {
 			this.charValue = value;
 			this.stringValue = Character.toString(value);
+		}
+		
+		/**
+		 * <p>连接参数字符串</p>
+		 * 
+		 * @param args 参数
+		 * 
+		 * @return 字符串
+		 */
+		public String join(String ... args) {
+			if(args == null) {
+				return null;
+			}
+			final StringJoiner joiner = new StringJoiner(this.stringValue);
+			for (String object : args) {
+				joiner.add(object);
+			}
+			return joiner.toString();
+		}
+		
+		/**
+		 * <p>连接参数字符串</p>
+		 * 
+		 * @param args 参数
+		 * 
+		 * @return 字符串
+		 */
+		public String join(Object ... args) {
+			if(args == null) {
+				return null;
+			}
+			final StringJoiner joiner = new StringJoiner(this.stringValue);
+			for (Object object : args) {
+				joiner.add(object.toString());
+			}
+			return joiner.toString();
 		}
 		
 		/**

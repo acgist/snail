@@ -26,7 +26,7 @@ class HeaderWrapperTest extends Performance {
 			.append("MAN: \"ssdp:discover\"").append(SymbolConfig.LINE_SEPARATOR_COMPAT);
 		var wrapper = HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1");
 		wrapper
-			.header("HOST", UpnpServer.upnpHost() + ":" + UpnpServer.UPNP_PORT)
+			.header("HOST", SymbolConfig.Symbol.COLON.join(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT))
 			.header("MX", "3")
 			.header("ST", "urn:schemas-upnp-org:device:InternetGatewayDevice:1")
 			.header("MAN", "\"ssdp:discover\"");

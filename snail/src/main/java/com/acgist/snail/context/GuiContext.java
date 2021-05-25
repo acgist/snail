@@ -184,7 +184,7 @@ public final class GuiContext implements IContext {
 			LOGGER.debug("没有设置启动参数");
 		} else {
 			if(LOGGER.isInfoEnabled()) {
-				LOGGER.info("启动参数：{}", String.join(SymbolConfig.Symbol.COMMA.toString(), args));
+				LOGGER.info("启动参数：{}", SymbolConfig.Symbol.COMMA.join(args));
 			}
 			String value;
 			for (String arg : args) {

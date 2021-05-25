@@ -301,7 +301,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.haveInterval = this.getInteger("acgist.have.interval", 30);
 		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
 		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
-		this.nameEnAndVersion = this.nameEn + SymbolConfig.Symbol.SPACE.toString() + this.version;
+		this.nameEnAndVersion = SymbolConfig.Symbol.SPACE.join(this.nameEn, this.version);
 	}
 
 	/**
