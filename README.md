@@ -35,7 +35,6 @@
 |snail-javafx|电脑界面|
 
 > 电脑界面只是方便操作，下载核心包含所有下载协议，可以完全独立使用。
-> 全部代码使用Java开发，除开日志门面不依赖任何第三方框架。
 
 ## 使用
 
@@ -88,6 +87,8 @@ snail.lockDownload();
 |[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
 |[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
 |[OpenJDK](https://openjdk.java.net)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
+
+> 全部代码使用Java开发，除开日志门面不依赖任何第三方框架。
 
 ## 其他
 
