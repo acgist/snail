@@ -54,7 +54,6 @@ public class DhtRequest extends DhtMessage {
 	
 	/**
 	 * <p>新建请求</p>
-	 * <p>生成NodeId</p>
 	 * 
 	 * @param q 请求类型
 	 */
@@ -65,7 +64,6 @@ public class DhtRequest extends DhtMessage {
 	
 	/**
 	 * <p>解析请求</p>
-	 * <p>不生成NodeId</p>
 	 * 
 	 * @param t 消息ID
 	 * @param y 消息类型
@@ -89,10 +87,9 @@ public class DhtRequest extends DhtMessage {
 	public static final DhtRequest valueOf(final BEncodeDecoder decoder) {
 		final byte[] t = decoder.getBytes(DhtConfig.KEY_T);
 		final String y = decoder.getString(DhtConfig.KEY_Y);
-		final String q = decoder.getString(DhtConfig.KEY_Q);
-		final QType type = DhtConfig.QType.of(q);
+		final QType q = DhtConfig.QType.of(decoder.getString(DhtConfig.KEY_Q));
 		final Map<String, Object> a = decoder.getMap(DhtConfig.KEY_A);
-		return new DhtRequest(t, y, type, a);
+		return new DhtRequest(t, y, q, a);
 	}
 	
 	/**
@@ -184,13 +181,13 @@ public class DhtRequest extends DhtMessage {
 			return new byte[0];
 		}
 		final var availableNodes = nodes.stream()
-			// 只分享IP地址
+			// 分享IP地址
 			.filter(node -> NetUtils.ip(node.getHost()))
 			.collect(Collectors.toList());
 		if(CollectionUtils.isEmpty(availableNodes)) {
 			return new byte[0];
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(26 * availableNodes.size()); // 20 + 4 + 2
+		final ByteBuffer buffer = ByteBuffer.allocate(26 * availableNodes.size());
 		for (NodeSession node : availableNodes) {
 			buffer.put(node.getId());
 			buffer.putInt(NetUtils.ipToInt(node.getHost()));

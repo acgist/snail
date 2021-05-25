@@ -44,7 +44,6 @@ public class DhtResponse extends DhtMessage {
 
 	/**
 	 * <p>新建响应</p>
-	 * <p>生成NodeId</p>
 	 * 
 	 * @param t 节点ID
 	 */
@@ -55,7 +54,6 @@ public class DhtResponse extends DhtMessage {
 	
 	/**
 	 * <p>解析响应</p>
-	 * <p>不生成NodeId</p>
 	 * 
 	 * @param t 消息ID
 	 * @param y 消息类型
@@ -131,7 +129,7 @@ public class DhtResponse extends DhtMessage {
 	/**
 	 * <p>反序列化节点列表</p>
 	 * 
-	 * @param key 参数名称
+	 * @param key 节点参数名称
 	 * 
 	 * @return 节点列表
 	 * 
