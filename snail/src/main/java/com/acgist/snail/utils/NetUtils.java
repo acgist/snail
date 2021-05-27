@@ -237,6 +237,9 @@ public final class NetUtils {
 	 * @return IP地址（字符串）
 	 */
 	public static final String bytesToIP(byte[] value) {
+		if(value == null) {
+			return null;
+		}
 		try {
 			return InetAddress.getByAddress(value).getHostAddress();
 		} catch (UnknownHostException e) {
