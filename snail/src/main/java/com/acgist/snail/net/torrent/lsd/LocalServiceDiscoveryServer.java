@@ -34,11 +34,11 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	/**
 	 * <p>LSD组播地址（IPv4）：{@value}</p>
 	 */
-	public static final String LSD_HOST = "239.192.152.143";
+	private static final String LSD_HOST = "239.192.152.143";
 	/**
 	 * <p>LSD组播地址（IPv6）：{@value}</p>
 	 */
-	public static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
+	private static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
 	private LocalServiceDiscoveryServer() {
 		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
@@ -57,7 +57,6 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 * <p>发送本地发现消息</p>
 	 */
 	private void multicast() {
-		LOGGER.debug("发送本地发现消息");
 		final LocalServiceDiscoveryClient client = LocalServiceDiscoveryClient.newInstance();
 		TorrentContext.getInstance().allTorrentSession().forEach(session -> {
 			if(session.privateTorrent()) {
