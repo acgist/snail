@@ -169,7 +169,7 @@ public final class SymbolConfig {
 			}
 			final StringJoiner joiner = new StringJoiner(this.stringValue);
 			for (Object object : args) {
-				joiner.add(object.toString());
+				joiner.add(object == null ? null : object.toString());
 			}
 			return joiner.toString();
 		}

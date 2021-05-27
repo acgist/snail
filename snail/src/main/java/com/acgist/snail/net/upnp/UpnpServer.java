@@ -25,11 +25,11 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	/**
 	 * <p>UPNP组播地址（IPv4）：{@value}</p>
 	 */
-	public static final String UPNP_HOST = "239.255.255.250";
+	private static final String UPNP_HOST = "239.255.255.250";
 	/**
 	 * <p>UPNP组播地址（IPv6）：{@value}</p>
 	 */
-	public static final String UPNP_HOST_IPV6 = "[ff15::efff:fffa]";
+	private static final String UPNP_HOST_IPV6 = "[ff15::efff:fffa]";
 	/**
 	 * <p>UPNP根设备：{@value}</p>
 	 */

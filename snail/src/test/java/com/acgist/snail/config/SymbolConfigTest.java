@@ -29,10 +29,8 @@ class SymbolConfigTest extends Performance {
 		assertEquals("1", SymbolConfig.Symbol.AND.join("1"));
 		assertEquals("1&2", SymbolConfig.Symbol.AND.join("1", "2"));
 		assertEquals("1&2&3", SymbolConfig.Symbol.AND.join("1", "2", 3));
-		this.log(SymbolConfig.Symbol.AND.join("1"));
-		this.log(SymbolConfig.Symbol.AND.join("1", "2"));
-		this.log(SymbolConfig.Symbol.AND.join("1", "2", "2"));
-		this.log(SymbolConfig.Symbol.AND.join("1", "2", "2", 3));
+		assertEquals("1&2&null&3", SymbolConfig.Symbol.AND.join("1", "2", null, "3"));
+		assertEquals("1&2&null&3", SymbolConfig.Symbol.AND.join("1", "2", null, 3));
 		assertEquals(LocalServiceDiscoveryServer.lsdHost() + ":" + LocalServiceDiscoveryServer.LSD_PORT, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT));
 		assertEquals(LocalServiceDiscoveryServer.lsdHost() + SymbolConfig.Symbol.COLON.toString() + LocalServiceDiscoveryServer.LSD_PORT, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT));
 	}
