@@ -1,5 +1,6 @@
 package com.acgist.snail.net.torrent.tracker;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -184,6 +185,12 @@ public final class HttpTrackerSession extends TrackerSession {
 		if(StringUtils.isNotEmpty(warngingMessage)) {
 			LOGGER.warn("HTTP Tracker声明警告：{}", warngingMessage);
 		}
+		final Map<String, Integer> peers = new HashMap<>();
+		// Peer格式参考参数：compact
+		final var peersIpv4 = PeerUtils.readIpv4(decoder.get("peers"));
+		final var peersIpv6 = PeerUtils.readIpv6(decoder.get("peers6"));
+		peers.putAll(peersIpv4);
+		peers.putAll(peersIpv6);
 		return AnnounceMessage.newHttp(
 			sid,
 			decoder.getString("tracker id"),
@@ -191,8 +198,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			decoder.getInteger("min interval"),
 			decoder.getInteger("incomplete"),
 			decoder.getInteger("complete"),
-			// 参考：compact
-			PeerUtils.read(decoder.get("peers"))
+			peers
 		);
 	}
 	

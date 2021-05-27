@@ -1,7 +1,5 @@
 package com.acgist.snail.net.upnp;
 
-import java.net.StandardProtocolFamily;
-
 import com.acgist.snail.net.UdpServer;
 import com.acgist.snail.utils.NetUtils;
 
@@ -48,7 +46,7 @@ public final class UpnpServer extends UdpServer<UpnpAcceptHandler> {
 	 * @return UPNP组播地址
 	 */
 	public static final String upnpHost() {
-		if(NetUtils.LOCAL_PROTOCOL_FAMILY == StandardProtocolFamily.INET) {
+		if(NetUtils.localIPv4()) {
 			return UPNP_HOST;
 		} else {
 			return UPNP_HOST_IPV6;

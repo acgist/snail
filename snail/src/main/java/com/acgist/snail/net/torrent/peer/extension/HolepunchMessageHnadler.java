@@ -90,6 +90,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			port = NetUtils.portToInt(buffer.getShort());
 		} else if(addrType == IPV6) {
 			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+			buffer.get(bytes);
 			host = NetUtils.bytesToIP(bytes);
 			port = NetUtils.portToInt(buffer.getShort());
 		} else {

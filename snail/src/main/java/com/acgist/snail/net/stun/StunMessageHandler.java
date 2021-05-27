@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.StunConfig.AttributeType;
 import com.acgist.snail.config.StunConfig.MessageType;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -201,16 +202,19 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
+		final short port = buffer.getShort();
+		final int portExt = NetUtils.portToInt(port);
+		final String ipExt;
 		if(family == StunConfig.IPV4) {
-			final short port = buffer.getShort();
 			final int ip = buffer.getInt();
-			final int portExt = NetUtils.portToInt(port);
-			final String ipExt = NetUtils.intToIP(ip);
-			LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
-			StunService.getInstance().mapping(ipExt, portExt);
+			ipExt = NetUtils.intToIP(ip);
 		} else {
-			// TODO：IPv6
+			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+			buffer.get(bytes);
+			ipExt = NetUtils.bytesToIP(bytes);
 		}
+		LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
+		StunService.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**
@@ -237,18 +241,27 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
+		final short port = buffer.getShort();
+		final short portValue = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
+		final int portExt = NetUtils.portToInt(portValue);
+		final String ipExt;
 		if(family == StunConfig.IPV4) {
-			final short port = buffer.getShort();
 			final int ip = buffer.getInt();
-			final short portValue = (short) (port ^ (StunConfig.MAGIC_COOKIE >> 16));
 			final int ipValue = ip ^ StunConfig.MAGIC_COOKIE;
-			final int portExt = NetUtils.portToInt(portValue);
-			final String ipExt = NetUtils.intToIP(ipValue);
-			LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
-			StunService.getInstance().mapping(ipExt, portExt);
+			ipExt = NetUtils.intToIP(ipValue);
 		} else {
-			// TODO：IPv6
+			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+			buffer.get(bytes);
+			final ByteBuffer target = ByteBuffer.allocate(SystemConfig.IPV6_LENGTH);
+			target.putInt(StunConfig.MAGIC_COOKIE);
+			target.putInt(StunConfig.MAGIC_COOKIE);
+			target.putInt(StunConfig.MAGIC_COOKIE);
+			target.putInt(StunConfig.MAGIC_COOKIE);
+			final byte[] source = ArrayUtils.xor(bytes, target.array());
+			ipExt = NetUtils.bytesToIP(source);
 		}
+		LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
+		StunService.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**

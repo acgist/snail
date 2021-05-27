@@ -426,7 +426,16 @@ public final class StatisticsController extends Controller {
 		if(infoHashHex == null) {
 			return;
 		}
+		final var ipv4Count = new AtomicInteger(0);
+		final var ipv6Count = new AtomicInteger(0);
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
+		peers.forEach(peer -> {
+			if(NetUtils.ipv4(peer.host())) {
+				ipv4Count.incrementAndGet();
+			} else {
+				ipv6Count.incrementAndGet();
+			}
+		});
 		final var pieCharts = peers.stream()
 			.collect(Collectors.groupingBy(PeerSession::clientName, Collectors.counting()))
 			.entrySet().stream()
@@ -442,7 +451,7 @@ public final class StatisticsController extends Controller {
 			.map(entity -> new PieChart.Data(entity.getKey(), entity.getValue()))
 			.collect(Collectors.toList());
 		final ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieCharts);
-		final String title = String.format("总量：%d", peers.size());
+		final String title = String.format("总量：%d IPv4：%d IPv6：%d", peers.size(), ipv4Count.get(), ipv6Count.get());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		pieChart.setOnMouseClicked(this.clientClickEvent);
 		// 添加节点
@@ -490,11 +499,7 @@ public final class StatisticsController extends Controller {
 			new PieChart.Data("Connect", connectCount.get()),
 			new PieChart.Data("Holepunch", holepunchCount.get())
 		);
-		final String title = String.format(
-				"总量：%d 可用数量：%d",
-				peers.size(),
-				availableCount.get()
-			);
+		final String title = String.format("总量：%d 可用数量：%d", peers.size(), availableCount.get());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
 		final var statisticsBoxNode = this.statisticsBoxClear();

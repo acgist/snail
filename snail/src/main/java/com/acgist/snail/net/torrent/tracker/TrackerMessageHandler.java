@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig.Action;
 import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -113,7 +114,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 			buffer.getInt(),
 			buffer.getInt(),
 			buffer.getInt(),
-			PeerUtils.read(buffer)
+			SystemConfig.externalIPv4() ? PeerUtils.readIpv4(buffer) : PeerUtils.readIpv6(buffer)
 		);
 		TrackerContext.getInstance().announce(message);
 	}

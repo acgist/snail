@@ -1,6 +1,5 @@
 package com.acgist.snail.net.torrent.lsd;
 
-import java.net.StandardProtocolFamily;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -74,7 +73,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 * @return LSD组播地址
 	 */
 	public static final String lsdHost() {
-		if(NetUtils.LOCAL_PROTOCOL_FAMILY == StandardProtocolFamily.INET) {
+		if(NetUtils.localIPv4()) {
 			return LSD_HOST;
 		} else {
 			return LSD_HOST_IPV6;

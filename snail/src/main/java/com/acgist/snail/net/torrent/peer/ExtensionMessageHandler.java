@@ -26,7 +26,6 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NetUtils;
-import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -82,14 +81,14 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 * @see #DEFAULT_REQQ
 	 */
 	private static final String EX_REQQ = "reqq";
-//	/**
-//	 * <p>IPv4地址：{@value}</p>
-//	 */
-//	private static final String EX_IPV4 = "ipv4";
-//	/**
-//	 * <p>IPv6地址：{@value}</p>
-//	 */
-//	private static final String EX_IPV6 = "ipv6";
+	/**
+	 * <p>IPv4地址：{@value}</p>
+	 */
+	private static final String EX_IPV4 = "ipv4";
+	/**
+	 * <p>IPv6地址：{@value}</p>
+	 */
+	private static final String EX_IPV6 = "ipv6";
 	/**
 	 * <p>外网IP地址：{@value}</p>
 	 */
@@ -211,24 +210,29 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	public void handshake() {
 		LOGGER.debug("发送扩展消息-握手");
 		this.handshakeSend = true;
-		final Map<String, Object> message = new LinkedHashMap<>(); // 扩展消息
-		final Map<String, Object> supportTypes = new LinkedHashMap<>(); // 支持的扩展协议
+		// 扩展消息
+		final Map<String, Object> message = new LinkedHashMap<>();
+		// 支持的扩展协议
+		final Map<String, Object> supportTypes = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
 			if(type.support() && type.notice()) {
 				supportTypes.put(type.value(), type.id());
 			}
 		}
-		message.put(EX_M, supportTypes); // 支持的扩展协议
+		message.put(EX_M, supportTypes);
 		// 如果已经接收握手消息：不发送TCP端口
 		if(!this.handshakeRecv) {
-			message.put(EX_P, SystemConfig.getTorrentPortExt()); // 外网监听TCP端口
+			// 外网监听TCP端口
+			message.put(EX_P, SystemConfig.getTorrentPortExt());
 		}
-		message.put(EX_V, SystemConfig.getNameEnAndVersion()); // 客户端信息（名称、版本）
-		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT); // 偏爱加密
-		// 外网IP地址：TODO：IPv6
+		// 客户端信息（名称、版本）
+		message.put(EX_V, SystemConfig.getNameEnAndVersion());
+		// 偏爱加密
+		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT);
+		// 外网IP地址
 		final String yourip = SystemConfig.getExternalIPAddress();
 		if(StringUtils.isNotEmpty(yourip)) {
-			message.put(EX_YOURIP, NumberUtils.intToBytes(NetUtils.ipToInt(yourip)));
+			message.put(EX_YOURIP, NetUtils.ipToBytes(yourip));
 		}
 		message.put(EX_REQQ, DEFAULT_REQQ);
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
@@ -271,6 +275,10 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 				LOGGER.debug("处理扩展消息-握手（端口不一致）：{}-{}", oldPort, newPort);
 			}
 		}
+		// 偏爱地址
+		final String ipv4 = decoder.getString(EX_IPV4);
+		final String ipv6 = decoder.getString(EX_IPV6);
+		LOGGER.debug("Peer偏爱使用地址：{}-{}-{}", this.peerSession, ipv4, ipv6);
 		// 偏爱加密
 		final Long encrypt = decoder.getLong(EX_E);
 		if(encrypt != null && encrypt.intValue() == PREFER_ENCRYPT) {
