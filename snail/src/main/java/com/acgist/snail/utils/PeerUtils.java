@@ -45,14 +45,12 @@ public final class PeerUtils {
 	 * @param bytes 数据
 	 * 
 	 * @return IPv4=端口
-	 * 
-	 * @see #readIpv4(ByteBuffer)
 	 */
-	public static final Map<String, Integer> readIpv4(byte[] bytes) {
+	public static final Map<String, Integer> readIPv4(byte[] bytes) {
 		if(bytes == null) {
 			return Map.of();
 		}
-		return readIpv4(ByteBuffer.wrap(bytes));
+		return readIPv4(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
@@ -62,7 +60,7 @@ public final class PeerUtils {
 	 * 
 	 * @return IPv4=端口
 	 */
-	public static final Map<String, Integer> readIpv4(ByteBuffer buffer) {
+	public static final Map<String, Integer> readIPv4(ByteBuffer buffer) {
 		if(buffer == null) {
 			return Map.of();
 		}
@@ -81,14 +79,12 @@ public final class PeerUtils {
 	 * @param bytes 数据
 	 * 
 	 * @return IPv6=端口
-	 * 
-	 * @see #readIpv6(ByteBuffer)
 	 */
-	public static final Map<String, Integer> readIpv6(byte[] bytes) {
+	public static final Map<String, Integer> readIPv6(byte[] bytes) {
 		if(bytes == null) {
 			return Map.of();
 		}
-		return readIpv6(ByteBuffer.wrap(bytes));
+		return readIPv6(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
@@ -98,7 +94,7 @@ public final class PeerUtils {
 	 * 
 	 * @return IPv6=端口
 	 */
-	public static final Map<String, Integer> readIpv6(ByteBuffer buffer) {
+	public static final Map<String, Integer> readIPv6(ByteBuffer buffer) {
 		if(buffer == null) {
 			return Map.of();
 		}
@@ -143,12 +139,12 @@ public final class PeerUtils {
 	 * 
 	 * @return IPv4=端口
 	 */
-	public static final Map<String, Integer> readIpv4(Object object) {
+	public static final Map<String, Integer> readIPv4(Object object) {
 		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			peers = PeerUtils.readIpv4(bytes);
+			peers = PeerUtils.readIPv4(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
-			peers = PeerUtils.readIpv4(buffer);
+			peers = PeerUtils.readIPv4(buffer);
 		} else if (object instanceof List<?> list) {
 			peers = PeerUtils.read(list);
 		} else {
@@ -165,12 +161,12 @@ public final class PeerUtils {
 	 * 
 	 * @return IPv6=端口
 	 */
-	public static final Map<String, Integer> readIpv6(Object object) {
+	public static final Map<String, Integer> readIPv6(Object object) {
 		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			peers = PeerUtils.readIpv6(bytes);
+			peers = PeerUtils.readIPv6(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
-			peers = PeerUtils.readIpv6(buffer);
+			peers = PeerUtils.readIPv6(buffer);
 		} else if (object instanceof List<?> list) {
 			peers = PeerUtils.read(list);
 		} else {

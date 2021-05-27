@@ -18,7 +18,7 @@ class PeerUtilsTest extends Performance {
 		buffer.putInt(NetUtils.ipToInt("192.168.1.100"));
 		buffer.putShort(NetUtils.portToShort(28888));
 		buffer.flip();
-		final var map = PeerUtils.readIpv4(buffer);
+		final var map = PeerUtils.readIPv4(buffer);
 		this.log(map);
 		assertEquals(2, map.size());
 	}
@@ -31,7 +31,7 @@ class PeerUtilsTest extends Performance {
 		buffer.put(NetUtils.ipToBytes("fe80::f84b:bc3a:9556:683f"));
 		buffer.putShort(NetUtils.portToShort(28888));
 		buffer.flip();
-		final var map = PeerUtils.readIpv6(buffer);
+		final var map = PeerUtils.readIPv6(buffer);
 		this.log(map);
 		assertEquals(2, map.size());
 	}
