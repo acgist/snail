@@ -682,10 +682,8 @@ public final class MSECryptHandshakeHandler {
 	 * @param message 消息
 	 * 
 	 * @return 是否是明文Peer握手消息
-	 * 
-	 * @throws NetException 网络异常
 	 */
-	private boolean checkPlaintextPeerHandshake(ByteBuffer message) throws NetException {
+	private boolean checkPlaintextPeerHandshake(ByteBuffer message) {
 		final byte first = message.get();
 		// 判断首个字符
 		if(

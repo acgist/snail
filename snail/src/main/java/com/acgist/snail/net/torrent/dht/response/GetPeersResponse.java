@@ -109,6 +109,7 @@ public final class GetPeersResponse extends DhtResponse {
 			return List.of();
 		}
 		PeerSession session;
+		// TODO：IPv6
 		final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH);
 		final List<PeerSession> list = new ArrayList<>();
 		for (Object object : values) {

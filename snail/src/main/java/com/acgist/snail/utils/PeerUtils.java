@@ -40,35 +40,73 @@ public final class PeerUtils {
 	private static final int ALLOWED_FAST_LOOP_LENGTH = 5;
 
 	/**
-	 * <p>读取IP和端口</p>
+	 * <p>读取IPv4和端口</p>
 	 * 
 	 * @param bytes 数据
 	 * 
-	 * @return IP=端口
+	 * @return IPv4=端口
 	 * 
-	 * @see #read(ByteBuffer)
+	 * @see #readIpv4(ByteBuffer)
 	 */
-	public static final Map<String, Integer> read(byte[] bytes) {
+	public static final Map<String, Integer> readIpv4(byte[] bytes) {
 		if(bytes == null) {
-			return null;
+			return Map.of();
 		}
-		return read(ByteBuffer.wrap(bytes));
+		return readIpv4(ByteBuffer.wrap(bytes));
 	}
 	
 	/**
-	 * <p>读取IP和端口</p>
+	 * <p>读取IPv4和端口</p>
 	 * 
 	 * @param buffer 数据
 	 * 
-	 * @return IP=端口
+	 * @return IPv4=端口
 	 */
-	public static final Map<String, Integer> read(ByteBuffer buffer) {
+	public static final Map<String, Integer> readIpv4(ByteBuffer buffer) {
 		if(buffer == null) {
-			return null;
+			return Map.of();
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.remaining() >= SystemConfig.IPV4_PORT_LENGTH) {
 			final String ip = NetUtils.intToIP(buffer.getInt());
+			final int port = NetUtils.portToInt(buffer.getShort());
+			data.put(ip, port);
+		}
+		return data;
+	}
+	
+	/**
+	 * <p>读取IPv6和端口</p>
+	 * 
+	 * @param bytes 数据
+	 * 
+	 * @return IPv6=端口
+	 * 
+	 * @see #readIpv6(ByteBuffer)
+	 */
+	public static final Map<String, Integer> readIpv6(byte[] bytes) {
+		if(bytes == null) {
+			return Map.of();
+		}
+		return readIpv6(ByteBuffer.wrap(bytes));
+	}
+	
+	/**
+	 * <p>读取IPv6和端口</p>
+	 * 
+	 * @param buffer 数据
+	 * 
+	 * @return IPv6=端口
+	 */
+	public static final Map<String, Integer> readIpv6(ByteBuffer buffer) {
+		if(buffer == null) {
+			return Map.of();
+		}
+		final Map<String, Integer> data = new HashMap<>();
+		while (buffer.remaining() >= SystemConfig.IPV6_PORT_LENGTH) {
+			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+			buffer.get(bytes);
+			final String ip = NetUtils.bytesToIP(bytes);
 			final int port = NetUtils.portToInt(buffer.getShort());
 			data.put(ip, port);
 		}
@@ -83,6 +121,9 @@ public final class PeerUtils {
 	 * @return IP=端口
 	 */
 	public static final Map<String, Integer> read(List<?> list) {
+		if(list == null) {
+			return Map.of();
+		}
 		return list.stream()
 			.filter(Objects::nonNull)
 			.map(value -> {
@@ -96,18 +137,40 @@ public final class PeerUtils {
 	}
 	
 	/**
-	 * <p>读取IP和端口</p>
+	 * <p>读取IPv4和端口</p>
 	 * 
 	 * @param object 数据
 	 * 
-	 * @return IP=端口
+	 * @return IPv4=端口
 	 */
-	public static final Map<String, Integer> read(Object object) {
+	public static final Map<String, Integer> readIpv4(Object object) {
 		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			peers = PeerUtils.read(bytes);
+			peers = PeerUtils.readIpv4(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
-			peers = PeerUtils.read(buffer);
+			peers = PeerUtils.readIpv4(buffer);
+		} else if (object instanceof List<?> list) {
+			peers = PeerUtils.read(list);
+		} else {
+			peers = new HashMap<>();
+			LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+		}
+		return peers;
+	}
+	
+	/**
+	 * <p>读取IPv6和端口</p>
+	 * 
+	 * @param object 数据
+	 * 
+	 * @return IPv6=端口
+	 */
+	public static final Map<String, Integer> readIpv6(Object object) {
+		Map<String, Integer> peers;
+		if(object instanceof byte[] bytes) {
+			peers = PeerUtils.readIpv6(bytes);
+		} else if(object instanceof ByteBuffer buffer) {
+			peers = PeerUtils.readIpv6(buffer);
 		} else if (object instanceof List<?> list) {
 			peers = PeerUtils.read(list);
 		} else {

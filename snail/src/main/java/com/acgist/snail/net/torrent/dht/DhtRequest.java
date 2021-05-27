@@ -187,6 +187,7 @@ public class DhtRequest extends DhtMessage {
 		if(CollectionUtils.isEmpty(availableNodes)) {
 			return new byte[0];
 		}
+		// TODO：IPv6
 		final ByteBuffer buffer = ByteBuffer.allocate(26 * availableNodes.size());
 		for (NodeSession node : availableNodes) {
 			buffer.put(node.getId());

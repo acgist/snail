@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.peer.extension;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,8 +111,6 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 * @param buffer 消息
 	 * 
 	 * @throws PacketSizeException 网络包异常
-	 * 
-	 * TODO：IPv6
 	 */
 	private void pex(ByteBuffer buffer) throws PacketSizeException {
 		LOGGER.debug("处理PEX消息");
@@ -122,7 +121,21 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		}
 		final byte[] added = decoder.getBytes(ADDED);
 		final byte[] addedf = decoder.getBytes(ADDEDF);
-		final var peers = PeerUtils.read(added);
+		final var peersIpv4 = PeerUtils.readIpv4(added);
+		this.readPeer(peersIpv4, addedf);
+		final byte[] added6 = decoder.getBytes(ADDED6);
+		final byte[] added6f = decoder.getBytes(ADDED6F);
+		final var peersIpv6 = PeerUtils.readIpv6(added6);
+		this.readPeer(peersIpv6, added6f);
+	}
+	
+	/**
+	 * <p>处理Peer</p>
+	 * 
+	 * @param peers Peer列表
+	 * @param flags Peer属性
+	 */
+	private void readPeer(Map<String, Integer> peers, byte[] flags) {
 		if(MapUtils.isNotEmpty(peers)) {
 			final AtomicInteger index = new AtomicInteger(0);
 			peers.forEach((host, port) -> {
@@ -133,10 +146,11 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 					port,
 					PeerConfig.Source.PEX
 				);
-				if(addedf != null && addedf.length > index.get()) {
-					peerSession.flags(addedf[index.getAndIncrement()]);
+				if(flags != null && flags.length > index.get()) {
+					peerSession.flags(flags[index.getAndIncrement()]);
 				}
-				peerSession.pexSource(this.peerSession); // 设置Pex来源
+				// 设置Pex来源
+				peerSession.pexSource(this.peerSession);
 			});
 		}
 	}
@@ -147,30 +161,43 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 	 * @param optimize 优质Peer列表
 	 * 
 	 * @return 消息
-	 * 
-	 * TODO：IPv6
 	 */
 	public static final byte[] buildMessage(List<PeerSession> optimize) {
 		if(CollectionUtils.isEmpty(optimize)) {
 			return new byte[0];
 		}
-		final int length = SystemConfig.IPV4_PORT_LENGTH * optimize.size();
-		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
-		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
-		optimize.stream()
-			.distinct()
-			.forEach(session -> {
+		final List<PeerSession> optimizeIpv4 = new ArrayList<>();
+		final List<PeerSession> optimizeIpv6 = new ArrayList<>();
+		optimize.stream().distinct().forEach(session -> {
+				if(NetUtils.ipv4(session.host())) {
+					optimizeIpv4.add(session);
+				} else {
+					optimizeIpv6.add(session);
+				}
+			});
+		// IPv4
+		final ByteBuffer addedBuffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH * optimizeIpv4.size());
+		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimizeIpv4.size());
+		optimize.stream().distinct().forEach(session -> {
 				addedBuffer.putInt(NetUtils.ipToInt(session.host()));
 				addedBuffer.putShort(NetUtils.portToShort(session.port()));
 				addedfBuffer.put(session.flags());
+			});
+		// IPv6
+		final ByteBuffer added6Buffer = ByteBuffer.allocate(SystemConfig.IPV6_PORT_LENGTH * optimizeIpv6.size());
+		final ByteBuffer added6fBuffer = ByteBuffer.allocate(optimizeIpv6.size());
+		optimize.stream().distinct().forEach(session -> {
+				added6Buffer.put(NetUtils.ipToBytes(session.host()));
+				added6Buffer.putShort(NetUtils.portToShort(session.port()));
+				added6fBuffer.put(session.flags());
 			});
 		final Map<String, Object> data = new HashMap<>(9);
 		final byte[] emptyBytes = new byte[0];
 		data.put(ADDED, addedBuffer.array());
 		data.put(ADDEDF, addedfBuffer.array());
 		data.put(DROPPED, emptyBytes);
-		data.put(ADDED6, emptyBytes);
-		data.put(ADDED6F, emptyBytes);
+		data.put(ADDED6, added6Buffer.array());
+		data.put(ADDED6F, added6fBuffer.array());
 		data.put(DROPPED6, emptyBytes);
 		return BEncodeEncoder.encodeMap(data);
 	}

@@ -11,14 +11,27 @@ import org.junit.jupiter.api.Test;
 class PeerUtilsTest extends Performance {
 
 	@Test
-	void testRead() {
+	void testReadV4() {
 		final ByteBuffer buffer = ByteBuffer.allocate(12);
 		buffer.putInt(NetUtils.ipToInt("192.168.1.1"));
 		buffer.putShort(NetUtils.portToShort(18888));
 		buffer.putInt(NetUtils.ipToInt("192.168.1.100"));
 		buffer.putShort(NetUtils.portToShort(28888));
 		buffer.flip();
-		final var map = PeerUtils.read(buffer);
+		final var map = PeerUtils.readIpv4(buffer);
+		this.log(map);
+		assertEquals(2, map.size());
+	}
+	
+	@Test
+	void testReadV6() {
+		final ByteBuffer buffer = ByteBuffer.allocate(36);
+		buffer.put(NetUtils.ipToBytes("fe80::f84b:bc3a:9556:683d"));
+		buffer.putShort(NetUtils.portToShort(18888));
+		buffer.put(NetUtils.ipToBytes("fe80::f84b:bc3a:9556:683f"));
+		buffer.putShort(NetUtils.portToShort(28888));
+		buffer.flip();
+		final var map = PeerUtils.readIpv6(buffer);
 		this.log(map);
 		assertEquals(2, map.size());
 	}

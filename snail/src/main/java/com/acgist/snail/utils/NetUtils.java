@@ -140,6 +140,15 @@ public final class NetUtils {
 	
 	private NetUtils() {
 	}
+
+	/**
+	 * <p>判断本地IP是否是IPv4</p>
+	 * 
+	 * @return 本地IP是否是IPv4
+	 */
+	public static final boolean localIPv4() {
+		return LOCAL_PROTOCOL_FAMILY == StandardProtocolFamily.INET;
+	}
 	
 	/**
 	 * <p>端口编码</p>
