@@ -67,12 +67,32 @@ public final class PeerUtils {
 			return null;
 		}
 		final Map<String, Integer> data = new HashMap<>();
-		while (buffer.remaining() >= SystemConfig.IP_PORT_LENGTH) {
+		while (buffer.remaining() >= SystemConfig.IPV4_PORT_LENGTH) {
 			final String ip = NetUtils.intToIP(buffer.getInt());
 			final int port = NetUtils.portToInt(buffer.getShort());
 			data.put(ip, port);
 		}
 		return data;
+	}
+	
+	/**
+	 * <p>读取IP和端口</p>
+	 * 
+	 * @param list 数据
+	 * 
+	 * @return IP=端口
+	 */
+	public static final Map<String, Integer> read(List<?> list) {
+		return list.stream()
+			.filter(Objects::nonNull)
+			.map(value -> {
+				final Map<?, ?> map = (Map<?, ?>) value;
+				return Map.entry(
+					BEncodeDecoder.getString(map, "ip"),
+					BEncodeDecoder.getInteger(map, "port")
+				);
+			})
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	
 	/**
@@ -85,22 +105,11 @@ public final class PeerUtils {
 	public static final Map<String, Integer> read(Object object) {
 		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			// compact：紧凑
 			peers = PeerUtils.read(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
 			peers = PeerUtils.read(buffer);
 		} else if (object instanceof List<?> list) {
-			// compact：地址
-			peers = list.stream()
-				.filter(Objects::nonNull)
-				.map(value -> {
-					final Map<?, ?> map = (Map<?, ?>) value;
-					return Map.entry(
-						BEncodeDecoder.getString(map, "ip"),
-						BEncodeDecoder.getInteger(map, "port")
-					);
-				})
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			peers = PeerUtils.read(list);
 		} else {
 			peers = new HashMap<>();
 			LOGGER.debug("Peer声明消息格式没有适配：{}", object);

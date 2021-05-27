@@ -70,11 +70,13 @@ class NetUtilsTest extends Performance {
 		assertArrayEquals(ipv6Bytes, NetUtils.ipToBytes(ipv6Value));
 		this.log(ipv6Value);
 		this.log(StringUtils.hex(ipv6Bytes));
+	}
+	
+	@Test
+	void testBytes() {
 		final byte[] ipv4Bytes = NumberUtils.intToBytes((int) 2155905152L);
-		this.costed(100000, () -> NetUtils.ipToBytes("128.128.128.128"));
-		this.costed(100000, () -> NetUtils.bytesToIP(ipv4Bytes));
-		this.costed(100000, () -> NetUtils.ipToBytes(ipv6Value));
-		this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
+		assertEquals(NetUtils.bytesToIP(ipv4Bytes), NetUtils.intToIP(NumberUtils.bytesToInt(ipv4Bytes)));
+		assertArrayEquals(NetUtils.ipToBytes("128.128.128.128"), NumberUtils.intToBytes((int) 2155905152L));
 	}
 	
 	@Test
@@ -149,6 +151,18 @@ class NetUtilsTest extends Performance {
 			this.log("网卡：{}", networkInterfaces);
 		});
 		assertNotNull(NetUtils.LOCAL_HOST_ADDRESS);
+	}
+
+	@Test
+	void testCosted() {
+		final String ipv6Address = "fe80::f84b:bc3a:9556:683d";
+		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6Address);
+		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
+		final byte[] ipv4Bytes = NumberUtils.intToBytes((int) 2155905152L);
+		this.costed(100000, () -> NetUtils.ipToBytes("128.128.128.128"));
+		this.costed(100000, () -> NetUtils.bytesToIP(ipv4Bytes));
+		this.costed(100000, () -> NetUtils.ipToBytes(ipv6Value));
+		this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
 	}
 	
 }

@@ -60,7 +60,7 @@ public final class GetPeersRequest extends DhtRequest {
 		final String infoHashHex = StringUtils.hex(infoHash);
 		final TorrentSession torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
 		if(torrentSession != null) {
-			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IP_PORT_LENGTH);
+			final ByteBuffer buffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH);
 			final var list = PeerContext.getInstance().listPeerSession(infoHashHex);
 			if(CollectionUtils.isNotEmpty(list)) {
 				// 返回Peer

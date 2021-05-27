@@ -70,7 +70,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>发起方没有在扩展协议握手时表示支持holepunch扩展协议：中继应该忽略所有消息</p>
+	 * <p>发起方在扩展协议握手时没有表示支持holepunch扩展协议：中继应该忽略所有消息</p>
 	 * 
 	 * @see HolepunchMessageHnadler#onMessage(ByteBuffer)
 	 */
@@ -84,13 +84,14 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		}
 		int port;
 		String host;
-		final byte addrType = buffer.get(); // 地址类型
+		final byte addrType = buffer.get();
 		if(addrType == IPV4) {
 			host = NetUtils.intToIP(buffer.getInt());
 			port = NetUtils.portToInt(buffer.getShort());
 		} else if(addrType == IPV6) {
-			// TODO：IPv6
-			return;
+			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+			host = NetUtils.bytesToIP(bytes);
+			port = NetUtils.portToInt(buffer.getShort());
 		} else {
 			LOGGER.error("处理holepunch消息错误（不支持的IP协议类型）：{}", addrType);
 			return;
@@ -99,10 +100,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		switch (holepunchType) {
 			case RENDEZVOUS -> this.onRendezvous(host, port);
 			case CONNECT -> this.onConnect(host, port);
-			case ERROR -> {
-				final int errorCode = buffer.getInt();
-				this.onError(host, port, errorCode);
-			}
+			case ERROR -> this.onError(host, port, buffer.getInt());
 			default -> LOGGER.warn("处理holepunch消息错误（类型未适配）：{}", holepunchType);
 		}
 	}
@@ -117,7 +115,7 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final int port = peerSession.port();
 		LOGGER.debug("发送holepunch消息-rendezvous：{}-{}", host, port);
 		this.pushMessage(this.buildMessage(HolepunchType.RENDEZVOUS, host, port));
-		peerSession.lockHolepunch(); // 加锁
+		peerSession.lockHolepunch();
 	}
 	
 	/**
@@ -265,18 +263,27 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 	 * @param errorCode 错误编码
 	 * 
 	 * @return 消息
-	 * 
-	 * TODO：IPv6
 	 */
 	private ByteBuffer buildMessage(HolepunchType type, String host, int port, HolepunchErrorCode errorCode) {
-		final ByteBuffer buffer = ByteBuffer.allocate(12);
-		buffer.put(type.id()); // 消息类型
-		buffer.put(IPV4); // 地址类型：0x00=IPv4；0x01=IPv6；
-		buffer.putInt(NetUtils.ipToInt(host)); // IP地址
-		buffer.putShort(NetUtils.portToShort(port)); // 端口号
+		final boolean ipv4 = NetUtils.ipv4(host);
+		final ByteBuffer buffer;
+		if(ipv4) {
+			buffer = ByteBuffer.allocate(12);
+			buffer.put(type.id());
+			buffer.put(IPV4);
+			buffer.putInt(NetUtils.ipToInt(host));
+		} else {
+			buffer = ByteBuffer.allocate(24);
+			buffer.put(type.id());
+			buffer.put(IPV6);
+			buffer.put(NetUtils.ipToBytes(host));
+		}
+		buffer.putShort(NetUtils.portToShort(port));
 		if(type == HolepunchType.ERROR && errorCode != null) {
-			// 非错误消息不发送错误编码
-			buffer.putInt(errorCode.code()); // 错误编码
+			buffer.putInt(errorCode.code());
+		} else {
+			// 非错误消息填充零
+			buffer.putInt(0);
 		}
 		return buffer;
 	}
