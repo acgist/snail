@@ -187,10 +187,10 @@ public final class HttpTrackerSession extends TrackerSession {
 		}
 		final Map<String, Integer> peers = new HashMap<>();
 		// Peer格式参考参数：compact
-		final var peersIpv4 = PeerUtils.readIpv4(decoder.get("peers"));
-		final var peersIpv6 = PeerUtils.readIpv6(decoder.get("peers6"));
-		peers.putAll(peersIpv4);
-		peers.putAll(peersIpv6);
+		final var peersIPv4 = PeerUtils.readIPv4(decoder.get("peers"));
+		final var peersIPv6 = PeerUtils.readIPv6(decoder.get("peers6"));
+		peers.putAll(peersIPv4);
+		peers.putAll(peersIPv6);
 		return AnnounceMessage.newHttp(
 			sid,
 			decoder.getString("tracker id"),

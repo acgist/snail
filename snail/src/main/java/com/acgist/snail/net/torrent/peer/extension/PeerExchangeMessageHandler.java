@@ -121,12 +121,12 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		}
 		final byte[] added = decoder.getBytes(ADDED);
 		final byte[] addedf = decoder.getBytes(ADDEDF);
-		final var peersIpv4 = PeerUtils.readIpv4(added);
-		this.readPeer(peersIpv4, addedf);
+		final var peersIPv4 = PeerUtils.readIPv4(added);
+		this.readPeer(peersIPv4, addedf);
 		final byte[] added6 = decoder.getBytes(ADDED6);
 		final byte[] added6f = decoder.getBytes(ADDED6F);
-		final var peersIpv6 = PeerUtils.readIpv6(added6);
-		this.readPeer(peersIpv6, added6f);
+		final var peersIPv6 = PeerUtils.readIPv6(added6);
+		this.readPeer(peersIPv6, added6f);
 	}
 	
 	/**
@@ -166,26 +166,26 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		if(CollectionUtils.isEmpty(optimize)) {
 			return new byte[0];
 		}
-		final List<PeerSession> optimizeIpv4 = new ArrayList<>();
-		final List<PeerSession> optimizeIpv6 = new ArrayList<>();
+		final List<PeerSession> optimizeIPv4 = new ArrayList<>();
+		final List<PeerSession> optimizeIPv6 = new ArrayList<>();
 		optimize.stream().distinct().forEach(session -> {
 				if(NetUtils.ipv4(session.host())) {
-					optimizeIpv4.add(session);
+					optimizeIPv4.add(session);
 				} else {
-					optimizeIpv6.add(session);
+					optimizeIPv6.add(session);
 				}
 			});
 		// IPv4
-		final ByteBuffer addedBuffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH * optimizeIpv4.size());
-		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimizeIpv4.size());
+		final ByteBuffer addedBuffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH * optimizeIPv4.size());
+		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimizeIPv4.size());
 		optimize.stream().distinct().forEach(session -> {
 				addedBuffer.putInt(NetUtils.ipToInt(session.host()));
 				addedBuffer.putShort(NetUtils.portToShort(session.port()));
 				addedfBuffer.put(session.flags());
 			});
 		// IPv6
-		final ByteBuffer added6Buffer = ByteBuffer.allocate(SystemConfig.IPV6_PORT_LENGTH * optimizeIpv6.size());
-		final ByteBuffer added6fBuffer = ByteBuffer.allocate(optimizeIpv6.size());
+		final ByteBuffer added6Buffer = ByteBuffer.allocate(SystemConfig.IPV6_PORT_LENGTH * optimizeIPv6.size());
+		final ByteBuffer added6fBuffer = ByteBuffer.allocate(optimizeIPv6.size());
 		optimize.stream().distinct().forEach(session -> {
 				added6Buffer.put(NetUtils.ipToBytes(session.host()));
 				added6Buffer.putShort(NetUtils.portToShort(session.port()));

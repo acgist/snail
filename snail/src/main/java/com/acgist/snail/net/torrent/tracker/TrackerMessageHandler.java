@@ -114,7 +114,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 			buffer.getInt(),
 			buffer.getInt(),
 			buffer.getInt(),
-			SystemConfig.externalIPv4() ? PeerUtils.readIpv4(buffer) : PeerUtils.readIpv6(buffer)
+			SystemConfig.externalIPAddressIPv4() ? PeerUtils.readIPv4(buffer) : PeerUtils.readIPv6(buffer)
 		);
 		TrackerContext.getInstance().announce(message);
 	}

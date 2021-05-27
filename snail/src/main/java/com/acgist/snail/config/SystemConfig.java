@@ -289,7 +289,7 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * <p>外网IP地址是否是IPv4</p>
 	 */
-	private boolean externalIPv4 = true;
+	private boolean externalIPAddressIPv4 = true;
 	
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
@@ -600,7 +600,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final void setExternalIPAddress(String externalIPAddress) {
 		INSTANCE.externalIPAddress = externalIPAddress;
-		INSTANCE.externalIPv4 = NetUtils.ipv4(externalIPAddress);
+		INSTANCE.externalIPAddressIPv4 = NetUtils.ipv4(externalIPAddress);
 		LOGGER.debug("设置外网IP地址：{}", externalIPAddress);
 	}
 	
@@ -618,8 +618,8 @@ public final class SystemConfig extends PropertiesConfig {
 	 * 
 	 * @return 外网IP地址是否是IPv4
 	 */
-	public static final boolean externalIPv4() {
-		return INSTANCE.externalIPv4;
+	public static final boolean externalIPAddressIPv4() {
+		return INSTANCE.externalIPAddressIPv4;
 	}
 	
 }
