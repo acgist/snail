@@ -159,10 +159,14 @@ class NetUtilsTest extends Performance {
 		final byte[] ipv6Bytes = NetUtils.ipToBytes(ipv6Address);
 		final String ipv6Value = NetUtils.bytesToIP(ipv6Bytes);
 		final byte[] ipv4Bytes = NumberUtils.intToBytes((int) 2155905152L);
-		this.costed(100000, () -> NetUtils.ipToBytes("128.128.128.128"));
-		this.costed(100000, () -> NetUtils.bytesToIP(ipv4Bytes));
-		this.costed(100000, () -> NetUtils.ipToBytes(ipv6Value));
-		this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
+		long costed = this.costed(100000, () -> NetUtils.ipToBytes("128.128.128.128"));
+		assertTrue(costed < 1000);
+		costed = this.costed(100000, () -> NetUtils.bytesToIP(ipv4Bytes));
+		assertTrue(costed < 1000);
+		costed = this.costed(100000, () -> NetUtils.ipToBytes(ipv6Value));
+		assertTrue(costed < 1000);
+		costed = this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
+		assertTrue(costed < 1000);
 	}
 	
 }

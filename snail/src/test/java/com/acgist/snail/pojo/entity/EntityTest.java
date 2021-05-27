@@ -1,7 +1,7 @@
 package com.acgist.snail.pojo.entity;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ class EntityTest extends Performance {
 		final var verify = new ConfigEntity();
 		verify.setId("1234");
 		final Object taskVerify = task;
-		assertFalse(verify.equals(taskVerify));
-		assertTrue(verify.equals(config));
+		assertEquals(verify, config);
+		assertNotEquals(verify, taskVerify);
 	}
 	
 }

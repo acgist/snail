@@ -83,6 +83,7 @@ class NodeContextTest extends Performance {
 		this.log("可用节点：{}", size);
 		this.costed(100000, () -> NodeContext.getInstance().resize());
 		this.log("可用节点：{}", size);
+		assertTrue(size < 10000);
 	}
 
 	@Test

@@ -168,7 +168,7 @@ public final class SystemThreadContext implements IContext {
 			maxPoolSize,
 			keepAliveTime,
 			TimeUnit.SECONDS,
-			new LinkedBlockingQueue<Runnable>(queueSize),
+			new LinkedBlockingQueue<>(queueSize),
 			newThreadFactory(name)
 		);
 	}

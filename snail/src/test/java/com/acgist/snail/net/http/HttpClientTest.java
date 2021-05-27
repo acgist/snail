@@ -61,20 +61,22 @@ class HttpClientTest extends Performance {
 	@Test
 	void testUrlCosted() {
 		String url = "https://www.acgist.com";
-		this.costed(100000, () -> {
+		long costed = this.costed(100000, () -> {
 			try {
 				URI.create(url).toURL();
 			} catch (MalformedURLException e) {
 				this.log("新建URL异常", e);
 			}
 		});
-		this.costed(100000, () -> {
+		assertTrue(costed < 1000);
+		costed = this.costed(100000, () -> {
 			try {
 				new URL(url);
 			} catch (MalformedURLException e) {
 				this.log("新建URL异常", e);
 			}
 		});
+		assertTrue(costed < 1000);
 	}
 	
 }

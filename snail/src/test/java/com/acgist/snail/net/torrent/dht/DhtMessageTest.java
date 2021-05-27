@@ -1,7 +1,7 @@
 package com.acgist.snail.net.torrent.dht;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class DhtMessageTest extends Performance {
 	void testEquals() {
 		final PingRequest request = PingRequest.newRequest();
 		final Object response = PingResponse.newInstance(request);
-		assertFalse(request.equals(response));
+		assertNotEquals(request, response);
 	}
 	
 }
