@@ -191,6 +191,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			decoder.getInteger("min interval"),
 			decoder.getInteger("incomplete"),
 			decoder.getInteger("complete"),
+			// 参考：compact
 			PeerUtils.read(decoder.get("peers"))
 		);
 	}

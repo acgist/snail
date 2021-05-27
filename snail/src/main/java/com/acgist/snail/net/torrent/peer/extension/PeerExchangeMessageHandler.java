@@ -154,7 +154,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		if(CollectionUtils.isEmpty(optimize)) {
 			return new byte[0];
 		}
-		final int length = SystemConfig.IP_PORT_LENGTH * optimize.size();
+		final int length = SystemConfig.IPV4_PORT_LENGTH * optimize.size();
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(length);
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimize.size());
 		optimize.stream()
