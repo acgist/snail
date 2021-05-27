@@ -185,8 +185,8 @@ public final class HttpTrackerSession extends TrackerSession {
 		if(StringUtils.isNotEmpty(warngingMessage)) {
 			LOGGER.warn("HTTP Tracker声明警告：{}", warngingMessage);
 		}
-		final Map<String, Integer> peers = new HashMap<>();
 		// Peer格式参考参数：compact
+		final Map<String, Integer> peers = new HashMap<>();
 		final var peersIPv4 = PeerUtils.readIPv4(decoder.get("peers"));
 		final var peersIPv6 = PeerUtils.readIPv6(decoder.get("peers6"));
 		peers.putAll(peersIPv4);

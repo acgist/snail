@@ -276,9 +276,11 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			}
 		}
 		// 偏爱地址
-		final String ipv4 = decoder.getString(EX_IPV4);
-		final String ipv6 = decoder.getString(EX_IPV6);
-		LOGGER.debug("Peer偏爱使用地址：{}-{}-{}", this.peerSession, ipv4, ipv6);
+		final byte[] ipv4 = decoder.getBytes(EX_IPV4);
+		final byte[] ipv6 = decoder.getBytes(EX_IPV6);
+		if(LOGGER.isDebugEnabled() && (ipv4 != null || ipv6 != null)) {
+			LOGGER.debug("处理扩展消息-Peer偏爱地址：{}-{}-{}", this.peerSession.host(), NetUtils.bytesToIP(ipv4), NetUtils.bytesToIP(ipv6));
+		}
 		// 偏爱加密
 		final Long encrypt = decoder.getLong(EX_E);
 		if(encrypt != null && encrypt.intValue() == PREFER_ENCRYPT) {

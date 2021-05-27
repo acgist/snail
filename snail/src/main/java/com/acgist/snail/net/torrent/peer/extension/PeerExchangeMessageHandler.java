@@ -178,7 +178,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		// IPv4
 		final ByteBuffer addedBuffer = ByteBuffer.allocate(SystemConfig.IPV4_PORT_LENGTH * optimizeIPv4.size());
 		final ByteBuffer addedfBuffer = ByteBuffer.allocate(optimizeIPv4.size());
-		optimize.stream().distinct().forEach(session -> {
+		optimizeIPv4.stream().forEach(session -> {
 				addedBuffer.putInt(NetUtils.ipToInt(session.host()));
 				addedBuffer.putShort(NetUtils.portToShort(session.port()));
 				addedfBuffer.put(session.flags());
@@ -186,7 +186,7 @@ public final class PeerExchangeMessageHandler extends ExtensionTypeMessageHandle
 		// IPv6
 		final ByteBuffer added6Buffer = ByteBuffer.allocate(SystemConfig.IPV6_PORT_LENGTH * optimizeIPv6.size());
 		final ByteBuffer added6fBuffer = ByteBuffer.allocate(optimizeIPv6.size());
-		optimize.stream().distinct().forEach(session -> {
+		optimizeIPv6.stream().forEach(session -> {
 				added6Buffer.put(NetUtils.ipToBytes(session.host()));
 				added6Buffer.putShort(NetUtils.portToShort(session.port()));
 				added6fBuffer.put(session.flags());

@@ -599,9 +599,9 @@ public final class SystemConfig extends PropertiesConfig {
 	 * @param externalIPAddress 外网IP地址
 	 */
 	public static final void setExternalIPAddress(String externalIPAddress) {
+		LOGGER.debug("设置外网IP地址：{}", externalIPAddress);
 		INSTANCE.externalIPAddress = externalIPAddress;
 		INSTANCE.externalIPAddressIPv4 = NetUtils.ipv4(externalIPAddress);
-		LOGGER.debug("设置外网IP地址：{}", externalIPAddress);
 	}
 	
 	/**

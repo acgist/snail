@@ -250,15 +250,15 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			final int ipValue = ip ^ StunConfig.MAGIC_COOKIE;
 			ipExt = NetUtils.intToIP(ipValue);
 		} else {
-			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
-			buffer.get(bytes);
+			final byte[] source = new byte[SystemConfig.IPV6_LENGTH];
+			buffer.get(source);
 			final ByteBuffer target = ByteBuffer.allocate(SystemConfig.IPV6_LENGTH);
 			target.putInt(StunConfig.MAGIC_COOKIE);
 			target.putInt(StunConfig.MAGIC_COOKIE);
 			target.putInt(StunConfig.MAGIC_COOKIE);
 			target.putInt(StunConfig.MAGIC_COOKIE);
-			final byte[] source = ArrayUtils.xor(bytes, target.array());
-			ipExt = NetUtils.bytesToIP(source);
+			final byte[] result = ArrayUtils.xor(source, target.array());
+			ipExt = NetUtils.bytesToIP(result);
 		}
 		LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 		StunService.getInstance().mapping(ipExt, portExt);
