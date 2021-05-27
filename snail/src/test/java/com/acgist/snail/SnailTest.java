@@ -1,5 +1,6 @@
 package com.acgist.snail;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,6 +35,7 @@ class SnailTest extends Performance {
 		final var snail = SnailBuilder.newBuilder()
 			.enableTorrent()
 			.buildSync();
+		assertNotNull(snail);
 		// 解析种子文件
 		final var torrent = TorrentContext.loadTorrent(torrentPath);
 		// 过滤下载文件
@@ -72,6 +74,7 @@ class SnailTest extends Performance {
 		final Snail snail = SnailBuilder.newBuilder()
 			.enableHttp()
 			.buildSync();
+		assertNotNull(snail);
 		snail.download("https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip");
 		snail.download("https://www.acgist.com");
 		snail.download("https://www.baidu.com");
@@ -90,6 +93,7 @@ class SnailTest extends Performance {
 		final Snail snail = SnailBuilder.newBuilder()
 			.enableMagnet()
 			.buildSync();
+		assertNotNull(snail);
 		snail.download("53391b4efdd621006f20cf5496e1c150922d1df5");
 		snail.lockDownload();
 		// 文件判断删除

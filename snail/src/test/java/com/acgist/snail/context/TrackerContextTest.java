@@ -33,6 +33,7 @@ class TrackerContextTest extends Performance {
 	void testSessions() {
 		TrackerContext.getInstance().sessions("https://www.acgist.com/tracker/announce").forEach(session -> {
 			this.log(session);
+			assertNotNull(session);
 		});
 	}
 	

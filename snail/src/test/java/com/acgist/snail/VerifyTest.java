@@ -1,5 +1,6 @@
 package com.acgist.snail;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -54,7 +55,7 @@ class VerifyTest extends Performance {
 	
 	@Test
 	void testFormat() throws IOException {
-		format(new File(PROJECT_BASE_PATH));
+		assertDoesNotThrow(() -> this.format(new File(PROJECT_BASE_PATH)));
 	}
 	
 	void format(File file) throws IOException {

@@ -44,7 +44,7 @@ class StringUtilsTest extends Performance {
 	void testHex() {
 		final String value = "测试";
 		final String hex = StringUtils.hex(value.getBytes());
-		assertTrue(value.equals(new String(StringUtils.unhex(hex))));
+		assertEquals(value, new String(StringUtils.unhex(hex)));
 	}
 
 	@Test
@@ -88,7 +88,7 @@ class StringUtilsTest extends Performance {
 	void testTrimBlank() {
 		final String source = " 0 0 0 	\n \r ";
 		final String target = StringUtils.trimAllBlank(source);
-		assertTrue("000".equals(target));
+		assertEquals("000", target);
 	}
 
 	@Test

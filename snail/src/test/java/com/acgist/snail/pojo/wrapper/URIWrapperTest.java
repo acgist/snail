@@ -2,7 +2,6 @@ package com.acgist.snail.pojo.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,16 +17,16 @@ class URIWrapperTest extends Performance {
 		assertEquals("/path", wrapper.path());
 		assertEquals("query=query", wrapper.query());
 		assertNull(wrapper.user());
-		assertTrue(wrapper.port() == 0);
+		assertEquals(0, wrapper.port());
 		assertNull(wrapper.password());
 		assertNull(wrapper.fragment());
 		wrapper = URIWrapper.newInstance("ftp://localhost/path?query=query", 21).decode();
-		assertTrue(wrapper.port() == 21);
+		assertEquals(21, wrapper.port());
 		wrapper = URIWrapper.newInstance("ftp://localhost/path?query=query", 21, "user", "password").decode();
 		assertEquals("user", wrapper.user());
 		assertEquals("password", wrapper.password());
 		wrapper = URIWrapper.newInstance("ftp://localhost:8080/path?query=query").decode();
-		assertTrue(wrapper.port() == 8080);
+		assertEquals(8080, wrapper.port());
 		wrapper = URIWrapper.newInstance("ftp://user@localhost:8080/path?query=query").decode();
 		assertEquals("user", wrapper.user());
 		assertNull(wrapper.password());

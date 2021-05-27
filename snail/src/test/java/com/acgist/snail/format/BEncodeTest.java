@@ -40,8 +40,8 @@ class BEncodeTest extends Performance {
 		final String odd = decoder.toString();
 		this.log(odd);
 		assertEquals("xxxx", odd);
-		assertTrue(map.size() == 1);
-		assertTrue(list.size() == 2);
+		assertEquals(1, map.size());
+		assertEquals(2, list.size());
 		final String mix = BEncodeEncoder.newInstance()
 			.newList().put(List.of("a", List.of("b", "c"), Map.of("d", "e"))).flush().toString();
 		this.log(mix);
@@ -75,7 +75,7 @@ class BEncodeTest extends Performance {
 				this.log(key + "-" + new String((byte[]) value));
 			}
 		});
-		assertTrue(map.size() == decodeMap.size());
+		assertEquals(map.size(), decodeMap.size());
 	}
 	
 	@Test

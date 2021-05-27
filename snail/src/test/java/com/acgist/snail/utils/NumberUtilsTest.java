@@ -95,7 +95,7 @@ class NumberUtilsTest extends Performance {
 		final var decode = NumberUtils.decodeBigInteger(ByteBuffer.wrap(bytes), length);
 		this.log(decode);
 		this.log(source);
-		assertTrue(source.equals(decode));
+		assertEquals(source, decode);
 		final var encode = NumberUtils.encodeBigInteger(decode, length);
 		assertArrayEquals(bytes, encode);
 		assertEquals(source, new BigInteger(1, encode));
