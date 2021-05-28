@@ -100,8 +100,7 @@ public final class PeerUtils {
 		}
 		final Map<String, Integer> data = new HashMap<>();
 		while (buffer.remaining() >= SystemConfig.IPV6_PORT_LENGTH) {
-			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
-			buffer.get(bytes);
+			final byte[] bytes = NetUtils.bufferToIPv6(buffer);
 			final String ip = NetUtils.bytesToIP(bytes);
 			final int port = NetUtils.portToInt(buffer.getShort());
 			data.put(ip, port);

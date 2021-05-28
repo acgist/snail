@@ -154,7 +154,8 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		if(pos + SLICE_LENGTH > bytes.length) {
 			length = bytes.length - pos;
 		}
-		final byte[] x = new byte[length]; // Slice数据
+		// Slice数据
+		final byte[] x = new byte[length];
 		System.arraycopy(bytes, pos, x, 0, length);
 		final var data = this.buildMessage(PeerConfig.MetadataType.DATA, piece);
 		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
@@ -185,11 +186,12 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		if(pos + SLICE_LENGTH > bytes.length) {
 			length = bytes.length - pos;
 		}
-		final byte[] x = decoder.oddBytes(); // 剩余数据作为Slice数据
+		// 剩余数据作为Slice数据
+		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, pos, length);
 		final byte[] sourceHash = this.infoHash.infoHash();
 		final byte[] targetHash = DigestUtils.sha1(bytes);
-		// 判断Hash值是否相等（相等表示已经下载完成：完成后保存种子文件）
+		// 判断Hash值是否相等（相等表示已经下载完成：保存种子文件）
 		if(Arrays.equals(sourceHash, targetHash)) {
 			this.torrentSession.saveTorrent();
 		}

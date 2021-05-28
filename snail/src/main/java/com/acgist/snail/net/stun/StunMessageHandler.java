@@ -209,8 +209,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			final int ip = buffer.getInt();
 			ipExt = NetUtils.intToIP(ip);
 		} else {
-			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
-			buffer.get(bytes);
+			final byte[] bytes = NetUtils.bufferToIPv6(buffer);
 			ipExt = NetUtils.bytesToIP(bytes);
 		}
 		LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
@@ -250,8 +249,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			final int ipValue = ip ^ StunConfig.MAGIC_COOKIE;
 			ipExt = NetUtils.intToIP(ipValue);
 		} else {
-			final byte[] source = new byte[SystemConfig.IPV6_LENGTH];
-			buffer.get(source);
+			final byte[] source = NetUtils.bufferToIPv6(buffer);
 			final ByteBuffer target = ByteBuffer.allocate(SystemConfig.IPV6_LENGTH);
 			target.putInt(StunConfig.MAGIC_COOKIE);
 			target.putInt(StunConfig.MAGIC_COOKIE);
