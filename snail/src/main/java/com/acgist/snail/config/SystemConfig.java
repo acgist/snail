@@ -25,15 +25,15 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	/**
-	 * <p>端口占用字节大小：{@value}
+	 * <p>端口占用字节大小：{@value}</p>
 	 */
 	public static final int PORT_LENGHT = 2;
 	/**
-	 * <p>IPv4占用字节大小：{@value}
+	 * <p>IPv4占用字节大小：{@value}</p>
 	 */
 	public static final int IPV4_LENGTH = 4;
 	/**
-	 * <p>IPv6占用字节大小：{@value}
+	 * <p>IPv6占用字节大小：{@value}</p>
 	 */
 	public static final int IPV6_LENGTH = 16;
 	/**

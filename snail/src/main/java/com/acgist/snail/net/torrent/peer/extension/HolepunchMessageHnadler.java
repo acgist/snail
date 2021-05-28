@@ -82,15 +82,14 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 			LOGGER.warn("处理holepunch消息错误（未知类型）：{}", typeId);
 			return;
 		}
-		int port;
-		String host;
+		final int port;
+		final String host;
 		final byte addrType = buffer.get();
 		if(addrType == IPV4) {
 			host = NetUtils.intToIP(buffer.getInt());
 			port = NetUtils.portToInt(buffer.getShort());
 		} else if(addrType == IPV6) {
-			final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
-			buffer.get(bytes);
+			final byte[] bytes = NetUtils.bufferToIPv6(buffer);
 			host = NetUtils.bytesToIP(bytes);
 			port = NetUtils.portToInt(buffer.getShort());
 		} else {

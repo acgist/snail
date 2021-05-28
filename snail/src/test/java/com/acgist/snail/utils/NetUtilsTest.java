@@ -77,6 +77,8 @@ class NetUtilsTest extends Performance {
 		final byte[] ipv4Bytes = NumberUtils.intToBytes((int) 2155905152L);
 		assertEquals(NetUtils.bytesToIP(ipv4Bytes), NetUtils.intToIP(NumberUtils.bytesToInt(ipv4Bytes)));
 		assertArrayEquals(NetUtils.ipToBytes("128.128.128.128"), NumberUtils.intToBytes((int) 2155905152L));
+		assertArrayEquals(NetUtils.ipToBytes("128.128.128.128"), NumberUtils.intToBytes(NetUtils.ipToInt("128.128.128.128")));
+		assertEquals(NetUtils.bytesToIP(ipv4Bytes), NetUtils.intToIP((int) 2155905152L));
 	}
 	
 	@Test

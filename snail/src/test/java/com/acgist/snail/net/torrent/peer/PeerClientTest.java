@@ -2,6 +2,9 @@ package com.acgist.snail.net.torrent.peer;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import com.acgist.snail.pojo.session.TaskSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
@@ -83,6 +87,14 @@ class PeerClientTest extends Performance {
 		downloader.handshake();
 		ThreadUtils.sleep(100000);
 		assertNotNull(downloader);
+	}
+	
+	@Test
+	void testSocket() throws UnknownHostException, IOException {
+		final Socket socket = new Socket();
+		socket.connect(NetUtils.buildSocketAddress("2001:b011:6c01:4852:9c47:cef2:dd1f:ecba", 13934), 3000);
+		assertNotNull(socket.getInputStream());
+		socket.close();
 	}
 
 }

@@ -6,6 +6,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SymbolConfig.Symbol;
+import com.acgist.snail.config.SystemConfig;
 
 /**
  * <p>网络工具</p>
@@ -246,6 +248,22 @@ public final class NetUtils {
 			LOGGER.error("IP地址解码异常", e);
 		}
 		return null;
+	}
+	
+	/**
+	 * <p>读取IPv6</p>
+	 * 
+	 * @param buffer 数据
+	 * 
+	 * @return IPv6
+	 */
+	public static final byte[] bufferToIPv6(ByteBuffer buffer) {
+		if(buffer == null) {
+			return null;
+		}
+		final byte[] bytes = new byte[SystemConfig.IPV6_LENGTH];
+		buffer.get(bytes);
+		return bytes;
 	}
 	
 	/**
