@@ -55,7 +55,7 @@ public final class UploadOnlyExtensionMessageHandler extends ExtensionTypeMessag
 	 */
 	public void uploadOnly() {
 		LOGGER.debug("发送uploadOnly消息");
-		final byte[] bytes = new byte[] { UPLOAD_ONLY }; // 只上传不下载
+		final byte[] bytes = new byte[] { UPLOAD_ONLY };
 		this.pushMessage(bytes);
 	}
 	

@@ -75,7 +75,6 @@ public final class DhtExtensionMessageHandler implements IExtensionMessageHandle
 	
 	/**
 	 * <p>处理DHT消息</p>
-	 * <p>设置DHT端口、添加DHT节点</p>
 	 * 
 	 * @param buffer 消息
 	 */
