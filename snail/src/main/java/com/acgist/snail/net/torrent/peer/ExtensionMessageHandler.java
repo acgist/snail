@@ -65,7 +65,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	private static final String EX_V = "v";
 	/**
-	 * <p>端口：{@value}</p>
+	 * <p>TCP端口：{@value}</p>
 	 */
 	private static final String EX_P = "p";
 	/**
@@ -220,9 +220,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 			}
 		}
 		message.put(EX_M, supportTypes);
-		// 如果已经接收握手消息：不发送TCP端口
+		// 如果已经接收握手消息：不用发送TCP端口
 		if(!this.handshakeRecv) {
-			// 外网监听TCP端口
 			message.put(EX_P, SystemConfig.getTorrentPortExt());
 		}
 		// 客户端信息（名称、版本）
@@ -234,6 +233,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(StringUtils.isNotEmpty(yourip)) {
 			message.put(EX_YOURIP, NetUtils.ipToBytes(yourip));
 		}
+		// 支持未完成请求数量
 		message.put(EX_REQQ, DEFAULT_REQQ);
 		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
 			// 种子InfoHash数据长度
@@ -278,7 +278,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 偏爱地址
 		final byte[] ipv4 = decoder.getBytes(EX_IPV4);
 		final byte[] ipv6 = decoder.getBytes(EX_IPV6);
-		if(LOGGER.isDebugEnabled() && (ipv4 != null || ipv6 != null)) {
+		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("处理扩展消息-Peer偏爱地址：{}-{}-{}", this.peerSession.host(), NetUtils.bytesToIP(ipv4), NetUtils.bytesToIP(ipv6));
 		}
 		// 偏爱加密
@@ -492,7 +492,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 	 */
 	private byte[] buildMessage(byte type, byte[] bytes) {
 		final byte[] message = new byte[bytes.length + 1];
-		message[0] = type; // 扩展消息类型
+		// 扩展消息类型
+		message[0] = type;
 		System.arraycopy(bytes, 0, message, 1, bytes.length);
 		return message;
 	}
