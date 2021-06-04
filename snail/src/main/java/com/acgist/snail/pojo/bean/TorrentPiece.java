@@ -303,7 +303,7 @@ public final class TorrentPiece {
 	
 	@Override
 	public String toString() {
-		return BeanUtils.toString(this, this.index);
+		return BeanUtils.toString(this, this.index, this.begin, this.end);
 	}
 	
 }

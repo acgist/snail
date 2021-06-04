@@ -321,8 +321,9 @@ public abstract class PeerConnect implements IPeerConnect {
 		this.torrentSession.checkCompletedAndDone();
 		// 验证最后选择Piece是否下载完成
 		if(this.downloadPiece != null && !this.downloadPiece.completedAndVerify()) {
-			this.undone();
-			// TODO：发送cancel
+			LOGGER.debug("Piece最后失败：{}", this.downloadPiece);
+			this.torrentSession.undone(this.downloadPiece);
+			this.peerSubMessageHandler.cancel(this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getLength());
 		}
 		LOGGER.debug("结束请求下载：{}", this.peerSession);
 	}
@@ -388,17 +389,17 @@ public abstract class PeerConnect implements IPeerConnect {
 					this.statisticsSession.download(this.downloadPiece.getLength());
 				} else {
 					LOGGER.debug("Piece保存失败：{}", this.downloadPiece);
-					this.undone();
+					this.torrentSession.undone(this.downloadPiece);
 				}
 			} else {
 				// 设置下载错误Piece位图
 				this.peerSession.badPieces(this.downloadPiece.getIndex());
 				LOGGER.warn("Piece校验失败：{}", this.downloadPiece);
-				this.undone();
+				this.torrentSession.undone(this.downloadPiece);
 			}
 		} else {
-			LOGGER.debug("Piece没有下载完成：{}", this.downloadPiece);
-			this.undone();
+			LOGGER.debug("Piece下载失败：{}", this.downloadPiece);
+			this.torrentSession.undone(this.downloadPiece);
 		}
 		if(this.peerConnectSession.isPeerUnchoked()) {
 			LOGGER.debug("选择下载Piece：解除阻塞");
@@ -407,19 +408,9 @@ public abstract class PeerConnect implements IPeerConnect {
 			LOGGER.debug("选择下载Piece：快速允许");
 			this.downloadPiece = this.torrentSession.pick(this.peerSession.allowedPieces(), this.peerSession.allowedPieces());
 		}
-		if(LOGGER.isDebugEnabled() && this.downloadPiece != null) {
-			LOGGER.debug("选取Piece：{}-{}-{}", this.downloadPiece.getIndex(), this.downloadPiece.getBegin(), this.downloadPiece.getEnd());
-		}
+		LOGGER.debug("选择下载Piece：{}", this.downloadPiece);
 		this.sliceLock.set(0);
 		this.completedLock.set(false);
-	}
-	
-	/**
-	 * <p>下载失败</p>
-	 */
-	private void undone() {
-		LOGGER.debug("Piece下载失败：{}", this.downloadPiece.getIndex());
-		this.torrentSession.undone(this.downloadPiece);
 	}
 	
 	/**
