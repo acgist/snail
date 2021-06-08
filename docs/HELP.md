@@ -75,6 +75,8 @@
 |snail-mac-x.x.x-without-jre.tar|Mac绿色版|
 |snail-linux-x.x.x-without-jre.tar|Linux绿色版|
 
+* 版本：`snail-大版本号.小版本号.JDK版本`
+
 * 带有`-without-jre`绿色版需要自己安装`Java`运行环境
 
 ## 使用
