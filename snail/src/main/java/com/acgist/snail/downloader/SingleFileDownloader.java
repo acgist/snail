@@ -67,7 +67,7 @@ public abstract class SingleFileDownloader extends Downloader {
 				if(length >= 0) {
 					buffer.flip();
 					this.output.write(buffer);
-					buffer.clear();
+					buffer.compact();
 					this.statistics.download(length);
 					this.statistics.downloadLimit(length);
 					this.fastCheckTime = System.currentTimeMillis();
