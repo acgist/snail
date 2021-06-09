@@ -106,7 +106,7 @@ public final class HlsClient implements Runnable {
 					if(length >= 0) {
 						buffer.flip();
 						this.output.write(buffer);
-						buffer.clear();
+						buffer.compact();
 						downloadSize += length;
 						this.hlsSession.download(length);
 					}
