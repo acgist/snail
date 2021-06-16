@@ -691,9 +691,9 @@ public final class MSECryptHandshakeHandler {
 			message.remaining() >= PeerConfig.PROTOCOL_NAME_LENGTH
 		) {
 			// 判断协议名称
-			final byte[] names = new byte[PeerConfig.PROTOCOL_NAME_LENGTH];
-			message.get(names);
-			if(Arrays.equals(names, PeerConfig.PROTOCOL_NAME_BYTES)) {
+			final byte[] name = new byte[PeerConfig.PROTOCOL_NAME_LENGTH];
+			message.get(name);
+			if(Arrays.equals(name, PeerConfig.PROTOCOL_NAME_BYTES)) {
 				// 握手消息直接使用明文
 				this.plaintext();
 				// 重置长度

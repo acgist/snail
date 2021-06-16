@@ -356,8 +356,9 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 */
 	private boolean handshake(ByteBuffer buffer) {
 		LOGGER.debug("处理握手消息");
-		if(buffer.remaining() != PeerConfig.HANDSHAKE_LENGTH) {
-			LOGGER.warn("处理握手消息格式错误（消息长度）：{}", buffer.remaining());
+		final int remaining = buffer.remaining();
+		if(remaining != PeerConfig.HANDSHAKE_LENGTH) {
+			LOGGER.warn("处理握手消息格式错误（消息长度）：{}", remaining);
 			return false;
 		}
 		final byte length = buffer.get();
@@ -365,11 +366,11 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			LOGGER.warn("处理握手消息格式错误（协议长度）：{}", length);
 			return false;
 		}
-		final byte[] nameBytes = new byte[length];
-		buffer.get(nameBytes);
-		final String name = new String(nameBytes);
-		if(!PeerConfig.PROTOCOL_NAME.equals(name)) {
-			LOGGER.warn("处理握手消息格式错误（下载协议错误）：{}", name);
+		final byte[] name = new byte[length];
+		buffer.get(name);
+		if(!Arrays.equals(name, PeerConfig.PROTOCOL_NAME_BYTES)) {
+			final String nameValue = new String(name);
+			LOGGER.warn("处理握手消息格式错误（下载协议错误）：{}", nameValue);
 			return false;
 		}
 		final byte[] reserved = new byte[PeerConfig.RESERVED_LENGTH];
