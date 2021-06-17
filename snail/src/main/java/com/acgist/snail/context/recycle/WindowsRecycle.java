@@ -136,7 +136,7 @@ public final class WindowsRecycle extends Recycle {
 	 * @throws IOException IO异常
 	 */
 	private byte[] buildDeleteInfo() throws IOException {
-		final ByteBuffer buffer = ByteBuffer.allocate(8);
+		final ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
 		final String path = FileUtils.systemSeparator(this.path);
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// 设置大小端：默认CPU
