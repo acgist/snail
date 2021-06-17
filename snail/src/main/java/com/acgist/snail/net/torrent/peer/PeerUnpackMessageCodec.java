@@ -16,11 +16,6 @@ import com.acgist.snail.net.codec.MessageCodec;
 public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteBuffer> {
 
 	/**
-	 * <p>INT数据字节长度：{@value}</p>
-	 */
-	private static final int INT_BYTE_LENGTH = 4;
-	
-	/**
 	 * <p>消息缓存</p>
 	 */
 	private ByteBuffer buffer;
@@ -38,7 +33,7 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 	 */
 	public PeerUnpackMessageCodec(PeerSubMessageHandler peerSubMessageHandler) {
 		super(peerSubMessageHandler);
-		this.lengthStick = ByteBuffer.allocate(INT_BYTE_LENGTH);
+		this.lengthStick = ByteBuffer.allocate(Integer.BYTES);
 		this.peerSubMessageHandler = peerSubMessageHandler;
 	}
 	
@@ -49,19 +44,16 @@ public final class PeerUnpackMessageCodec extends MessageCodec<ByteBuffer, ByteB
 		while(true) {
 			if(this.buffer == null) {
 				if(this.peerSubMessageHandler.handshakeRecv()) {
-					while(buffer.hasRemaining()) {
+					while(this.lengthStick.hasRemaining() && buffer.hasRemaining()) {
 						this.lengthStick.put(buffer.get());
-						if(this.lengthStick.position() == INT_BYTE_LENGTH) {
-							break;
-						}
 					}
-					if(this.lengthStick.position() == INT_BYTE_LENGTH) {
+					if(this.lengthStick.hasRemaining()) {
+						// 消息长度缺失跳出
+						break;
+					} else {
 						this.lengthStick.flip();
 						length = this.lengthStick.getInt();
 						this.lengthStick.compact();
-					} else {
-						// 消息长度不完整跳出
-						break;
 					}
 				} else {
 					// 握手消息长度
