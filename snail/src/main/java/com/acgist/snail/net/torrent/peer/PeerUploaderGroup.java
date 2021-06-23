@@ -192,8 +192,7 @@ public final class PeerUploaderGroup {
 	 */
 	private void inferior(PeerUploader peerUploader) {
 		if(peerUploader != null) {
-			final PeerSession peerSession = peerUploader.peerSession();
-			LOGGER.debug("剔除无效PeerUploader：{}", peerSession);
+			LOGGER.debug("剔除无效PeerUploader：{}", peerUploader);
 			SystemThreadContext.submit(peerUploader::release);
 		}
 	}
