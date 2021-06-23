@@ -268,10 +268,9 @@ public final class PeerDownloaderGroup {
 	 */
 	private void inferior(PeerDownloader peerDownloader) {
 		if(peerDownloader != null) {
-			final PeerSession peerSession = peerDownloader.peerSession();
-			LOGGER.debug("剔除劣质PeerDownloader：{}", peerSession);
+			LOGGER.debug("剔除劣质PeerDownloader：{}", peerDownloader);
 			SystemThreadContext.submit(peerDownloader::release);
-			PeerContext.getInstance().inferior(this.torrentSession.infoHashHex(), peerSession);
+			PeerContext.getInstance().inferior(this.torrentSession.infoHashHex(), peerDownloader.peerSession());
 		}
 	}
 	
