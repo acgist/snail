@@ -521,4 +521,9 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		this.entity.setPayload(payload);
 	}
 	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.getName());
+	}
+	
 }

@@ -92,9 +92,7 @@ public final class TrackerLauncher {
 	public void findPeer() {
 		this.needRelease = true;
 		if(this.available()) {
-			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("TrackerLauncher查找Peer：{}", this.announceUrl());
-			}
+			LOGGER.debug("TrackerLauncher查找Peer：{}", this.session);
 			this.session.findPeers(this.id, this.torrentSession);
 		}
 	}
@@ -108,11 +106,11 @@ public final class TrackerLauncher {
 		if(message == null) {
 			return;
 		}
-		if(!this.available()) {
-			LOGGER.debug("收到声明响应消息：TrackerLauncher无效");
-			return;
+		if(this.available()) {
+			this.peer(message.peers());
+		} else {
+			LOGGER.debug("收到声明响应消息（TrackerLauncher无效）：{}", this.session);
 		}
-		this.peer(message.peers());
 	}
 	
 	/**
@@ -143,14 +141,10 @@ public final class TrackerLauncher {
 			this.needRelease = false;
 			try {
 				if(this.torrentSession.completed()) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("TrackerLauncher完成通知：{}", this.announceUrl());
-					}
+					LOGGER.debug("TrackerLauncher完成通知：{}", this.session);
 					this.session.completed(this.id, this.torrentSession);
 				} else {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("TrackerLauncher暂停通知：{}", this.announceUrl());
-					}
+					LOGGER.debug("TrackerLauncher暂停通知：{}", this.session);
 					this.session.stopped(this.id, this.torrentSession);
 				}
 			} catch (Exception e) {

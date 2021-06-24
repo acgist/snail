@@ -71,9 +71,7 @@ public final class HlsContext implements IContext {
 	 * @param taskSession 任务信息
 	 */
 	public void remove(ITaskSession taskSession) {
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("删除HLS任务信息：{}", taskSession.getName());
-		}
+		LOGGER.debug("HLS任务删除信息：{}", taskSession);
 		final String id = taskSession.getId();
 		this.m3u8s.remove(id);
 		this.sessions.remove(id);

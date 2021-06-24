@@ -50,6 +50,17 @@ public final class HttpTrackerSession extends TrackerSession {
 	private static final String ANNOUNCE_URL_SUFFIX = "/announce";
 	
 	/**
+	 * <p>明文IP地址：{@value}</p>
+	 * <p>例子：192.168.1.100</p>
+	 */
+	public static final String IP_ADDRESS = "0";
+	/**
+	 * <p>紧凑IP地址：{@value}</p>
+	 * <p>例子：192.168.1.100 -> 3232235876</p>
+	 */
+	public static final String IP_COMPACT = "1";
+	
+	/**
 	 * <p>跟踪器ID</p>
 	 */
 	private String trackerId;
@@ -139,8 +150,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			.append("uploaded").append("=").append(upload).append("&")
 			.append("downloaded").append("=").append(download).append("&")
 			.append("left").append("=").append(left).append("&")
-			// 数据类型：1-紧凑（默认）；0-地址；
-			.append("compact").append("=").append("1").append("&")
+			.append("compact").append("=").append(IP_COMPACT).append("&")
 			.append("event").append("=").append(event.value()).append("&")
 			.append("numwant").append("=").append(WANT_PEER_SIZE);
 		if(StringUtils.isNotEmpty(this.trackerId)) {
@@ -185,7 +195,6 @@ public final class HttpTrackerSession extends TrackerSession {
 		if(StringUtils.isNotEmpty(warngingMessage)) {
 			LOGGER.warn("HTTP Tracker声明警告：{}", warngingMessage);
 		}
-		// Peer格式参考参数：compact
 		final Map<String, Integer> peers = new HashMap<>();
 		final var peersIPv4 = PeerUtils.readIPv4(decoder.get("peers"));
 		final var peersIPv6 = PeerUtils.readIPv6(decoder.get("peers6"));

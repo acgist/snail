@@ -226,7 +226,7 @@ public final class TorrentStreamGroup {
 			});
 			final long finishTime = System.currentTimeMillis();
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("任务加载耗时：{}-{}", this.torrentSession.name(), (finishTime - startTime));
+				LOGGER.debug("任务加载耗时：{}-{}", this.torrentSession, (finishTime - startTime));
 			}
 		} finally {
 			this.writeLock.unlock();
@@ -382,7 +382,7 @@ public final class TorrentStreamGroup {
 				oldValue > DownloadConfig.getMemoryBufferByte() &&
 				this.fileBufferSize.compareAndSet(oldValue, 0)
 			) {
-				LOGGER.debug("缓冲区被占满");
+				LOGGER.debug("缓冲区被占满：{}", this.torrentSession);
 				this.flush();
 			}
 		}
@@ -580,7 +580,7 @@ public final class TorrentStreamGroup {
 	 * <p>刷出缓存</p>
 	 */
 	public void flush() {
-		LOGGER.debug("刷出缓存");
+		LOGGER.debug("刷出缓存：{}", this.torrentSession);
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
@@ -642,7 +642,7 @@ public final class TorrentStreamGroup {
 	 * @see TorrentStream#release()
 	 */
 	public void release() {
-		LOGGER.debug("释放TorrentStreamGroup");
+		LOGGER.debug("释放TorrentStreamGroup：{}", this.torrentSession);
 		this.readLock.lock();
 		try {
 			for (TorrentStream torrentStream : this.streams) {
