@@ -84,7 +84,7 @@ public final class PeerDownloaderGroup {
 	 * <p>优化PeerDownloader</p>
 	 */
 	public void optimize() {
-		LOGGER.debug("优化PeerDownloader");
+		LOGGER.debug("优化PeerDownloader：{}", this.torrentSession);
 		this.spinLock();
 		synchronized (this.peerDownloaders) {
 			try {
@@ -100,7 +100,7 @@ public final class PeerDownloaderGroup {
 	 * <p>资源释放</p>
 	 */
 	public void release() {
-		LOGGER.debug("释放PeerDownloaderGroup");
+		LOGGER.debug("释放PeerDownloaderGroup：{}", this.torrentSession);
 		// 释放信号量：防止暂停任务时正在执行优化任务导致获取不到锁导致卡死
 		this.release(false);
 		synchronized (this.peerDownloaders) {
@@ -132,7 +132,7 @@ public final class PeerDownloaderGroup {
 	 * <p>新建PeerDownloader列表</p>
 	 */
 	private void buildPeerDownloaders() {
-		LOGGER.debug("新建PeerDownloader");
+		LOGGER.debug("新建PeerDownloader：{}", this.torrentSession);
 		int size = 0;
 		// 重置新建状态
 		this.build.set(true);
@@ -198,7 +198,7 @@ public final class PeerDownloaderGroup {
 	 * <p>剔除劣质Peer</p>
 	 */
 	private void inferiorPeerDownloaders() {
-		LOGGER.debug("剔除劣质PeerDownloader");
+		LOGGER.debug("剔除劣质PeerDownloader：{}", this.torrentSession);
 		int index = 0;
 		// 当前下载评分
 		long downloadMark = 0;

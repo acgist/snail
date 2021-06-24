@@ -92,9 +92,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	 * <p>连接文件</p>
 	 */
 	private void tsLink() {
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("HLS任务连接文件：{}", this.taskSession.getName());
-		}
+		LOGGER.debug("HLS任务连接文件：{}", this.taskSession);
 		final TsLinker linker = TsLinker.newInstance(
 			this.taskSession.getName(),
 			this.taskSession.getFile(),

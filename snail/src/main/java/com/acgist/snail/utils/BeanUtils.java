@@ -92,7 +92,7 @@ public final class BeanUtils {
 		if(instance == null) {
 			return null;
 		}
-		final StringBuilder builder = new StringBuilder(instance.getClass().getName());
+		final StringBuilder builder = new StringBuilder(instance.getClass().getSimpleName());
 		builder.append("@");
 		if (ArrayUtils.isEmpty(values)) {
 			builder.append(toMap(instance).toString());

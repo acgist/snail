@@ -93,6 +93,7 @@ public final class TrackerLauncherGroup {
 	 * @see TrackerLauncher#findPeer()
 	 */
 	public void findPeer() {
+		LOGGER.debug("Tracker查找Peer：{}", this.torrentSession);
 		final List<TrackerLauncher> list;
 		// 新建集合进行查找：防止释放资源等待
 		synchronized (this.trackerLaunchers) {
@@ -105,7 +106,7 @@ public final class TrackerLauncherGroup {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		LOGGER.debug("释放TrackerLauncherGroup");
+		LOGGER.debug("释放TrackerLauncherGroup：{}", this.torrentSession);
 		synchronized (this.trackerLaunchers) {
 			this.trackerLaunchers.forEach(launcher -> SystemThreadContext.submit(launcher::release));
 			this.trackerLaunchers.clear();

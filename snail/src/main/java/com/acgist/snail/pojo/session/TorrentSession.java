@@ -35,6 +35,7 @@ import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.bean.TorrentPiece;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
 import com.acgist.snail.protocol.magnet.TorrentBuilder;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.MapUtils;
 
@@ -1003,6 +1004,11 @@ public final class TorrentSession {
 	 */
 	public PeerUploader newPeerUploader(PeerSession peerSession, PeerSubMessageHandler peerSubMessageHandler) {
 		return this.peerUploaderGroup.newPeerUploader(peerSession, peerSubMessageHandler);
+	}
+	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.name());
 	}
 	
 }

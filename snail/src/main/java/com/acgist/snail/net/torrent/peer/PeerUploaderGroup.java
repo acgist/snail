@@ -103,7 +103,7 @@ public final class PeerUploaderGroup {
 	 * <p>优化PeerUploader</p>
 	 */
 	public void optimize() {
-		LOGGER.debug("优化PeerUploader");
+		LOGGER.debug("优化PeerUploader：{}", this.torrentSession);
 		synchronized (this.peerUploaders) {
 			try {
 				this.inferiorPeerUploaders();
@@ -117,7 +117,7 @@ public final class PeerUploaderGroup {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		LOGGER.debug("释放PeerUploaderGroup");
+		LOGGER.debug("释放PeerUploaderGroup：{}", this.torrentSession);
 		synchronized (this.peerUploaders) {
 			this.peerUploaders.forEach(uploader -> SystemThreadContext.submit(uploader::release));
 			this.peerUploaders.clear();
@@ -128,7 +128,7 @@ public final class PeerUploaderGroup {
 	 * <p>剔除劣质Peer</p>
 	 */
 	private void inferiorPeerUploaders() {
-		LOGGER.debug("剔除无效PeerUploader");
+		LOGGER.debug("剔除无效PeerUploader：{}", this.torrentSession);
 		int index = 0;
 		// 有效数量
 		int offerSize = 0;

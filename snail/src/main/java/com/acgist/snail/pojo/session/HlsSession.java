@@ -17,6 +17,7 @@ import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
+import com.acgist.snail.utils.BeanUtils;
 
 /**
  * <p>HSL任务信息</p>
@@ -213,7 +214,7 @@ public final class HlsSession {
 	 * <p>释放资源</p>
 	 */
 	public void release() {
-		LOGGER.debug("HLS任务释放资源：{}", this.taskSession.getName());
+		LOGGER.debug("HLS任务释放资源：{}", this.taskSession);
 		this.downloadable = false;
 		synchronized (this.clients) {
 			this.clients.forEach(HlsClient::release);
@@ -226,6 +227,11 @@ public final class HlsSession {
 	 */
 	public void delete() {
 		HlsContext.getInstance().remove(this.taskSession);
+	}
+	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.taskSession.getName());
 	}
 	
 }

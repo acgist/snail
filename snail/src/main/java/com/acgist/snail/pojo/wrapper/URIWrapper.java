@@ -3,6 +3,7 @@ package com.acgist.snail.pojo.wrapper;
 import java.net.URI;
 
 import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -242,6 +243,11 @@ public final class URIWrapper {
 	 */
 	public String fragment() {
 		return this.fragment;
+	}
+	
+	@Override
+	public String toString() {
+		return BeanUtils.toString(this, this.uri);
 	}
 	
 }

@@ -134,9 +134,7 @@ public final class EntityContext implements IContext {
 	 */
 	public boolean delete(TaskEntity entity) {
 		EntityException.requireNotNull(entity);
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("删除任务：{}", entity.getName());
-		}
+		LOGGER.debug("删除任务：{}", entity);
 		if(DownloadConfig.getDelete()) {
 			// 删除文件
 			final var file = entity.getFile();

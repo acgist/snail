@@ -77,9 +77,7 @@ public final class TaskContext implements IContext {
 				// 任务添加必须新建下载器
 				taskSession.buildDownloader();
 				if(this.tasks.contains(taskSession)) {
-					if(LOGGER.isDebugEnabled()) {
-						LOGGER.debug("任务已经存在：{}", taskSession.getName());
-					}
+					LOGGER.debug("任务已经存在：{}", taskSession);
 				} else {
 					this.tasks.add(taskSession);
 					GuiContext.getInstance().refreshTaskList();
@@ -97,9 +95,7 @@ public final class TaskContext implements IContext {
 	 */
 	public void remove(ITaskSession taskSession) {
 		synchronized (this.tasks) {
-			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("删除下载任务：{}", taskSession.getName());
-			}
+			LOGGER.debug("删除下载任务：{}", taskSession);
 			this.tasks.remove(taskSession);
 		}
 		GuiContext.getInstance().refreshTaskList();
@@ -158,7 +154,7 @@ public final class TaskContext implements IContext {
 					taskSession.reset();
 					this.submit(taskSession);
 				} catch (Exception e) {
-					LOGGER.error("添加下载任务异常：{}", entity.getName(), e);
+					LOGGER.error("添加下载任务异常：{}", entity, e);
 					entityContext.delete(entity);
 				}
 			});
