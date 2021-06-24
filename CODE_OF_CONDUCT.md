@@ -63,8 +63,8 @@ if(
 }
 
 list.stream()
-	.filter(peer -> peer.available())
-	.filter(peer -> peer.connected())
+	.filter(PeerSession::available)
+	.filter(PeerSession::connected)
 	.limit(DhtConfig.GET_PEER_SIZE)
 	.map(peer -> {
 		...
@@ -225,6 +225,7 @@ DateUtils
 * 使用JaCoCo对代码进行覆盖率检测
 
 > 注释词汇
+
 |词语|含义|
 |:--|:--|
 |新建|重新建立已经存在类型|
