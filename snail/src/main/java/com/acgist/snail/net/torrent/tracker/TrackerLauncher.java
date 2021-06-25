@@ -90,9 +90,9 @@ public final class TrackerLauncher {
 	 * <p>查找Peer</p>
 	 */
 	public void findPeer() {
-		this.needRelease = true;
 		if(this.available()) {
 			LOGGER.debug("TrackerLauncher查找Peer：{}", this.session);
+			this.needRelease = true;
 			this.session.findPeers(this.id, this.torrentSession);
 		}
 	}
@@ -137,7 +137,6 @@ public final class TrackerLauncher {
 	 */
 	public void release() {
 		if(this.needRelease && this.available()) {
-			this.available = false;
 			this.needRelease = false;
 			try {
 				if(this.torrentSession.completed()) {
@@ -153,6 +152,8 @@ public final class TrackerLauncher {
 				TrackerContext.getInstance().removeTrackerLauncher(this.id);
 			}
 		}
+		// 立即标记释放资源
+		this.available = false;
 	}
 	
 	/**
