@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
@@ -107,7 +108,7 @@ public final class NodeContext implements IContext {
 		LOGGER.debug("生成NodeId：{}", ip);
 		final byte[] mask;
 		final byte[] ipBytes = NetUtils.ipToBytes(ip);
-		if (ipBytes.length == NetUtils.IPV4_BYTES_LENGTH) {
+		if (ipBytes.length == SystemConfig.IPV4_LENGTH) {
 			mask = IPV4_MASK;
 		} else {
 			mask = IPV6_MASK;

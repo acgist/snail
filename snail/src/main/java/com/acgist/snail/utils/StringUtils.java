@@ -322,12 +322,11 @@ public final class StringUtils {
 		int length;
 		char value;
 		String hex;
-		// char十六进制长度
-		final int charHexLength = 4;
+		final int charHexLength = Integer.BYTES;
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < content.length(); index++) {
-			value = content.charAt(index);
 			builder.append("\\u");
+			value = content.charAt(index);
 			hex = Integer.toHexString(value);
 			length = hex.length();
 			if(length < charHexLength) {
@@ -350,7 +349,7 @@ public final class StringUtils {
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 1; index < hex.length; index++) {
 			// 去掉首个空白字符
-			builder.append((char) Integer.parseInt(hex[index], 16));
+			builder.append((char) Integer.parseInt(hex[index], Character.SIZE));
 		}
 		return builder.toString();
 	}

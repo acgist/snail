@@ -22,6 +22,7 @@ import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.BitfieldUtils;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -832,8 +833,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			LOGGER.debug("处理Piece位图消息：任务不可下载");
 			return;
 		}
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
+		final byte[] bytes = ByteUtils.remainingToBytes(buffer);
 		// Peer已经下载Piece位图
 		final BitSet pieces = BitfieldUtils.toBitSet(bytes);
 		this.peerSession.pieces(pieces);
@@ -959,13 +959,10 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		final int index = buffer.getInt();
 		final int begin = buffer.getInt();
 		LOGGER.debug("处理piece消息：{}-{}", index, begin);
-		if(buffer.hasRemaining()) {
-			final byte[] bytes = new byte[buffer.remaining()];
-			buffer.get(bytes);
-			if(this.peerConnect != null) {
-				this.peerConnect.downloadMark(bytes.length);
-				this.peerConnect.piece(index, begin, bytes);
-			}
+		final byte[] bytes = ByteUtils.remainingToBytes(buffer);
+		if(this.peerConnect != null) {
+			this.peerConnect.downloadMark(bytes.length);
+			this.peerConnect.piece(index, begin, bytes);
 		}
 	}
 
