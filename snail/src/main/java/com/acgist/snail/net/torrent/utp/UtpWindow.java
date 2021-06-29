@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.UtpConfig;
 import com.acgist.snail.net.codec.IMessageDecoder;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.DateUtils;
 
 /**
@@ -367,8 +368,7 @@ public final class UtpWindow {
 	 * @return {@link UtpWindowData}
 	 */
 	private UtpWindowData storage(final int timestamp, final short seqnr, final ByteBuffer buffer) {
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
+		final byte[] bytes = ByteUtils.remainingToBytes(buffer);
 		return this.storage(timestamp, seqnr, bytes);
 	}
 	

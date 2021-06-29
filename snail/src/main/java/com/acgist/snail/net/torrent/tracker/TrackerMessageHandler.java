@@ -12,6 +12,7 @@ import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.message.ScrapeMessage;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -24,10 +25,6 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerMessageHandler.class);
 	
 	/**
-	 * <p>消息最小长度：{@value}</p>
-	 */
-	private static final int MIN_LENGTH = 4;
-	/**
 	 * <p>连接消息最小长度：{@value}</p>
 	 */
 	private static final int CONNECT_MIN_LENGTH = 12;
@@ -39,10 +36,6 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 * <p>刮擦消息最小长度：{@value}</p>
 	 */
 	private static final int SCRAPE_MIN_LENGTH = 16;
-	/**
-	 * <p>错误消息最小长度：{@value}</p>
-	 */
-	private static final int ERROR_MIN_LENGTH = 4;
 	
 	/**
 	 * <p>服务端</p>
@@ -63,7 +56,7 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final int remaining = buffer.remaining();
-		if(remaining < MIN_LENGTH) {
+		if(remaining < Integer.BYTES) {
 			LOGGER.warn("处理UDP Tracker消息错误（长度）：{}", remaining);
 			return;
 		}
@@ -146,14 +139,12 @@ public final class TrackerMessageHandler extends UdpMessageHandler {
 	 */
 	private void doError(ByteBuffer buffer) {
 		final int remaining = buffer.remaining();
-		if(remaining < ERROR_MIN_LENGTH) {
+		if(remaining < Integer.BYTES) {
 			LOGGER.debug("处理UDP Tracker错误消息错误（长度）：{}", remaining);
 			return;
 		}
 		final var trackerId = buffer.getInt();
-		final var bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
-		final String message = new String(bytes);
+		final String message = ByteUtils.remainingToString(buffer);
 		LOGGER.warn("UDP Tracker错误消息：{}-{}", trackerId, message);
 	}
 

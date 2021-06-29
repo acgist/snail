@@ -64,14 +64,6 @@ public final class NetUtils {
 	 */
 	public static final int MAX_PORT = 2 << 15;
 	/**
-	 * <p>IPv4字节数组长度：{@value}</p>
-	 */
-	public static final int IPV4_BYTES_LENGTH = 4;
-	/**
-	 * <p>IPv6字节数组长度：{@value}</p>
-	 */
-	public static final int IPV6_BYTES_LENGTH = 16;
-	/**
 	 * <p>IPv4地址正则表达式：{@value}</p>
 	 */
 	private static final String IPV4_REGEX = "(\\d{1,3}\\.){3}\\d{1,3}";

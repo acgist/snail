@@ -14,6 +14,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 
@@ -288,12 +289,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		buffer.getShort();
 		final byte clazz = (byte) (buffer.get() & 0B0000_0111);
 		final byte number = buffer.get();
-		String message = null;
-		if(buffer.hasRemaining()) {
-			final byte[] bytes = new byte[buffer.remaining()];
-			buffer.get(bytes);
-			message = new String(bytes);
-		}
+		final String message = ByteUtils.remainingToString(buffer);
 		LOGGER.warn("处理STUN消息-ERROR_CODE：{}-{}-{}", clazz, number, message);
 	}
 	

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -136,8 +137,7 @@ public final class BEncodeDecoder {
 	 */
 	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
 		Objects.requireNonNull(buffer, "B编码内容错误");
-		final byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
+		final byte[] bytes = ByteUtils.remainingToBytes(buffer);
 		return new BEncodeDecoder(bytes);
 	}
 	

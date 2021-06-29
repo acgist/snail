@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.DigestUtils;
 
 /**
@@ -114,8 +115,7 @@ public final class MSECipher {
 				flip = false;
 				buffer.flip();
 			}
-			final byte[] value = new byte[buffer.remaining()];
-			buffer.get(value);
+			final byte[] value = ByteUtils.remainingToBytes(buffer);
 			byte[] encryptValue;
 			synchronized (this.encryptCipher) {
 				encryptValue = this.encryptCipher.update(value);
@@ -160,8 +160,7 @@ public final class MSECipher {
 				flip = false;
 				buffer.flip();
 			}
-			final byte[] value = new byte[buffer.remaining()];
-			buffer.get(value);
+			final byte[] value = ByteUtils.remainingToBytes(buffer);
 			byte[] decryptValue;
 			synchronized (this.decryptCipher) {
 				decryptValue = this.decryptCipher.update(value);
