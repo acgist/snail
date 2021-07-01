@@ -36,14 +36,6 @@ public final class DhtContext implements IContext {
 	 */
 	private static final int TOKEN_LENGTH = 8;
 	/**
-	 * <p>消息ID最小值：{@value}</p>
-	 */
-	private static final int MIN_ID_VALUE = 0;
-	/**
-	 * <p>消息ID最大值：{@value}</p>
-	 */
-	private static final int MAX_ID_VALUE = 2 << 15;
-	/**
 	 * <p>Token字符：{@value}</p>
 	 */
 	private static final String TOKEN_CHARACTER = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -55,7 +47,7 @@ public final class DhtContext implements IContext {
 	/**
 	 * <p>消息ID</p>
 	 */
-	private int requestId = MIN_ID_VALUE;
+	private short requestId = Short.MIN_VALUE;
 	/**
 	 * <p>DHT请求列表</p>
 	 */
@@ -106,15 +98,9 @@ public final class DhtContext implements IContext {
 	 * @return 消息ID
 	 */
 	public byte[] buildRequestId() {
-		final byte[] bytes = new byte[2];
 		synchronized (this) {
-			if (++this.requestId >= MAX_ID_VALUE) {
-				this.requestId = MIN_ID_VALUE;
-			}
-			bytes[0] = (byte) ((this.requestId >> 8) & 0xFF);
-			bytes[1] = (byte) (this.requestId & 0xFF);
+			return NumberUtils.shortToBytes(this.requestId++);
 		}
-		return bytes;
 	}
 	
 	/**
