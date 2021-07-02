@@ -1,6 +1,7 @@
 package com.acgist.snail.utils;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -19,6 +20,24 @@ class NumberUtilsTest extends Performance {
 	void testBuild() {
 		assertNotEquals(NumberUtils.build(), NumberUtils.build());
 	}
+	
+	@Test
+	void testBit() {
+		assertDoesNotThrow(() -> {
+			this.log(1 >> 1);
+			this.log(-1 >> 1);
+			this.log(1 >>> 1);
+			this.log(-1 >>> 1);
+			this.log(1 << 1);
+			this.log(-1 << 1);
+			this.log(2 >> 1);
+			this.log(-2 >> 1);
+			this.log(2 >>> 1);
+			this.log(-2 >>> 1);
+			this.log(2 << 1);
+			this.log(-2 << 1);
+		});
+	}
 
 	@Test
 	void testTransition() {
@@ -26,7 +45,7 @@ class NumberUtilsTest extends Performance {
 			if(((byte) index) != ((byte) (index & 0xFF))) {
 				System.out.println(index);
 			}
-			assertTrue(((byte) index) == ((byte) (index & 0xFF)));
+			assertEquals((byte) index, (byte) (index & 0xFF));
 		}
 	}
 	
