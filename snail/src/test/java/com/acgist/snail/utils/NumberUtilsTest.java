@@ -55,14 +55,14 @@ class NumberUtilsTest extends Performance {
 			assertTrue(Arrays.equals(buffer.array(), bytes));
 			assertEquals(index, NumberUtils.bytesToLong(bytes));
 		}
-		for (long index = Long.MIN_VALUE; index < Long.MIN_VALUE + (2 ^ 10); index++) {
+		for (long index = Long.MIN_VALUE; index < Long.MIN_VALUE + Short.MAX_VALUE; index++) {
 			buffer.clear();
 			buffer.putLong(index);
 			final byte[] bytes = NumberUtils.longToBytes(index);
 			assertTrue(Arrays.equals(buffer.array(), bytes));
 			assertEquals(index, NumberUtils.bytesToLong(bytes));
 		}
-		for (long index = Long.MAX_VALUE - (2 ^ 10); index < Long.MAX_VALUE; index++) {
+		for (long index = Long.MAX_VALUE - Short.MAX_VALUE; index < Long.MAX_VALUE; index++) {
 			buffer.clear();
 			buffer.putLong(index);
 			final byte[] bytes = NumberUtils.longToBytes(index);
@@ -81,7 +81,7 @@ class NumberUtilsTest extends Performance {
 			assertTrue(Arrays.equals(buffer.array(), bytes));
 			assertEquals(index, NumberUtils.bytesToInt(bytes));
 		}
-		for (int index = Integer.MIN_VALUE; index < Integer.MIN_VALUE + (2 ^ 10); index++) {
+		for (int index = Integer.MIN_VALUE; index < Integer.MIN_VALUE + Short.MAX_VALUE; index++) {
 			buffer.clear();
 			buffer.putInt(index);
 			final byte[] bytes = NumberUtils.intToBytes(index);
@@ -89,7 +89,7 @@ class NumberUtilsTest extends Performance {
 			assertEquals(index, NumberUtils.bytesToInt(bytes));
 			assertEquals(index, NumberUtils.bytesToInt(bytes));
 		}
-		for (int index = Integer.MAX_VALUE - (2 ^ 10); index < Integer.MAX_VALUE; index++) {
+		for (int index = Integer.MAX_VALUE - Short.MAX_VALUE; index < Integer.MAX_VALUE; index++) {
 			buffer.clear();
 			buffer.putInt(index);
 			final byte[] bytes = NumberUtils.intToBytes(index);
