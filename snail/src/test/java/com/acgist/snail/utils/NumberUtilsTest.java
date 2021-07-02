@@ -1,7 +1,6 @@
 package com.acgist.snail.utils;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -23,20 +22,6 @@ class NumberUtilsTest extends Performance {
 	
 	@Test
 	void testBit() {
-		assertDoesNotThrow(() -> {
-			this.log(1 >> 1);
-			this.log(-1 >> 1);
-			this.log(1 >>> 1);
-			this.log(-1 >>> 1);
-			this.log(1 << 1);
-			this.log(-1 << 1);
-			this.log(2 >> 1);
-			this.log(-2 >> 1);
-			this.log(2 >>> 1);
-			this.log(-2 >>> 1);
-			this.log(2 << 1);
-			this.log(-2 << 1);
-		});
 		final byte byteValue = -2;
 		final int intValue = byteValue;
 		this.log(byteValue);
@@ -45,15 +30,18 @@ class NumberUtilsTest extends Performance {
 		this.log(Integer.toHexString(byteValue));
 		this.log(Integer.toHexString(intValue));
 		this.log(Integer.toHexString(byteValue & 0xFF));
+		assertEquals(intValue, byteValue);
 	}
 
 	@Test
 	void testTransition() {
-		for (int index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+		for (short index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
 			if(((byte) index) != ((byte) (index & 0xFF))) {
 				System.out.println(index);
 			}
 			assertEquals((byte) index, (byte) (index & 0xFF));
+			assertEquals(((int) index) & 0xFFFF, (int) (index & 0xFFFF));
+			assertEquals(Short.toUnsignedInt(index), (int) (index & 0xFFFF));
 		}
 	}
 	
