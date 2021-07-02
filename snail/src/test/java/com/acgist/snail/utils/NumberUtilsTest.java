@@ -37,6 +37,14 @@ class NumberUtilsTest extends Performance {
 			this.log(2 << 1);
 			this.log(-2 << 1);
 		});
+		final byte byteValue = -2;
+		final int intValue = byteValue;
+		this.log(byteValue);
+		this.log(intValue);
+		this.log(byteValue & 0xFF);
+		this.log(Integer.toHexString(byteValue));
+		this.log(Integer.toHexString(intValue));
+		this.log(Integer.toHexString(byteValue & 0xFF));
 	}
 
 	@Test

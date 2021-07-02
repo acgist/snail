@@ -119,13 +119,13 @@ public final class NodeContext implements IContext {
 		}
 		final CRC32C crc32c = new CRC32C();
 		final Random random = NumberUtils.random();
-		final byte rand = (byte) (random.nextInt() & 0xFF);
+		final byte rand = (byte) (random.nextInt());
 		final byte r = (byte) (rand & 0x07);
 		ipBytes[0] |= r << 5;
 		crc32c.update(ipBytes, 0, length);
 		final int crc = (int) crc32c.getValue();
-		this.nodeId[0] = (byte) (crc >> 24 & 0xFF);
-		this.nodeId[1] = (byte) (crc >> 16 & 0xFF);
+		this.nodeId[0] = (byte) (crc >> 24);
+		this.nodeId[1] = (byte) (crc >> 16);
 		this.nodeId[2] = (byte) ((crc >> 8 & 0xF8) | (random.nextInt() & 0x07));
 		System.arraycopy(ArrayUtils.random(NODE_ID_RANDOM_LENGTH), 0, this.nodeId, NODE_ID_RANDOM_INDEX, NODE_ID_RANDOM_LENGTH);
 		this.nodeId[19] = rand;
