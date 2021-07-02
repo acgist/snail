@@ -60,14 +60,14 @@ public final class NumberUtils {
 	 */
 	public static final long bytesToLong(byte[] bytes) {
 		long value = 0L;
-		value |= ((bytes[0] & 0xFFL)) << 56;
-		value |= ((bytes[1] & 0xFFL)) << 48;
-		value |= ((bytes[2] & 0xFFL)) << 40;
-		value |= ((bytes[3] & 0xFFL)) << 32;
-		value |= ((bytes[4] & 0xFFL)) << 24;
-		value |= ((bytes[5] & 0xFFL)) << 16;
-		value |= ((bytes[6] & 0xFFL)) << 8;
-		value |= ((bytes[7] & 0xFFL));
+		value |= (bytes[0] & 0xFFL) << 56;
+		value |= (bytes[1] & 0xFFL) << 48;
+		value |= (bytes[2] & 0xFFL) << 40;
+		value |= (bytes[3] & 0xFFL) << 32;
+		value |= (bytes[4] & 0xFFL) << 24;
+		value |= (bytes[5] & 0xFFL) << 16;
+		value |= (bytes[6] & 0xFFL) << 8;
+		value |= (bytes[7] & 0xFFL);
 		return value;
 	}
 	
