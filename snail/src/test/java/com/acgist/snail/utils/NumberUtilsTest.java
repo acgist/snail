@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -20,55 +21,78 @@ class NumberUtilsTest extends Performance {
 	}
 
 	@Test
+	void testTransition() {
+		for (int index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+			if(((byte) index) != ((byte) (index & 0xFF))) {
+				System.out.println(index);
+			}
+			assertTrue(((byte) index) == ((byte) (index & 0xFF)));
+		}
+	}
+	
+	@Test
 	void testLong() {
-		final long value = System.currentTimeMillis();
-		final byte[] bytes = NumberUtils.longToBytes(value);
-		this.costed(100000, () -> {
-			final ByteBuffer buffer = ByteBuffer.allocate(8);
-			buffer.putLong(System.currentTimeMillis());
-		});
-		this.costed(100000, () -> {
-			NumberUtils.longToBytes(value);
-		});
-		this.costed(100000, () -> {
-			final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-			buffer.getLong();
-		});
-		this.costed(100000, () -> {
-			NumberUtils.bytesToLong(bytes);
-		});
-		this.costed(100000, () -> {
-			final long costedValue = System.nanoTime();
-			final ByteBuffer costedBuffer = ByteBuffer.allocate(8);
-			final byte[] costedBytes = costedBuffer.array();
-			costedBuffer.putLong(costedValue);
-			assertArrayEquals(costedBytes, NumberUtils.longToBytes(costedValue));
-			assertEquals(costedValue, NumberUtils.bytesToLong(costedBytes));
-		});
+		final ByteBuffer buffer = ByteBuffer.allocate(8);
+		for (long index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+			buffer.clear();
+			buffer.putLong(index);
+			final byte[] bytes = NumberUtils.longToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToLong(bytes));
+		}
+		for (long index = Long.MIN_VALUE; index < Long.MIN_VALUE + (2 ^ 10); index++) {
+			buffer.clear();
+			buffer.putLong(index);
+			final byte[] bytes = NumberUtils.longToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToLong(bytes));
+		}
+		for (long index = Long.MAX_VALUE - (2 ^ 10); index < Long.MAX_VALUE; index++) {
+			buffer.clear();
+			buffer.putLong(index);
+			final byte[] bytes = NumberUtils.longToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToLong(bytes));
+		}
 	}
 	
 	@Test
 	void testInt() {
-		this.costed(100000, () -> {
-			final int value = (int) (System.nanoTime() % Integer.MAX_VALUE);
-			final ByteBuffer buffer = ByteBuffer.allocate(4);
-			final byte[] bytes = buffer.array();
-			buffer.putInt(value);
-			assertArrayEquals(bytes, NumberUtils.intToBytes(value));
-			assertEquals(value, NumberUtils.bytesToInt(bytes));
-		});
+		final ByteBuffer buffer = ByteBuffer.allocate(4);
+		for (int index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+			buffer.clear();
+			buffer.putInt(index);
+			final byte[] bytes = NumberUtils.intToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToInt(bytes));
+		}
+		for (int index = Integer.MIN_VALUE; index < Integer.MIN_VALUE + (2 ^ 10); index++) {
+			buffer.clear();
+			buffer.putInt(index);
+			final byte[] bytes = NumberUtils.intToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToInt(bytes));
+			assertEquals(index, NumberUtils.bytesToInt(bytes));
+		}
+		for (int index = Integer.MAX_VALUE - (2 ^ 10); index < Integer.MAX_VALUE; index++) {
+			buffer.clear();
+			buffer.putInt(index);
+			final byte[] bytes = NumberUtils.intToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToInt(bytes));
+		}
 	}
 	
 	@Test
 	void testShort() {
-		this.costed(100000, () -> {
-			final short value = (short) (System.nanoTime() % Short.MAX_VALUE);
-			final ByteBuffer buffer = ByteBuffer.allocate(2);
-			final byte[] bytes = buffer.array();
-			buffer.putShort(value);
-			assertArrayEquals(bytes, NumberUtils.shortToBytes(value));
-			assertEquals(value, NumberUtils.bytesToShort(bytes));
-		});
+		final ByteBuffer buffer = ByteBuffer.allocate(2);
+		for (short index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+			buffer.clear();
+			buffer.putShort(index);
+			final byte[] bytes = NumberUtils.shortToBytes(index);
+			assertTrue(Arrays.equals(buffer.array(), bytes));
+			assertEquals(index, NumberUtils.bytesToShort(bytes));
+		}
 	}
 	
 	@Test
