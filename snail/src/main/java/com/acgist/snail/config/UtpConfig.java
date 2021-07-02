@@ -52,7 +52,7 @@ public final class UtpConfig {
 		 */
 		private Type(byte type) {
 			this.type = type;
-			this.typeVersion = (byte) ((type << 4) | (VERSION & 0xFF));
+			this.typeVersion = (byte) (type << 4 | VERSION);
 		}
 		
 		/**

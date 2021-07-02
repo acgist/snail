@@ -60,14 +60,14 @@ public final class NumberUtils {
 	 */
 	public static final long bytesToLong(byte[] bytes) {
 		long value = 0L;
-		value |= ((long) (bytes[0] & 0xFF)) << 56;
-		value |= ((long) (bytes[1] & 0xFF)) << 48;
-		value |= ((long) (bytes[2] & 0xFF)) << 40;
-		value |= ((long) (bytes[3] & 0xFF)) << 32;
-		value |= ((long) (bytes[4] & 0xFF)) << 24;
-		value |= ((long) (bytes[5] & 0xFF)) << 16;
-		value |= ((long) (bytes[6] & 0xFF)) << 8;
-		value |= ((long) (bytes[7] & 0xFF));
+		value |= ((bytes[0] & 0xFFL)) << 56;
+		value |= ((bytes[1] & 0xFFL)) << 48;
+		value |= ((bytes[2] & 0xFFL)) << 40;
+		value |= ((bytes[3] & 0xFFL)) << 32;
+		value |= ((bytes[4] & 0xFFL)) << 24;
+		value |= ((bytes[5] & 0xFFL)) << 16;
+		value |= ((bytes[6] & 0xFFL)) << 8;
+		value |= ((bytes[7] & 0xFFL));
 		return value;
 	}
 	
@@ -80,14 +80,14 @@ public final class NumberUtils {
 	 */
 	public static final byte[] longToBytes(long value) {
 		final byte[] bytes = new byte[8];
-		bytes[0] = (byte) (value >> 56 & 0xFF);
-		bytes[1] = (byte) (value >> 48 & 0xFF);
-		bytes[2] = (byte) (value >> 40 & 0xFF);
-		bytes[3] = (byte) (value >> 32 & 0xFF);
-		bytes[4] = (byte) (value >> 24 & 0xFF);
-		bytes[5] = (byte) (value >> 16 & 0xFF);
-		bytes[6] = (byte) (value >> 8 & 0xFF);
-		bytes[7] = (byte) (value & 0xFF);
+		bytes[0] = (byte) (value >>> 56);
+		bytes[1] = (byte) (value >>> 48);
+		bytes[2] = (byte) (value >>> 40);
+		bytes[3] = (byte) (value >>> 32);
+		bytes[4] = (byte) (value >>> 24);
+		bytes[5] = (byte) (value >>> 16);
+		bytes[6] = (byte) (value >>> 8);
+		bytes[7] = (byte) (value);
 		return bytes;
 	}
 	
@@ -116,10 +116,10 @@ public final class NumberUtils {
 	 */
 	public static final byte[] intToBytes(int value) {
 		final byte[] bytes = new byte[4];
-		bytes[0] = (byte) (value >> 24 & 0xFF);
-		bytes[1] = (byte) (value >> 16 & 0xFF);
-		bytes[2] = (byte) (value >> 8 & 0xFF);
-		bytes[3] = (byte) (value & 0xFF);
+		bytes[0] = (byte) (value >>> 24);
+		bytes[1] = (byte) (value >>> 16);
+		bytes[2] = (byte) (value >>> 8);
+		bytes[3] = (byte) (value);
 		return bytes;
 	}
 	
@@ -146,8 +146,8 @@ public final class NumberUtils {
 	 */
 	public static final byte[] shortToBytes(short value) {
 		final byte[] bytes = new byte[2];
-		bytes[0] = (byte) (value >> 8 & 0xFF);
-		bytes[1] = (byte) (value & 0xFF);
+		bytes[0] = (byte) (value >>> 8);
+		bytes[1] = (byte) (value);
 		return bytes;
 	}
 	

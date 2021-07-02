@@ -99,11 +99,11 @@ public final class WindowsTheme implements ITheme {
 		if(colorValue == null) {
 			theme = Themes.DEFAULT_THEME_COLOR;
 		} else {
-			final long value = Long.parseLong(colorValue.substring(2), 16);
-			final int alpha = (int) ((value >> 24) & 0xFF);
-			final int blud = (int) ((value >> 16) & 0xFF);
-			final int green = (int) ((value >> 8) & 0xFF);
-			final int red = (int) (value & 0xFF);
+			final int value = Integer.parseInt(colorValue.substring(2), 16);
+			final int alpha = (value >> 24 & 0xFF);
+			final int blud = (value >> 16 & 0xFF);
+			final int green = (value >> 8 & 0xFF);
+			final int red = (value & 0xFF);
 			if(alpha <= 0) {
 				// 没有透明度：设置不透明
 				theme = Color.rgb(red, green, blud);
