@@ -25,6 +25,11 @@ public final class StunService {
 	
 	private static final StunService INSTANCE = new StunService();
 	
+	/**
+	 * <p>配置多个服务器时轮询使用</p>
+	 */
+	private int index = 0;
+	
 	public static final StunService getInstance() {
 		return INSTANCE;
 	}
@@ -38,10 +43,8 @@ public final class StunService {
 	public void mapping() {
 		final var address = this.buildServerAddress();
 		if(address == null) {
-			LOGGER.warn("STUN服务器配置错误");
 			return;
 		}
-		LOGGER.debug("STUN服务器地址：{}", address);
 		StunClient.newInstance(address).mappedAddress();
 	}
 	
@@ -68,28 +71,57 @@ public final class StunService {
 	private InetSocketAddress buildServerAddress() {
 		final String server = SystemConfig.getStunServer();
 		if(StringUtils.isEmpty(server)) {
-			LOGGER.warn("STUN服务器格式错误：{}", server);
+			LOGGER.warn("STUN服务器列表格式错误：{}", server);
 			return null;
 		}
-		final String[] values = server.split(SymbolConfig.Symbol.COLON.toString());
-		if(values.length == 1) {
-			// 格式：stun1.l.google.com
-			if(StringUtils.isNotEmpty(values[0])) {
-				return NetUtils.buildSocketAddress(values[0], StunConfig.DEFAULT_PORT);
-			}
-		} else if(values.length == 2) {
-			// 格式：stun1.l.google.com:19302
-			if(StringUtils.isNotEmpty(values[0]) && StringUtils.isNumeric(values[1])) {
-				return NetUtils.buildSocketAddress(values[0], Integer.parseInt(values[1]));
-			}
-		} else if(values.length == 3) {
-			// 格式：stun:stun1.l.google.com:19302
-			if(StringUtils.isNotEmpty(values[1]) && StringUtils.isNumeric(values[2])) {
-				return NetUtils.buildSocketAddress(values[1], Integer.parseInt(values[2]));
+		final String[] servers = server.split(SymbolConfig.Symbol.COMMA.toString());
+		final int index = Math.abs(this.index++ % servers.length);
+		return this.buildServerAddress(servers[index]);
+	}
+	
+	/**
+	 * <p>获取STUN服务器地址</p>
+	 * 
+	 * <table border="1">
+	 * 	<caption>支持格式</caption>
+	 * 	<tr>
+	 * 		<th>格式</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun1.l.google.com</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun:stun1.l.google.com</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun1.l.google.com:19302</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>stun:stun1.l.google.com:19302</td>
+	 * 	</tr>
+	 * </table>
+	 * 
+	 * @param server STUN服务器地址
+	 * 
+	 * @return STUN服务器地址
+	 */
+	private InetSocketAddress buildServerAddress(String server) {
+		LOGGER.debug("STUN服务器地址：{}", server);
+		final String[] args = server.split(SymbolConfig.Symbol.COLON.toString());
+		final int argLength = args.length;
+		final String lastArg = args[argLength - 1];
+		if(argLength == 0) {
+			LOGGER.warn("STUN服务器格式错误：{}", server);
+			return null;
+		} else if(argLength == 1) {
+			return NetUtils.buildSocketAddress(lastArg, StunConfig.DEFAULT_PORT);
+		} else {
+			if(StringUtils.isNumeric(lastArg)) {
+				return NetUtils.buildSocketAddress(args[argLength - 2], Integer.parseInt(lastArg));
+			} else {
+				return NetUtils.buildSocketAddress(lastArg, StunConfig.DEFAULT_PORT);
 			}
 		}
-		LOGGER.warn("STUN服务器格式错误：{}", server);
-		return null;
 	}
 	
 }
