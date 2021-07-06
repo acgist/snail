@@ -51,7 +51,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	
 	/**
 	 * <p>是否连接</p>
-	 * <p>不能使用方法{@link #available()}判断是否可用：发送方法判断这个状态导致发送连接消息失败</p>
+	 * <p>不能重写方法{@link #available()}判断是否可用：发送方法判断这个状态导致发送连接消息失败</p>
 	 */
 	private volatile boolean connect;
 	/**
