@@ -22,9 +22,10 @@ class StunClientTest extends Performance {
 //		final StunClient client = StunClient.newInstance("stunserver.org");
 //		final StunClient client = StunClient.newInstance("numb.viagenie.ca");
 //		final StunClient client = StunClient.newInstance("stun.softjoys.com");
+//		final StunClient client = StunClient.newInstance("stun.stunprotocol.org", 3478);
 		assertNull(SystemConfig.getExternalIPAddress());
-		client.mappedAddress();
 		int index = 0;
+		client.mappedAddress();
 		while(index++ < 5 && SystemConfig.getExternalIPAddress() == null) {
 			ThreadUtils.sleep(1000);
 		}

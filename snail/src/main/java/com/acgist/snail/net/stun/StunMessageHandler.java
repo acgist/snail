@@ -234,7 +234,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @see AttributeType#XOR_MAPPED_ADDRESS
 	 */
-	public void xorMappedAddress(ByteBuffer buffer) {
+	private void xorMappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
 			LOGGER.warn("处理STUN消息-XOR_MAPPED_ADDRESS错误（长度）：{}", buffer);
 			return;
@@ -280,7 +280,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @see AttributeType#ERROR_CODE
 	 */
-	public void errorCode(ByteBuffer buffer) {
+	private void errorCode(ByteBuffer buffer) {
 		if(buffer.remaining() < 4) {
 			LOGGER.warn("处理STUN消息-ERROR_CODE错误（长度）：{}", buffer);
 			return;
