@@ -338,7 +338,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 * @param windowData 数据消息
 	 */
 	private void data(UtpWindowData windowData) {
-		LOGGER.debug("发送数据消息：{}", windowData.getSeqnr());
+		LOGGER.debug("发送数据消息：{}", windowData);
 		final int now = windowData.updateGetTimestamp();
 		final ByteBuffer buffer = this.buildMessage(UtpConfig.Type.DATA, windowData.getLength() + UtpConfig.HEADER_LENGTH);
 		buffer.putShort(this.sendId);
@@ -378,7 +378,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 				// 重新发送最后一个未确认数据包
 				final var packet = this.sendWindow.lastUnack();
 				if(packet != null) {
-					LOGGER.debug("快速重传：{}-{}", acknr, packet.getSeqnr());
+					LOGGER.debug("快速重传：{}-{}", acknr, packet);
 					this.data(packet);
 				}
 			}
