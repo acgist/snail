@@ -10,6 +10,7 @@ import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.StunConfig.AttributeType;
 import com.acgist.snail.config.StunConfig.MessageType;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.StunContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.net.UdpMessageHandler;
@@ -214,7 +215,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			ipExt = NetUtils.bytesToIP(bytes);
 		}
 		LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
-		StunService.getInstance().mapping(ipExt, portExt);
+		StunContext.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**
@@ -260,7 +261,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 			ipExt = NetUtils.bytesToIP(result);
 		}
 		LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
-		StunService.getInstance().mapping(ipExt, portExt);
+		StunContext.getInstance().mapping(ipExt, portExt);
 	}
 	
 	/**

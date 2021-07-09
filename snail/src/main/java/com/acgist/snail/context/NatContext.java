@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.stun.StunService;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
-import com.acgist.snail.net.upnp.UpnpService;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -84,10 +82,10 @@ public final class NatContext implements IContext {
 		if(NetUtils.localIP(NetUtils.LOCAL_HOST_ADDRESS)) {
 			UpnpClient.newInstance().mSearch();
 			this.lockUpnp();
-			if(UpnpService.getInstance().useable()) {
+			if(UpnpContext.getInstance().useable()) {
 				this.type = Type.UPNP;
 			} else {
-				StunService.getInstance().mapping();
+				StunContext.getInstance().mapping();
 			}
 			if(this.type == Type.NONE) {
 				LOGGER.debug("注册NAT服务失败：{}", NAT_INTERVAL);
@@ -124,7 +122,7 @@ public final class NatContext implements IContext {
 	public void shutdown() {
 		LOGGER.debug("关闭NAT服务");
 		if(this.type == Type.UPNP) {
-			UpnpService.getInstance().release();
+			UpnpContext.getInstance().release();
 			UpnpServer.getInstance().close();
 		}
 	}
