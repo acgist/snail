@@ -1,4 +1,4 @@
-package com.acgist.snail.net.stun;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -8,14 +8,14 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 
-class StunServiceTest extends Performance {
+class StunContextTest extends Performance {
 
 	@Test
 	void testMapping() {
-		final StunService service = StunService.getInstance();
+		final StunContext context = StunContext.getInstance();
 		int index = 0;
 		while(index++ < 5 && SystemConfig.getExternalIPAddress() == null) {
-			service.mapping();
+			context.mapping();
 			ThreadUtils.sleep(2000);
 		}
 		assertNotNull(SystemConfig.getExternalIPAddress());

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.utp;
+package com.acgist.snail.context;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
@@ -10,24 +10,24 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.context.MessageHandlerContext;
-import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.IContext;
 import com.acgist.snail.net.IChannelHandler;
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.torrent.utp.UtpMessageHandler;
 
 /**
- * <p>UTP Service</p>
+ * <p>UTP上下文</p>
  * <p>管理UTP消息代理</p>
  * 
  * @author acgist
  */
-public final class UtpService implements IChannelHandler<DatagramChannel> {
+public final class UtpContext implements IContext, IChannelHandler<DatagramChannel> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtpService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtpContext.class);
 	
-	private static final UtpService INSTANCE = new UtpService();
+	private static final UtpContext INSTANCE = new UtpContext();
 	
-	public static final UtpService getInstance() {
+	public static final UtpContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -56,7 +56,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 */
 	private final Map<String, UtpMessageHandler> utpMessageHandlers;
 	
-	private UtpService() {
+	private UtpContext() {
 		this.context = MessageHandlerContext.getInstance();
 		this.utpMessageHandlers = new ConcurrentHashMap<>();
 		SystemThreadContext.timerAtFixedDelay(
@@ -134,7 +134,7 @@ public final class UtpService implements IChannelHandler<DatagramChannel> {
 	 * 
 	 * @return 连接Key
 	 */
-	String buildKey(short connectionId, InetSocketAddress socketAddress) {
+	public String buildKey(short connectionId, InetSocketAddress socketAddress) {
 		return socketAddress.getHostString() + socketAddress.getPort() + connectionId;
 	}
 	

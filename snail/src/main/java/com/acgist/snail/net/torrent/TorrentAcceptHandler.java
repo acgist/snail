@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.config.StunConfig;
+import com.acgist.snail.context.UtpContext;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.StunMessageHandler;
 import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
-import com.acgist.snail.net.torrent.utp.UtpService;
 
 /**
  * <p>Torrent（UTP、DHT、STUN）消息接收代理</p>
@@ -38,9 +38,9 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	private static final byte STUN_HEADER_RECV = 0x01;
 	
 	/**
-	 * <p>UTP Service</p>
+	 * <p>UTP上下文</p>
 	 */
-	private final UtpService utpService = UtpService.getInstance();
+	private final UtpContext utpContext = UtpContext.getInstance();
 	/**
 	 * <p>DHT消息代理</p>
 	 */
@@ -55,7 +55,7 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	
 	@Override
 	public void handle(DatagramChannel channel) {
-		this.utpService.handle(channel);
+		this.utpContext.handle(channel);
 		this.dhtMessageHandler.handle(channel);
 		this.stunMessageHandler.handle(channel);
 	}
@@ -76,7 +76,7 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 		}
 		// UTP消息
 		final short connectionId = buffer.getShort(2);
-		return this.utpService.get(connectionId, socketAddress);
+		return this.utpContext.get(connectionId, socketAddress);
 	}
 	
 }

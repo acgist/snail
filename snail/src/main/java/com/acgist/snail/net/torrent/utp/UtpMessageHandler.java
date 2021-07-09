@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.UtpConfig;
+import com.acgist.snail.context.UtpContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
@@ -67,9 +68,9 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private final String key;
 	/**
-	 * <p>UTP Service</p>
+	 * <p>UTP上下文</p>
 	 */
-	private final UtpService utpService;
+	private final UtpContext utpContext;
 	/**
 	 * <p>发送窗口</p>
 	 */
@@ -129,7 +130,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 		this.messageDecoder = peerCryptMessageCodec;
 		this.messageEncoder = peerCryptMessageCodec;
 		this.peerSubMessageHandler = peerSubMessageHandler;
-		this.utpService = UtpService.getInstance();
+		this.utpContext = UtpContext.getInstance();
 		this.sendWindow = UtpWindow.newSendInstance();
 		this.recvWindow = UtpWindow.newRecvInstance(this.messageDecoder);
 		this.ackLossTimes = new AtomicInteger(0);
@@ -138,11 +139,11 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 			this.sendId = connectionId;
 			this.recvId = (short) (this.sendId + 1);
 		} else {
-			this.recvId = this.utpService.connectionId();
+			this.recvId = this.utpContext.connectionId();
 			this.sendId = (short) (this.recvId + 1);
 		}
-		this.key = this.utpService.buildKey(this.recvId, this.socketAddress);
-		this.utpService.put(this);
+		this.key = this.utpContext.buildKey(this.recvId, this.socketAddress);
+		this.utpContext.put(this);
 	}
 	
 	/**
@@ -573,7 +574,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	private void closeConnect() {
 		super.close();
 		this.connect = false;
-		this.utpService.remove(this);
+		this.utpContext.remove(this);
 	}
 
 	/**

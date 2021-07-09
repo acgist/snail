@@ -1,16 +1,18 @@
-package com.acgist.snail.net.upnp;
+package com.acgist.snail.context;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.net.http.HttpClient.StatusCode;
+import com.acgist.snail.net.upnp.UpnpRequest;
+import com.acgist.snail.net.upnp.UpnpResponse;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
@@ -19,19 +21,19 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>UPNP Service</p>
+ * <p>UPNP上下文</p>
  * <p>Internet Gateway Device</p>
  * <p>端口映射：将内网的端口映射到外网中</p>
  * 
  * @author acgist
  */
-public final class UpnpService {
+public final class UpnpContext implements IContext {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UpnpContext.class);
 	
-	private static final UpnpService INSTANCE = new UpnpService();
+	private static final UpnpContext INSTANCE = new UpnpContext();
 	
-	public static final UpnpService getInstance() {
+	public static final UpnpContext getInstance() {
 		return INSTANCE;
 	}
 	
@@ -93,7 +95,7 @@ public final class UpnpService {
 	 */
 	private volatile boolean remapping = false;
 
-	private UpnpService() {
+	private UpnpContext() {
 	}
 	
 	/**
@@ -101,11 +103,11 @@ public final class UpnpService {
 	 * 
 	 * @param location 描述文件地址
 	 * 
-	 * @return {@link UpnpService}
+	 * @return {@link UpnpContext}
 	 * 
 	 * @throws NetException 网络异常
 	 */
-	public UpnpService load(String location) throws NetException {
+	public UpnpContext load(String location) throws NetException {
 		final URIWrapper wrapper = URIWrapper.newInstance(location).decode();
 		if(!NetUtils.lan(wrapper.host())) {
 			// 判断处于同一内网
@@ -251,7 +253,7 @@ public final class UpnpService {
 	 */
 	public boolean deletePortMapping(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
-			return false;
+			return false;	
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildDeletePortMapping(portExt, protocol);

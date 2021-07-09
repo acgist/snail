@@ -1,40 +1,40 @@
-package com.acgist.snail.net.stun;
+package com.acgist.snail.context;
 
 import java.net.InetSocketAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.IContext;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.NatContext;
-import com.acgist.snail.context.NodeContext;
+import com.acgist.snail.net.stun.StunClient;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Stun Service</p>
+ * <p>Stun上下文</p>
  * 
  * @author acgist
  */
-public final class StunService {
+public final class StunContext implements IContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(StunService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StunContext.class);
 	
-	private static final StunService INSTANCE = new StunService();
+	private static final StunContext INSTANCE = new StunContext();
 	
 	/**
 	 * <p>配置多个服务器时轮询使用</p>
 	 */
 	private int index = 0;
 	
-	public static final StunService getInstance() {
+	public static final StunContext getInstance() {
 		return INSTANCE;
 	}
 	
-	private StunService() {
+	private StunContext() {
 	}
 
 	/**

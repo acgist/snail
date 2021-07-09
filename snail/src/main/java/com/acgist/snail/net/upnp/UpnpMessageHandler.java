@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.NatContext;
+import com.acgist.snail.context.UpnpContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
@@ -64,13 +65,13 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 			LOGGER.warn("UPNP设置失败（没有描述文件地址）：{}", message);
 			return;
 		}
-		final UpnpService upnpService = UpnpService.getInstance();
+		final UpnpContext upnpContext = UpnpContext.getInstance();
 		try {
-			upnpService.load(location).mapping();
+			upnpContext.load(location).mapping();
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {
-			if(upnpService.useable()) {
+			if(upnpContext.useable()) {
 				NatContext.getInstance().unlockUpnp();
 			}
 		}
