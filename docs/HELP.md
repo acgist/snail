@@ -108,6 +108,7 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 
 ```bash
 ./docs/build.sh version [win|mac|linux] [pack]
+
 ./docs/build.sh 1.7.16 win
 ./docs/build.sh 1.7.16 win pack
 ./docs/build.sh 1.7.16 mac
