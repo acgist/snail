@@ -70,7 +70,7 @@
 |:--|:--|
 |snail-x.x.x.msi|Win安装版|
 |snail-x.x.x.pkg|Mac安装版|
-|snail-x.x.x.rpm|Linux安装版|
+|snail-x.x.x.deb|Linux安装版|
 |snail-win-x.x.x-without-jre.tar|Win绿色版|
 |snail-mac-x.x.x-without-jre.tar|Mac绿色版|
 |snail-linux-x.x.x-without-jre.tar|Linux绿色版|
