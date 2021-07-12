@@ -11,6 +11,7 @@
 * [使用](#使用)
 	* [环境](#环境)
 	* [编译](#编译)
+	* [打包](#打包)
 	* [乱码](#乱码)
 	* [运行](#运行)
 	* [统计](#统计)
@@ -100,6 +101,37 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 ```
 
 > 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
+
+### 打包
+
+使用JDK内置命令`jpackage`进行打包，可以使用[docs/build.sh](./build.sh)脚本打包：
+
+```bash
+./docs/build.sh version [win|mac|linux] [pack]
+./docs/build.sh 1.7.16 win
+./docs/build.sh 1.7.16 win pack
+./docs/build.sh 1.7.16 mac
+./docs/build.sh 1.7.16 mac pack
+./docs/build.sh 1.7.16 linux
+./docs/build.sh 1.7.16 linux pack
+```
+
+##### 注意
+
+* 打包命令需要JDK16+
+* 参数`pack`可选：是否打包
+
+##### Windows
+
+可以在Git Bash命令行里面执行
+
+##### Ubuntu
+
+提示缺少fakeroot：`sudo apt install alien`
+
+##### CentOS
+
+提示错误：类型[rpm]无效或不受支持：`yum install rpm-build redhat-rpm-config`
 
 ### 乱码
 
