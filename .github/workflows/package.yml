@@ -39,8 +39,8 @@ jobs:
     - name: Linux Setting
       if: matrix.runs-on == 'ubuntu-latest'
       run: |
-        # rpm|deb
-        echo "suffix=rpm" >> $GITHUB_ENV
+        # deb|rpm
+        echo "suffix=deb" >> $GITHUB_ENV
         echo "system=linux" >> $GITHUB_ENV
         echo "args=--linux-shortcut" >> $GITHUB_ENV
         echo "icon=./docs/logo/logo.png" >> $GITHUB_ENV

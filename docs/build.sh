@@ -22,9 +22,9 @@ elif [[ $system == "mac" ]]; then
     icon="./docs/logo/logo.icns"
     args="--type pkg"
 elif [[ $system == "linux" ]]; then
-    # linux:rpm|deb
+    # linux:deb|rpm
     icon="./docs/logo/logo.png"
-    args="--type rpm --linux-shortcut"
+    args="--type deb --linux-shortcut"
 else
     echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [pack]"
     exit
