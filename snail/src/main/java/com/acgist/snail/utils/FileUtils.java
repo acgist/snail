@@ -82,7 +82,7 @@ public final class FileUtils {
 		));
 		// 安装文件
 		FILE_TYPE_EXT.put(FileType.INSTALL, List.of(
-			"msi", "exe", "pkg", "apk", "deb", "rpm"
+			"apk", "hap", "msi", "exe", "pkg", "dmg", "deb", "rpm", "sis", "sisx"
 		));
 		// 未知文件
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of());
