@@ -51,7 +51,7 @@ public final class UtpWindow {
 	/**
 	 * <p>当前窗口大小</p>
 	 */
-	private volatile int wnd = MIN_WND_SIZE;
+	private volatile int wnd;
 	/**
 	 * <p>往返时间</p>
 	 */
@@ -67,21 +67,14 @@ public final class UtpWindow {
 	/**
 	 * <p>是否关闭</p>
 	 */
-	private volatile boolean close = false;
-	/**
-	 * <dl>
-	 * 	<dt>窗口大小</dt>
-	 * 	<dd>接收端：发送端剩余大小</dd>
-	 * 	<dd>发送端：发送端缓存大小</dd>
-	 * </dl>
-	 */
-	private volatile int wndSize;
+	private volatile boolean close;
 	/**
 	 * <dl>
 	 * 	<dt>seqnr</dt>
 	 * 	<dd>接收端：最后处理的seqnr</dd>
 	 * 	<dd>发送端：最后发送的seqnr</dd>
 	 * </dl>
+	 * <p>固定值：1</p>
 	 */
 	private volatile short seqnr;
 	/**
@@ -92,6 +85,14 @@ public final class UtpWindow {
 	 * </dl>
 	 */
 	private volatile int timestamp;
+	/**
+	 * <dl>
+	 * 	<dt>窗口大小</dt>
+	 * 	<dd>接收端：发送端剩余大小</dd>
+	 * 	<dd>发送端：发送端缓存大小</dd>
+	 * </dl>
+	 */
+	private volatile int wndSize;
 	/**
 	 * <dl>
 	 * 	<dt>窗口数据</dt>
@@ -125,13 +126,14 @@ public final class UtpWindow {
 	 * @param messageDecoder 消息处理器
 	 */
 	private UtpWindow(IMessageDecoder<ByteBuffer> messageDecoder) {
+		this.wnd = MIN_WND_SIZE;
 		this.rtt = 0;
 		this.rttVar = 0;
 		this.timeout = MAX_TIMEOUT;
-		this.wndSize = 0;
-		// 固定值：1
+		this.close = false;
 		this.seqnr = 1;
 		this.timestamp = 0;
+		this.wndSize = 0;
 		this.wndMap = new LinkedHashMap<>();
 		if(messageDecoder == null) {
 			// 发送窗口对象
