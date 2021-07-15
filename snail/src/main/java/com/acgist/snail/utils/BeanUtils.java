@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>Bean工具</p>
+ * <p>可以使用Java内省替换</p>
  * 
  * @author acgist
  */

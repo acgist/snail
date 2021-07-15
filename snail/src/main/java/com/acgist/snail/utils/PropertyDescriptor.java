@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>对象属性工具</p>
+ * <p>可以使用Java内省替换</p>
  * 
  * @author acgist
  */
