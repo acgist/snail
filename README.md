@@ -48,13 +48,17 @@ mvn clean package -P release -D skipTests
 
 > 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
 
-### 命令
+### 界面
+
+使用自带界面进行下载，界面使用参考[界面使用帮助](./docs/GUI.md)。
 
 ```bash
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
 ### 代码
+
+使用代码进行二次开发使用，更多参考[开发帮助](./docs/API.md)。
 
 ```xml
 <dependency>
