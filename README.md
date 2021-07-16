@@ -80,6 +80,8 @@ snail.lockDownload();
 
 [使用帮助](./docs/HELP.md)
 
+[界面使用帮助](./docs/GUI.md)
+
 ## 其他
 
 ### 仓库
@@ -103,9 +105,6 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ### 界面
 
 ![蜗牛](./docs/gui/main.png "蜗牛")
-![统计](./docs/gui/statistics-piece.png "统计")
-
-[界面操作](./docs/GUI.md)
 
 ### 贡献
 
