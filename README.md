@@ -48,13 +48,13 @@ mvn clean package -P release -D skipTests
 
 > 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
 
-### Gui
+### 命令
 
 ```bash
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
-### Maven
+### 代码
 
 ```xml
 <dependency>
@@ -92,7 +92,7 @@ snail.lockDownload();
 
 ## 其他
 
-### Git
+### 仓库
 
 GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
 
