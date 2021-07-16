@@ -80,16 +80,6 @@ snail.lockDownload();
 
 [使用帮助](./docs/HELP.md)
 
-## 依赖
-
-|项目|许可|
-|:--|:--|
-|[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
-|[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
-|[OpenJDK](https://openjdk.java.net)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
-
-> 全部代码使用Java开发，除开日志门面不依赖任何第三方框架。
-
 ## 其他
 
 ### 仓库
@@ -101,6 +91,14 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ### 协议
 
 [协议信息](./docs/PROTOCOL.md)
+
+### 依赖
+
+|项目|许可|
+|:--|:--|
+|[slf4j](https://www.slf4j.org)|[MIT](https://www.slf4j.org/license.html)|
+|[JavaFX](https://wiki.openjdk.java.net/display/OpenJFX)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
+|[OpenJDK](https://openjdk.java.net)|[GPLv2 + CE](https://openjdk.java.net/legal/gplv2+ce.html)|
 
 ### 界面
 
