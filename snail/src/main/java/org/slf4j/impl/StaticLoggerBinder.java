@@ -14,6 +14,8 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
 	private static final StaticLoggerBinder INSTANCE = new StaticLoggerBinder();
 	
+	public static String REQUESTED_API_VERSION = "1.7.30";
+	
 	/**
 	 * <p>SL4J绑定方法</p>
 	 * 
