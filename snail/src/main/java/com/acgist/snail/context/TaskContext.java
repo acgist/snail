@@ -111,7 +111,17 @@ public final class TaskContext implements IContext {
 			return this.tasks.stream().collect(Collectors.toList());
 		}
 	}
-		
+	
+	/**
+	 * <p>判定是否还有任务下载</p>
+	 * 
+	 * @return 是否还有任务下载
+	 */
+	public boolean downloading() {
+		return this.allTask().stream()
+			.anyMatch(ITaskSession::statusRunning);
+	}
+	
 	/**
 	 * <p>刷新下载任务</p>
 	 */
