@@ -54,7 +54,7 @@ mvn clean package -P release -D skipTests
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
-> 使用自带界面下载，参考[界面使用帮助](./docs/GUI.md)。
+> 界面使用参考[界面使用帮助](./docs/GUI.md)
 
 ### 代码
 
@@ -76,7 +76,7 @@ snail.download("https://www.acgist.com");
 snail.lockDownload();
 ```
 
-> 使用代码二次开发，参考[开发帮助](./docs/API.md)。
+> 代码二次开发参考[开发帮助](./docs/API.md)
 
 ### 帮助
 
