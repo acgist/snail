@@ -264,18 +264,13 @@ public final class TrayMenu extends Menu {
 	 * @return 托盘消息类型
 	 */
 	private MessageType getMessageType(GuiContext.MessageType type) {
-		switch (type) {
-		case NONE:
-			return MessageType.NONE;
-		case INFO:
-			return MessageType.INFO;
-		case WARN:
-			return MessageType.WARNING;
-		case ERROR:
-			return MessageType.ERROR;
-		default:
-			return MessageType.INFO;
-		}
+		return switch (type) {
+		case NONE -> MessageType.NONE;
+		case INFO -> MessageType.INFO;
+		case WARN -> MessageType.WARNING;
+		case ERROR -> MessageType.ERROR;
+		default -> MessageType.INFO;
+		};
 	}
 	
 }

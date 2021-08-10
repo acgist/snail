@@ -86,20 +86,14 @@ public final class Alerts {
 	 * @return 窗口消息类型
 	 */
 	private static final AlertType getAlertType(GuiContext.MessageType type) {
-		switch (type) {
-		case NONE:
-			return AlertType.NONE;
-		case INFO:
-			return AlertType.INFORMATION;
-		case WARN:
-			return AlertType.WARNING;
-		case CONFIRM:
-			return AlertType.CONFIRMATION;
-		case ERROR:
-			return AlertType.ERROR;
-		default:
-			return AlertType.INFORMATION;
-		}
+		return switch (type) {
+		case NONE -> AlertType.NONE;
+		case INFO -> AlertType.INFORMATION;
+		case WARN -> AlertType.WARNING;
+		case CONFIRM -> AlertType.CONFIRMATION;
+		case ERROR -> AlertType.ERROR;
+		default -> AlertType.INFORMATION;
+		};
 	}
 	
 }
