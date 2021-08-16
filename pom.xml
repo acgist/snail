@@ -310,7 +310,6 @@
 						<doclint>none</doclint>
 						<charset>${encoding}</charset>
 						<encoding>${encoding}</encoding>
-						<aggregate>true</aggregate>
 						<docencoding>${encoding}</docencoding>
 						<description>${project.description}</description>
 						<!-- 忽略模块描述 -->
