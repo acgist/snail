@@ -8,12 +8,12 @@
 	
 	<groupId>com.acgist</groupId>
 	<artifactId>snail.parent</artifactId>
-	<version>1.7.16</version>
+	<version>1.17.0</version>
 	<packaging>pom</packaging>
 	
 	<properties>
 		<!-- 版本 -->
-		<snail.version>1.7.16</snail.version>
+		<snail.version>1.17.0</snail.version>
 		<!-- 作者 -->
 		<vendor>acgist</vendor>
 		<!-- 模块 -->
@@ -25,9 +25,9 @@
 		<!-- JavaFX版本 -->
 		<javafx.version>16</javafx.version>
 		<!-- 依赖版本 -->
-		<slf4j.version>1.7.30</slf4j.version>
+		<slf4j.version>1.7.32</slf4j.version>
 		<!-- JUnit版本 -->
-		<junit.version>5.6.2</junit.version>
+		<junit.version>5.7.2</junit.version>
 		<!-- Maven插件版本 -->
 		<maven.gpg.version>3.0.1</maven.gpg.version>
 		<maven.jar.version>3.2.0</maven.jar.version>
