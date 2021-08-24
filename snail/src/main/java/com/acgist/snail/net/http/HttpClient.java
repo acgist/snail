@@ -578,8 +578,8 @@ public final class HttpClient {
 		}
 		try {
 			return SSLContext.getDefault();
-		} catch (NoSuchAlgorithmException ex) {
-			LOGGER.error("新建SSLContext异常", ex);
+		} catch (NoSuchAlgorithmException e) {
+			LOGGER.error("新建SSLContext异常", e);
 		}
 		return null;
 	}
