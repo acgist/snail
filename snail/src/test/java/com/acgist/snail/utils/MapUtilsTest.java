@@ -1,6 +1,8 @@
 package com.acgist.snail.utils;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
@@ -15,6 +17,17 @@ class MapUtilsTest extends Performance {
 		assertFalse(MapUtils.isEmpty(Map.of("1", "2")));
 		assertFalse(MapUtils.isNotEmpty(Map.of()));
 		assertTrue(MapUtils.isNotEmpty(Map.of("1", "2")));
+	}
+
+	@Test
+	void TestToUrlQuery() {
+		Map<String, String> map = null;
+		assertNull(MapUtils.toUrlQuery(map));
+		map = Map.of();
+		assertNull(MapUtils.toUrlQuery(map));
+		map = Map.of("1", "2", "3", "测试");
+		assertNotNull(MapUtils.toUrlQuery(map));
+		this.log(MapUtils.toUrlQuery(map));
 	}
 	
 }

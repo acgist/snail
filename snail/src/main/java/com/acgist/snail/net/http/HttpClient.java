@@ -11,7 +11,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -22,14 +21,12 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
-import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>HTTP客户端</p>
@@ -326,9 +323,7 @@ public final class HttpClient {
 			return this.execute(Method.POST, null);
 		} else {
 			// 请求表单数据
-			final String body = data.entrySet().stream()
-				.map(entry -> SymbolConfig.Symbol.EQUALS.join(entry.getKey(), UrlUtils.encode(entry.getValue())))
-				.collect(Collectors.joining(SymbolConfig.Symbol.AND.toString()));
+			final String body = MapUtils.toUrlQuery(data);
 			return this.execute(Method.POST, body);
 		}
 	}
