@@ -146,7 +146,7 @@ public final class StunConfig {
 				((this.id << 7) & C1_MASK) |
 				((this.id << 4) & C0_MASK) |
 				methodType.id
-			) & TYPE_MASK);
+			) & MessageType.TYPE_MASK);
 		}
 		
 		/**
@@ -157,6 +157,7 @@ public final class StunConfig {
 		 * @return 方法类型
 		 */
 		public static final MessageType of(short value) {
+			value = (short) (value & MessageType.TYPE_MASK);
 			final byte id = (byte) (((value & C1_MASK) >> 7) | ((value & C0_MASK) >> 4));
 			final var types = MessageType.values();
 			for (MessageType messageType : types) {

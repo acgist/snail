@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.config.StunConfig.AttributeType;
-import com.acgist.snail.config.StunConfig.MessageType;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.StunContext;
 import com.acgist.snail.context.exception.NetException;
@@ -94,7 +93,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 */
 	@Override
 	public void onReceive(ByteBuffer buffer, InetSocketAddress socketAddress) throws NetException {
-		final short type = (short) (buffer.getShort() & MessageType.TYPE_MASK);
+		final short type = buffer.getShort();
 		final var messageType = StunConfig.MessageType.of(type);
 		if(messageType == null) {
 			LOGGER.warn("处理STUN消息错误（未知类型）：{}", type);
@@ -110,13 +109,8 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final byte[] transactionId = new byte[StunConfig.TRANSACTION_ID_LENGTH];
 		buffer.get(transactionId);
 		switch (messageType) {
-		case RESPONSE_SUCCESS:
-		case RESPONSE_ERROR:
-			this.loopResponseAttribute(buffer);
-			break;
-		default:
-			LOGGER.warn("处理STUN消息错误（类型未适配）：{}", messageType);
-			break;
+		case RESPONSE_SUCCESS, RESPONSE_ERROR -> this.loopResponseAttribute(buffer);
+		default -> LOGGER.warn("处理STUN消息错误（类型未适配）：{}", messageType);
 		}
 	}
 	
