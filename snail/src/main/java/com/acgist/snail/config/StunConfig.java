@@ -157,8 +157,8 @@ public final class StunConfig {
 		 * @return 方法类型
 		 */
 		public static final MessageType of(short value) {
-			value = (short) (value & MessageType.TYPE_MASK);
-			final byte id = (byte) (((value & C1_MASK) >> 7) | ((value & C0_MASK) >> 4));
+			final short type = (short) (value & MessageType.TYPE_MASK);
+			final byte id = (byte) (((type & C1_MASK) >> 7) | ((type & C0_MASK) >> 4));
 			final var types = MessageType.values();
 			for (MessageType messageType : types) {
 				if(messageType.id == id) {
