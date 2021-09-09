@@ -6,12 +6,11 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.pojo.bean.InfoHash;
@@ -26,8 +25,6 @@ import com.acgist.snail.utils.DigestUtils;
  */
 public final class MSECipher {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MSECipher.class);
-
 	/**
 	 * <p>加密算法名称：{@value}</p>
 	 */
@@ -40,6 +37,14 @@ public final class MSECipher {
 	 * <p>PKCS7Padding：填充对齐（块大小不固定）</p>
 	 */
 	private static final String ARC4_ALGO_TRANSFORMATION = ARC4_ALGO + "/ECB/NoPadding";
+	/**
+	 * <p>请求客户端Key：{@value}</p>
+	 */
+	private static final String KEY_SEND = "keyA";
+	/**
+	 * <p>接入客户端Key：{@value}</p>
+	 */
+	private static final String KEY_RECV = "keyB";
 
 	/**
 	 * <p>加密套件</p>
@@ -109,23 +114,19 @@ public final class MSECipher {
 	 * @param buffer 数据
 	 */
 	public void encrypt(ByteBuffer buffer) {
-		try {
-			boolean flip = true;
-			if(buffer.position() != 0) {
-				flip = false;
-				buffer.flip();
-			}
-			final byte[] value = ByteUtils.remainingToBytes(buffer);
-			byte[] encryptValue;
-			synchronized (this.encryptCipher) {
-				encryptValue = this.encryptCipher.update(value);
-			}
-			buffer.clear().put(encryptValue);
-			if(flip) {
-				buffer.flip();
-			}
-		} catch (Exception e) {
-			LOGGER.error("数据加密异常", e);
+		boolean flip = true;
+		if(buffer.position() != 0) {
+			flip = false;
+			buffer.flip();
+		}
+		final byte[] value = ByteUtils.remainingToBytes(buffer);
+		byte[] encryptValue;
+		synchronized (this.encryptCipher) {
+			encryptValue = this.encryptCipher.update(value);
+		}
+		buffer.clear().put(encryptValue);
+		if(flip) {
+			buffer.flip();
 		}
 	}
 	
@@ -143,7 +144,7 @@ public final class MSECipher {
 			synchronized (this.encryptCipher) {
 				return this.encryptCipher.doFinal(bytes);
 			}
-		} catch (Exception e) {
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
 			throw new NetException("数据加密异常", e);
 		}
 	}
@@ -154,23 +155,19 @@ public final class MSECipher {
 	 * @param buffer 数据
 	 */
 	public void decrypt(ByteBuffer buffer) {
-		try {
-			boolean flip = true;
-			if(buffer.position() != 0) {
-				flip = false;
-				buffer.flip();
-			}
-			final byte[] value = ByteUtils.remainingToBytes(buffer);
-			byte[] decryptValue;
-			synchronized (this.decryptCipher) {
-				decryptValue = this.decryptCipher.update(value);
-			}
-			buffer.clear().put(decryptValue);
-			if(flip) {
-				buffer.flip();
-			}
-		} catch (Exception e) {
-			LOGGER.error("数据解密异常", e);
+		boolean flip = true;
+		if(buffer.position() != 0) {
+			flip = false;
+			buffer.flip();
+		}
+		final byte[] value = ByteUtils.remainingToBytes(buffer);
+		byte[] decryptValue;
+		synchronized (this.decryptCipher) {
+			decryptValue = this.decryptCipher.update(value);
+		}
+		buffer.clear().put(decryptValue);
+		if(flip) {
+			buffer.flip();
 		}
 	}
 	
@@ -188,7 +185,7 @@ public final class MSECipher {
 			synchronized (this.decryptCipher) {
 				return this.decryptCipher.doFinal(bytes);
 			}
-		} catch (Exception e) {
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
 			throw new NetException("数据解密异常", e);
 		}
 	}
@@ -202,7 +199,7 @@ public final class MSECipher {
 	 * @return Key
 	 */
 	private static final Key buildSendKey(byte[] secret, byte[] skey) {
-		return buildKey("keyA", secret, skey);
+		return buildKey(KEY_SEND, secret, skey);
 	}
 
 	/**
@@ -214,7 +211,7 @@ public final class MSECipher {
 	 * @return Key
 	 */
 	private static final Key buildRecvKey(byte[] secret, byte[] skey) {
-		return buildKey("keyB", secret, skey);
+		return buildKey(KEY_RECV, secret, skey);
 	}
 
 	/**
