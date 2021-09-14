@@ -59,6 +59,18 @@ public final class MSECryptHandshakeHandler {
 	 * <p>缓冲区大小：{@value}</p>
 	 */
 	private static final int BUFFER_LENGTH = 4 * SystemConfig.ONE_KB;
+	/**
+	 * req1
+	 */
+	private static final byte[] REQ1 = "req1".getBytes();
+	/**
+	 * req2
+	 */
+	private static final byte[] REQ2 = "req2".getBytes();
+	/**
+	 * req3
+	 */
+	private static final byte[] REQ3 = "req3".getBytes();
 	
 	/**
 	 * <p>加密握手步骤</p>
@@ -252,11 +264,9 @@ public final class MSECryptHandshakeHandler {
 				}
 			}
 		} catch (NetException e) {
-			LOGGER.debug("加密握手异常：使用明文");
 			this.plaintext();
 			throw e;
 		} catch (Exception e) {
-			LOGGER.debug("加密握手异常：使用明文");
 			this.plaintext();
 			throw new NetException("加密握手失败", e);
 		}
@@ -419,16 +429,16 @@ public final class MSECryptHandshakeHandler {
 		ByteBuffer message = ByteBuffer.allocate(40);
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
-		digest.update("req1".getBytes());
+		digest.update(REQ1);
 		digest.update(dhSecretBytes);
 		message.put(digest.digest());
 //		HASH('req2', SKEY) xor HASH('req3', S)
 		digest.reset();
-		digest.update("req2".getBytes());
+		digest.update(REQ2);
 		digest.update(infoHash.infoHash());
 		final byte[] req2 = digest.digest();
 		digest.reset();
-		digest.update("req3".getBytes());
+		digest.update(REQ3);
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
 		message.put(ArrayUtils.xor(req2, req3));
@@ -467,7 +477,7 @@ public final class MSECryptHandshakeHandler {
 		final byte[] dhSecretBytes = NumberUtils.encodeBigInteger(this.dhSecret, CryptConfig.PUBLIC_KEY_LENGTH);
 		final MessageDigest digest = DigestUtils.sha1();
 //		HASH('req1', S)
-		digest.update("req1".getBytes());
+		digest.update(REQ1);
 		digest.update(dhSecretBytes);
 		final byte[] req1 = digest.digest();
 		// 匹配数据
@@ -488,14 +498,14 @@ public final class MSECryptHandshakeHandler {
 		final byte[] req2x3Peer = new byte[20];
 		this.buffer.get(req2x3Peer);
 		digest.reset();
-		digest.update("req3".getBytes());
+		digest.update(REQ3);
 		digest.update(dhSecretBytes);
 		final byte[] req3 = digest.digest();
 		InfoHash infoHash = null;
 		// 获取种子信息
 		for (InfoHash infoHashMatch : TorrentContext.getInstance().allInfoHash()) {
 			digest.reset();
-			digest.update("req2".getBytes());
+			digest.update(REQ2);
 			digest.update(infoHashMatch.infoHash());
 			final byte[] req2 = digest.digest();
 			if (Arrays.equals(ArrayUtils.xor(req2, req3), req2x3Peer)) {

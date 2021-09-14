@@ -29,7 +29,7 @@ public final class MSEPaddingSync {
 	/**
 	 * <p>剩余Padding数据长度</p>
 	 */
-	private short length = -1;
+	private short length;
 	/**
 	 * <p>Padding数据集合</p>
 	 */
@@ -39,6 +39,7 @@ public final class MSEPaddingSync {
 	 * @param count Padding数据数量
 	 */
 	private MSEPaddingSync(int count) {
+		this.length = -1;
 		this.count = count;
 		this.list = new ArrayList<>(count);
 	}
@@ -99,7 +100,7 @@ public final class MSEPaddingSync {
 			buffer.compact().flip();
 			return this.sync(buffer);
 		} else {
-			// 数据不完整
+			// 数据缺失
 			buffer.get(this.bytes, this.bytes.length - this.length, remaining);
 			this.length -= remaining;
 			buffer.compact();
