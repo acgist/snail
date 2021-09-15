@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -30,14 +31,26 @@ class VerifyTest extends Performance {
 		final String snailPomPath = basePath + "snail/pom.xml";
 		final String snailJavaFXPomPath = basePath + "snail-javafx/pom.xml";
 		final String systemConfigPath = basePath + "snail/src/main/resources/config/system.properties";
+		final String githubBuildPath = basePath + ".github/workflows/build.yml";
+		final String githubPackagePath = basePath + ".github/workflows/package.yml";
+		final String githubCodeqlAnalysisPath = basePath + ".github/workflows/codeql-analysis.yml";
 		final String parentPomVersion = xml(parentPomPath, "version");
-		this.log("当前版本：{}", parentPomVersion);
+		final String javaVersion = xml(parentPomPath, "java.version");
+		final String javafxVersion = xml(parentPomPath, "javafx.version");
+		this.log("当前版本：{}-{}", parentPomVersion, javaVersion);
+		assertEquals(javaVersion, javafxVersion);
 		final String snailPomVersion = xml(snailPomPath, "version");
 		assertEquals(parentPomVersion, snailPomVersion);
 		final String snailJavaFXPomVersion = xml(snailJavaFXPomPath, "version");
 		assertEquals(parentPomVersion, snailJavaFXPomVersion);
 		final String systemConfigVersion = property(systemConfigPath, "acgist.system.version");
 		assertEquals(parentPomVersion, systemConfigVersion);
+		final String githubBuildVersion = this.githubYml(githubBuildPath, "java-version");
+		assertEquals(javaVersion, githubBuildVersion);
+		final String githubPackageVersion = this.githubYml(githubPackagePath, "java-version");
+		assertEquals(javaVersion, githubPackageVersion);
+		final String githubCodeqlAnalysisVersion = this.githubYml(githubCodeqlAnalysisPath, "java-version");
+		assertEquals(javaVersion, githubCodeqlAnalysisVersion);
 	}
 	
 	private String xml(String path, String name) {
@@ -51,6 +64,13 @@ class VerifyTest extends Performance {
 		final Properties properties = new Properties();
 		properties.load(input);
 		return properties.getProperty(name);
+	}
+	
+	private String githubYml(String path, String name) throws IOException {
+		return Files.readAllLines(Paths.get(path)).stream()
+			.filter(line -> line.trim().startsWith(name))
+			.map(line -> line.trim().substring(name.length() + 1).trim())
+			.findFirst().get();
 	}
 	
 	@Test
