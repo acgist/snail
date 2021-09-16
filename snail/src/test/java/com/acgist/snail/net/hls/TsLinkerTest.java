@@ -19,10 +19,6 @@ class TsLinkerTest extends Performance {
 
 	@Test
 	void testLink() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testLink测试");
-			return;
-		}
 		final String name = "测试";
 		final String filePath = "E:\\snail\\m3u8";
 		final File parent = new File(filePath);

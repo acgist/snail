@@ -14,10 +14,6 @@ class StatisticsContextTest extends Performance {
 
 	@Test
 	void testStatisticsContext() {
-		if(SKIP_COSTED) {
-			this.log("跳过testStatisticsContext测试");
-			return;
-		}
 		assertNotNull(StatisticsContext.getInstance());
 		assertNotNull(StatisticsContext.getInstance().statistics());
 		assertEquals(0, StatisticsContext.getInstance().uploadSpeed());

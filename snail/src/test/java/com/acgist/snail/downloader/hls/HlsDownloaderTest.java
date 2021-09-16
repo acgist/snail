@@ -34,10 +34,6 @@ class HlsDownloaderTest extends Performance {
 	
 	@Test
 	void testHlsDownloader() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testHlsDownloader测试");
-			return;
-		}
 //		final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"; // 流媒体
 		final String url = "https://iqiyi.cdn9-okzy.com/20201004/16201_5314e9ac/index.m3u8";
 //		final String url = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8";

@@ -28,10 +28,6 @@ class FtpDownloaderTest extends Performance {
 
 	@Test
 	void testFtpDownloader() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testFtpDownloader测试");
-			return;
-		}
 		final String url = "ftp://localhost/ftp/中文文件.exe";
 //		final String url = "ftp://localhost/ftp/FTPserver.exe";
 		ProtocolContext.getInstance().register(FtpProtocol.getInstance()).available(true);

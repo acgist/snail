@@ -17,10 +17,6 @@ class FtpClientTest extends Performance {
 
 	@Test
 	void testDownload() throws FileNotFoundException, IOException, NetException {
-		if(SKIP_COSTED) {
-			this.log("跳过testDownload测试");
-			return;
-		}
 		final String path = "ftp://localhost/ftp/中文文件.exe";
 //		final String path = "ftp://localhost/ftp/FTPserver.exe";
 		final var client = FtpClient.newInstance(path);

@@ -17,10 +17,6 @@ class DhtLauncherTest extends Performance {
 
 	@Test
 	void testDhtLauncher() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testDhtLauncher测试");
-			return;
-		}
 		if(NodeContext.getInstance().nodes().isEmpty()) {
 			this.log("没有系统节点");
 			return;

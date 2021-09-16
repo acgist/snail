@@ -15,10 +15,6 @@ class TaskbarsTest extends Performance {
 
 	@Test
 	void testTaskbars() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		if(SKIP_COSTED) {
-			this.log("跳过testTaskbars测试");
-			return;
-		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		final JFrame frame = new JFrame("进度测试");

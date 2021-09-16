@@ -46,10 +46,6 @@ class TorrentDownloaderTest extends Performance {
 
 	@Test
 	void testTorrentDownloader() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testTorrentDownloader测试");
-			return;
-		}
 		TorrentInitializer.newInstance().sync();
 		final String url = "E://snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		ProtocolContext.getInstance().register(TorrentProtocol.getInstance()).available(true);

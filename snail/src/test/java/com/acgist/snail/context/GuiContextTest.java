@@ -47,10 +47,6 @@ class GuiContextTest extends Performance {
 	
 	@Test
 	void testExtend() {
-		if(SKIP_COSTED) {
-			this.log("跳过testExtend测试");
-			return;
-		}
 		LOGGER.info("系统开始启动");
 		SystemContext.info();
 		SystemContext.build(); // 初始化系统上下文
@@ -66,10 +62,6 @@ class GuiContextTest extends Performance {
 	
 	@Test
 	void testSocket() {
-		if(SKIP_COSTED) {
-			this.log("跳过testSocket测试");
-			return;
-		}
 		String message = null;
 		final Scanner scanner = new Scanner(System.in);
 		final ApplicationClient client = ApplicationClient.newInstance();

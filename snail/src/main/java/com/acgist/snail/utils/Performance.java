@@ -16,30 +16,7 @@ import com.acgist.snail.context.SystemThreadContext;
  */
 public abstract class Performance {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(Performance.class);
-	
-	/**
-	 * <p>跳过执行方法属性：{@value}</p>
-	 */
-	private static final String SKIP_COSTED_NAME = "skipCosted";
-	/**
-	 * <p>是否跳过执行方法：{@value}</p>
-	 */
-	private static final String SKIP_COSTED_SKIP = "skip";
-	/**
-	 * <p>是否跳过执行方法：{@value}</p>
-	 */
-	private static final String SKIP_COSTED_TRUE = "true";
-	/**
-	 * <p>是否跳过执行方法</p>
-	 * <p>跳过执行方法：性能测试、测试时间过长</p>
-	 */
-	protected static final boolean SKIP_COSTED;
-	
-	static {
-		final String skipCosted = System.getProperty(SKIP_COSTED_NAME);
-		SKIP_COSTED = SKIP_COSTED_SKIP.equalsIgnoreCase(skipCosted) || SKIP_COSTED_TRUE.equalsIgnoreCase(skipCosted);
-	}
+	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * <p>消耗时间统计</p>
@@ -104,10 +81,6 @@ public abstract class Performance {
 	 * @return 消耗时间
 	 */
 	protected final long costed(int count, Coster coster) {
-		if(SKIP_COSTED) {
-			this.log("跳过消耗测试");
-			return 0L;
-		}
 		this.cost();
 		for (int index = 0; index < count; index++) {
 			coster.execute();
@@ -125,10 +98,6 @@ public abstract class Performance {
 	 * @return 消耗时间
 	 */
 	protected final long costed(int count, int thread, Coster coster) {
-		if(SKIP_COSTED) {
-			this.log("跳过消耗测试");
-			return 0L;
-		}
 		final var latch = new CountDownLatch(count);
 		final var executor = SystemThreadContext.newExecutor(thread, thread, count, 60L, SystemThreadContext.SNAIL_THREAD_COSTED);
 		this.cost();
@@ -164,7 +133,7 @@ public abstract class Performance {
 		/**
 		 * <p>执行任务</p>
 		 */
-		public void execute();
+		void execute();
 		
 	}
 	

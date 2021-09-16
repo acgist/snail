@@ -67,10 +67,6 @@ class SnailTest extends Performance {
 	
 	@Test
 	void testLockDownload() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testLockDownload测试");
-			return;
-		}
 		final Snail snail = SnailBuilder.newBuilder()
 			.enableHttp()
 			.buildSync();
@@ -86,10 +82,6 @@ class SnailTest extends Performance {
 
 	@Test
 	void testMagnet() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testMagnet测试");
-			return;
-		}
 		final Snail snail = SnailBuilder.newBuilder()
 			.enableMagnet()
 			.buildSync();

@@ -12,10 +12,6 @@ class UpnpClientTest extends Performance {
 
 	@Test
 	void testMSearch() {
-		if(SKIP_COSTED) {
-			this.log("跳过testMSearch测试");
-			return;
-		}
 		UpnpClient.newInstance().mSearch();
 		ThreadUtils.sleep(5000);
 		assertNotNull(SystemConfig.getExternalIPAddress());
