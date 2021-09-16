@@ -30,10 +30,6 @@ class WindowsRecycleTest extends Performance {
 	
 	@Test
 	void testFileInfo() throws IOException {
-		if(SKIP_COSTED) {
-			this.log("跳过testRecycle测试");
-			return;
-		}
 		final var bytes = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I80331708.zip"));
 		this.log(StringUtils.hex(bytes));
 		assertNotNull(bytes);

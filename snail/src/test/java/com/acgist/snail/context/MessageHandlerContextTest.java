@@ -14,10 +14,6 @@ class MessageHandlerContextTest extends Performance {
 	
 	@Test
 	void testMessageHandlerContext() {
-		if(SKIP_COSTED) {
-			this.log("跳过testMessageHandlerContext测试");
-			return;
-		}
 		final var context = MessageHandlerContext.getInstance();
 		final var handler = new UdpMessageHandler(null) {
 			@Override

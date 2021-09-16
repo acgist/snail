@@ -31,8 +31,6 @@
 		<!-- Maven插件版本 -->
 		<maven.gpg.version>3.0.1</maven.gpg.version>
 		<maven.jar.version>3.2.0</maven.jar.version>
-		<maven.nexus.version>1.6.8</maven.nexus.version>
-		<maven.jacoco.version>0.8.7</maven.jacoco.version>
 		<maven.source.version>3.2.1</maven.source.version>
 		<maven.javadoc.version>3.3.0</maven.javadoc.version>
 		<maven.compiler.version>3.8.1</maven.compiler.version>
@@ -97,10 +95,6 @@
 				<artifactId>maven-resources-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
@@ -119,10 +113,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	
@@ -201,43 +191,6 @@
 									</resource>
 								</resources>
 							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<!--
-				测试报告：
-					mvn test jacoco:report
-					mvn test jacoco:prepare-agent
-				质检报告：
-					mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token"
-				排除性能测试：-D skipCosted=skip|true
-				忽略没有测试：-D failIfNoTests=false
-				设置测试路径：-D "test=com.acgist.snail.*"
-				跳过测试代码（编译测试代码）：-D skipTests=true
-				跳过测试代码（跳过编译测试代码）：-D maven.test.skip=true
-				-->
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>${maven.jacoco.version}</version>
-					<configuration>
-						<skip>${skipTests}</skip>
-						<!--
-						<skip>${maven.test.skip}</skip>
-						-->
-					</configuration>
-					<executions>
-						<!--
-						生成测试数据：
-							必须显式调用
-							提供Sonar展示
-							生命周期（phase）默认或者必须前于test-compile
-						-->
-						<execution>
-							<id>prepare-agent</id>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
 						</execution>
 					</executions>
 				</plugin>
@@ -381,23 +334,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 发布项目：mvn deploy -->
-				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>${maven.nexus.version}</version>
-					<extensions>true</extensions>
-					<configuration>
-						<serverId>sonatype_releases</serverId>
-						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<!-- close后自动release -->
-						<autoReleaseAfterClose>false</autoReleaseAfterClose>
-						<!-- release后自动drop -->
-						<!--
-						<autoDropAfterRelease>true</autoDropAfterRelease>
-						-->
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -414,7 +350,6 @@
 			<!--
 			GUI：JavaFX
 			隐式依赖：javafx-base、javafx-controls、javafx-graphics
-			
 			编译系统和运行系统不一致时：
 				1.添加编译参数：-D javafx.platform=win|mac|linux
 				2.添加依赖属性：<classifier>win|mac|linux</classifier>
@@ -494,9 +429,10 @@
 		<system>Gitee Issues</system>
 	</issueManagement>
 	
-	<!-- mvn clean package deploy -P release -D skipTests -->
 	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
+	<!-- mvn clean package deploy -P release -D skipTests -->
+	<!-- mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token" -->
 	<distributionManagement>
 		<repository>
 			<id>sonatype_releases</id>

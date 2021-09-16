@@ -34,10 +34,6 @@ class MagnetDownloaderTest extends Performance {
 
 	@Test
 	void testMagnetDownloader() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testMagnetDownloader测试");
-			return;
-		}
 		TorrentInitializer.newInstance().sync();
 		// 推荐使用活跃磁力链接测试
 //		final String url = "902FFAA29EE632C8DC966ED9AB573409BA9A518E";

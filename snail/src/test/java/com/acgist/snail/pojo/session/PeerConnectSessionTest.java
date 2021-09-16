@@ -14,9 +14,6 @@ class PeerConnectSessionTest extends Performance {
 
 	@Test
 	void testPeerConnectSession() {
-		if(SKIP_COSTED) {
-			this.log("跳过testPeerConnectSession测试");
-		}
 		final PeerConnectSession session = new PeerConnectSession();
 		assertTrue(session.isAmChoked());
 		assertTrue(session.isPeerChoked());

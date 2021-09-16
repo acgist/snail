@@ -22,10 +22,6 @@ class LocalServiceDiscoveryTest extends Performance {
 	
 	@Test
 	void testServer() throws DownloadException {
-		if(SKIP_COSTED) {
-			this.log("跳过testServer测试");
-			return;
-		}
 		final var server = LocalServiceDiscoveryServer.getInstance();
 		final var entity = new TaskEntity();
 		entity.setUrl(this.hashA);
