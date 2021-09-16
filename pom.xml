@@ -23,7 +23,7 @@
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
-		<javafx.version>17</javafx.version>
+		<javafx.version>17-ea+18</javafx.version>
 		<!-- 依赖版本 -->
 		<slf4j.version>1.7.32</slf4j.version>
 		<!-- JUnit版本 -->
@@ -220,7 +220,7 @@
 				打包源码：
 					mvn source:jar
 					mvn source:test-jar
-				跳过打包源码：-D maven.source.skip=true
+				跳过源码：-D maven.source.skip=true
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -252,7 +252,7 @@
 					mvn site
 					mvn javadoc:jar
 					mvn javadoc:javadoc
-				跳过打包文档：-D maven.javadoc.skip=true
+				跳过文档：-D maven.javadoc.skip=true
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -317,7 +317,7 @@
 				</plugin>
 				<!--
 				生成签名：mvn verify
-				跳过生成签名：-D gpg.skip=true
+				跳过签名：-D gpg.skip=true
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
