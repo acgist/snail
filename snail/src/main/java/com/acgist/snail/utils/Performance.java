@@ -39,8 +39,15 @@ public abstract class Performance {
 	 * @param args 日志参数
 	 */
 	protected final void log(String message, Object ... args) {
-		if(message == null) {
+		if(args == null) {
+			return;
+		}
+		int argLength = args.length;
+		if(message == null && argLength != 0) {
 			message = "{}";
+			if(argLength > 1) {
+				message += "-{}".repeat(argLength - 1);
+			}
 		}
 		LOGGER.info(message, args);
 	}
@@ -62,12 +69,7 @@ public abstract class Performance {
 		final long time = System.currentTimeMillis();
 		final long costed = time - this.costTime.getAndSet(time);
 		if(LOGGER.isInfoEnabled()) {
-			LOGGER.info("""
-				消耗时间（毫秒）：{}
-				消耗时间（秒）：{}""",
-				costed,
-				costed / SystemConfig.ONE_SECOND_MILLIS
-			);
+			LOGGER.info("消耗时间（毫秒-秒）：{}-{}", costed, costed / SystemConfig.ONE_SECOND_MILLIS);
 		}
 		return costed;
 	}
