@@ -247,10 +247,21 @@ public class DhtResponse extends DhtMessage {
 	 * 
 	 * @return 错误响应
 	 */
+	public static final DhtResponse buildErrorResponse(byte[] id, DhtConfig.ErrorCode code, String message) {
+		return buildErrorResponse(id, code.code(), message);
+	}
+	
+	/**
+	 * <p>生成错误响应</p>
+	 * 
+	 * @param id 响应ID
+	 * @param code 错误编码
+	 * @param message 错误描述
+	 * 
+	 * @return 错误响应
+	 */
 	public static final DhtResponse buildErrorResponse(byte[] id, int code, String message) {
-		final List<Object> list = new ArrayList<>(2);
-		list.add(code);
-		list.add(message);
+		final List<Object> list = List.of(code, message);
 		return new DhtResponse(id, DhtConfig.KEY_R, null, list);
 	}
 	

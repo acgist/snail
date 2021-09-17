@@ -90,7 +90,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 		final QType type = request.getQ();
 		if(type == null) {
 			LOGGER.warn("处理DHT请求失败（未知类型）：{}", type);
-			response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_204.code(), "不支持的请求类型");
+			response = DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_204, "不支持的请求类型");
 		} else {
 			LOGGER.debug("处理DHT请求：{}", type);
 			response = switch (type) {
@@ -100,7 +100,7 @@ public final class DhtMessageHandler extends UdpMessageHandler {
 				case ANNOUNCE_PEER -> this.announcePeer(request);
 				default -> {
 					LOGGER.warn("处理DHT请求失败（类型未适配）：{}", type);
-					yield DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202.code(), "未适配的请求类型");
+					yield DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_202, "未适配的请求类型");
 				}
 			};
 		}
