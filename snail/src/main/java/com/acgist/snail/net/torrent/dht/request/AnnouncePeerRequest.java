@@ -61,7 +61,7 @@ public final class AnnouncePeerRequest extends DhtRequest {
 		final byte[] token = request.getBytes(DhtConfig.KEY_TOKEN);
 		// 验证Token
 		if(!Arrays.equals(token, DhtContext.getInstance().token())) {
-			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203.code(), "Token错误"));
+			return AnnouncePeerResponse.newInstance(DhtResponse.buildErrorResponse(request.getT(), ErrorCode.CODE_203, "Token错误"));
 		}
 		final byte[] infoHash = request.getBytes(DhtConfig.KEY_INFO_HASH);
 		final String infoHashHex = StringUtils.hex(infoHash);
