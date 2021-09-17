@@ -23,7 +23,7 @@
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
-		<javafx.version>17-ea+18</javafx.version>
+		<javafx.version>17</javafx.version>
 		<!-- 依赖版本 -->
 		<slf4j.version>1.7.32</slf4j.version>
 		<!-- JUnit版本 -->
@@ -432,7 +432,6 @@
 	<!-- https://oss.sonatype.org/ -->
 	<!-- https://issues.sonatype.org/browse/OSSRH-51336 -->
 	<!-- mvn clean package deploy -P release -D skipTests -->
-	<!-- mvn sonar:sonar -D "sonar.projectKey=snail" -D "sonar.host.url=http://localhost:9000" -D "sonar.login=token" -->
 	<distributionManagement>
 		<repository>
 			<id>sonatype_releases</id>
