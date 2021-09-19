@@ -148,12 +148,13 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void unlockDownload() {
-		Snail.getInstance().unlockDownload();
 	}
 	
 	@Override
 	public void release() {
 		SystemContext.gc();
+		// 注意：任务释放完成解锁（防止提前退出程序导致数据没有保存）
+		Snail.getInstance().unlockDownload();
 	}
 
 	@Override
