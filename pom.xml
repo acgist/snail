@@ -23,7 +23,7 @@
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
-		<javafx.version>17</javafx.version>
+		<javafx.version>17.0.0.1</javafx.version>
 		<!-- 依赖版本 -->
 		<slf4j.version>1.7.32</slf4j.version>
 		<!-- JUnit版本 -->
