@@ -67,7 +67,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 ```
 
 ```java
-final Snail snail = SnailBuilder.getInstance()
+final Snail snail = SnailBuilder.newBuilder()
 	.enableAllProtocol()
 	.buildSync();
 // BT任务需要注册文件选择事件
