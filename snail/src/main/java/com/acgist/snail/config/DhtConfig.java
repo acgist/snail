@@ -101,12 +101,36 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * <p>节点列表：{@value}</p>
+	 * <p>IPv4节点列表：{@value}</p>
 	 * 
 	 * @see QType#FIND_NODE
 	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_NODES = "nodes";
+	/**
+	 * <p>IPv6节点列表：{@value}</p>
+	 * 
+	 * @see QType#FIND_NODE
+	 * @see QType#GET_PEERS
+	 */
+	public static final String KEY_NODES6 = "nodes6";
+	/**
+	 * <p>IPv4节点</p>
+	 */
+	public static final String KEY_WANT_N4 = "n4";
+	/**
+	 * <p>IPv6节点</p>
+	 */
+	public static final String KEY_WANT_N6 = "n6";
+	/**
+	 * <p>请求返回节点类型</p>
+	 * 
+	 * @see QType#FIND_NODE
+	 * @see QType#GET_PEERS
+	 * @see #KEY_WANT_N4
+	 * @see #KEY_WANT_N6
+	 */
+	public static final String KEY_WANT = "want";
 	/**
 	 * <p>Peer列表：{@value}</p>
 	 * 

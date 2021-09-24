@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.utils.BeanUtils;
+import com.acgist.snail.utils.NetUtils;
 
 /**
  * <p>DHT消息</p>
@@ -78,6 +79,26 @@ public abstract class DhtMessage {
 	 */
 	public void setSocketAddress(InetSocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
+	}
+	
+	/**
+	 * <p>判断客户端是否是IPv4</p>
+	 * 
+	 * @return 是否是IPv4
+	 */
+	protected boolean ipv4() {
+		final String host = this.socketAddress.getHostString();
+		return NetUtils.ipv4(host);
+	}
+	
+	/**
+	 * <p>判断客户端是否是IPv6</p>
+	 * 
+	 * @return 是否是IPv6
+	 */
+	protected boolean ipv6() {
+		final String host = this.socketAddress.getHostString();
+		return NetUtils.ipv6(host);
 	}
 	
 	/**

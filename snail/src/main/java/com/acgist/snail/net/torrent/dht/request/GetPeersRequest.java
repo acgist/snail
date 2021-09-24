@@ -47,7 +47,7 @@ public final class GetPeersRequest extends DhtRequest {
 
 	/**
 	 * <p>处理请求</p>
-	 * <p>能够查找到Peer返回Peer，反之返回最近的Node节点。</p>
+	 * <p>尽量返回Peer否者返回最近Node节点</p>
 	 * 
 	 * @param request 请求
 	 * 
@@ -85,6 +85,7 @@ public final class GetPeersRequest extends DhtRequest {
 		if(needNodes) {
 			// 返回Node
 			final var nodes = NodeContext.getInstance().findNode(infoHash);
+			// TODO：want
 			response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		}
 		return response;

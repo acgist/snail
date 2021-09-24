@@ -56,6 +56,7 @@ public final class FindNodeResponse extends DhtResponse {
 	 * @return 节点列表
 	 */
 	public List<NodeSession> getNodes() {
+		// TODO：want
 		return this.deserializeNodes(DhtConfig.KEY_NODES);
 	}
 	

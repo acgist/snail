@@ -30,6 +30,7 @@ import com.acgist.snail.utils.StringUtils;
  * <p>DHT消息代理</p>
  * <p>DHT Protocol</p>
  * <p>协议链接：http://www.bittorrent.org/beps/bep_0005.html</p>
+ * <p>协议链接：http://www.bittorrent.org/beps/bep_0032.html</p>
  * 
  * @author acgist
  */
