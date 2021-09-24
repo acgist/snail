@@ -40,6 +40,7 @@ public final class FindNodeRequest extends DhtRequest {
 		final FindNodeResponse response = FindNodeResponse.newInstance(request);
 		final byte[] target = request.getBytes(DhtConfig.KEY_TARGET);
 		final var nodes = NodeContext.getInstance().findNode(target);
+		// TODO：want
 		response.put(DhtConfig.KEY_NODES, serializeNodes(nodes));
 		return response;
 	}

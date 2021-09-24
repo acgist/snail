@@ -170,6 +170,49 @@ public class DhtRequest extends DhtMessage {
 	}
 	
 	/**
+	 * <p>判断节点是否支持IPv4</p>
+	 * 
+	 * @return 是否支持IPv4
+	 */
+	protected boolean nodesIPv4() {
+		final List<?> want = this.getList(DhtConfig.KEY_WANT);
+		return this.nodesContain(want, DhtConfig.KEY_WANT_N4);
+	}
+	
+	/**
+	 * <p>判断节点是否支持IPv6</p>
+	 * 
+	 * @return 是否支持IPv6
+	 */
+	protected boolean nodesIPv6() {
+		final List<?> want = this.getList(DhtConfig.KEY_WANT);
+		return this.nodesContain(want, DhtConfig.KEY_WANT_N6);
+	}
+	
+	/**
+	 * <p>判断集合是否包含数据</p>
+	 * 
+	 * @param list 集合
+	 * @param value 数据
+	 * 
+	 * @return 是否包含
+	 */
+	private boolean nodesContain(List<?> list, String value) {
+		if(CollectionUtils.isEmpty(list)) {
+			return false;
+		}
+		for (Object object : list) {
+			if(
+				object instanceof byte[] bytes &&
+				value.equals(new String(bytes))
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * <p>序列化节点列表</p>
 	 * 
 	 * @param nodes 节点列表

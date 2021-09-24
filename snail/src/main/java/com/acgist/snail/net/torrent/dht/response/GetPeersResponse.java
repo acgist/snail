@@ -76,6 +76,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * @return 节点列表
 	 */
 	public List<NodeSession> getNodes() {
+		// TODO：want
 		return this.deserializeNodes(DhtConfig.KEY_NODES);
 	}
 
@@ -134,6 +135,7 @@ public final class GetPeersResponse extends DhtResponse {
 	 * @return 是否含有节点
 	 */
 	public boolean hasNodes() {
+		// TODO：want
 		return this.get(DhtConfig.KEY_NODES) != null;
 	}
 	
