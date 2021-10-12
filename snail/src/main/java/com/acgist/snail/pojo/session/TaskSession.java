@@ -359,9 +359,15 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	
 	@Override
 	public boolean verify() {
+		// 任务状态
+		if(this.entity.getStatus() != Status.COMPLETED) {
+			return false;
+		}
+		// 下载文件
 		if(this.downloader == null) {
 			return this.downloadFile().exists();
 		}
+		// 下载任务
 		try {
 			return this.downloader.verify();
 		} catch (DownloadException e) {
