@@ -56,7 +56,7 @@ public final class DhtLauncher implements Runnable {
 	@Override
 	public void run() {
 		LOGGER.debug("执行DHT定时任务");
-		List<InetSocketAddress> nodes;
+		final List<InetSocketAddress> nodes;
 		synchronized (this.peerNodes) {
 			nodes = new ArrayList<>(this.peerNodes);
 			this.peerNodes.clear();
