@@ -129,13 +129,10 @@ public final class HttpClient {
 	static {
 		final StringBuilder userAgentBuilder = new StringBuilder();
 		userAgentBuilder
-			.append("Mozilla/5.0")
-			.append(" ")
-			.append("(compatible; ")
 			.append(SystemConfig.getNameEn())
 			.append("/")
 			.append(SystemConfig.getVersion())
-			.append("; +")
+			.append(" (+")
 			.append(SystemConfig.getSupport())
 			.append(")");
 		USER_AGENT = userAgentBuilder.toString();
