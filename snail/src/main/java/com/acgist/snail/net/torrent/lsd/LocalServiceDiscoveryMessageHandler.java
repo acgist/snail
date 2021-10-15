@@ -70,13 +70,13 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 		final String host = address.getHostString();
 		final String port = headers.header(HEADER_PORT);
 		final String cookie = headers.header(HEADER_COOKIE);
-		final List<String> infoHashHexs = headers.headerList(HEADER_INFOHASH);
-		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(infoHashHexs)) {
+		final List<String> list = headers.headerList(HEADER_INFOHASH);
+		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(list)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
 			if(Arrays.equals(peerId, PeerConfig.getInstance().peerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
-				infoHashHexs.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));
+				list.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));
 			}
 		} else {
 			LOGGER.debug("本地发现消息处理失败：{}", message);
