@@ -33,7 +33,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	/**
 	 * <p>LSD组播地址（IPv4）：{@value}</p>
 	 */
-	private static final String LSD_HOST = "239.192.152.143";
+	private static final String LSD_HOST_IPV4 = "239.192.152.143";
 	/**
 	 * <p>LSD组播地址（IPv6）：{@value}</p>
 	 */
@@ -74,7 +74,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	 */
 	public static final String lsdHost() {
 		if(NetUtils.localIPv4()) {
-			return LSD_HOST;
+			return LSD_HOST_IPV4;
 		} else {
 			return LSD_HOST_IPV6;
 		}
