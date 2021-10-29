@@ -119,7 +119,7 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 
 ##### 注意
 
-* 打包命令需要JDK16+
+* 打包命令需要安装正确Java环境
 * 参数`pack`可选：是否打包
 
 ##### Windows

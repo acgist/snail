@@ -39,16 +39,18 @@ public abstract class MultifileDownloader extends Downloader {
 
 	@Override
 	public void download() throws DownloadException {
-		while(this.downloadable()) {
+		if(this.downloadable()) {
 			synchronized (this.downloadLock) {
-				try {
-					// 防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
-					this.downloadLock.wait(Long.MAX_VALUE);
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					LOGGER.debug("线程等待异常", e);
+				while(this.downloadable()) {
+					try {
+						// 防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
+						this.downloadLock.wait(Long.MAX_VALUE);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
+					}
+					this.completed = this.checkCompleted();
 				}
-				this.completed = this.checkCompleted();
 			}
 		}
 	}

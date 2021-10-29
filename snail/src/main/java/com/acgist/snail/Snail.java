@@ -100,14 +100,17 @@ public final class Snail {
 	 * <p>添加下载完成等待锁</p>
 	 */
 	public void lockDownload() {
-		synchronized (this) {
-			this.lock = true;
-			while(TaskContext.getInstance().downloading()) {
-				try {
-					this.wait();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					LOGGER.debug("线程等待异常", e);
+		final TaskContext context = TaskContext.getInstance();
+		if(context.downloading()) {
+			synchronized (this) {
+				this.lock = true;
+				while(context.downloading()) {
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						LOGGER.debug("线程等待异常", e);
+					}
 				}
 			}
 		}
