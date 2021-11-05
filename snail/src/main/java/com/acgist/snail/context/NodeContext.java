@@ -69,7 +69,8 @@ public final class NodeContext implements IContext {
 	private final byte[] nodeId;
 	/**
 	 * <p>节点列表</p>
-	 * <p>不要使用LinkedList：大量使用索引操作所以性能很差（如果节点数量很大建议使用其他数据结构）</p>
+	 * <p>不要使用LinkedList：大量使用索引操作所以性能很差</p>
+	 * <p>如果节点数量太多建议使用双向循环队列使用分片查询，或者提取每个节点首个字母实现一个简单树形结构。</p>
 	 */
 	private final List<NodeSession> nodes;
 	
