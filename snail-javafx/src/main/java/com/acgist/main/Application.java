@@ -52,10 +52,10 @@ public final class Application {
 		if(Snail.available()) {
 			registerGuiEvent();
 			GuiContext.getInstance().init(args).build();
+			LOGGER.info("系统启动完成");
 		} else {
-			LOGGER.debug("系统启动失败");
+			LOGGER.info("系统启动失败");
 		}
-		LOGGER.info("系统启动完成");
 	}
 	
 	/**
