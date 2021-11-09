@@ -4,6 +4,7 @@ import java.nio.channels.Channel;
 
 /**
  * <p>服务端</p>
+ * <p>注意：连接接入以后注意管理（弱引用或者管理器）防止内存泄露</p>
  * 
  * @author acgist
  */
