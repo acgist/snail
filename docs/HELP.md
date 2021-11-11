@@ -82,6 +82,14 @@
 
 ## 使用
 
+Snail基于Java开发所以支持多种平台：
+
+* Mac
+* Linux：CentOS/Ubuntu
+* Windows：7/10
+
+> 上面系统经过运行下载测试
+
 ### 环境
 
 [![Java](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600)](http://openjdk.java.net/)
