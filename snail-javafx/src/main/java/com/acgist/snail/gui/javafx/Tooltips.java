@@ -12,7 +12,7 @@ import javafx.util.Duration;
 public final class Tooltips {
 	
 	/**
-	 * <p>默认显示时间（毫秒）：{@value}</p>
+	 * <p>默认显示时间（单位：毫秒）：{@value}</p>
 	 */
 	public static final int DEFAULT_SHOW_DELAY = 200;
 	
@@ -27,16 +27,17 @@ public final class Tooltips {
 	 * @return 工具提示
 	 * 
 	 * @see #DEFAULT_SHOW_DELAY
+	 * @see #newTooltip(String, int)
 	 */
 	public static final Tooltip newTooltip(String value) {
-		return newTooltip(value, DEFAULT_SHOW_DELAY);
+		return Tooltips.newTooltip(value, DEFAULT_SHOW_DELAY);
 	}
 	
 	/**
 	 * <p>新建工具提示</p>
 	 * 
 	 * @param value 提示内容
-	 * @param millis 显示时间：毫秒
+	 * @param millis 显示时间（单位：毫秒）
 	 * 
 	 * @return 工具提示
 	 */

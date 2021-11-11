@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 
 /**
  * <p>主题助手</p>
- * <p>使用CMD命令获取（可以使用JNA调用系统接口获取）</p>
+ * <p>使用CMD命令获取（可以使用JNA调用系统接口替换）</p>
  * 
  * @author acgist
  */
@@ -62,7 +62,7 @@ public final class Themes {
 	 */
 	public static final String CLASS_TRAY = "tray";
 	/**
-	 * <p>图标样式：{@value}</p>
+	 * <p>图标样式</p>
 	 */
 	public static final String CLASS_SNAIL_ICON = "snail-icon";
 	/**
@@ -95,6 +95,7 @@ public final class Themes {
 	private static final String SYSTEM_THEME_STYLE;
 
 	static {
+		// 设置系统主题颜色
 		ITheme themeHandler = null;
 		final SystemType systemType = SystemType.local();
 		if(systemType == SystemType.WINDOWS) {
@@ -108,17 +109,15 @@ public final class Themes {
 		} else {
 			color = DEFAULT_THEME_COLOR;
 		}
-		// 系统主题颜色
 		SYSTEM_THEME_COLOR = color;
-		// 十六进制颜色：0x + RRGGBB + OPACITY
+		// 设置系统主题样式
 		final String colorHex = SYSTEM_THEME_COLOR.toString();
 		final StringBuilder themeStyle = new StringBuilder();
-		// 设置主题颜色
 		themeStyle
 			.append("-fx-snail-main-color:#")
-			.append(colorHex, 2, colorHex.length() - 2)
+			// 十六进制颜色：0x + RRGGBB + OPACITY
+			.append(colorHex, 2, 8)
 			.append(";");
-		// 系统主题样式
 		SYSTEM_THEME_STYLE = themeStyle.toString();
 	}
 	
@@ -158,7 +157,7 @@ public final class Themes {
 	 * @param icons 图标列表
 	 */
 	public static final void applyLogo(ObservableList<Image> icons) {
-		icons.add(getLogo());
+		icons.add(Themes.getLogo());
 	}
 	
 	/**
@@ -169,7 +168,7 @@ public final class Themes {
 	public static final void applyStyle(Scene scene) {
 		final Parent root = scene.getRoot();
 		// 设置主题样式
-		root.setStyle(Themes.getStyle());
+		Themes.applyStyle(root);
 		// 设置样式文件
 		root.getStylesheets().add(Themes.FXML_STYLE);
 	}
