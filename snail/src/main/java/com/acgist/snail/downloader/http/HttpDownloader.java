@@ -56,12 +56,10 @@ public final class HttpDownloader extends SingleFileDownloader {
 			} else {
 				this.taskSession.downloadSize(0L);
 			}
-		} else if(client.requestedRangeNotSatisfiable()) {
-			if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
-				this.completed = true;
-			} else {
-				this.fail("无法满足文件下载范围：" + downloadSize);
-			}
+		} else if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
+			// 优先验证下载文件大小
+			// 416：超出请求范围
+			this.completed = true;
 		} else {
 			this.fail("HTTP请求失败：" + client.code());
 		}
