@@ -40,66 +40,6 @@ public final class HttpClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
 	
 	/**
-	 * <p>HTTP状态码</p>
-	 * <p>协议链接：https://www.ietf.org/rfc/rfc2616</p>
-	 * 
-	 * @author acgist
-	 */
-	public enum StatusCode {
-		
-		/**
-		 * <p>成功</p>
-		 */
-		OK(200),
-		/**
-		 * <p>部分内容</p>
-		 * <p>断点续传</p>
-		 */
-		PARTIAL_CONTENT(206),
-		/**
-		 * <p>无法满足请求范围</p>
-		 */
-		REQUESTED_RANGE_NOT_SATISFIABLE(416),
-		/**
-		 * <p>服务器错误</p>
-		 */
-		INTERNAL_SERVER_ERROR(500);
-		
-		/**
-		 * <p>状态码</p>
-		 */
-		private final int code;
-		
-		/**
-		 * @param code 状态码
-		 */
-		private StatusCode(int code) {
-			this.code = code;
-		}
-		
-		/**
-		 * <p>获取状态码</p>
-		 * 
-		 * @return 状态码
-		 */
-		public final int code() {
-			return this.code;
-		}
-		
-		/**
-		 * <p>判断状态码是否相等</p>
-		 * 
-		 * @param code 状态码
-		 * 
-		 * @return 是否相等
-		 */
-		public final boolean verifyCode(int code) {
-			return this.code == code;
-		}
-		
-	}
-	
-	/**
 	 * <p>请求方式</p>
 	 * 
 	 * @author acgist
@@ -382,36 +322,33 @@ public final class HttpClient {
 	 * <p>判断状态码是否成功</p>
 	 * 
 	 * @return 是否成功
+	 * 
+	 * @see HttpURLConnection#HTTP_OK
 	 */
 	public boolean ok() {
-		return StatusCode.OK.verifyCode(this.code);
+		return HttpURLConnection.HTTP_OK == this.code;
 	}
 	
 	/**
 	 * <p>判断状态码是否部分内容</p>
 	 * 
 	 * @return 是否部分内容
-	 */
-	public boolean partialContent() {
-		return StatusCode.PARTIAL_CONTENT.verifyCode(this.code);
-	}
-	
-	/**
-	 * <p>判断状态码是否无法满足请求范围</p>
 	 * 
-	 * @return 是否无法满足请求范围
+	 * @see HttpURLConnection#HTTP_PARTIAL
 	 */
-	public boolean requestedRangeNotSatisfiable() {
-		return StatusCode.REQUESTED_RANGE_NOT_SATISFIABLE.verifyCode(this.code);
+	public boolean partial() {
+		return HttpURLConnection.HTTP_PARTIAL == this.code;
 	}
 	
 	/**
 	 * <p>判断状态码是否服务器错误</p>
 	 * 
 	 * @return 是否服务器错误
+	 * 
+	 * @see HttpURLConnection#HTTP_INTERNAL_ERROR
 	 */
-	public boolean internalServerError() {
-		return StatusCode.INTERNAL_SERVER_ERROR.verifyCode(this.code);
+	public boolean internalError() {
+		return HttpURLConnection.HTTP_INTERNAL_ERROR == this.code;
 	}
 	
 	/**
@@ -420,10 +357,10 @@ public final class HttpClient {
 	 * @return 是否可以下载
 	 * 
 	 * @see #ok()
-	 * @see #partialContent()
+	 * @see #partial()
 	 */
 	public boolean downloadable() {
-		return this.ok() || this.partialContent();
+		return this.ok() || this.partial();
 	}
 	
 	/**

@@ -10,7 +10,6 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
 import com.acgist.snail.net.http.HttpClient;
-import com.acgist.snail.net.http.HttpClient.StatusCode;
 import com.acgist.snail.net.upnp.UpnpRequest;
 import com.acgist.snail.net.upnp.UpnpResponse;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
@@ -183,7 +182,6 @@ public final class UpnpContext implements IContext {
 	/**
 	 * <p>端口映射信息：GetSpecificPortMappingEntry</p>
 	 * <p>请求头：SOAPAction:"urn:schemas-upnp-org:service:WANIPConnection:1#GetSpecificPortMappingEntry"</p>
-	 * <p>如果没有映射返回：{@link StatusCode#INTERNAL_SERVER_ERROR}</p>
 	 * 
 	 * @param portExt 外网端口
 	 * @param protocol 协议
@@ -202,7 +200,7 @@ public final class UpnpContext implements IContext {
 			.newInstance(this.controlUrl)
 			.header("SOAPAction", "\"" + this.serviceType + "#GetSpecificPortMappingEntry\"")
 			.post(xml);
-		if(client.internalServerError()) {
+		if(client.internalError()) {
 			return Status.MAPABLE;
 		}
 		final var body = client.responseToString();
