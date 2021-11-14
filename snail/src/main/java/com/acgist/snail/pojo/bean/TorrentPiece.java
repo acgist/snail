@@ -41,6 +41,8 @@ public final class TorrentPiece {
 	private final int length;
 	/**
 	 * <p>数据</p>
+	 * 
+	 * TODO：使用直接内存文件读写使用NIO优化（没太大必要毕竟下载最重要的问题是网络IO）
 	 */
 	private final byte[] data;
 	/**
