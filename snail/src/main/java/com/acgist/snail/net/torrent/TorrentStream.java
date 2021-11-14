@@ -98,7 +98,7 @@ public final class TorrentStream {
 	private final BlockingQueue<TorrentPiece> cachePieces;
 	/**
 	 * <p>文件流</p>
-	 * <p>使用NIO（FileChannel）没有性能提升</p>
+	 * <p>使用NIO（FileChannel或者MappedByteBuffer）没有性能提升</p>
 	 */
 	private final RandomAccessFile fileStream;
 	/**
