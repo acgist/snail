@@ -67,12 +67,13 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 		}
 		final UpnpContext upnpContext = UpnpContext.getInstance();
 		try {
-			upnpContext.load(location).mapping();
+			upnpContext.load(location);
 		} catch (NetException e) {
 			LOGGER.error("UPNP端口映射异常：{}", location, e);
 		} finally {
-			if(upnpContext.useable()) {
-				NatContext.getInstance().unlockUpnp();
+			// 可用才能释放：可能收到不是UPNP消息
+			if(upnpContext.available()) {
+				NatContext.getInstance().unlock();
 			}
 		}
 	}

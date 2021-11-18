@@ -81,20 +81,20 @@ public final class UpnpContext implements IContext {
 	private String serviceType;
 	/**
 	 * <p>是否可用</p>
-	 * <p>端口是否已经映射</p>
-	 */
-	private volatile boolean useable = false;
-	/**
-	 * <p>是否可用</p>
 	 * <p>控制连接是否已经设置</p>
 	 */
 	private volatile boolean available = false;
-	/**
-	 * <p>是否需要重新映射</p>
-	 */
-	private volatile boolean remapping = false;
 
 	private UpnpContext() {
+	}
+	
+	/**
+	 * <p>判断是否可用</p>
+	 * 
+	 * @return 是否可用
+	 */
+	public boolean available() {
+		return this.available;
 	}
 	
 	/**
@@ -132,7 +132,6 @@ public final class UpnpContext implements IContext {
 			if(StringUtils.startsWith(serviceType, SERVICE_WANIPC)) {
 				success = true;
 				this.available = true;
-				this.remapping = true;
 				this.location = location;
 				this.serviceType = serviceType;
 				this.controlUrl = UrlUtils.redirect(this.location, controlUrls.get(index));
@@ -146,15 +145,6 @@ public final class UpnpContext implements IContext {
 			LOGGER.info("UPNP描述文件无效：{}", location);
 		}
 		return this;
-	}
-
-	/**
-	 * <p>判断是否可用</p>
-	 * 
-	 * @return 是否可用
-	 */
-	public boolean useable() {
-		return this.useable;
 	}
 	
 	/**
@@ -264,53 +254,23 @@ public final class UpnpContext implements IContext {
 	
 	/**
 	 * <p>映射端口</p>
+	 * <p>如果端口已经占用：端口递增继续映射</p>
 	 * 
-	 * @throws NetException 网络异常
+	 * @return 是否映射成功
 	 */
-	public void mapping() throws NetException {
+	public boolean mapping() throws NetException {
 		if(!this.available) {
-			return;
+			return false;
 		}
-		if(!this.remapping) {
-			return;
-		}
-		this.remapping = false;
 		final String externalIPAddress = this.getExternalIPAddress();
 		if(NetUtils.localIP(externalIPAddress)) {
 			// 获取的公网IP地址为内网地址
 			LOGGER.warn("UPNP端口映射失败：多重路由环境");
-		} else {
-			SystemConfig.setExternalIPAddress(externalIPAddress);
-			NodeContext.getInstance().buildNodeId(externalIPAddress);
-			this.addMapping();
+			return false;
 		}
-	}
-	
-	/**
-	 * <p>端口释放</p>
-	 */
-	public void release() {
-		if(this.useable && this.available) {
-			try {
-				final boolean udpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
-				final boolean tcpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
-				LOGGER.debug("释放UPNP端口：UDP：{}、TCP：{}", udpOk, tcpOk);
-			} catch (NetException e) {
-				LOGGER.error("释放UPNP端口异常", e);
-			}
-			// 必须释放端口才能修改状态
-			this.useable = false;
-			this.available = false;
-		}
-	}
-	
-	/**
-	 * <p>端口映射</p>
-	 * <p>如果端口被占用：端口递增继续映射</p>
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	private void addMapping() throws NetException {
+		SystemConfig.setExternalIPAddress(externalIPAddress);
+		NodeContext.getInstance().buildNodeId(externalIPAddress);
+		// 循环映射端口
 		Status tcpStatus;
 		Status udpStatus = Status.DISABLE;
 		final int torrentPort = SystemConfig.getTorrentPort();
@@ -332,18 +292,35 @@ public final class UpnpContext implements IContext {
 			}
 		}
 		if(udpStatus == Status.MAPABLE) {
-			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			final boolean udpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.UDP);
 			final boolean tcpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.TCP);
 			LOGGER.debug("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", torrentPort, portExt, udpOk, torrentPort, portExt, tcpOk);
+			return true;
 		} else if(udpStatus == Status.USEABLE) {
-			this.useable = true;
 			SystemConfig.setTorrentPortExt(portExt);
 			LOGGER.debug("UPNP端口映射（可用）：UDP（{}-{}）、TCP（{}-{}）", torrentPort, portExt, torrentPort, portExt);
+			return true;
 		} else {
-			this.useable = false;
 			LOGGER.warn("UPNP端口映射失败");
+			return false;
+		}
+	}
+	
+	/**
+	 * <p>端口释放</p>
+	 */
+	public void release() {
+		if(this.available) {
+			try {
+				final boolean udpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.UDP);
+				final boolean tcpOk = this.deletePortMapping(SystemConfig.getTorrentPortExt(), Protocol.Type.TCP);
+				LOGGER.debug("释放UPNP端口：UDP：{}、TCP：{}", udpOk, tcpOk);
+			} catch (NetException e) {
+				LOGGER.error("释放UPNP端口异常", e);
+			}
+			// 必须释放端口才能修改状态
+			this.available = false;
 		}
 	}
 	
