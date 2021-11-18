@@ -29,6 +29,10 @@ public final class StunContext implements IContext {
 	 * <p>配置多个服务器时轮询使用</p>
 	 */
 	private int index = 0;
+	/**
+	 * <p>是否是否注册成功</p>
+	 */
+	private volatile boolean available = false;
 	
 	public static final StunContext getInstance() {
 		return INSTANCE;
@@ -37,6 +41,15 @@ public final class StunContext implements IContext {
 	private StunContext() {
 	}
 
+	/**
+	 * <p>判断是否注册成功</p>
+	 * 
+	 * @return 是否注册成功
+	 */
+	public boolean available() {
+		return this.available;
+	}
+	
 	/**
 	 * <p>端口映射</p>
 	 */
@@ -56,11 +69,12 @@ public final class StunContext implements IContext {
 	 */
 	public void mapping(String externalIPAddress, int port) {
 		LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
+		this.available = true;
 		PeerConfig.nat();
-		NatContext.getInstance().stun();
 		SystemConfig.setExternalIPAddress(externalIPAddress);
 		NodeContext.getInstance().buildNodeId(externalIPAddress);
 		SystemConfig.setTorrentPortExt(port);
+		NatContext.getInstance().unlock();
 	}
 
 	/**

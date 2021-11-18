@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.upnp.UpnpClient;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.NetUtils;
@@ -53,22 +54,22 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>UPNP端口映射超时时间（毫秒）：{@value}</p>
+	 * <p>端口映射超时时间（毫秒）：{@value}</p>
 	 */
-	private static final long UPNP_TIMEOUT = 4L * SystemConfig.ONE_SECOND_MILLIS;
+	private static final long MAPPING_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
 	 * <p>注册NAT服务执行周期（秒）：{@value}</p>
 	 */
-	private static final int NAT_INTERVAL = 10;
+	private static final int NAT_INTERVAL = 4;
 	
 	/**
 	 * <p>内网穿透类型</p>
 	 */
 	private Type type = Type.NONE;
 	/**
-	 * <p>UPNP等待锁</p>
+	 * <p>端口映射等待锁</p>
 	 */
-	private final Object upnpLock = new Object();
+	private final Object lock = new Object();
 	
 	private NatContext() {
 	}
@@ -79,23 +80,17 @@ public final class NatContext implements IContext {
 	 * <p>公网IP地址不用穿透，优先使用UPNP进行端口映射，如果映射失败使用STUN穿透。</p>
 	 */
 	public void register() {
-		if(this.type != Type.NONE) {
-			LOGGER.debug("注册NAT服务成功：{}", this.type);
-			return;
-		}
 		if(NetUtils.localIP(NetUtils.LOCAL_HOST_ADDRESS)) {
-			UpnpClient.newInstance().mSearch();
-			this.lockUpnp();
-			if(UpnpContext.getInstance().useable()) {
+			// 本地IP地址
+			if(this.upnp()) {
 				this.type = Type.UPNP;
+				LOGGER.debug("注册NAT服务成功：{}", this.type);
+			} else if(this.stun()) {
+				this.type = Type.STUN;
+				LOGGER.debug("注册NAT服务成功：{}", this.type);
 			} else {
-				StunContext.getInstance().mapping();
-			}
-			if(this.type == Type.NONE) {
 				LOGGER.debug("注册NAT服务失败：{}", NAT_INTERVAL);
 				SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
-			} else {
-				LOGGER.debug("注册NAT服务成功：{}", this.type);
 			}
 		} else {
 			LOGGER.debug("注册NAT服务成功：已是公网IP地址");
@@ -115,10 +110,40 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>设置STUN穿透类型</p>
+	 * <p>设置UPNP穿透类型</p>
+	 * 
+	 * @return 是否成功
 	 */
-	public void stun() {
-		this.type = Type.STUN;
+	public boolean upnp() {
+		// 没有准备完成发送消息进入等待
+		if(!UpnpContext.getInstance().available()) {
+			UpnpClient.newInstance().mSearch();
+			this.lock();
+		}
+		// 已经准备成功直接映射
+		if(UpnpContext.getInstance().available()) {
+			try {
+				return UpnpContext.getInstance().mapping();
+			} catch (NetException e) {
+				LOGGER.error("设置UPNP穿透异常", e);
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * <p>设置STUN穿透类型</p>
+	 * 
+	 * @return 是否成功
+	 */
+	public boolean stun() {
+		// 如果已经可用直接返回
+		if(StunContext.getInstance().available()) {
+			return true;
+		}
+		StunContext.getInstance().mapping();
+		this.lock();
+		return StunContext.getInstance().available();
 	}
 	
 	/**
@@ -133,12 +158,12 @@ public final class NatContext implements IContext {
 	}
 
 	/**
-	 * <p>添加UPNP等待锁</p>
+	 * <p>添加端口映射等待锁</p>
 	 */
-	private void lockUpnp() {
-		synchronized (this.upnpLock) {
+	public void lock() {
+		synchronized (this.lock) {
 			try {
-				this.upnpLock.wait(UPNP_TIMEOUT);
+				this.lock.wait(MAPPING_TIMEOUT);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				LOGGER.debug("线程等待异常", e);
@@ -147,11 +172,11 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>释放UPNP等待锁</p>
+	 * <p>释放端口映射等待锁</p>
 	 */
-	public void unlockUpnp() {
-		synchronized (this.upnpLock) {
-			this.upnpLock.notifyAll();
+	public void unlock() {
+		synchronized (this.lock) {
+			this.lock.notifyAll();
 		}
 	}
 

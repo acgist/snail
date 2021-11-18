@@ -268,6 +268,16 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 * 系统没有自动获取IP（电脑配置固定IP）
 * 其他错误原因
 
+#### 通过UPNP进行TCP内网穿透
+
+```java
+UpnpClient.newInstance().mSearch();
+NatContext.getInstance().lock();
+if(UpnpContext.getInstance().available()) {
+	UpnpContext.getInstance().addPortMapping(8080, 8080, Protocol.Type.TCP);
+}
+```
+
 ## 优化下载体验
 
 * 使用热门种子
