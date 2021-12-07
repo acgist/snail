@@ -171,4 +171,12 @@ class NetUtilsTest extends Performance {
 		assertTrue(costed < 1000);
 	}
 	
+	
+	@Test
+	void testAreaIP() {
+		assertTrue(NetUtils.areaIP("192.168.1.0", "192.168.1.1"));
+		assertTrue(NetUtils.areaIP("192.168.1.0", "192.168.1.255"));
+		assertFalse(NetUtils.areaIP("192.168.1.0", "192.168.2.0"));
+	}
+	
 }
