@@ -64,6 +64,10 @@ public final class NetUtils {
 	 */
 	public static final int MAX_PORT = 2 << 15;
 	/**
+	 * <p>相同区域IP差距：{@value}</p>
+	 */
+	private static final int AREA_IP = 1 << 8;
+	/**
 	 * <p>IPv4地址正则表达式：{@value}</p>
 	 */
 	private static final String IPV4_REGEX = "(\\d{1,3}\\.){3}\\d{1,3}";
@@ -357,6 +361,20 @@ public final class NetUtils {
 			inetAddress.isMulticastAddress() ||
 			// 本地地址：A/B/C类
 			inetAddress.isSiteLocalAddress();
+	}
+	
+	/**
+	 * <p>判断是否相同区域IP</p>
+	 * 
+	 * @param source 原始IP
+	 * @param target 目标IP
+	 * 
+	 * @return 是否相同区域IP
+	 */
+	public static final boolean areaIP(String source, String target) {
+		final int sourceIp = NetUtils.ipToInt(source);
+		final int targetIp = NetUtils.ipToInt(target);
+		return (sourceIp ^ targetIp) <= AREA_IP;
 	}
 	
 	/**
