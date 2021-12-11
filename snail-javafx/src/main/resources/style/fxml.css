@@ -46,13 +46,6 @@
 	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
 /**
- * <p>输入框样式：TextField</p>
- */
-.root .text-input,
-.root .text-input:focused {
-	-fx-prompt-text-fill:-fx-snail-border-color;
-}
-/**
  * <p>按钮样式：Button</p>
  */
 .root .button {
@@ -75,10 +68,13 @@
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-insets:0;
 	-fx-background-radius:0;
+	-fx-background-color:transparent, #FFFFFF;
+	-fx-prompt-text-fill:-fx-snail-border-color;
 }
 .root .text-field:hover,
 .root .text-field:focused {
 	-fx-border-color:-fx-snail-main-color;
+	-fx-prompt-text-fill:-fx-snail-border-color;
 }
 /**
  * <p>下拉框样式：ChoiceBox</p>
