@@ -77,6 +77,7 @@
 .root .text-field:hover,
 .root .text-field:focused {
 	-fx-border-color:-fx-snail-main-color;
+	-fx-prompt-text-fill:-fx-snail-border-color;
 }
 .root .text-area .content {
     -fx-background-color:transparent, #FFFFFF;
