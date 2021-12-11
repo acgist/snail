@@ -63,6 +63,7 @@
 /**
  * <p>文本框样式：TextField</p>
  */
+ .root .text-area,
 .root .text-field {
 	-fx-border-width:1px;
 	-fx-border-color:-fx-snail-border-color;
@@ -71,10 +72,14 @@
 	-fx-background-color:transparent, #FFFFFF;
 	-fx-prompt-text-fill:-fx-snail-border-color;
 }
+.root .text-area:hover,
+.root .text-area:focused,
 .root .text-field:hover,
 .root .text-field:focused {
 	-fx-border-color:-fx-snail-main-color;
-	-fx-prompt-text-fill:-fx-snail-border-color;
+}
+.root .text-area .content {
+    -fx-background-color:transparent, #FFFFFF;
 }
 /**
  * <p>下拉框样式：ChoiceBox</p>
@@ -155,6 +160,7 @@
 .build .url TextFlow {
 	-fx-padding:0 10px 0 0;
 }
+.build .url TextArea,
 .build .url TextField {
 	-fx-pref-width:400px;
 }
