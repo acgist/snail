@@ -25,6 +25,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	/**
+	 * <p>多个空白字符：{@value}</p>
+	 */
+	public static final String REGEX_MULTIPLE_BLANK = "\\s+";
+	/**
 	 * <p>端口占用字节大小：{@value}</p>
 	 */
 	public static final int PORT_LENGHT = 2;

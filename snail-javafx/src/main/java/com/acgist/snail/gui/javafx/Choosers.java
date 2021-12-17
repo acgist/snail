@@ -1,8 +1,10 @@
 package com.acgist.snail.gui.javafx;
 
 import java.io.File;
+import java.util.List;
 
 import com.acgist.snail.config.DownloadConfig;
+import com.acgist.snail.utils.CollectionUtils;
 
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -42,6 +44,30 @@ public final class Choosers {
 			DownloadConfig.setLastPath(file.getParentFile().getAbsolutePath());
 		}
 		return file;
+	}
+	
+	/**
+	 * <p>选择多个文件</p>
+	 * 
+	 * @param window 当前窗体：模态
+	 * @param title 标题
+	 * @param description 过滤器描述
+	 * @param filters 过滤器类型（文件类型后缀）：*.torrent
+	 * 
+	 * @return 选择文件集合
+	 */
+	public static final List<File> chooseMultipleFile(Window window, String title, String description, String ... filters) {
+		final FileChooser chooser = new FileChooser();
+		chooser.setTitle(title);
+		// 设置上次选择目录
+		lastPath(chooser);
+		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
+		final List<File> files = chooser.showOpenMultipleDialog(window);
+		if (CollectionUtils.isNotEmpty(files)) {
+			// 更新上次选择目录
+			DownloadConfig.setLastPath(files.get(0).getParentFile().getAbsolutePath());
+		}
+		return files;
 	}
 	
 	/**
