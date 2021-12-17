@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +67,7 @@ public final class WindowsRecycle extends Recycle {
 	 */
 	private void buildRecycle() {
 		// 获取盘符
-		final int diskIndex = this.path.indexOf(SymbolConfig.Symbol.COLON.toChar());
-		final String disk = this.path.substring(0, diskIndex + 1).toUpperCase();
+		final String disk = this.disk(this.path);
 		// 获取回收站上级目录
 		final String recycleFolder = FileUtils.file(disk, RECYCLE_FOLDER);
 		final File recycleFile = new File(recycleFolder);
@@ -84,6 +84,23 @@ public final class WindowsRecycle extends Recycle {
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * <p>获取盘符</p>
+	 * 
+	 * @param filePath 文件路径
+	 * 
+	 * @return 盘符
+	 */
+	private String disk(String filePath) {
+		final int diskIndex = filePath.indexOf(SymbolConfig.Symbol.COLON.toChar());
+		if(diskIndex < 0) {
+			// 相对路径
+			final String absolutePath = Paths.get(filePath).toFile().getAbsolutePath();
+			return this.disk(absolutePath);
+		}
+		return filePath.substring(0, diskIndex + 1).toUpperCase();
 	}
 	
 	/**

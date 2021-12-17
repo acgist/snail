@@ -2,16 +2,21 @@ package com.acgist.snail.gui.javafx.window.build;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.window.Controller;
+import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 import javafx.event.ActionEvent;
@@ -50,9 +55,9 @@ public final class BuildController extends Controller {
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
-		final File file = Choosers.chooseFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
-		if (file != null) {
-			this.setUrl(file.getAbsolutePath());
+		final List<File> files = Choosers.chooseMultipleFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
+		if (CollectionUtils.isNotEmpty(files)) {
+			this.setUrl(files.stream().map(File::getAbsolutePath).collect(Collectors.joining(SymbolConfig.Symbol.SPACE.toString())));
 		}
 	}
 
@@ -68,6 +73,28 @@ public final class BuildController extends Controller {
 			Alerts.warn("下载失败", "输入下载链接");
 			return;
 		}
+		// 使用空白字符分隔：如果本地文件目录存在空格不能使用
+		final String[] urls = url.split(SystemConfig.REGEX_MULTIPLE_BLANK);
+		boolean success = false;
+		for (String value : urls) {
+			if(StringUtils.isEmpty(value)) {
+				continue;
+			}
+			success = this.download(value) || success;
+		}
+		if(success) {
+			BuildWindow.getInstance().hide();
+		}
+	}
+	
+	/**
+	 * <p>下载链接</p>
+	 * 
+	 * @param url 链接地址
+	 * 
+	 * @return 是否成功
+	 */
+	private boolean download(String url) {
 		boolean success = true;
 		try {
 			TaskContext.getInstance().download(url);
@@ -76,11 +103,9 @@ public final class BuildController extends Controller {
 			Alerts.warn("下载失败", e.getMessage());
 			success = false;
 		}
-		if(success) {
-			BuildWindow.getInstance().hide();
-		}
+		return success;
 	}
-
+	
 	/**
 	 * <p>取消下载按钮</p>
 	 * 
