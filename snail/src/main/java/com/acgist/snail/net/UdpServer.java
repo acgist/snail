@@ -204,6 +204,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 			final Set<SelectionKey> selectionKeys = this.selector.selectedKeys();
 			final Iterator<SelectionKey> iterator = selectionKeys.iterator();
 			while (iterator.hasNext()) {
+				// UDP和TCP不同连接断开不用移除Key
 				final SelectionKey selectionKey = iterator.next();
 				// 移除已经取出来的信息
 				iterator.remove();
@@ -213,7 +214,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 					// 服务端单例：客户端通道=服务端通道
 					final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 					this.handler.receive(buffer, socketAddress);
-					// TODO：验证是否需要移除key
 				}
 			}
 		}
