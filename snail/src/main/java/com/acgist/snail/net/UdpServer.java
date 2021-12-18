@@ -214,7 +214,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 					// 服务端单例：客户端通道=服务端通道
 					final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 					this.handler.receive(buffer, socketAddress);
-					// TODO：验证是否需要移除key
 				}
 			}
 		}
