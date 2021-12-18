@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.acgist.snail.config.SymbolConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.gui.javafx.Alerts;
@@ -45,7 +44,7 @@ public final class BuildController extends Controller {
 	public void initialize(URL location, ResourceBundle resources) {
 		this.root.setOnDragOver(this.dragOverAction);
 		this.root.setOnDragDropped(this.dragDroppedAction);
-		this.urlValue.setPromptText("输入下载链接 、磁力链接或选择种子文件");
+		this.urlValue.setPromptText("输入下载链接、磁力链接或选择种子文件");
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public final class BuildController extends Controller {
 	public void handleTorrentAction(ActionEvent event) {
 		final List<File> files = Choosers.chooseMultipleFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
 		if (CollectionUtils.isNotEmpty(files)) {
-			this.setUrl(files.stream().map(File::getAbsolutePath).collect(Collectors.joining(SymbolConfig.Symbol.SPACE.toString())));
+			this.setUrl(files.stream().map(File::getAbsolutePath).collect(Collectors.joining(SymbolConfig.Symbol.SEMICOLON.toString())));
 		}
 	}
 
@@ -73,8 +72,8 @@ public final class BuildController extends Controller {
 			Alerts.warn("下载失败", "输入下载链接");
 			return;
 		}
-		// 使用空白字符分隔：如果本地文件目录存在空格不能使用
-		final String[] urls = url.split(SystemConfig.REGEX_MULTIPLE_BLANK);
+		// 使用分号分隔：如果本地文件目录存在空格不能使用
+		final String[] urls = url.split(SymbolConfig.Symbol.SEMICOLON.toString());
 		boolean success = false;
 		for (String value : urls) {
 			if(StringUtils.isEmpty(value)) {
