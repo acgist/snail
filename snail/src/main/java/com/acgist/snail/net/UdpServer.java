@@ -48,7 +48,7 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 	/**
 	 * <p>Selector：每个服务端独立</p>
 	 * <p>UDP：只有read/write</p>
-	 * <p>TCP：Server通道含有accept，连接通道含有connect/read/write，可以分开多个Selector注册。</p>
+	 * <p>TCP：Server通道含有accept/read/write，Client通道含有connect/read/write，Server可以将accept和read/write分开注册多个Selector。</p>
 	 */
 	private Selector selector;
 
