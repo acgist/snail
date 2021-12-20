@@ -209,10 +209,11 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 				iterator.remove();
 				if (selectionKey.isValid() && selectionKey.isReadable()) {
 					final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.UDP_BUFFER_LENGTH);
-					// 服务器多例：selectionKey.channel()
+					// 服务端多例：selectionKey.channel()
 					// 服务端单例：客户端通道=服务端通道
 					final InetSocketAddress socketAddress = (InetSocketAddress) this.channel.receive(buffer);
 					this.handler.receive(buffer, socketAddress);
+					// TODO：验证是否需要移除key
 				}
 			}
 		}
