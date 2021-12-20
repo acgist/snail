@@ -29,6 +29,15 @@ class WindowsRecycleTest extends Performance {
 	}
 	
 	@Test
+	void testDeleteRelative() {
+	    String path = "/test";
+	    FileUtils.write(path, "".getBytes());
+	    assertTrue(Paths.get(path).toFile().exists());
+	    new WindowsRecycle(path).delete();
+	    assertFalse(Paths.get(path).toFile().exists());
+	}
+	
+	@Test
 	void testFileInfo() throws IOException {
 		final var bytes = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I80331708.zip"));
 		this.log(StringUtils.hex(bytes));
