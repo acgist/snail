@@ -1,6 +1,7 @@
 package com.acgist.snail.context.recycle;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import com.acgist.snail.utils.StringUtils;
 
@@ -30,8 +31,8 @@ public abstract class Recycle {
 		if(StringUtils.isEmpty(path)) {
 			throw new IllegalArgumentException("删除文件路径错误：" + path);
 		}
-		this.path = path;
-		this.file = new File(path);
+		this.file = Paths.get(path).toFile();
+		this.path = file.getAbsolutePath();
 	}
 	
 	/**
