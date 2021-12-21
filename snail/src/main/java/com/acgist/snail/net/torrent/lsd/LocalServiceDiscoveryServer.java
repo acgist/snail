@@ -40,7 +40,7 @@ public final class LocalServiceDiscoveryServer extends UdpServer<LocalServiceDis
 	private static final String LSD_HOST_IPV6 = "[ff15::efc0:988f]";
 	
 	private LocalServiceDiscoveryServer() {
-		super(LSD_PORT, true, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
+		super(LSD_PORT, ADDR_REUSE, "LSD Server", LocalServiceDiscoveryAcceptHandler.getInstance());
 		this.join(TTL, lsdHost());
 		this.handle();
 		final int interval = SystemConfig.getLsdInterval();

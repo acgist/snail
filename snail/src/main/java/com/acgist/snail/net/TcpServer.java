@@ -75,13 +75,11 @@ public abstract class TcpServer<T extends TcpMessageHandler> extends Server<Asyn
 	
 	@Override
 	protected boolean listen(String host, int port, boolean reuse) {
-		LOGGER.debug("启动TCP服务端：{}", this.name);
+		LOGGER.debug("启动TCP服务端：{}-{}-{}-{}", this.name, host, port, reuse);
 		boolean success = true;
 		try {
 			this.channel = AsynchronousServerSocketChannel.open(GROUP);
-			if(reuse) {
-				this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			}
+			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, reuse);
 			this.channel.bind(NetUtils.buildSocketAddress(host, port));
 			this.channel.accept(this.channel, TcpAcceptHandler.newInstance(this.clazz));
 		} catch (IOException e) {
