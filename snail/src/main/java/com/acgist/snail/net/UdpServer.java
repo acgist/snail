@@ -111,15 +111,13 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 	
 	@Override
 	protected boolean listen(String host, int port, boolean reuse) {
-		LOGGER.debug("启动UDP服务端：{}", this.name);
+		LOGGER.debug("启动UDP服务端：{}-{}-{}-{}", this.name, host, port, reuse);
 		boolean success = true;
 		try {
 			this.channel = DatagramChannel.open(NetUtils.LOCAL_PROTOCOL_FAMILY);
 			// 不要阻塞
 			this.channel.configureBlocking(false);
-			if(reuse) {
-				this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			}
+			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, reuse);
 			this.channel.bind(NetUtils.buildSocketAddress(host, port));
 		} catch (IOException e) {
 			LOGGER.error("启动UDP服务端异常：{}", this.name, e);
@@ -128,7 +126,6 @@ public abstract class UdpServer<T extends UdpAcceptHandler> extends Server<Datag
 			if(success) {
 				LOGGER.debug("启动UDP服务端成功：{}", this.name);
 			} else {
-				IoUtils.close(this.channel);
 				this.close();
 			}
 		}
