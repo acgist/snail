@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -106,6 +107,26 @@ public final class StringUtils {
 	}
 	
 	/**
+	 * <p>判断字符串是否以前缀开始（忽略大小写）</p>
+	 * 
+	 * @param value 字符串
+	 * @param prefix 前缀
+	 * 
+	 * @return 是否以前缀开始
+	 */
+	public static final boolean startsWithIgnoreCase(String value, String prefix) {
+		if(Objects.isNull(value) || Objects.isNull(prefix)) {
+			return false;
+		}
+		final int valueLength = value.length();
+		final int prefixLength = prefix.length();
+		if(valueLength < prefixLength) {
+			return false;
+		}
+		return equalsIgnoreCase(value.substring(0, prefixLength), prefix);
+	}
+	
+	/**
 	 * <p>判断字符串是否以后缀结束</p>
 	 * 
 	 * @param value 字符串
@@ -115,6 +136,26 @@ public final class StringUtils {
 	 */
 	public static final boolean endsWith(String value, String suffix) {
 		return value != null && suffix != null && value.endsWith(suffix);
+	}
+	
+	/**
+	 * <p>判断字符串是否以后缀结束（忽略大小写）</p>
+	 * 
+	 * @param value 字符串
+	 * @param suffix 后缀
+	 * 
+	 * @return 是否以后缀结束
+	 */
+	public static final boolean endsWithIgnoreCase(String value, String suffix) {
+		if(Objects.isNull(value) || Objects.isNull(suffix)) {
+			return false;
+		}
+		final int valueLength = value.length();
+		final int suffixLength = suffix.length();
+		if(valueLength < suffixLength) {
+			return false;
+		}
+		return equalsIgnoreCase(value.substring(valueLength - suffixLength), suffix);
 	}
 	
 	/**
