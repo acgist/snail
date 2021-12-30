@@ -1,5 +1,8 @@
 package com.acgist.snail.protocol.hls;
 
+import java.net.URI;
+
+import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
@@ -11,6 +14,7 @@ import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.StringUtils;
 
 /**
  * <p>HLS协议</p>
@@ -21,6 +25,11 @@ import com.acgist.snail.utils.FileUtils;
 public final class HlsProtocol extends Protocol {
 
 	private static final HlsProtocol INSTANCE = new HlsProtocol();
+	
+	/**
+	 * 默认结尾
+	 */
+	private static final String INDEX_M3U8 = "/index.m3u8";
 	
 	public static final HlsProtocol getInstance() {
 		return INSTANCE;
@@ -51,6 +60,19 @@ public final class HlsProtocol extends Protocol {
 			this.buildM3u8();
 		} catch (NetException e) {
 			throw new DownloadException("网络异常", e);
+		}
+	}
+	
+	@Override
+	protected String buildFileName() throws DownloadException {
+		final String path = URI.create(this.url).getPath();
+		if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
+			// 去掉斜杠和结尾
+			return path.substring(1, path.length() - INDEX_M3U8.length())
+				.replace(Symbol.SLASH.toChar(), Symbol.MINUS.toChar()) + 
+				Protocol.Type.HLS.defaultSuffix();
+		} else {
+			return super.buildFileName();
 		}
 	}
 	

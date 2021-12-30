@@ -284,7 +284,7 @@ public final class UtpWindow {
 	 * 
 	 * @throws IOException IO异常
 	 */
-	public void receive(final  int timestamp, final short seqnr, final ByteBuffer buffer) throws IOException {
+	public void receive(final int timestamp, final short seqnr, final ByteBuffer buffer) throws IOException {
 		synchronized (this) {
 			final short diff = (short) (this.seqnr - seqnr);
 			if(diff >= 0) {

@@ -99,4 +99,32 @@ class StringUtilsTest extends Performance {
 		assertEquals(2, lines.size());
 	}
 	
+	@Test
+	void testStartsWithIgnoreCase() {
+		assertFalse(StringUtils.startsWithIgnoreCase(null, null));
+		assertFalse(StringUtils.startsWithIgnoreCase("", null));
+		assertFalse(StringUtils.startsWithIgnoreCase(null, ""));
+		assertTrue(StringUtils.startsWithIgnoreCase("", ""));
+		assertTrue(StringUtils.startsWithIgnoreCase("1", ""));
+		assertTrue(StringUtils.startsWithIgnoreCase("1", "1"));
+		assertFalse(StringUtils.startsWithIgnoreCase("", "1"));
+		assertTrue(StringUtils.startsWithIgnoreCase("/INDEX", "/index"));
+		assertTrue(StringUtils.startsWithIgnoreCase("INDEX/", "index"));
+		assertFalse(StringUtils.startsWithIgnoreCase("INDEX", "/index"));
+	}
+	
+	@Test
+	void testEndsWithIgnoreCase() {
+		assertFalse(StringUtils.endsWithIgnoreCase(null, null));
+		assertFalse(StringUtils.endsWithIgnoreCase("", null));
+		assertFalse(StringUtils.endsWithIgnoreCase(null, ""));
+		assertTrue(StringUtils.endsWithIgnoreCase("", ""));
+		assertTrue(StringUtils.endsWithIgnoreCase("1", ""));
+		assertTrue(StringUtils.endsWithIgnoreCase("1", "1"));
+		assertFalse(StringUtils.endsWithIgnoreCase("", "1"));
+		assertTrue(StringUtils.endsWithIgnoreCase("/INDEX", "/index"));
+		assertTrue(StringUtils.endsWithIgnoreCase("/INDEX", "index"));
+		assertFalse(StringUtils.endsWithIgnoreCase("INDEX", "/index"));
+	}
+	
 }
