@@ -120,6 +120,8 @@ public final class TsLinker {
 					output.write(bytes, 0, length);
 				}
 			}
+		} finally {
+			FileUtils.delete(file);
 		}
 	}
 	
