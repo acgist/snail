@@ -30,11 +30,11 @@ class WindowsRecycleTest extends Performance {
 	
 	@Test
 	void testDeleteRelative() {
-	    String path = "/test";
-	    FileUtils.write(path, "".getBytes());
-	    assertTrue(Paths.get(path).toFile().exists());
-	    new WindowsRecycle(path).delete();
-	    assertFalse(Paths.get(path).toFile().exists());
+		String path = "/test";
+		FileUtils.write(path, "".getBytes());
+		assertTrue(Paths.get(path).toFile().exists());
+		new WindowsRecycle(path).delete();
+		assertFalse(Paths.get(path).toFile().exists());
 	}
 	
 	@Test
