@@ -89,6 +89,7 @@ public final class TsLinker {
 			})
 			.collect(Collectors.toList());
 		final File target = Paths.get(this.path, this.name + SUFFIX).toFile();
+		// TODO：NIO优化
 		try(final var output = new FileOutputStream(target)) {
 			for (File file : files) {
 				this.link(file, output);
