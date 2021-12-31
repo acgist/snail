@@ -34,6 +34,7 @@ jobs:
         # pkg|dmg
         echo "suffix=pkg" >> $GITHUB_ENV
         echo "system=mac" >> $GITHUB_ENV
+        echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "args=" >> $GITHUB_ENV
         echo "icon=./docs/logo/logo.icns" >> $GITHUB_ENV
     - name: Linux Setting
@@ -42,6 +43,7 @@ jobs:
         # deb|rpm
         echo "suffix=deb" >> $GITHUB_ENV
         echo "system=linux" >> $GITHUB_ENV
+        echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "args=--linux-shortcut" >> $GITHUB_ENV
         echo "icon=./docs/logo/logo.png" >> $GITHUB_ENV
     - name: Windows Setting
@@ -54,8 +56,6 @@ jobs:
         echo "version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "args=--win-shortcut --win-dir-chooser --win-per-user-install" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "icon=./docs/logo/logo.ico" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    - name: Set Version
-      run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Set up JDK
