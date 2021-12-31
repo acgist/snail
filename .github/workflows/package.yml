@@ -68,8 +68,8 @@ jobs:
         echo "version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "args=--win-shortcut --win-dir-chooser --win-per-user-install" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "icon=./docs/logo/logo.ico" >> $GITHUB_ENV
-	dir
-	pwd
+        dir
+        pwd
     - name: Set Version
       run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Checkout repository
