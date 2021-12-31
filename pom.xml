@@ -8,12 +8,12 @@
 	
 	<groupId>com.acgist</groupId>
 	<artifactId>snail.parent</artifactId>
-	<version>1.17.0</version>
+	<version>1.17.1</version>
 	<packaging>pom</packaging>
 	
 	<properties>
 		<!-- 版本 -->
-		<snail.version>1.17.0</snail.version>
+		<snail.version>1.17.1</snail.version>
 		<!-- 作者 -->
 		<vendor>acgist</vendor>
 		<!-- 模块 -->

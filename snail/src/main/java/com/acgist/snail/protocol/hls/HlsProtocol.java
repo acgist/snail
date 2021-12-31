@@ -27,7 +27,7 @@ public final class HlsProtocol extends Protocol {
 	private static final HlsProtocol INSTANCE = new HlsProtocol();
 	
 	/**
-	 * 默认结尾
+	 * <p>默认结尾：{@value}</p>
 	 */
 	private static final String INDEX_M3U8 = "/index.m3u8";
 	
