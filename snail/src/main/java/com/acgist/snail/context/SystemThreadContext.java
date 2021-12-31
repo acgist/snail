@@ -1,6 +1,8 @@
 package com.acgist.snail.context;
 
 import java.nio.channels.AsynchronousChannelGroup;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -84,6 +86,18 @@ public final class SystemThreadContext implements IContext {
 	 * <p>任务拒绝执行处理</p>
 	 */
 	public static final RejectedExecutionHandler REJECTED_HANDLER;
+	/**
+	 * <p>最大线程数量</p>
+	 */
+	private static final int MAX_THREAD_INDEX = 100;
+	/**
+	 * <p>线程名称</p>
+	 */
+	private static final String THREAD_NAME = "%s-%02d";
+	/**
+	 * <p>线程编号</p>
+	 */
+	private static final Map<String, Integer> THREAD_INDEX = new HashMap<>();
 	
 	static {
 		EXECUTOR = newExecutor(4, 20, 1000, 60L, SNAIL_THREAD);
@@ -219,7 +233,13 @@ public final class SystemThreadContext implements IContext {
 	private static final ThreadFactory newThreadFactory(String poolName) {
 		return runnable -> {
 			final Thread thread = new Thread(runnable);
-			thread.setName(poolName);
+			synchronized(THREAD_INDEX) {
+				int index = THREAD_INDEX.getOrDefault(poolName, 0);
+				if(++index >= MAX_THREAD_INDEX) {
+					index = 0;
+				}
+				thread.setName(String.format(THREAD_NAME, poolName, index));
+			}
 			// 守护线程
 			thread.setDaemon(true);
 			return thread;

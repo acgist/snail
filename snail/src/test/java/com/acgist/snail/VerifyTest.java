@@ -22,7 +22,7 @@ import com.acgist.snail.utils.Performance;
 
 class VerifyTest extends Performance {
 
-	private static final String PROJECT_BASE_PATH = "E:/gitee/snail/";
+	private static final String PROJECT_BASE_PATH = "D:/gitee/snail/";
 	
 	@Test
 	void testVersionVerify() throws IOException {
@@ -38,7 +38,7 @@ class VerifyTest extends Performance {
 		final String javaVersion = xml(parentPomPath, "java.version");
 		final String javafxVersion = xml(parentPomPath, "javafx.version");
 		this.log("当前版本：{}-{}", parentPomVersion, javaVersion);
-		assertEquals(javaVersion, javafxVersion);
+		assertEquals(javaVersion, javafxVersion.substring(0, javafxVersion.indexOf('.')));
 		final String snailPomVersion = xml(snailPomPath, "version");
 		assertEquals(parentPomVersion, snailPomVersion);
 		final String snailJavaFXPomVersion = xml(snailJavaFXPomPath, "version");
