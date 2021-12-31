@@ -53,7 +53,7 @@ jobs:
         echo "system=win" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "args=--win-shortcut --win-dir-chooser --win-per-user-install" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "icon=./docs/logo/logo.ico" >> $GITHUB_ENV
+        echo "icon=./docs/logo/logo.ico" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: Set Version
       run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Checkout repository
@@ -73,7 +73,7 @@ jobs:
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
         tar -cvf snail-${{ env.system }}-${{ env.version }}-without-jre.tar -C ./build/ snail
         jlink --add-modules "java.base,java.xml,java.desktop,java.scripting,jdk.unsupported" --output ./build/runtime
-        jpackage --name snail --type ${{ env.suffix }} --app-version ${{ env.version }} --vendor acgist --copyright "Copyright (C) 2019 acgist. All Rights Reserved." --description "Acgist Snail Downloader" --input ./build/snail/ --main-jar snail.javafx-${{ env.version }}.jar --runtime-image ./build/runtime --icon ${{ env.icon }} --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" --dest ./ ${{ env.args }}
+        jpackage --name snail --type ${{ env.suffix }} --app-version ${{ env.version }} --vendor acgist --copyright "Copyright (C) 2019 acgist. All Rights Reserved." --description "Acgist Snail Downloader" --input ./build/snail/ --main-jar snail.javafx-${{ env.version }}.jar --runtime-image ./build/runtime --icon ${{ env.icon }} --license-file LICENSE --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" --dest ./ ${{ env.args }}
         # 使用mv命令统一文件名称：Windows hub命令不能使用通配符号
         mv *.${{ env.suffix }} snail-${{ env.version }}.${{ env.suffix }}
         # upload-release-asset不能一次上传多个文件使用hub命令上传
