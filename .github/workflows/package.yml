@@ -73,7 +73,8 @@ jobs:
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
         tar -cvf snail-${{ env.system }}-${{ env.version }}-without-jre.tar -C ./build/ snail
         jlink --add-modules "java.base,java.xml,java.desktop,java.scripting,jdk.unsupported" --output ./build/runtime
-        jpackage --name snail --type ${{ env.suffix }} --app-version ${{ env.version }} --vendor acgist --copyright "Copyright (C) 2019 acgist. All Rights Reserved." --description "Acgist Snail Downloader" --input ./build/snail/ --main-jar snail.javafx-${{ env.version }}.jar --runtime-image ./build/runtime --icon ${{ env.icon }} --license-file ./LICENSE --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" --dest ./ ${{ env.args }}
+	# 不知为何Windows Github打包./LICENSE提示错误
+        jpackage --name snail --type ${{ env.suffix }} --app-version ${{ env.version }} --vendor acgist --copyright "Copyright (C) 2019 acgist. All Rights Reserved." --description "Acgist Snail Downloader" --input ./build/snail/ --main-jar snail.javafx-${{ env.version }}.jar --runtime-image ./build/runtime --icon ${{ env.icon }} --license-file LICENSE --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" --dest ./ ${{ env.args }}
         # 使用mv命令统一文件名称：Windows hub命令不能使用通配符号
         mv *.${{ env.suffix }} snail-${{ env.version }}.${{ env.suffix }}
         # upload-release-asset不能一次上传多个文件使用hub命令上传
