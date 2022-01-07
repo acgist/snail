@@ -10,9 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;

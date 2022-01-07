@@ -7,10 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.format.BEncodeDecoder.Type;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>B编码编码器</p>

@@ -24,8 +24,6 @@
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
 		<javafx.version>17.0.1</javafx.version>
-		<!-- 依赖版本 -->
-		<slf4j.version>1.7.32</slf4j.version>
 		<!-- JUnit版本 -->
 		<junit.version>5.7.2</junit.version>
 		<!-- Maven插件版本 -->
@@ -341,12 +339,6 @@
 	<!-- 依赖管理 -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- 日志：slf4j -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
 			<!--
 			GUI：JavaFX
 			隐式依赖：javafx-base、javafx-controls、javafx-graphics

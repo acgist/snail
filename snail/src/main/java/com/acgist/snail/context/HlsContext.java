@@ -3,10 +3,9 @@ package com.acgist.snail.context;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.IContext;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.session.HlsSession;

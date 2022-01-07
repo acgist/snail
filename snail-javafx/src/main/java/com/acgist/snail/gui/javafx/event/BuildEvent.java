@@ -1,12 +1,11 @@
 package com.acgist.snail.gui.javafx.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.BuildEventAdapter;
 import com.acgist.snail.gui.javafx.menu.TrayMenu;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 import javafx.application.Platform;
 

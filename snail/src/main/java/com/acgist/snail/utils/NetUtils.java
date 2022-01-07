@@ -12,11 +12,10 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>网络工具</p>

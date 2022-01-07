@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.StatisticsContext;
@@ -23,6 +20,8 @@ import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.build.BuildWindow;
 import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.Protocol.Type;

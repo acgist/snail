@@ -10,10 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.MapUtils;

@@ -7,12 +7,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.crypto.Cipher;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.SystemThreadContext;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;

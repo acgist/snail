@@ -8,9 +8,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.EntityContext;
@@ -20,6 +17,8 @@ import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.downloader.IDownloader;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.StatisticsGetter;
 import com.acgist.snail.pojo.entity.TaskEntity;

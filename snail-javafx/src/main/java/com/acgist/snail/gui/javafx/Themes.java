@@ -1,11 +1,10 @@
 package com.acgist.snail.gui.javafx;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 import javafx.collections.ObservableList;
 import javafx.css.Styleable;

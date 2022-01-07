@@ -3,9 +3,6 @@ package com.acgist.snail.context;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.exception.NetException;
@@ -21,6 +18,8 @@ import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
 import com.acgist.snail.gui.event.adapter.RefreshTaskStatusEventAdapter;
 import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
 import com.acgist.snail.gui.event.adapter.ShowEventAdapter;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;

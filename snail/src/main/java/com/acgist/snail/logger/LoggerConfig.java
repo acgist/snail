@@ -5,8 +5,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import org.slf4j.event.Level;
-
 /**
  * <p>日志配置</p>
  * 
@@ -35,7 +33,7 @@ public final class LoggerConfig {
 	/**
 	 * <p>日志级别</p>
 	 */
-	private int levelInt;
+	private int level;
 	/**
 	 * <p>日志系统名称</p>
 	 */
@@ -65,9 +63,9 @@ public final class LoggerConfig {
 		try(final var input = new InputStreamReader(LoggerConfig.class.getResourceAsStream(LOGGER_CONFIG), StandardCharsets.UTF_8)) {
 			properties.load(input);
 		} catch (IOException e) {
-			LoggerContext.error(e);
+			LoggerFactory.error(e);
 		}
-		this.levelInt = this.level(properties.getProperty("logger.level")).toInt();
+		this.level = Level.of(properties.getProperty("logger.level")).value();
 		this.system = properties.getProperty("logger.system");
 		this.adapter = properties.getProperty("logger.adapter");
 		this.fileName = properties.getProperty("logger.file.name");
@@ -76,28 +74,10 @@ public final class LoggerConfig {
 	}
 	
 	/**
-	 * <p>日志级别转换</p>
-	 * 
-	 * @param value 日志级别
-	 * 
-	 * @return 日志级别
-	 */
-	private Level level(String value) {
-		final Level[] levels = Level.values();
-		for (Level level : levels) {
-			if(level.name().equalsIgnoreCase(value)) {
-				return level;
-			}
-		}
-		// 默认：DEBUG
-		return Level.DEBUG;
-	}
-	
-	/**
 	 * <p>关闭日志</p>
 	 */
 	public static final void off() {
-		INSTANCE.levelInt = Integer.MAX_VALUE;
+		INSTANCE.level = Level.OFF.value();
 	}
 	
 	/**
@@ -105,8 +85,8 @@ public final class LoggerConfig {
 	 * 
 	 * @return 日志级别
 	 */
-	public static final int getLevelInt() {
-		return INSTANCE.levelInt;
+	public static final int getLevel() {
+		return INSTANCE.level;
 	}
 	
 	/**

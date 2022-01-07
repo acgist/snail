@@ -2,13 +2,12 @@ package com.acgist.snail.context;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.XML;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.net.upnp.UpnpRequest;
 import com.acgist.snail.net.upnp.UpnpResponse;

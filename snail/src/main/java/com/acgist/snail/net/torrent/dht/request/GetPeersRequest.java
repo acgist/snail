@@ -3,14 +3,13 @@ package com.acgist.snail.net.torrent.dht.request;
 import java.nio.ByteBuffer;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TorrentContext;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.response.GetPeersResponse;
 import com.acgist.snail.pojo.session.PeerSession;

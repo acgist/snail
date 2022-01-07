@@ -4,22 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 import com.acgist.snail.utils.Performance;
 
-class LoggerContextTest extends Performance {
+class LoggerFactoryTest extends Performance {
 
 	@Test
-	void testGetName() {
-		final String name = LoggerContext.getInstance().getName();
-		assertNotNull(name);
-		this.log(name);
-	}
-	
-	@Test
 	void testGetLogger() {
-		final Logger logger = LoggerContext.getInstance().getLogger("acgist");
+		final Logger logger = LoggerFactory.getLogger(LoggerFactoryTest.class);
 		assertNotNull(logger);
 		logger.debug("acgist");
 	}
@@ -27,7 +19,7 @@ class LoggerContextTest extends Performance {
 	@Test
 	void testShutdown() {
 		this.log("close");
-		LoggerContext.shutdown();
+		LoggerFactory.shutdown();
 		assertDoesNotThrow(() -> this.log("close"));
 	}
 	

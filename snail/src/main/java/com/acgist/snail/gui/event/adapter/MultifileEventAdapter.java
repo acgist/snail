@@ -3,14 +3,13 @@ package com.acgist.snail.gui.event.adapter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.gui.event.GuiEventArgs;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.TorrentFile;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;

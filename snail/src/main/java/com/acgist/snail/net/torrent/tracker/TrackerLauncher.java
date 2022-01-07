@@ -2,12 +2,11 @@ package com.acgist.snail.net.torrent.tracker;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TrackerContext;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.message.AnnounceMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;

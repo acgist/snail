@@ -2,11 +2,10 @@ package com.acgist.snail.pojo.session;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>Peer连接信息</p>

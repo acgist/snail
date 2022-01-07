@@ -11,9 +11,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.event.MouseInputAdapter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.GuiContext;
@@ -23,6 +20,8 @@ import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.main.MainWindow;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

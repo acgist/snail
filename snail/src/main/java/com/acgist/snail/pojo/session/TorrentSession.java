@@ -8,9 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.PeerConfig.Action;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.PeerContext;
@@ -19,6 +16,8 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.TimerException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.TorrentStreamGroup;
 import com.acgist.snail.net.torrent.dht.DhtLauncher;
 import com.acgist.snail.net.torrent.peer.PeerDownloaderGroup;

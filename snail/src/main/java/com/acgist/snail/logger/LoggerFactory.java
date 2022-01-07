@@ -8,22 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.event.Level;
-
 import com.acgist.snail.logger.adapter.ConsoleLoggerAdapter;
 import com.acgist.snail.logger.adapter.FileLoggerAdapter;
 
 /**
- * <p>日志上下文</p>
+ * <p>日志工厂</p>
  * 
  * @author acgist
  */
-public final class LoggerContext implements ILoggerFactory {
+public final class LoggerFactory {
 
-	private static final LoggerContext INSTANCE = new LoggerContext();
+	private static final LoggerFactory INSTANCE = new LoggerFactory();
 
-	public static final LoggerContext getInstance() {
+	public static final LoggerFactory getInstance() {
 		return INSTANCE;
 	}
 
@@ -41,7 +38,7 @@ public final class LoggerContext implements ILoggerFactory {
 	 */
 	private final List<LoggerAdapter> adapters;
 	
-	private LoggerContext() {
+	private LoggerFactory() {
 		this.loggers = new ConcurrentHashMap<>();
 		final String adapter = LoggerConfig.getAdapter();
 		final List<LoggerAdapter> list = new ArrayList<>();
@@ -60,17 +57,14 @@ public final class LoggerContext implements ILoggerFactory {
 	}
 	
 	/**
-	 * <p>获取日志上下文名称</p>
+	 * <p>获取日志</p>
 	 * 
-	 * @return 日志上下文名称
+	 * @param clazz class
+	 * 
+	 * @return 日志
 	 */
-	public String getName() {
-		return this.getClass().getName();
-	}
-	
-	@Override
-	public org.slf4j.Logger getLogger(String name) {
-		return this.loggers.computeIfAbsent(name, Logger::new);
+	public static final Logger getLogger(Class<?> clazz) {
+		return INSTANCE.loggers.computeIfAbsent(clazz.getName(), Logger::new);
 	}
 
 	/**
@@ -80,7 +74,7 @@ public final class LoggerContext implements ILoggerFactory {
 	 * @param message 日志
 	 */
 	public void output(Level level, String message) {
-		final boolean error = level.toInt() >= Level.ERROR.toInt();
+		final boolean error = level.value() >= Level.ERROR.value();
 		for (LoggerAdapter adapter : this.adapters) {
 			if(error) {
 				adapter.errorOutput(message);

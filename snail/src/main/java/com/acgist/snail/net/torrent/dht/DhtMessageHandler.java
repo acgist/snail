@@ -4,9 +4,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.function.Predicate;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.DhtConfig.QType;
@@ -15,6 +12,8 @@ import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;

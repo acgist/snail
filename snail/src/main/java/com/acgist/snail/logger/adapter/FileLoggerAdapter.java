@@ -15,7 +15,7 @@ import java.util.Date;
 
 import com.acgist.snail.logger.LoggerAdapter;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.logger.LoggerContext;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>文件适配器</p>
@@ -52,7 +52,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 				try {
 					Files.delete(children.toPath());
 				} catch (IOException e) {
-					LoggerContext.error(e);
+					LoggerFactory.error(e);
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public final class FileLoggerAdapter extends LoggerAdapter {
 		try {
 			return new BufferedOutputStream(new FileOutputStream(file, true), fileBuffer);
 		} catch (IOException e) {
-			LoggerContext.error(e);
+			LoggerFactory.error(e);
 		}
 		return null;
 	}

@@ -46,7 +46,7 @@ public abstract class LoggerAdapter {
 				this.output.write(message.getBytes());
 			}
 		} catch (IOException e) {
-			LoggerContext.error(e);
+			LoggerFactory.error(e);
 		}
 	}
 	
@@ -61,7 +61,7 @@ public abstract class LoggerAdapter {
 				this.errorOutput.write(message.getBytes());
 			}
 		} catch (IOException e) {
-			LoggerContext.error(e);
+			LoggerFactory.error(e);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public abstract class LoggerAdapter {
 				this.output.flush();
 				this.output.close();
 			} catch (IOException e) {
-				LoggerContext.error(e);
+				LoggerFactory.error(e);
 			}
 		}
 		if(closeErrorOutput && this.errorOutput != null) {
@@ -85,7 +85,7 @@ public abstract class LoggerAdapter {
 				this.errorOutput.flush();
 				this.errorOutput.close();
 			} catch (IOException e) {
-				LoggerContext.error(e);
+				LoggerFactory.error(e);
 			}
 		}
 	}

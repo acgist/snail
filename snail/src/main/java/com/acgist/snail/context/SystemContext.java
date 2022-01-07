@@ -1,15 +1,13 @@
 package com.acgist.snail.context;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.IContext;
 import com.acgist.snail.Snail;
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.JSON;
-import com.acgist.snail.logger.LoggerContext;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.net.TcpServer;
 import com.acgist.snail.net.UdpServer;
@@ -161,7 +159,7 @@ public final class SystemContext implements IContext {
 				GuiContext.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
-				LoggerContext.shutdown();
+				LoggerFactory.shutdown();
 			});
 		} else {
 			GuiContext.getInstance().alert("关闭提示", "系统关闭中");

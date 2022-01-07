@@ -7,9 +7,6 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.config.CryptConfig.CryptAlgo;
 import com.acgist.snail.config.CryptConfig.Strategy;
@@ -18,6 +15,8 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder.MSEPrivateKey;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;

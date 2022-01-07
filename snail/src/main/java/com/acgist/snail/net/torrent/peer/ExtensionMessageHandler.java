@@ -4,9 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.CryptConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.Action;
@@ -16,6 +13,8 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.peer.extension.DontHaveExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.HolepunchMessageHnadler;
 import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;

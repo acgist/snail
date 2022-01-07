@@ -5,15 +5,14 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.BitSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.Type;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.PeerContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;

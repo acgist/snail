@@ -1,9 +1,8 @@
 package com.acgist.snail.net.codec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 class PrintMessageHandler implements IMessageDecoder<String> {
 

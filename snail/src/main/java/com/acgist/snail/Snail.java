@@ -3,9 +3,6 @@ package com.acgist.snail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.TrackerConfig;
 import com.acgist.snail.context.EntityContext;
@@ -22,6 +19,8 @@ import com.acgist.snail.context.initializer.NatInitializer;
 import com.acgist.snail.context.initializer.TaskInitializer;
 import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.context.initializer.TrackerInitializer;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.torrent.TorrentServer;

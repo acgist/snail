@@ -1,10 +1,9 @@
 package com.acgist.snail.gui.javafx.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.gui.event.GuiEvent;
 import com.acgist.snail.gui.event.adapter.ResponseEventAdapter;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>GUI响应消息事件</p>

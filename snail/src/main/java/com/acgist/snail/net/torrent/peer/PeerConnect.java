@@ -3,10 +3,9 @@ package com.acgist.snail.net.torrent.peer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.bean.TorrentPiece;

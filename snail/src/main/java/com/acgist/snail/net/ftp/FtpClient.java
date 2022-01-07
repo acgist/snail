@@ -3,12 +3,11 @@ package com.acgist.snail.net.ftp;
 import java.io.InputStream;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.TcpClient;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.utils.StringUtils;

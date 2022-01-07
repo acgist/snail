@@ -16,6 +16,7 @@ open module com.acgist.snail {
 	exports com.acgist.snail.format;
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
+	exports com.acgist.snail.logger;
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.net.application;
 	exports com.acgist.snail.net.codec;
@@ -42,6 +43,5 @@ open module com.acgist.snail {
 	
 	requires java.base;
 	requires transitive java.xml;
-	requires transitive org.slf4j;
 
 }

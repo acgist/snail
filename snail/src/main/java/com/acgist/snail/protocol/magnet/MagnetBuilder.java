@@ -2,11 +2,10 @@ package com.acgist.snail.protocol.magnet;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Magnet.Type;

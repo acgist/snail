@@ -1,8 +1,5 @@
 package com.acgist.main;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
@@ -16,6 +13,8 @@ import com.acgist.snail.gui.javafx.event.RefreshTaskListEvent;
 import com.acgist.snail.gui.javafx.event.RefreshTaskStatusEvent;
 import com.acgist.snail.gui.javafx.event.ResponseEvent;
 import com.acgist.snail.gui.javafx.event.ShowEvent;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>Snail启动类</p>
