@@ -65,6 +65,7 @@ if [[ $pack == "pack" ]]; then
         --runtime-image ./build/runtime \
         --icon ${icon} \
         --license-file ./LICENSE \
+        --file-associations ./docs/torrent.properties \
         --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
         --dest ./build/ \
         ${args}
