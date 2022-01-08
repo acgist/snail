@@ -74,6 +74,8 @@ snail.lockDownload();
 
 ### 帮助
 
+使用快捷键`F12`进入统计页面可以查看当前下载任务的统计信息
+
 [开发帮助](./docs/API.md)
 
 [使用帮助](./docs/HELP.md)
