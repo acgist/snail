@@ -10,6 +10,28 @@ import java.util.StringJoiner;
 public final class SymbolConfig {
 
 	/**
+	 * <p>分隔符号保留类型</p>
+	 * 
+	 * @author acgist
+	 */
+	public enum FullType {
+		
+		/**
+		 * <p>过滤</p>
+		 */
+		FILTER,
+		/**
+		 * <p>前缀</p>
+		 */
+		PREFIX,
+		/**
+		 * <p>前缀</p>
+		 */
+		SUFFIX
+		
+	}
+	
+	/**
 	 * <p>符号</p>
 	 * 
 	 * @author acgist
@@ -172,6 +194,66 @@ public final class SymbolConfig {
 				joiner.add(object == null ? null : object.toString());
 			}
 			return joiner.toString();
+		}
+		
+		/**
+		 * 字符串分隔
+		 * 
+		 * @param source 原始字符串
+		 * 
+		 * @return 字符串数组
+		 */
+		public final String[] split(String source) {
+			return split(source, FullType.FILTER);
+		}
+		
+		/**
+		 * 字符串分隔
+		 * 
+		 * @param source 原始字符串
+		 * @param type 分隔符号保留类型
+		 * 
+		 * @return 字符串数组
+		 */
+		public final String[] split(String source, FullType type) {
+			if (source == null) {
+				return new String[0];
+			}
+			int size = 0;
+			int left = 0;
+			int index = 0;
+			final int length = this.stringValue.length();
+			String[] array = new String[Byte.SIZE];
+			do {
+				index = source.indexOf(this.stringValue, left);
+				if (index < 0) {
+					if (FullType.FILTER == type) {
+						array[size] = source.substring(left);
+					} else if(FullType.PREFIX == type) {
+						array[size] = source.substring(left == 0 ? left : left);
+					} else {
+						array[size] = source.substring(left == 0 ? left : left - length);
+					}
+				} else {
+					if (FullType.FILTER == type) {
+						array[size] = source.substring(left, index);
+					} else if(FullType.PREFIX == type) {
+						array[size] = source.substring(left == 0 ? left : left, index + length);
+					} else {
+						array[size] = source.substring(left == 0 ? left : left - length, index);
+					}
+					left = index + length;
+				}
+				size++;
+				if (size >= array.length) {
+					final String[] newArray = new String[size + Byte.SIZE];
+					System.arraycopy(array, 0, newArray, 0, size);
+					array = newArray;
+				}
+			} while (index >= 0);
+			final String[] result = new String[size];
+			System.arraycopy(array, 0, result, 0, size);
+			return result;
 		}
 		
 		/**

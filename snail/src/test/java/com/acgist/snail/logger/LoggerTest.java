@@ -13,7 +13,8 @@ class LoggerTest extends Performance {
 
 	@Test
 	void testCosted() {
-		final long costed = this.costed(100000, 10, () -> this.log("----" + System.currentTimeMillis()));
+		// TODO：想想办法搞到400毫秒
+		final long costed = this.costed(100000, () -> this.log("----{}----", System.currentTimeMillis()));
 		assertTrue(costed < 3000);
 	}
 	

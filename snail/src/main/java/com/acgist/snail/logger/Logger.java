@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Logger {
 
+	/**
+	 * <p>默认字符长度</p>
+	 */
+	private static final int DEFAULT_CAPACITY = 128;
 	/**
 	 * <p>时间格式</p>
 	 */
@@ -28,26 +33,37 @@ public final class Logger {
 	 */
 	private final String name;
 	/**
+	 * <p>日志名称格式</p>
+	 */
+	private final String nameFormat;
+	/**
 	 * <p>日志系统名称</p>
 	 */
 	private final String system;
 	/**
+	 * <p>日志系统格式</p>
+	 */
+	private final String systemFormat;
+	/**
 	 * <p>日志上下文</p>
 	 */
-	private final LoggerFactory context;
+	private final List<LoggerAdapter> adapters;
 	/**
 	 * <p>日志单元</p>
 	 */
-	private final Map<String, Tuple> tupleMap = new ConcurrentHashMap<>();
+	private final Map<String, Tuple> tupleMap;
 	
 	/**
 	 * @param name 日志名称
 	 */
 	public Logger(String name) {
 		this.name = name;
+		this.nameFormat = String.format(" %s ", this.name);
 		this.level = LoggerConfig.getLevel();
 		this.system = LoggerConfig.getSystem();
-		this.context = LoggerFactory.getInstance();
+		this.systemFormat = String.format("[%s] ", this.system);
+		this.adapters = LoggerFactory.getAdapters();
+		this.tupleMap = new ConcurrentHashMap<>();
 	}
 	
 	/**
@@ -61,14 +77,16 @@ public final class Logger {
 	 */
 	private String format(Level level, String format, Object ... args) {
 		final Tuple tuple = this.tupleMap.computeIfAbsent(format, Tuple::new);
-		final StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder(DEFAULT_CAPACITY);
 		builder
-			.append("[").append(this.system).append("] ")
-			.append(DATE_TIME_FORMATTER.format(LocalDateTime.now())).append(" [")
-			.append(Thread.currentThread().getName()).append("] ")
-			.append(level.name()).append(" ")
-			.append(this.name).append(" ")
-			.append(tuple.format(args)).append("\n");
+			.append(this.systemFormat)
+			.append(DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(" [")
+			.append(Thread.currentThread().getName())
+			.append("] ")
+			.append(level.name())
+			.append(this.nameFormat);
+		tuple.format(builder, args).append("\n");
 		final Throwable throwable = tuple.throwable(args);
 		if(throwable != null) {
 			final StringWriter stringWriter = new StringWriter();
@@ -79,17 +97,6 @@ public final class Logger {
 				.append("\n");
 		}
 		return builder.toString();
-	}
-
-	/**
-	 * <p>输出日志</p>
-	 * 
-	 * @param level 级别
-	 * @param format 格式
-	 * @param args 参数
-	 */
-	private void output(Level level, String format, Object ... args) {
-		this.context.output(level, this.format(level, format, args));
 	}
 	
 	/**
@@ -112,7 +119,14 @@ public final class Logger {
 	 */
 	private void log(Level level, String format, Object ... args) {
 		if(this.isEnabled(level)) {
-			this.output(level, format, args);
+			final String message = this.format(level, format, args);
+			final boolean error = level.value() >= Level.ERROR.value();
+			// 减少判断
+			if (error) {
+				this.adapters.forEach(adapter -> adapter.errorOutput(message));
+			} else {
+				this.adapters.forEach(adapter -> adapter.output(message));
+			}
 		}
 	}
 	

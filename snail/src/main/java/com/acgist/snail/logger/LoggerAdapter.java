@@ -41,12 +41,12 @@ public abstract class LoggerAdapter {
 	 * @param message 日志
 	 */
 	public void output(String message) {
-		try {
-			if(this.available) {
+		if (this.available) {
+			try {
 				this.output.write(message.getBytes());
+			} catch (IOException e) {
+				LoggerFactory.error(e);
 			}
-		} catch (IOException e) {
-			LoggerFactory.error(e);
 		}
 	}
 	
@@ -56,12 +56,12 @@ public abstract class LoggerAdapter {
 	 * @param message 日志
 	 */
 	public void errorOutput(String message) {
-		try {
-			if(this.available) {
+		if (this.available) {
+			try {
 				this.errorOutput.write(message.getBytes());
+			} catch (IOException e) {
+				LoggerFactory.error(e);
 			}
-		} catch (IOException e) {
-			LoggerFactory.error(e);
 		}
 	}
 	

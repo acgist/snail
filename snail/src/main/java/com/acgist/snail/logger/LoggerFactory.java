@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.logger.adapter.ConsoleLoggerAdapter;
 import com.acgist.snail.logger.adapter.FileLoggerAdapter;
 
@@ -43,9 +44,9 @@ public final class LoggerFactory {
 		final String adapter = LoggerConfig.getAdapter();
 		final List<LoggerAdapter> list = new ArrayList<>();
 		if(adapter != null && !adapter.isEmpty()) {
-			final String[] adapters = adapter.split(",");
+			final String[] adapters = SymbolConfig.Symbol.COMMA.split(adapter);
 			for (String value : adapters) {
-				value = value.trim();
+				value = value.strip();
 				if(FileLoggerAdapter.ADAPTER.equalsIgnoreCase(value)) {
 					list.add(new FileLoggerAdapter());
 				} else if(ConsoleLoggerAdapter.ADAPTER.equalsIgnoreCase(value)) {
@@ -68,22 +69,14 @@ public final class LoggerFactory {
 	}
 
 	/**
-	 * <p>输出日志</p>
+	 * <p>获取日志适配器</p>
 	 * 
-	 * @param level 级别
-	 * @param message 日志
+	 * @return 日志适配器
 	 */
-	public void output(Level level, String message) {
-		final boolean error = level.value() >= Level.ERROR.value();
-		for (LoggerAdapter adapter : this.adapters) {
-			if(error) {
-				adapter.errorOutput(message);
-			} else {
-				adapter.output(message);
-			}
-		}
+	public static final List<LoggerAdapter> getAdapters() {
+		return INSTANCE.adapters;
 	}
-	
+
 	/**
 	 * <p>系统异常记录</p>
 	 * 

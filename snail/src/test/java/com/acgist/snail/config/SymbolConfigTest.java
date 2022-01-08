@@ -1,5 +1,6 @@
 package com.acgist.snail.config;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -36,16 +37,40 @@ class SymbolConfigTest extends Performance {
 	}
 	
 	@Test
+	void testSplit() {
+		assertArrayEquals(new String[] { "1" }, SymbolConfig.Symbol.COMMA.split("1"));
+		assertArrayEquals(new String[] { "", "1" }, SymbolConfig.Symbol.COMMA.split(",1"));
+		assertArrayEquals(new String[] { "1", "" }, SymbolConfig.Symbol.COMMA.split("1,"));
+		assertArrayEquals(new String[] { "1", "2" }, SymbolConfig.Symbol.COMMA.split("1,2"));
+		assertArrayEquals(new String[] { "1" }, SymbolConfig.Symbol.COMMA.split("1", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { ",", "1" }, SymbolConfig.Symbol.COMMA.split(",1", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { "1,", "" }, SymbolConfig.Symbol.COMMA.split("1,", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { "1,", "2" }, SymbolConfig.Symbol.COMMA.split("1,2", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { "1" }, SymbolConfig.Symbol.COMMA.split("1", SymbolConfig.FullType.SUFFIX));
+		assertArrayEquals(new String[] { "", ",1" }, SymbolConfig.Symbol.COMMA.split(",1", SymbolConfig.FullType.SUFFIX));
+		assertArrayEquals(new String[] { "1", "," }, SymbolConfig.Symbol.COMMA.split("1,", SymbolConfig.FullType.SUFFIX));
+		assertArrayEquals(new String[] { "1", ",2" }, SymbolConfig.Symbol.COMMA.split("1,2", SymbolConfig.FullType.SUFFIX));
+	}
+	
+	@Test
 	void testCosted() {
 		String key = "key";
 		String value = "value";
 		this.costed(1000000, () -> {
-			String x = key + ":" + value;
-			assertNotNull(x);
+			final String result = key + ":" + value;
+			assertNotNull(result);
 		});
 		this.costed(1000000, () -> {
-			String x = SymbolConfig.Symbol.COLON.join(key, value);
-			assertNotNull(x);
+			final String result = SymbolConfig.Symbol.COLON.join(key, value);
+			assertNotNull(result);
+		});
+		this.costed(1000000, () -> {
+			final String[] result = SymbolConfig.Symbol.COLON.split("1:2:3:4");
+			assertNotNull(result);
+		});
+		this.costed(1000000, () -> {
+			final String[] result = "1:2:3:4".split(":");
+			assertNotNull(result);
 		});
 	}
 	

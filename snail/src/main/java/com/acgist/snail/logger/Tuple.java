@@ -1,5 +1,7 @@
 package com.acgist.snail.logger;
 
+import java.util.Objects;
+
 /**
  * <p>日志单元</p>
  * <p>每条日志对应一个日志单元</p>
@@ -11,11 +13,11 @@ public final class Tuple {
 	/**
 	 * <p>格式化符号</p>
 	 */
-	private static final String FORMAT_CODE = "{}";
+	public static final String FORMAT_CODE = "{}";
 	/**
 	 * <p>格式化符号长度</p>
 	 */
-	private static final int FORMAT_CODE_LENGTH = FORMAT_CODE.length();
+	public static final int FORMAT_CODE_LENGTH = FORMAT_CODE.length();
 	
 	/**
 	 * <p>原始信息</p>
@@ -30,6 +32,9 @@ public final class Tuple {
 	 */
 	private final String suffix;
 	
+	/**
+	 * @param message 原始日志
+	 */
 	public Tuple(String message) {
 		this.message = message;
 		int pos = 0;
@@ -63,12 +68,26 @@ public final class Tuple {
 	 * @return 日志信息
 	 */
 	public final String format(Object ... objects) {
+		final StringBuilder builder = new StringBuilder();
+		return this.format(builder, objects).toString();
+	}
+	
+	/**
+	 * <p>格式化日志</p>
+	 * 
+	 * @param builder 日志Builder
+	 * @param objects 参数列表
+	 * 
+	 * @return 日志信息
+	 */
+	public final StringBuilder format(StringBuilder builder, Object ... objects) {
+		Objects.requireNonNull(builder, "没有日志Builder");
 		if(objects == null || objects.length == 0 || this.format.length == 0) {
-			return this.message;
+			builder.append(this.message);
+			return builder;
 		}
 		final int objectLength = objects.length;
 		final int formatLength = this.format.length;
-		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < formatLength; index++) {
 			builder.append(this.format[index]);
 			if(index < objectLength) {
@@ -81,7 +100,7 @@ public final class Tuple {
 			builder.append(this.suffix);
 		}
 		// 注意：直接忽略后面多余参数
-		return builder.toString();
+		return builder;
 	}
 	
 	/**

@@ -37,7 +37,7 @@ class NumberUtilsTest extends Performance {
 	void testTransition() {
 		for (short index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
 			if(((byte) index) != ((byte) (index & 0xFF))) {
-				System.out.println(index);
+				this.log(index);
 			}
 			assertEquals((byte) index, (byte) (index & 0xFF));
 			assertEquals(((int) index) & 0xFFFF, (int) (index & 0xFFFF));

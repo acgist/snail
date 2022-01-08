@@ -7,6 +7,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.logger.Tuple;
 
 /**
  * <p>性能分析工具</p>
@@ -28,7 +29,7 @@ public abstract class Performance {
 	 * @param message 日志信息
 	 */
 	protected final void log(Object message) {
-		this.log(null, message);
+		this.log(Tuple.FORMAT_CODE, message);
 	}
 	
 	/**
@@ -38,16 +39,6 @@ public abstract class Performance {
 	 * @param args 日志参数
 	 */
 	protected final void log(String message, Object ... args) {
-		if(args == null) {
-			return;
-		}
-		int argLength = args.length;
-		if(message == null && argLength != 0) {
-			message = "{}";
-			if(argLength > 1) {
-				message += "-{}".repeat(argLength - 1);
-			}
-		}
 		LOGGER.info(message, args);
 	}
 	
