@@ -9,6 +9,7 @@ import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**
  * <p>消息代理</p>
+ * <p>可以通过实现{@link IMessageDecoder}进行消息处理，也可以通过重写{@link #onReceive(ByteBuffer)}或者{@link #onReceive(ByteBuffer, InetSocketAddress)}方法。</p>
  *
  * @param <T> 通道代理类型
  * 
