@@ -1,5 +1,6 @@
 package com.acgist.snail.gui.javafx;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.gui.javafx.theme.WindowsTheme;
@@ -35,7 +36,7 @@ public final class Themes {
 	/**
 	 * <p>图标文件路径（256PX）：{@value}</p>
 	 */
-	public static final String LOGO_ICON = "/image/logo.png";
+	public static final String LOGO_ICON_256 = "/image/logo.png";
 	/**
 	 * <p>红色：禁用</p>
 	 */
@@ -116,8 +117,9 @@ public final class Themes {
 			.append("-fx-snail-main-color:#")
 			// 十六进制颜色：0x + RRGGBB + OPACITY
 			.append(colorHex, 2, 8)
-			.append(";");
+			.append(SymbolConfig.Symbol.SEMICOLON.toString());
 		SYSTEM_THEME_STYLE = themeStyle.toString();
+		LOGGER.debug("系统主题颜色：{}", colorHex);
 	}
 	
 	private Themes() {
@@ -129,7 +131,7 @@ public final class Themes {
 	 * @return Logo图标
 	 */
 	public static final Image getLogo() {
-		return new Image(Themes.LOGO_ICON);
+		return new Image(LOGO_ICON_256);
 	}
 	
 	/**

@@ -15,8 +15,7 @@
 	<artifactId>snail</artifactId>
 	<packaging>jar</packaging>
 	
-	<dependencies>
-	</dependencies>
+	<dependencies></dependencies>
 
 	<build>
 		<!-- Maven插件 -->

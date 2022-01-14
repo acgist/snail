@@ -25,13 +25,13 @@
 		<!-- JavaFX版本 -->
 		<javafx.version>17.0.1</javafx.version>
 		<!-- JUnit版本 -->
-		<junit.version>5.7.2</junit.version>
+		<junit.version>5.8.2</junit.version>
 		<!-- Maven插件版本 -->
 		<maven.gpg.version>3.0.1</maven.gpg.version>
-		<maven.jar.version>3.2.0</maven.jar.version>
+		<maven.jar.version>3.2.2</maven.jar.version>
 		<maven.source.version>3.2.1</maven.source.version>
-		<maven.javadoc.version>3.3.0</maven.javadoc.version>
-		<maven.compiler.version>3.8.1</maven.compiler.version>
+		<maven.javadoc.version>3.3.1</maven.javadoc.version>
+		<maven.compiler.version>3.9.0</maven.compiler.version>
 		<maven.resources.version>3.2.0</maven.resources.version>
 		<maven.dependency.version>3.2.0</maven.dependency.version>
 		<!-- 文件编码 -->
