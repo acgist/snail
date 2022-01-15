@@ -1,10 +1,10 @@
 # 代码规范
 
+提交提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本代码规范
+
+谢谢！
+
 总则：规范、可读、优美
-
-新增代码必须遵循以下规范
-
-更多参考[阿里巴巴Java开发手册](https://github.com/alibaba/p3c)
 
 ## 目录
 

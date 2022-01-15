@@ -163,9 +163,9 @@ public final class SystemContext implements IContext {
 				LOGGER.info("系统已关闭");
 				LoggerFactory.shutdown();
 			});
-			// 设置强制关闭定时任务
+			// 设置强制关闭程序定时任务
 			SystemThreadContext.timer(SystemConfig.SHUTDOWN_FORCE_TIME, TimeUnit.SECONDS, () -> {
-				LOGGER.warn("关闭程序异常（强制关闭）");
+				LOGGER.warn("强制关闭程序");
 				LoggerFactory.shutdown();
 				Runtime.getRuntime().halt(0);
 			});

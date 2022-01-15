@@ -1,8 +1,6 @@
 # 贡献规范
 
-大家可以通过提交问题、建议和PR来为项目做出贡献，提交地址：[Issues](https://gitee.com/acgist/snail/issues)
-
-提交前请大家阅读本贡献规范
+提交提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本贡献规范
 
 谢谢！
 

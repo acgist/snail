@@ -36,7 +36,7 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int IPV6_LENGTH = 16;
 	/**
-	 * <p>强制关机定时任务时间（单位：秒）：{@value}</p>
+	 * <p>强制关闭程序定时任务时间（单位：秒）：{@value}</p>
 	 */
 	public static final int SHUTDOWN_FORCE_TIME = 30;
 	/**

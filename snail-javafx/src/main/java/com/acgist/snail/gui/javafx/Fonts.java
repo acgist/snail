@@ -245,27 +245,17 @@ public final class Fonts {
 		if(fileType == null) {
 			fileType = FileType.UNKNOWN;
 		}
-		switch (fileType) {
-		case IMAGE:
-			return SnailIcon.AS_IMAGE.iconLabel();
-		case VIDEO:
-			return SnailIcon.AS_FILM.iconLabel();
-		case AUDIO:
-			return SnailIcon.AS_MUSIC.iconLabel();
-		case SCRIPT:
-			return SnailIcon.AS_TERMINAL.iconLabel();
-		case TORRENT:
-			return SnailIcon.AS_FOLDER_DOWNLOAD.iconLabel();
-		case COMPRESS:
-			return SnailIcon.AS_FILE_ZIP.iconLabel();
-		case DOCUMENT:
-			return SnailIcon.AS_FILE_TEXT2.iconLabel();
-		case INSTALL:
-			return SnailIcon.AS_DROPBOX.iconLabel();
-		case UNKNOWN:
-		default:
-			return SnailIcon.AS_QUESTION.iconLabel();
-		}
+		return switch (fileType) {
+		case IMAGE -> SnailIcon.AS_IMAGE.iconLabel();
+		case VIDEO -> SnailIcon.AS_FILM.iconLabel();
+		case AUDIO -> SnailIcon.AS_MUSIC.iconLabel();
+		case SCRIPT -> SnailIcon.AS_TERMINAL.iconLabel();
+		case TORRENT -> SnailIcon.AS_FOLDER_DOWNLOAD.iconLabel();
+		case COMPRESS -> SnailIcon.AS_FILE_ZIP.iconLabel();
+		case DOCUMENT -> SnailIcon.AS_FILE_TEXT2.iconLabel();
+		case INSTALL -> SnailIcon.AS_DROPBOX.iconLabel();
+		default -> SnailIcon.AS_QUESTION.iconLabel();
+		};
 	}
 	
 }
