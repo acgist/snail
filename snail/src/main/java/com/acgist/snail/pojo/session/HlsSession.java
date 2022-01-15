@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.crypto.Cipher;
 
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.logger.Logger;
@@ -27,11 +26,6 @@ public final class HlsSession {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HlsSession.class);
 
-	/**
-	 * <p>下载线程数量</p>
-	 */
-	private static final int POOL_SIZE = SystemConfig.getHlsThreadSize();
-	
 	/**
 	 * <p>下载状态</p>
 	 */
@@ -120,7 +114,8 @@ public final class HlsSession {
 		}
 		// 修改开始下载：提交client需要判断
 		this.downloadable = true;
-		this.executor = SystemThreadContext.newExecutor(POOL_SIZE, POOL_SIZE, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
+		final int poolSize = SystemThreadContext.DEFAULT_THREAD_SIZE;
+		this.executor = SystemThreadContext.newExecutor(poolSize, poolSize, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
 		synchronized (this.clients) {
 			this.clients.forEach(this::download);
 		}

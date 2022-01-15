@@ -28,17 +28,16 @@ public final class UtpRequestQueue {
 	}
 	
 	/**
-	 * <p>请求队列数量：{@value}</p>
-	 */
-	private static final int QUEUE_SIZE = 4;
-	
-	/**
 	 * <p>是否可用</p>
 	 */
 	private boolean available;
 	/**
+	 * <p>队列长度</p>
+	 * <p>注意：如果使用静态常量引用外部常量容易出现异常</p>
+	 */
+	private final int queueSize;
+	/**
 	 * <p>请求队列索引</p>
-	 * <p>获取请求队列递增：保证UTP连接被均匀分配到请求队列</p>
 	 */
 	private final AtomicInteger queueIndex;
 	/**
@@ -55,12 +54,13 @@ public final class UtpRequestQueue {
 	private final List<BlockingQueue<UtpRequest>> queues;
 	
 	private UtpRequestQueue() {
-		LOGGER.debug("启动UTP请求队列：{}", QUEUE_SIZE);
+		this.queueSize = SystemThreadContext.DEFAULT_THREAD_SIZE;
 		this.available = true;
 		this.queueIndex = new AtomicInteger(0);
-		this.queues = new ArrayList<>(QUEUE_SIZE);
-		this.executor = SystemThreadContext.newExecutor(QUEUE_SIZE, QUEUE_SIZE, 1000, 60, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
+		this.queues = new ArrayList<>(this.queueSize);
+		this.executor = SystemThreadContext.newExecutor(this.queueSize, this.queueSize, 10000, 60L, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
 		this.buildQueues();
+		LOGGER.debug("启动UTP请求队列：{}", this.queueSize);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public final class UtpRequestQueue {
 	 * @return 请求队列
 	 */
 	public BlockingQueue<UtpRequest> queue() {
-		final int index = this.queueIndex.getAndIncrement() % QUEUE_SIZE;
+		final int index = this.queueIndex.getAndIncrement() % this.queueSize;
 		return this.queues.get(Math.abs(index));
 	}
 	
@@ -77,7 +77,7 @@ public final class UtpRequestQueue {
 	 * <p>新建请求队列</p>
 	 */
 	private void buildQueues() {
-		for (int index = 0; index < QUEUE_SIZE; index++) {
+		for (int index = 0; index < this.queueSize; index++) {
 			final var queue = new LinkedBlockingQueue<UtpRequest>();
 			this.executor.submit(() -> this.queueExecute(queue));
 			this.queues.add(queue);

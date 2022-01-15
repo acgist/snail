@@ -36,6 +36,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int IPV6_LENGTH = 16;
 	/**
+	 * <p>强制关机定时任务时间（单位：秒）：{@value}</p>
+	 */
+	public static final int SHUTDOWN_FORCE_TIME = 30;
+	/**
 	 * <p>IPv4端口占用字节大小：{@value}</p>
 	 */
 	public static final int IPV4_PORT_LENGTH = IPV4_LENGTH + PORT_LENGHT;
@@ -247,10 +251,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int pieceRepeatSize;
 	/**
-	 * <p>HLS下载线程数量</p>
-	 */
-	private int hlsThreadSize;
-	/**
 	 * <p>DHT执行周期（秒）</p>
 	 */
 	private int dhtInterval;
@@ -313,7 +313,6 @@ public final class SystemConfig extends PropertiesConfig {
 		this.peerSize = this.getInteger("acgist.peer.size", 20);
 		this.trackerSize = this.getInteger("acgist.tracker.size", 50);
 		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 8);
-		this.hlsThreadSize = this.getInteger("acgist.hls.thread.size", 10);
 		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
 		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
 		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
@@ -342,7 +341,6 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.debug("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.debug("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
-		LOGGER.debug("HLS下载线程数量：{}", this.hlsThreadSize);
 		LOGGER.debug("DHT执行周期（秒）：{}", this.dhtInterval);
 		LOGGER.debug("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.debug("本地发现执行周期（秒）：{}", this.lsdInterval);
@@ -520,15 +518,6 @@ public final class SystemConfig extends PropertiesConfig {
 		return INSTANCE.pieceRepeatSize;
 	}
 	
-	/**
-	 * <p>获取HLS下载线程数量</p>
-	 * 
-	 * @return HLS下载线程数量
-	 */
-	public static final int getHlsThreadSize() {
-		return INSTANCE.hlsThreadSize;
-	}
-
 	/**
 	 * <p>获取DHT执行周期（秒）</p>
 	 * 

@@ -146,15 +146,14 @@ public final class Snail {
 			}
 			// 优先关闭任务
 			TaskContext.getInstance().shutdown();
+			// 释放Torrent协议
 			if(INSTANCE.buildTorrent) {
-				// 加载Torrent协议
 				PeerServer.getInstance().close();
 				TorrentServer.getInstance().close();
 				TrackerServer.getInstance().close();
 				LocalServiceDiscoveryServer.getInstance().close();
 				NatContext.getInstance().shutdown();
 				UtpRequestQueue.getInstance().shutdown();
-				// 保存DHT和Tracker配置
 				DhtConfig.getInstance().persistent();
 				TrackerConfig.getInstance().persistent();
 			}

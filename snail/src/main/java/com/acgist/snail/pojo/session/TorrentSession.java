@@ -308,7 +308,8 @@ public final class TorrentSession {
 	 * <p>加载定时线程池</p>
 	 */
 	private void loadExecutorTimer() {
-		this.executorTimer = SystemThreadContext.newTimerExecutor(2, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
+		final int poolSize = SystemThreadContext.threadSize(2, 4);
+		this.executorTimer = SystemThreadContext.newTimerExecutor(poolSize, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
 	}
 	
 	/**

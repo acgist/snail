@@ -1,5 +1,7 @@
 package com.acgist.snail.context;
 
+import java.util.concurrent.TimeUnit;
+
 import com.acgist.snail.IContext;
 import com.acgist.snail.Snail;
 import com.acgist.snail.Snail.SnailBuilder;
@@ -160,6 +162,12 @@ public final class SystemContext implements IContext {
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
 				LoggerFactory.shutdown();
+			});
+			// 设置强制关闭定时任务
+			SystemThreadContext.timer(SystemConfig.SHUTDOWN_FORCE_TIME, TimeUnit.SECONDS, () -> {
+				LOGGER.warn("关闭程序异常（强制关闭）");
+				LoggerFactory.shutdown();
+				Runtime.getRuntime().halt(0);
 			});
 		} else {
 			GuiContext.getInstance().alert("关闭提示", "系统关闭中");

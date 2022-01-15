@@ -72,6 +72,10 @@ public final class SystemThreadContext implements IContext {
 	 * <p>下载器线程名称：{@value}</p>
 	 */
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
+	/**
+	 * <p>获取CPU核心数量</p>
+	 */
+	public static final int DEFAULT_THREAD_SIZE = Runtime.getRuntime().availableProcessors();
 	
 	/**
 	 * <p>系统线程池：异步执行、防止卡顿</p>
@@ -99,12 +103,28 @@ public final class SystemThreadContext implements IContext {
 	private static final Map<String, Integer> THREAD_INDEX = new HashMap<>();
 	
 	static {
-		EXECUTOR = newExecutor(4, 20, 1000, 60L, SNAIL_THREAD);
-		EXECUTOR_TIMER = newTimerExecutor(2, SNAIL_THREAD_TIMER);
+		EXECUTOR = newExecutor(threadSize(4, 8), threadSize(16, 32), 1000, 60L, SNAIL_THREAD);
+		EXECUTOR_TIMER = newTimerExecutor(threadSize(2, 4), SNAIL_THREAD_TIMER);
 		REJECTED_HANDLER = (runnable, executor) -> LOGGER.warn("任务拒绝执行：{}-{}", runnable, executor);
+		LOGGER.info("系统默认线程数量：{}", DEFAULT_THREAD_SIZE);
 	}
 	
 	private SystemThreadContext() {
+	}
+	
+	/**
+	 * <p>获取线程数量</p>
+	 * 
+	 * @param minSize 最小线程数量
+	 * @param maxSize 最大线程数量
+	 * 
+	 * @return 线程数量
+	 */
+	public static final int threadSize(int minSize, int maxSize) {
+		return
+			DEFAULT_THREAD_SIZE < minSize ? minSize :
+			DEFAULT_THREAD_SIZE > maxSize ? maxSize :
+			DEFAULT_THREAD_SIZE;
 	}
 	
 	/**
