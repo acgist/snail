@@ -30,6 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -125,8 +126,10 @@ public final class TrayMenu extends Menu {
 				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
 					// 右键：托盘菜单
 					Platform.runLater(() -> {
-						final int x = event.getXOnScreen();
-						final int y = event.getYOnScreen() - MENU_WINDOW_HEIGHT;
+						final double scaleX = Screen.getPrimary().getOutputScaleX();
+						final double scaleY = Screen.getPrimary().getOutputScaleY();
+						final double x = event.getXOnScreen() / scaleX;
+						final double y = event.getYOnScreen() / scaleY - MENU_WINDOW_HEIGHT;
 						TrayMenu.INSTANCE.show(INSTANCE.buildTrayStage(), x, y);
 					});
 				}

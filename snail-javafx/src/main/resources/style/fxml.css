@@ -35,6 +35,15 @@
 	-fx-font-family:"SnailIcon";
 }
 /**
+ * <p>托盘样式</p>
+ */
+.tray {
+	-fx-font-size:16px;
+}
+.tray .snail-icon {
+	-fx-font-size:16px;
+}
+/**
  * <p>提示样式：Tooltip</p>
  */
 .root .tooltip {
@@ -63,7 +72,6 @@
 /**
  * <p>文本框样式：TextField</p>
  */
- .root .text-area,
 .root .text-field {
 	-fx-border-width:1px;
 	-fx-border-color:-fx-snail-border-color;
@@ -72,14 +80,9 @@
 	-fx-background-color:transparent, #FFFFFF;
 	-fx-prompt-text-fill:-fx-snail-border-color;
 }
-.root .text-area:hover,
-.root .text-area:focused,
 .root .text-field:hover,
 .root .text-field:focused {
 	-fx-border-color:-fx-snail-main-color;
-}
-.root .text-area .content {
-    -fx-background-color:transparent, #FFFFFF;
 }
 /**
  * <p>下拉框样式：ChoiceBox</p>
@@ -95,14 +98,12 @@
 .root .choice-box:focused {
 	-fx-border-color:-fx-snail-main-color;
 }
-/**
- * <p>下拉框已选择标记</p>
- */
-.root .radio-menu-item:focused:checked .left-container .radio {
+/** 当前选中选项标记选中颜色 */
+.root .choice-box .radio-menu-item:focused:checked .left-container .radio {
 	-fx-background-color:-fx-selection-bar-text;
 }
 /**
- * <p>滚动条样式</p>
+ * <p>滚动条样式：ScrollBar</p>
  */
 .root .scroll-bar {
 	-fx-background-color:-fx-snail-background-color;
@@ -122,15 +123,6 @@
 }
 .root .context-menu .menu-item:focused .snail-icon {
 	-fx-text-fill:-fx-selection-bar-text;
-}
-/**
- * <p>托盘样式</p>
- */
-.tray {
-	-fx-font-size:16px;
-}
-.tray .snail-icon {
-	-fx-font-size:16px;
 }
 /**
  * <p>关于窗口：about.fxml</p>
@@ -160,7 +152,6 @@
 .build .url TextFlow {
 	-fx-padding:0 10px 0 0;
 }
-.build .url TextArea,
 .build .url TextField {
 	-fx-pref-width:400px;
 }
@@ -190,9 +181,9 @@
 .main .footer .statuses Label {
 	-fx-padding:0 2px;
 }
-/*
- * <p>表格样式：TableView</p>
- */
+.main .placeholder .snail-icon {
+	-fx-font-size:64px;
+}
 .main .table-view {
 	-fx-padding:0;
 	-fx-border-width:1px 0;
@@ -204,65 +195,46 @@
 	-fx-padding:0 2px;
 	-fx-font-size:20px;
 }
-.main .placeholder .snail-icon {
-	-fx-font-size:64px;
-}
-/**
- * <p>表头样式</p>
- */
-.main .table-view .column-header,
-/**
- * <p>空闲表头样式</p>
- */
-.main .table-view .filler {
+/** 空闲表头样式 */
+.main .table-view .filler,
+/** 表头样式 */
+.main .table-view .column-header {
 	-fx-pref-height:40px;
 	-fx-border-width:0 1px 1px 0;
 	-fx-border-color:-fx-snail-border-color;
 	-fx-background-color:-fx-snail-element-color;
 }
-/*
- * <p>表格单元样式</p>
- */
+/** 表格单元样式 */
 .main .table-view .table-cell {
-	/**
-	 * <p>设置padding（垂直居中）</p>
-	 */
+	/** 设置padding（垂直居中） */
 	-fx-padding:0 2px;
 	-fx-pref-height:48px;
 }
-/*
- * <p>表格行样式</p>
- */
+/** 没有数据表格单元样式 */
+.main .table-view .table-row-cell:empty .table-cell {
+	/** 去掉没有数据表格单元竖线
+	 * -fx-border-width:0px;
+	 */
+}
+/** 表格行样式 */
 .main .table-view .table-row-cell {
-	/**
-	 * <p>去掉表格行横线</p>
+	/** 去掉表格行横线
 	 * -fx-background-insets:0;
 	 * -fx-background-radius:0;
 	 */
 }
-/*
- * <p>没有数据表格单元样式</p>
- */
-.main .table-view .table-row-cell:empty .table-cell {
-	/**
-	 * <p>去掉没有数据表格单元竖线</p>
-	 * -fx-border-width:0px;
-	 */
+/** 失去焦点表格行样式 */
+.main .table-view .table-row-cell:selected {
+	-fx-background-color:-fx-snail-element-color;
 }
-/*
- * <p>获得焦点表格行样式</p>
- */
+/** 获得焦点表格行样式 */
 .main .table-view:focused .table-row-cell:focused {
-	/**
-	 * <p>去掉获得焦点但是没有选中时的边框</p>
-	 */
+	/** 去掉获得焦点但是没有选中时的边框 */
 	-fx-background-insets:0, 0 0 1 0;
 	-fx-background-radius:0;
 	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
 }
-/*
- * <p>选中表格行样式</p>
- */
+/** 选中表格行样式 */
 .main .table-view:focused .table-row-cell:selected {
 	-fx-background-color:-fx-snail-main-color;
 }
@@ -272,39 +244,26 @@
 .main .table-view:focused .table-row-cell:selected .snail-icon {
 	-fx-text-fill:-fx-selection-bar-text;
 }
-/*
- * <p>失去焦点表格行样式</p>
- */
-.main .table-view .table-row-cell:selected {
-	-fx-background-color:-fx-snail-element-color;
+/** 去掉垂直滚动条 */
+.main .table-view .virtual-flow .scroll-bar:vertical {
+	/** 去掉垂直滚动条
+	 * -fx-pref-width:0;
+	 */
 }
-/*
- * <p>去掉垂直滚动条</p>
- * .main .table-view .virtual-flow .scroll-bar:vertical {
- * 	-fx-pref-width:0;
- * }
- */
-/*
- * <p>去掉水平滚动条</p>
- */
+/** 去掉水平滚动条 */
 .main .table-view .virtual-flow .scroll-bar:horizontal {
 	-fx-pref-height:0;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
-	/**
-	 * <p>影藏箭头</p>
-	 */
+	/** 影藏箭头 */
 	-fx-background-color:transparent;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
-	/**
-	 * <p>影藏箭头</p>
-	 */
+	/** 影藏箭头 */
 	-fx-background-color:transparent;
 }
 /**
  * <p>设置窗口：setting.fxml</p>
- * <p>滚动面板样式：ScrollPane</p>
  */
 .setting .scroll-pane {
 	-fx-padding:20px 0 0 0;
@@ -349,9 +308,7 @@
 	-fx-font-size:24px;
 	-fx-font-weight:bold;
 }
-/**
- * <p>背景颜色 = 边框颜色 * 透明度</p>
- */
+/** 背景颜色 = 边框颜色 * 透明度 */
 .statistics .info-box TextFlow.red {
 	-fx-border-color:-fx-snail-red-color;
 	-fx-background-color:derive(-fx-snail-red-color, 40%);
@@ -449,9 +406,7 @@
 	-fx-background-radius:0;
 	-fx-background-color:-fx-snail-background-color;
 }
-/*
- * <p>箭头样式</p>
- */
+/** 箭头样式 */
 .torrent .tree-view .tree-cell .arrow {
 	-fx-background-color:#000000;
 }

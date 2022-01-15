@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
 
+import javafx.application.Platform;
+import javafx.stage.Screen;
+
 class DesktopsTest extends Performance {
 
 	@Test
@@ -18,6 +21,13 @@ class DesktopsTest extends Performance {
 	@Test
 	void testBrowse() {
 		assertDoesNotThrow(() -> Desktops.browse("https://www.acgist.com"));
+	}
+	
+	@Test
+	void testHidpi() {
+		Platform.startup(() -> {});
+		this.log(Screen.getPrimary().getOutputScaleX());
+		this.log(Screen.getPrimary().getOutputScaleY());
 	}
 	
 }

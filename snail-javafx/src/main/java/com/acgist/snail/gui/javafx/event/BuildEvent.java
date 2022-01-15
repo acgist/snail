@@ -30,6 +30,8 @@ public final class BuildEvent extends BuildEventAdapter {
 	@Override
 	protected void executeNative(Object ... args) {
 		LOGGER.debug("新建GUI窗口");
+		// 设置是否支持缩放
+//		System.setProperty("prism.allowhidpi", "true");
 		Platform.startup(() -> {});
 		Platform.runLater(() -> {
 			TrayMenu.getInstance();
