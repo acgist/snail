@@ -28,7 +28,7 @@
 |snail|下载核心|
 |snail-javafx|电脑界面|
 
-> 电脑界面只是方便操作，下载核心包含所有下载协议，可以完全独立使用。
+> 电脑界面只是方便操作，下载核心包含所有下载协议，完全可以独立使用。
 
 ## 使用
 
@@ -40,7 +40,7 @@
 mvn clean package -P release -D skipTests
 ```
 
-> 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译
+> 推荐使用[Release](https://gitee.com/acgist/snail/releases)版本编译
 
 ### 界面
 
@@ -92,7 +92,7 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 ### 协议
 
-[协议信息](./docs/PROTOCOL.md)
+[下载协议](./docs/PROTOCOL.md)
 
 ### 依赖
 

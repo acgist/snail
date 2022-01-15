@@ -1,6 +1,6 @@
 # 贡献规范
 
-提交提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本贡献规范
+提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本贡献规范
 
 谢谢！
 
@@ -36,6 +36,7 @@
 * 检查[Issues](https://gitee.com/acgist/snail/issues)是否已经提交过此问题
 * 检查JDK、网络、路由、防火墙配置
 * 检查运行系统和JavaFX依赖系统是否一致
+* 检查最新版本是否依旧存在问题
 
 #### 提交问题规范
 

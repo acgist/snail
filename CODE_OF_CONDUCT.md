@@ -1,6 +1,6 @@
 # 代码规范
 
-提交提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本代码规范
+提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本代码规范
 
 谢谢！
 
