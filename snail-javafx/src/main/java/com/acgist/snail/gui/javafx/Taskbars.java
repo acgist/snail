@@ -5,6 +5,7 @@ import java.awt.Window;
 
 /**
  * <p>状态栏助手</p>
+ * <p>TODO：JavaFX是时候才能支持呢</p>
  * 
  * @author acgist
  */
@@ -19,11 +20,12 @@ public final class Taskbars {
 	 */
 	private final Taskbar taskbar;
 
-	public Taskbars() {
+	private Taskbars() {
 		this(null, null);
 	}
 
 	/**
+	 * @param window 窗口
 	 * @param taskbar 状态栏
 	 */
 	private Taskbars(Window window, Taskbar taskbar) {
@@ -32,7 +34,7 @@ public final class Taskbars {
 	}
 	
 	/**
-	 * <p>新建助手</p>
+	 * <p>新建状态栏助手</p>
 	 * 
 	 * @param window 窗口
 	 * 
@@ -51,18 +53,19 @@ public final class Taskbars {
 	 * @param value 进度
 	 */
 	public void progress(int value) {
-		if(this.taskbar != null) {
-			if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
-				this.taskbar.setProgressValue(value);
-			} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
-				// OFF：关闭
-				// ERROR：失败（红色）
-				// NORMAL：正常（绿色）
-				// PAUSED：暂停（黄色）
-				// INDETERMINATE：未知（未知进度）
-				this.taskbar.setWindowProgressValue(this.window, value);
-				this.taskbar.setWindowProgressState(this.window, Taskbar.State.NORMAL);
-			}
+		if(this.taskbar == null) {
+			return;
+		}
+		if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
+			this.taskbar.setProgressValue(value);
+		} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
+			// OFF：关闭
+			// ERROR：失败（红色）
+			// NORMAL：正常（绿色）
+			// PAUSED：暂停（黄色）
+			// INDETERMINATE：未知（未知进度）
+			this.taskbar.setWindowProgressValue(this.window, value);
+			this.taskbar.setWindowProgressState(this.window, Taskbar.State.NORMAL);
 		}
 	}
 	
@@ -70,12 +73,13 @@ public final class Taskbars {
 	 * <p>暂停</p>
 	 */
 	public void paused() {
-		if(this.taskbar != null) {
-			if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
-				this.taskbar.setProgressValue(0);
-			} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
-				this.taskbar.setWindowProgressState(this.window, Taskbar.State.PAUSED);
-			}
+		if(this.taskbar == null) {
+			return;
+		}
+		if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
+			this.taskbar.setProgressValue(0);
+		} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
+			this.taskbar.setWindowProgressState(this.window, Taskbar.State.PAUSED);
 		}
 	}
 
@@ -83,12 +87,13 @@ public final class Taskbars {
 	 * <p>失败</p>
 	 */
 	public void error() {
-		if(this.taskbar != null) {
-			if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
-				this.taskbar.setProgressValue(0);
-			} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
-				this.taskbar.setWindowProgressState(this.window, Taskbar.State.ERROR);
-			}
+		if(this.taskbar == null) {
+			return;
+		}
+		if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
+			this.taskbar.setProgressValue(0);
+		} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
+			this.taskbar.setWindowProgressState(this.window, Taskbar.State.ERROR);
 		}
 	}
 
@@ -96,12 +101,13 @@ public final class Taskbars {
 	 * <p>关闭</p>
 	 */
 	public void stop() {
-		if(this.taskbar != null) {
-			if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
-				this.taskbar.setProgressValue(0);
-			} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
-				this.taskbar.setWindowProgressState(this.window, Taskbar.State.OFF);
-			}
+		if(this.taskbar == null) {
+			return;
+		}
+		if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE)) {
+			this.taskbar.setProgressValue(0);
+		} else if(this.taskbar.isSupported(Taskbar.Feature.PROGRESS_VALUE_WINDOW)) {
+			this.taskbar.setWindowProgressState(this.window, Taskbar.State.OFF);
 		}
 	}
 	

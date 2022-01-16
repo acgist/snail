@@ -30,11 +30,19 @@ public final class Themes {
 	 */
 	public static final String FXML_STYLE = "/style/fxml.css";
 	/**
-	 * <p>图标文件路径（16PX）：{@value}</p>
+	 * <p>LOGO文件路径（16PX）：{@value}</p>
 	 */
 	public static final String LOGO_ICON_16 = "/image/16/logo.png";
 	/**
-	 * <p>图标文件路径（256PX）：{@value}</p>
+	 * <p>LOGO文件路径（32PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_32 = "/image/32/logo.png";
+	/**
+	 * <p>LOGO文件路径（64PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_64 = "/image/64/logo.png";
+	/**
+	 * <p>LOGO文件路径（256PX）：{@value}</p>
 	 */
 	public static final String LOGO_ICON_256 = "/image/logo.png";
 	/**
@@ -103,11 +111,11 @@ public final class Themes {
 		} else {
 			LOGGER.info("没有适配系统主题类型：{}", systemType);
 		}
-		Color color;
-		if(themeHandler != null) {
-			color = themeHandler.systemThemeColor();
-		} else {
+		final Color color;
+		if(themeHandler == null) {
 			color = DEFAULT_THEME_COLOR;
+		} else {
+			color = themeHandler.systemThemeColor();
 		}
 		SYSTEM_THEME_COLOR = color;
 		// 设置系统主题样式
@@ -119,7 +127,8 @@ public final class Themes {
 			.append(colorHex, 2, 8)
 			.append(SymbolConfig.Symbol.SEMICOLON.toString());
 		SYSTEM_THEME_STYLE = themeStyle.toString();
-		LOGGER.debug("系统主题颜色：{}", colorHex);
+		LOGGER.debug("系统主题颜色：{}", SYSTEM_THEME_COLOR);
+		LOGGER.debug("系统主题样式：{}", SYSTEM_THEME_STYLE);
 	}
 	
 	private Themes() {
@@ -168,10 +177,8 @@ public final class Themes {
 	 */
 	public static final void applyStyle(Scene scene) {
 		final Parent root = scene.getRoot();
-		// 设置主题样式
 		Themes.applyStyle(root);
-		// 设置样式文件
-		root.getStylesheets().add(Themes.FXML_STYLE);
+		Themes.applyStylesheet(root);
 	}
 
 	/**
@@ -181,6 +188,15 @@ public final class Themes {
 	 */
 	public static final void applyStyle(Node node) {
 		node.setStyle(Themes.getStyle());
+	}
+	
+	/**
+	 * <p>设置节点样式文件</p>
+	 * 
+	 * @param parent 节点
+	 */
+	public static final void applyStylesheet(Parent parent) {
+		parent.getStylesheets().add(Themes.FXML_STYLE);
 	}
 	
 	/**

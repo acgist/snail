@@ -218,7 +218,7 @@ public final class Fonts {
 		public final Label iconLabel() {
 			final Label iconLabel = new Label(this.toString());
 			// 设置字体
-			iconLabel.setFont(Font.font(FONT_NAME));
+			iconLabel.setFont(Font.font(FONT_NAME, FONT_SIZE));
 			// 添加样式
 			Themes.applyClass(iconLabel, Themes.CLASS_SNAIL_ICON);
 			return iconLabel;

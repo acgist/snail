@@ -15,8 +15,8 @@ class TaskbarsTest extends Performance {
 
 	@Test
 	void testTaskbars() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		JFrame.setDefaultLookAndFeelDecorated(true);
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		final JFrame frame = new JFrame("进度测试");
 		frame.setSize(200, 200);
 		frame.setLocationRelativeTo(null);
@@ -39,6 +39,12 @@ class TaskbarsTest extends Performance {
 		taskbars.stop();
 		ThreadUtils.sleep(2000);
 		assertNotNull(frame);
+	}
+	
+	@Test
+	void testJavaFXTaskBar() {
+//		final SwingNode node = new SwingNode();
+		ThreadUtils.sleep(2000);
 	}
 	
 }

@@ -181,9 +181,6 @@
 .main .footer .statuses Label {
 	-fx-padding:0 2px;
 }
-.main .placeholder .snail-icon {
-	-fx-font-size:64px;
-}
 .main .table-view {
 	-fx-padding:0;
 	-fx-border-width:1px 0;
@@ -194,6 +191,9 @@
 .main .table-view .snail-icon {
 	-fx-padding:0 2px;
 	-fx-font-size:20px;
+}
+.main .table-view .placeholder .snail-icon {
+	-fx-font-size:64px;
 }
 /** 空闲表头样式 */
 .main .table-view .filler,
