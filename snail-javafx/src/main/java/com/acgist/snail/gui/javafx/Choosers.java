@@ -36,7 +36,7 @@ public final class Choosers {
 		final FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
 		// 设置上次选择目录
-		lastPath(chooser);
+		Choosers.lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final File file = chooser.showOpenDialog(window);
 		if (file != null) {
@@ -60,7 +60,7 @@ public final class Choosers {
 		final FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
 		// 设置上次选择目录
-		lastPath(chooser);
+		Choosers.lastPath(chooser);
 		chooser.getExtensionFilters().add(new ExtensionFilter(description, filters));
 		final List<File> files = chooser.showOpenMultipleDialog(window);
 		if (CollectionUtils.isNotEmpty(files)) {
@@ -82,7 +82,7 @@ public final class Choosers {
 		final DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(title);
 		// 设置上次选择目录
-		lastPath(chooser);
+		Choosers.lastPath(chooser);
 		final File file = chooser.showDialog(window);
 		if (file != null) {
 			// 更新上次选择目录

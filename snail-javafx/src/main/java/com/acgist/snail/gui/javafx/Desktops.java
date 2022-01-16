@@ -34,13 +34,13 @@ public final class Desktops {
 		if(
 			file != null &&
 			file.exists() &&
-			support(Action.OPEN)
+			Desktops.support(Action.OPEN)
 		) {
 			SwingUtilities.invokeLater(() -> {
 				try {
 					Desktop.getDesktop().open(file);
 				} catch (IOException e) {
-					LOGGER.error("打开文件异常", e);
+					LOGGER.error("打开文件异常：{}", file, e);
 				}
 			});
 		} else {
@@ -57,7 +57,7 @@ public final class Desktops {
 	public static final void browse(final String url) {
 		if(
 			StringUtils.isNotEmpty(url) &&
-			support(Action.BROWSE)
+			Desktops.support(Action.BROWSE)
 		) {
 			SwingUtilities.invokeLater(() -> {
 				try {
