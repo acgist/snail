@@ -322,9 +322,11 @@
 }
 .statistics .info-box .tabs Button {
 	-fx-pref-width:130px;
+	-fx-pref-height:40px;
 }
 .statistics .info-box .tabs ChoiceBox {
 	-fx-pref-width:260px;
+	-fx-pref-height:40px;
 }
 .statistics .scroll-pane {
 	-fx-padding:0;
