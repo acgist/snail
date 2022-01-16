@@ -50,11 +50,6 @@ public final class TrayMenu extends Menu {
 		return INSTANCE;
 	}
 	
-	/**
-	 * <p>窗口高度</p>
-	 */
-	private static final int MENU_WINDOW_HEIGHT = 100;
-	
 	static {
 		INSTANCE = new TrayMenu();
 		// 必须设置此项：否者窗口关闭后将不能通过托盘显示
@@ -128,8 +123,10 @@ public final class TrayMenu extends Menu {
 					Platform.runLater(() -> {
 						final double scaleX = Screen.getPrimary().getOutputScaleX();
 						final double scaleY = Screen.getPrimary().getOutputScaleY();
+						// 窗口高度（首次获取是零）：减去图标高度
+						final double height = TrayMenu.this.getHeight() == 0 ? 200 : TrayMenu.this.getHeight() - 20;
 						final double x = event.getXOnScreen() / scaleX;
-						final double y = event.getYOnScreen() / scaleY - MENU_WINDOW_HEIGHT;
+						final double y = event.getYOnScreen() / scaleY - height;
 						TrayMenu.INSTANCE.show(INSTANCE.buildTrayStage(), x, y);
 					});
 				}
