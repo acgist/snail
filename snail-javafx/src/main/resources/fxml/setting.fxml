@@ -20,7 +20,6 @@
 				<Button fx:id="path" text="选择目录" onAction="#handlePathAction" />
 				<Label fx:id="pathValue" styleClass="path-value" />
 			</HBox>
-			
 			<HBox>
 				<TextFlow>
 					<Label>下载数量：</Label>
@@ -33,7 +32,6 @@
 					showTickMarks="true"
 					showTickLabels="true" />
 			</HBox>
-			
 			<HBox>
 				<TextFlow>
 					<Label>下载速度：</Label>
@@ -46,7 +44,6 @@
 					showTickMarks="true"
 					showTickLabels="true" />
 			</HBox>
-			
 			<HBox>
 				<TextFlow>
 					<Label>磁盘缓存：</Label>
@@ -59,14 +56,12 @@
 					showTickMarks="true"
 					showTickLabels="true" />
 			</HBox>
-				
 			<HBox>
 				<TextFlow>
 					<Label>消息提示：</Label>
 				</TextFlow>
 				<CheckBox fx:id="notice" onAction="#handleNoticeAction" />
 			</HBox>
-				
 			<HBox>
 				<TextFlow>
 					<Label>删除文件：</Label>

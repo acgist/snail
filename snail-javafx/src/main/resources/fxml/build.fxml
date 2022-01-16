@@ -18,7 +18,6 @@
 			</TextFlow>
 			<Button fx:id="torrent" text="选择种子" onAction="#handleTorrentAction" />
 		</HBox>
-		
 		<HBox styleClass="option">
 			<TextFlow styleClass="cancel">
 				<Button fx:id="cancel" text="取消下载" onAction="#handleCancelAction" />
