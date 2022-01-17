@@ -111,6 +111,8 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 谢谢！
 
-### 捐赠
+### 白嫖
 
-[服务器](https://www.acgist.com/collect/server)
+[阿里云服务器](https://www.acgist.com/collect/server)
+
+> 确实便宜
