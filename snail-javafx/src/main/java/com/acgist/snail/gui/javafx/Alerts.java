@@ -40,7 +40,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> info(String title, String message) {
-		return build(title, message, GuiContext.MessageType.INFO);
+		return Alerts.build(title, message, GuiContext.MessageType.INFO);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> warn(String title, String message) {
-		return build(title, message, GuiContext.MessageType.WARN);
+		return Alerts.build(title, message, GuiContext.MessageType.WARN);
 	}
 	
 	/**
@@ -65,11 +65,10 @@ public final class Alerts {
 	 * @return 点击按钮类型
 	 */
 	public static final Optional<ButtonType> build(String title, String message, GuiContext.MessageType type) {
-		final Alert alert = new Alert(getAlertType(type));
+		final Alert alert = new Alert(Alerts.getAlertType(type));
 		final Scene scene = alert.getDialogPane().getScene();
 		Themes.applyStyle(scene);
 		final Stage stage = (Stage) scene.getWindow();
-		// 设置图标
 		Themes.applyLogo(stage.getIcons());
 		alert.setTitle(title);
 		// 去掉头部
