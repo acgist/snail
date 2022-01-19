@@ -44,29 +44,21 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
-	 * <p>窗口标题</p>
-	 */
-	private final String title;
-	/**
-	 * <p>窗口宽度</p>
-	 */
-	private final int width;
-	/**
-	 * <p>窗口高度</p>
-	 */
-	private final int height;
-	/**
-	 * <p>窗口FXML路径</p>
-	 */
-	private final String fxml;
-	/**
 	 * <p>容器</p>
 	 */
-	protected Stage stage;
+	private final Stage stage;
+	/**
+	 * <p>场景</p>
+	 */
+	private final Scene scene;
+	/**
+	 * <p>面板</p>
+	 */
+	private final Parent root;
 	/**
 	 * <p>控制器</p>
 	 */
-	protected T controller;
+	protected final T controller;
 	
 	/**
 	 * @param title 窗口标题
@@ -75,16 +67,22 @@ public abstract class Window<T extends Controller> extends Application {
 	 * @param fxml 窗口FXML路径
 	 */
 	protected Window(String title, int width, int height, String fxml) {
-		LOGGER.debug("初始化窗口：{}", title);
-		this.title = title;
-		this.width = width;
-		this.height = height;
-		this.fxml = fxml;
-		this.stage = new Stage();
 		try {
+			LOGGER.debug("初始化窗口：{}-{}", title, fxml);
+			// 加载面板
+			final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(fxml));
+			this.root = loader.load();
+			this.controller = loader.getController();
+			// 加载样式
+			Themes.applyStyle(this.root);
+			// 加载容器
+			this.stage = new Stage();
+			this.stage.setTitle(title);
+			this.scene = new Scene(this.root, width, height);
+			this.stage.setScene(this.scene);
 			this.start(this.stage);
 		} catch (Exception e) {
-			LOGGER.error("初始化窗口异常", e);
+			throw new IllegalArgumentException(fxml, e);
 		}
 	}
 	
@@ -151,22 +149,6 @@ public abstract class Window<T extends Controller> extends Application {
 	}
 	
 	/**
-	 * <p>加载fxml、controller</p>
-	 * 
-	 * @param <X> 面板
-	 * 
-	 * @return 面板
-	 * 
-	 * @throws IOException IO异常
-	 */
-	protected <X> X loadFxml() throws IOException {
-		final FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxml));
-		final X root = loader.load();
-		this.controller = loader.getController();
-		return root;
-	}
-	
-	/**
 	 * <p>新建窗口</p>
 	 * 
 	 * @param stage 容器
@@ -175,12 +157,7 @@ public abstract class Window<T extends Controller> extends Application {
 	 * @throws IOException IO异常
 	 */
 	protected void buildWindow(Stage stage, Modality modality) throws IOException {
-		final Parent root = this.loadFxml();
-		final Scene scene = new Scene(root, this.width, this.height);
-		Themes.applyStyle(root);
 		stage.initModality(modality);
-		stage.setScene(scene);
-		stage.setTitle(this.title);
 	}
 	
 	/**
