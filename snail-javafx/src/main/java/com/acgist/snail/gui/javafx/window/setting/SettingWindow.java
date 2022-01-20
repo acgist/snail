@@ -23,12 +23,11 @@ public final class SettingWindow extends Window<SettingController> {
 	}
 	
 	private SettingWindow() {
-		super("设置", 600, 400, "/fxml/setting.fxml");
+		super("设置", 600, 400, Modality.APPLICATION_MODAL, "/fxml/setting.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 	}
 	

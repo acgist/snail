@@ -27,12 +27,11 @@ public final class MainWindow extends Window<MainController> {
 	}
 	
 	private MainWindow() {
-		super(SystemConfig.getName(), 1000, 600, "/fxml/main.fxml");
+		super(SystemConfig.getName(), 1000, 600, Modality.NONE, "/fxml/main.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.NONE);
 		this.icon();
 		// F1：帮助
 		this.keyReleased(KeyCode.F1, () -> Desktops.browse(SystemConfig.getSupport()));

@@ -23,12 +23,11 @@ public final class BuildWindow extends Window<BuildController> {
 	}
 	
 	private BuildWindow() {
-		super("新建下载", 600, 300, "/fxml/build.fxml");
+		super("新建下载", 600, 300, Modality.APPLICATION_MODAL, "/fxml/build.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 	}
 	

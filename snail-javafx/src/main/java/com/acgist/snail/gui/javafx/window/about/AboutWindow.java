@@ -23,12 +23,11 @@ public final class AboutWindow extends Window<AboutController> {
 	}
 	
 	private AboutWindow() {
-		super("关于", 600, 500, "/fxml/about.fxml");
+		super("关于", 600, 500, Modality.APPLICATION_MODAL, "/fxml/about.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 	}
 	

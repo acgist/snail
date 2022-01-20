@@ -24,12 +24,11 @@ public final class TorrentWindow extends Window<TorrentController> {
 	}
 	
 	private TorrentWindow() {
-		super("编辑任务", 800, 600, "/fxml/torrent.fxml");
+		super("编辑任务", 800, 600, Modality.APPLICATION_MODAL, "/fxml/torrent.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 		this.hiddenRelease();
 	}

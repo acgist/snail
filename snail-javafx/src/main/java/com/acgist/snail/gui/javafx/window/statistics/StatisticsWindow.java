@@ -23,12 +23,11 @@ public final class StatisticsWindow extends Window<StatisticsController> {
 	}
 	
 	private StatisticsWindow() {
-		super("统计", 800, 640, "/fxml/statistics.fxml");
+		super("统计", 800, 640, Modality.APPLICATION_MODAL, "/fxml/statistics.fxml");
 	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.buildWindow(stage, Modality.APPLICATION_MODAL);
 		this.dialogWindow();
 		this.hiddenRelease();
 	}

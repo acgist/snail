@@ -1,7 +1,5 @@
 package com.acgist.snail.gui.javafx.window;
 
-import java.io.IOException;
-
 import com.acgist.snail.Snail;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.logger.Logger;
@@ -64,9 +62,10 @@ public abstract class Window<T extends Controller> extends Application {
 	 * @param title 窗口标题
 	 * @param width 窗口宽度
 	 * @param height 窗口高度
+	 * @param modality 模态
 	 * @param fxml 窗口FXML路径
 	 */
-	protected Window(String title, int width, int height, String fxml) {
+	protected Window(String title, int width, int height, Modality modality, String fxml) {
 		try {
 			LOGGER.debug("初始化窗口：{}-{}", title, fxml);
 			// 加载面板
@@ -80,6 +79,7 @@ public abstract class Window<T extends Controller> extends Application {
 			this.stage.setTitle(title);
 			this.scene = new Scene(this.root, width, height);
 			this.stage.setScene(this.scene);
+			this.stage.initModality(modality);
 			this.start(this.stage);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(fxml, e);
@@ -146,18 +146,6 @@ public abstract class Window<T extends Controller> extends Application {
 				function.execute();
 			}
 		});
-	}
-	
-	/**
-	 * <p>新建窗口</p>
-	 * 
-	 * @param stage 容器
-	 * @param modality 模态
-	 * 
-	 * @throws IOException IO异常
-	 */
-	protected void buildWindow(Stage stage, Modality modality) throws IOException {
-		stage.initModality(modality);
 	}
 	
 	/**
