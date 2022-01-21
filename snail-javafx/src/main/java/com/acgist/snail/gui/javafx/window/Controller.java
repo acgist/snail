@@ -49,6 +49,9 @@ public abstract class Controller implements Initializable {
 		} else if (dragboard.hasString()) {
 			return dragboard.getString();
 		}
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.info("不支持的拖拽对象：{}", dragboard.getContentTypes());
+		}
 		return null;
 	}
 
