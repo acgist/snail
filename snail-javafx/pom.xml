@@ -15,6 +15,10 @@
 	<artifactId>snail.javafx</artifactId>
 	<packaging>jar</packaging>
 	
+	<properties>
+		<snail.path>${project.parent.basedir}</snail.path>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.acgist</groupId>

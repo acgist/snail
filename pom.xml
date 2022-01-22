@@ -12,14 +12,11 @@
 	<packaging>pom</packaging>
 	
 	<properties>
-		<!-- 版本 -->
-		<snail.version>1.17.1</snail.version>
-		<!-- 作者 -->
-		<vendor>acgist</vendor>
-		<!-- 模块 -->
-		<module>${project.groupId}.${project.artifactId}</module>
-		<!-- 编码 -->
 		<encoding>UTF-8</encoding>
+		<snail.path>${project.basedir}</snail.path>
+		<snail.vendor>acgist</snail.vendor>
+		<snail.module>${project.groupId}.${project.artifactId}</snail.module>
+		<snail.version>1.17.1</snail.version>
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
@@ -180,7 +177,7 @@
 									</resource>
 									<!-- 开源协议 -->
 									<resource>
-										<directory>./</directory>
+										<directory>${snail.path}/</directory>
 										<filtering>false</filtering>
 										<targetPath>META-INF/</targetPath>
 										<includes>
@@ -201,15 +198,15 @@
 						<!-- MANIFEST.MF -->
 						<archive>
 							<manifestEntries>
-								<Built-By>${vendor}</Built-By>
-								<Automatic-Module-Name>${module}</Automatic-Module-Name>
+								<Built-By>${snail.vendor}</Built-By>
+								<Automatic-Module-Name>${snail.module}</Automatic-Module-Name>
 								<Specification-Title>${project.artifactId}</Specification-Title>
-								<Specification-Vendor>${vendor}</Specification-Vendor>
-								<Specification-Version>${project.version}</Specification-Version>
+								<Specification-Vendor>${snail.vendor}</Specification-Vendor>
+								<Specification-Version>${snail.version}</Specification-Version>
 								<Implementation-Title>${project.artifactId}</Implementation-Title>
-								<Implementation-Vendor>${vendor}</Implementation-Vendor>
-								<Implementation-Version>${project.version}</Implementation-Version>
-								<Implementation-Vendor-Id>${vendor}</Implementation-Vendor-Id>
+								<Implementation-Vendor>${snail.vendor}</Implementation-Vendor>
+								<Implementation-Version>${snail.version}</Implementation-Version>
+								<Implementation-Vendor-Id>${snail.vendor}</Implementation-Vendor-Id>
 							</manifestEntries>
 						</archive>
 					</configuration>
