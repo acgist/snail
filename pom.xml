@@ -13,7 +13,6 @@
 	
 	<properties>
 		<encoding>UTF-8</encoding>
-		<snail.path>${project.basedir}</snail.path>
 		<snail.vendor>acgist</snail.vendor>
 		<snail.module>${project.groupId}.${project.artifactId}</snail.module>
 		<snail.version>${project.version}</snail.version>
@@ -141,6 +140,7 @@
 					<version>${maven.resources.version}</version>
 					<configuration>
 						<resources>
+							<!-- 配置文件 -->
 							<resource>
 								<directory>src/main/resources</directory>
 								<!-- 配置文件属性替换：properties -->
@@ -152,6 +152,15 @@
 								<excludes>
 									<exclude>profiles/**</exclude>
 								</excludes>
+							</resource>
+							<!-- 开源协议 -->
+							<resource>
+								<directory>./</directory>
+								<filtering>false</filtering>
+								<targetPath>META-INF/</targetPath>
+								<includes>
+									<include>LICENSE</include>
+								</includes>
 							</resource>
 						</resources>
 					</configuration>
@@ -175,15 +184,6 @@
 										<directory>src/main/resources/profiles/${package.environment}</directory>
 										<filtering>false</filtering>
 									</resource>
-									<!-- 开源协议 -->
-									<resource>
-										<directory>${snail.path}/</directory>
-										<filtering>false</filtering>
-										<targetPath>META-INF/</targetPath>
-										<includes>
-											<include>LICENSE</include>
-										</includes>
-									</resource>
 								</resources>
 							</configuration>
 						</execution>
@@ -199,6 +199,7 @@
 						<archive>
 							<manifestEntries>
 								<Built-By>${snail.vendor}</Built-By>
+								<Home-Page>${project.url}</Home-Page>
 								<Automatic-Module-Name>${snail.module}</Automatic-Module-Name>
 								<Specification-Title>${project.artifactId}</Specification-Title>
 								<Specification-Vendor>${snail.vendor}</Specification-Vendor>
@@ -206,7 +207,6 @@
 								<Implementation-Title>${project.artifactId}</Implementation-Title>
 								<Implementation-Vendor>${snail.vendor}</Implementation-Vendor>
 								<Implementation-Version>${snail.version}</Implementation-Version>
-								<Implementation-Vendor-Id>${snail.vendor}</Implementation-Vendor-Id>
 							</manifestEntries>
 						</archive>
 					</configuration>
