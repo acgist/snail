@@ -240,7 +240,7 @@ public final class UpnpContext implements IContext {
 	 */
 	public boolean deletePortMapping(int portExt, Protocol.Type protocol) throws NetException {
 		if(!this.available) {
-			return false;	
+			return false;
 		}
 		final var upnpRequest = UpnpRequest.newRequest(this.serviceType);
 		final var xml = upnpRequest.buildDeletePortMapping(portExt, protocol);

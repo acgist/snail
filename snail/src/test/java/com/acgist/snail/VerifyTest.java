@@ -22,11 +22,9 @@ import com.acgist.snail.utils.Performance;
 
 class VerifyTest extends Performance {
 
-	private static final String PROJECT_BASE_PATH = "D:/gitee/snail/";
-	
 	@Test
 	void testVersionVerify() throws IOException {
-		final String basePath = PROJECT_BASE_PATH;
+		final String basePath = Paths.get(System.getProperty("user.dir")).toFile().getParent() + File.separator;
 		final String parentPomPath = basePath + "pom.xml";
 		final String snailPomPath = basePath + "snail/pom.xml";
 		final String snailJavaFXPomPath = basePath + "snail-javafx/pom.xml";
@@ -75,7 +73,7 @@ class VerifyTest extends Performance {
 	
 	@Test
 	void testFormat() throws IOException {
-		assertDoesNotThrow(() -> this.format(new File(PROJECT_BASE_PATH)));
+		assertDoesNotThrow(() -> this.format(Paths.get(System.getProperty("user.dir")).toFile().getParentFile()));
 	}
 	
 	void format(File file) throws IOException {

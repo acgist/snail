@@ -16,7 +16,7 @@
 		<snail.path>${project.basedir}</snail.path>
 		<snail.vendor>acgist</snail.vendor>
 		<snail.module>${project.groupId}.${project.artifactId}</snail.module>
-		<snail.version>1.17.1</snail.version>
+		<snail.version>${project.version}</snail.version>
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->

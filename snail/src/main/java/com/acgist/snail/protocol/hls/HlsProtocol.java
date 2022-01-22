@@ -69,7 +69,7 @@ public final class HlsProtocol extends Protocol {
 		if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
 			// 去掉斜杠和结尾
 			return path.substring(1, path.length() - INDEX_M3U8.length())
-				.replace(Symbol.SLASH.toChar(), Symbol.MINUS.toChar()) + 
+				.replace(Symbol.SLASH.toChar(), Symbol.MINUS.toChar()) +
 				Protocol.Type.HLS.defaultSuffix();
 		} else {
 			return super.buildFileName();
