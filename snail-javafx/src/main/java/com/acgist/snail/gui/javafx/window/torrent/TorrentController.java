@@ -118,12 +118,12 @@ public final class TorrentController extends Controller {
 	 * <p>下载按钮事件</p>
 	 */
 	private EventHandler<ActionEvent> downloadEvent = event -> {
-		final var list = this.torrentSelector.description();
+		final var list = this.torrentSelector.selectedFilePath();
 		if(list.isEmpty()) {
 			Alerts.warn("下载失败", "请选择下载文件");
 			return;
 		}
-		this.taskSession.setSize(this.torrentSelector.size());
+		this.taskSession.setSize(this.torrentSelector.selectedFileSize());
 		this.taskSession.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		if(this.taskSession.getId() != null) {
 			// 已经保存实体：修改任务
