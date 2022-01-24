@@ -137,6 +137,17 @@ class NetUtilsTest extends Performance {
 	@Test
 	void testNetwork() throws SocketException {
 		NetworkInterface.networkInterfaces().forEach(networkInterfaces -> {
+			try {
+				this.log("网卡：{}-{}-{}-{}-{}",
+					networkInterfaces.isUp(),
+					networkInterfaces.isVirtual(),
+					networkInterfaces.isLoopback(),
+					networkInterfaces.isPointToPoint(),
+					networkInterfaces
+				);
+			} catch (SocketException e) {
+				// 忽略
+			}
 			networkInterfaces.getInterfaceAddresses().stream().forEach(networkInterface -> {
 				final var address = networkInterface.getAddress();
 				this.log("地址：{}-{}-{}-{}-{}-{}-{}-{}",
@@ -150,7 +161,6 @@ class NetUtilsTest extends Performance {
 					address.isMulticastAddress()
 				);
 			});
-			this.log("网卡：{}", networkInterfaces);
 		});
 		assertNotNull(NetUtils.LOCAL_HOST_ADDRESS);
 	}

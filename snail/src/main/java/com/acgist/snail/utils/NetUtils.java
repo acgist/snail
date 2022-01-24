@@ -88,7 +88,7 @@ public final class NetUtils {
 		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
 			// 处理多个物理网卡和虚拟网卡
-			NetworkInterface.networkInterfaces().forEach(networkInterface -> {
+			NetworkInterface.networkInterfaces().filter(NetUtils::available).forEach(networkInterface -> {
 				final int nowIndex = networkInterface.getIndex();
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
 					// 本机地址
@@ -138,6 +138,30 @@ public final class NetUtils {
 	private NetUtils() {
 	}
 
+	/**
+	 * <p>判断网卡是否有效（排除：启动状态、虚拟网卡、环回地址等等）</p>
+	 * 
+	 * @param networkInterface 网卡
+	 * 
+	 * @return 是否有效
+	 */
+	public static final boolean available(NetworkInterface networkInterface) {
+		try {
+			return
+				// 启动状态
+				networkInterface.isUp() &&
+				// 虚拟网卡
+				!networkInterface.isVirtual() &&
+				// 环回地址
+				!networkInterface.isLoopback() &&
+				// 点对点网卡
+				!networkInterface.isPointToPoint();
+		} catch (SocketException e) {
+			LOGGER.error("获取网卡状态异常", e);
+		}
+		return false;
+	}
+	
 	/**
 	 * <p>判断本地IP是否是IPv4</p>
 	 * 
