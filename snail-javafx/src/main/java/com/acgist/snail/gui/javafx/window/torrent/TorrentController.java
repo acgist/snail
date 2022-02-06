@@ -71,6 +71,7 @@ public final class TorrentController extends Controller {
 	@Override
 	public void release() {
 		super.release();
+		this.taskSession = null;
 		this.torrentSelector = null;
 		this.treeBox.getChildren().clear();
 	}
@@ -82,7 +83,6 @@ public final class TorrentController extends Controller {
 	 */
 	public void buildTree(ITaskSession taskSession) {
 		Torrent torrent = null;
-		this.taskSession = taskSession;
 		final TreeView<HBox> tree = this.buildTree();
 		try {
 			torrent = TorrentContext.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
@@ -91,6 +91,7 @@ public final class TorrentController extends Controller {
 			Alerts.warn("下载失败", e.getMessage());
 		}
 		if(torrent != null) {
+			this.taskSession = taskSession;
 			this.torrentSelector = TorrentSelector.newInstance(torrent.name(), this.download, tree);
 			torrent.getInfo().files().stream()
 				.filter(TorrentFile::notPaddingFile)
@@ -146,10 +147,8 @@ public final class TorrentController extends Controller {
 	private void updateTaskSession() throws DownloadException {
 		final boolean magnetToTorrent = this.taskSession.getType() == Type.MAGNET;
 		if(magnetToTorrent) {
-			// 磁力链接转为BT任务
-			this.taskSession.setType(Type.TORRENT);
-			// 清空已经下载大小
-			this.taskSession.downloadSize(0L);
+			// 磁力链接任务转为BT任务
+			this.taskSession.magnetToTorrent();
 			// 切换下载器并且重新下载
 			this.taskSession.restart();
 		} else {

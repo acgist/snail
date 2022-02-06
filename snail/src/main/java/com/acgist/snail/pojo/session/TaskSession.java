@@ -405,6 +405,16 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 
 	@Override
+	public void magnetToTorrent() {
+		if(this.getType() == Type.MAGNET) {
+			// 修改任务下载类型
+			this.setType(Type.TORRENT);
+			// 修改已经下载大小
+			this.downloadSize(0L);
+		}
+	}
+	
+	@Override
 	public String getId() {
 		return this.entity.getId();
 	}

@@ -90,4 +90,9 @@ public interface ITaskSessionHandler {
 	 */
 	void updateStatus(Status status);
 	
+	/**
+	 * <p>磁力链接任务转为BT任务</p>
+	 */
+	void magnetToTorrent();
+	
 }
