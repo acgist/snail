@@ -68,11 +68,11 @@ public final class StatisticsController extends Controller {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsController.class);
 	
 	/**
-	 * <p>位图宽度</p>
+	 * <p>位图宽度：{@value}</p>
 	 */
 	private static final int WH = 12;
 	/**
-	 * <p>位图列长</p>
+	 * <p>位图列长：{@value}</p>
 	 */
 	private static final int COL = 50;
 	/**
@@ -371,8 +371,7 @@ public final class StatisticsController extends Controller {
 		);
 		Themes.applyClass(systemInfo, Themes.CLASS_SYSTEM_INFO);
 		// 添加节点
-		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(systemInfo);
+		this.statisticsBoxClear().add(systemInfo);
 	}
 	
 	/**
@@ -393,8 +392,7 @@ public final class StatisticsController extends Controller {
 		final String title = String.format("总量：%d", nodes.size());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
-		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(pieChart);
+		this.statisticsBoxClear().add(pieChart);
 	}
 	
 	/**
@@ -413,8 +411,7 @@ public final class StatisticsController extends Controller {
 		final String title = String.format("总量：%d", trackers.size());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
-		final var statisticsBoxNode= this.statisticsBoxClear();
-		statisticsBoxNode.add(pieChart);
+		this.statisticsBoxClear().add(pieChart);
 	}
 
 	/**
@@ -438,13 +435,8 @@ public final class StatisticsController extends Controller {
 		final var pieCharts = peers.stream()
 			.collect(Collectors.groupingBy(PeerSession::clientName, Collectors.counting()))
 			.entrySet().stream()
-			.filter(entry -> {
-				if(this.hiddenUnknownClient) {
-					return !PeerConfig.UNKNOWN.equals(entry.getKey());
-				} else {
-					return true;
-				}
-			})
+			// 过滤未知终端
+			.filter(entry -> !(this.hiddenUnknownClient && PeerConfig.UNKNOWN.equals(entry.getKey())))
 			// 排序：数量倒序
 			.sorted((source, target) -> Long.compare(target.getValue(), source.getValue()))
 			.map(entity -> new PieChart.Data(entity.getKey(), entity.getValue()))
@@ -454,8 +446,7 @@ public final class StatisticsController extends Controller {
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		pieChart.setOnMouseClicked(this.clientClickEvent);
 		// 添加节点
-		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(pieChart);
+		this.statisticsBoxClear().add(pieChart);
 	}
 	
 	/**
@@ -501,8 +492,7 @@ public final class StatisticsController extends Controller {
 		final String title = String.format("总量：%d 可用数量：%d", peers.size(), availableCount.get());
 		final PieChart pieChart = this.buildPieChart(title, pieChartData);
 		// 添加节点
-		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(pieChart);
+		this.statisticsBoxClear().add(pieChart);
 	}
 	
 	/**
@@ -594,8 +584,7 @@ public final class StatisticsController extends Controller {
 		uploadPeer.forEach(data -> Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 上传：%.2fMB", data.getXValue(), data.getYValue()))));
 		downloadPeer.forEach(data -> Tooltip.install(data.getNode(), Tooltips.newTooltip(String.format("IP：%s 下载：%.2fMB", data.getXValue(), data.getYValue()))));
 		// 添加节点
-		final var statisticsBoxNode = this.statisticsBoxClear();
-		statisticsBoxNode.add(stackedBarChart);
+		this.statisticsBoxClear().add(stackedBarChart);
 	}
 	
 	/**
