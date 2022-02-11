@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.gui.javafx.window.statistics.CanvasPainter;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.ThreadUtils;
 
 import javafx.application.Application;
@@ -24,6 +26,8 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class CanvasPainterTest extends Application {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CanvasPainterTest.class);
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -44,7 +48,8 @@ public class CanvasPainterTest extends Application {
 		final CanvasPainter painter = CanvasPainter.newInstance(
 			12, 50, size,
 			new BitSet[] { bitSet, selectBitSet },
-			colors
+			colors,
+			index -> LOGGER.info("点击：{}", index)
 		);
 		final Group root = new Group();
 		root.getChildren().add(painter.build().draw().canvas());

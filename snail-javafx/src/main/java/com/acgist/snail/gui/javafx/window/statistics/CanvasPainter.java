@@ -328,13 +328,13 @@ public final class CanvasPainter {
 			this.height = this.row * (this.wh + BORDER_WH) + BORDER_WH;
 			// 新建画布
 			this.canvas = new Canvas(this.width, this.height);
-			if(this.mouseSelect != null) {
-				this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
-				this.canvas.setOnMouseExited(event -> this.exited());
-				this.canvas.setOnMouseClicked(event -> this.clicked());
-			}
 		} else {
 			this.canvas = canvas;
+		}
+		if(this.mouseSelect != null) {
+			this.canvas.setOnMouseMoved(event -> this.moved(event.getX(), event.getY()));
+			this.canvas.setOnMouseExited(event -> this.exited());
+			this.canvas.setOnMouseClicked(event -> this.clicked());
 		}
 		// 新建画笔
 		this.graphics = this.canvas.getGraphicsContext2D();
