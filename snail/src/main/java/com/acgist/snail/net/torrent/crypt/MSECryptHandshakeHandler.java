@@ -706,12 +706,12 @@ public final class MSECryptHandshakeHandler {
 				// 握手消息直接使用明文
 				this.plaintext();
 				// 重置长度
-				message.position(0);
+				message.rewind();
 				return true;
 			}
 		}
 		// 重置长度
-		message.position(0);
+		message.rewind();
 		return false;
 	}
 	

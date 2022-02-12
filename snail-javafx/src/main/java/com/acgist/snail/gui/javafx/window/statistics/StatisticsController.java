@@ -19,6 +19,7 @@ import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.TrackerContext;
+import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Themes;
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.gui.javafx.window.Controller;
@@ -597,13 +598,17 @@ public final class StatisticsController extends Controller {
 		}
 		final var peers = PeerContext.getInstance().listPeerSession(infoHashHex);
 		final var torrentSession = TorrentContext.getInstance().torrentSession(infoHashHex);
-		final int length = peers.size();
+		final int peerSize = peers.size();
+		if(peerSize > CanvasPainter.MAX_LENGTH) {
+			Alerts.warn("警告", "当前Peer数量超过最大显示数量：" + peerSize);
+			return;
+		}
 		PeerSession peer;
 		final BitSet uploadPeers = new BitSet();
 		final BitSet downloadPeers = new BitSet();
 		final BitSet exchangePeers = new BitSet();
 		final BitSet indifferencePeers = new BitSet();
-		for (int index = 0; index < length; index++) {
+		for (int index = 0; index < peerSize; index++) {
 			peer = peers.get(index);
 			final long uploadSize = peer.uploadSize();
 			final long downloadSize = peer.downloadSize();
@@ -619,7 +624,7 @@ public final class StatisticsController extends Controller {
 		}
 		final Color[] colors = new Color[] { Themes.COLOR_YELLOW, Themes.COLOR_RED, Themes.COLOR_GREEN, Themes.COLOR_GRAY };
 		final CanvasPainter painter = CanvasPainter.newInstance(
-			WH, COL, length,
+			WH, COL, peerSize,
 			new BitSet[] { exchangePeers, uploadPeers, downloadPeers, indifferencePeers },
 			colors
 		)
@@ -657,6 +662,10 @@ public final class StatisticsController extends Controller {
 			return;
 		}
 		final int pieceSize = torrent.getInfo().pieceSize();
+		if(pieceSize > CanvasPainter.MAX_LENGTH) {
+			Alerts.warn("警告", "当前Piece数量超过最大显示数量：" + pieceSize);
+			return;
+		}
 		// 已经下载Pieces
 		final BitSet pieces = torrentSession.pieces();
 		// 选择下载Pieces

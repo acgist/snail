@@ -116,7 +116,7 @@ public final class SettingController extends Controller {
 	private void initControl() {
 		// 初始化下载目录
 		this.pathValue.setCursor(Cursor.HAND);
-		this.pathValue.setOnMouseClicked(this.pathClickedAction);
+		this.pathValue.setOnMouseReleased(this.pathReleaseAction);
 		// 初始化任务数量
 		this.size.valueProperty().addListener(this.sizeListener);
 		this.size.setOnMouseReleased(this.sizeReleaseAction);
@@ -133,19 +133,16 @@ public final class SettingController extends Controller {
 	/**
 	 * <p>下载目录点击事件</p>
 	 */
-	private EventHandler<MouseEvent> pathClickedAction = event -> Desktops.open(new File(DownloadConfig.getPath()));
+	private EventHandler<MouseEvent> pathReleaseAction = event -> Desktops.open(new File(DownloadConfig.getPath()));
 
 	/**
 	 * <p>下载任务数量监听</p>
 	 */
 	private ChangeListener<? super Number> sizeListener = (obs, oldVal, newVal) -> {
 		// 设置整数任务
-		int value = newVal.intValue();
-		if(value <= 0) {
-			// 至少下载一个任务
-			value = 1;
-		}
-		this.size.setValue(value);
+		final int value = newVal.intValue();
+		// 至少下载一个任务
+		this.size.setValue(value <= 0 ? 1 : value);
 	};
 	
 	/**

@@ -30,6 +30,10 @@ public final class CanvasPainter {
 	 * <p>边框高宽：{@value}</p>
 	 */
 	private static final int BORDER_WH = 1;
+	/**
+	 * <p>最大显示数量：{@value}</p>
+	 */
+	public static final int MAX_LENGTH = 4096;
 	
 	/**
 	 * <p>填充高宽</p>
