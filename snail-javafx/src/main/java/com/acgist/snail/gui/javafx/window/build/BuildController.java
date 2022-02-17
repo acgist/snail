@@ -123,7 +123,7 @@ public final class BuildController extends Controller {
 		if(url == null) {
 			url = "";
 		}
-		this.urlValue.setText(url.trim());
+		this.urlValue.setText(url.strip());
 	}
 	
 	/**

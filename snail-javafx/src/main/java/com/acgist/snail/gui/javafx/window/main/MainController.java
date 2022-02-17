@@ -222,7 +222,7 @@ public final class MainController extends Controller {
 	@FXML
 	public void handleAllAction(ActionEvent event) {
 		this.filter = Filter.ALL;
-		TaskDisplay.getInstance().refreshTaskList();
+		this.refreshTaskList();
 	}
 
 	/**
@@ -233,7 +233,7 @@ public final class MainController extends Controller {
 	@FXML
 	public void handleDownloadAction(ActionEvent event) {
 		this.filter = Filter.DOWNLOAD;
-		TaskDisplay.getInstance().refreshTaskList();
+		this.refreshTaskList();
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public final class MainController extends Controller {
 	@FXML
 	public void handleCompletedAction(ActionEvent event) {
 		this.filter = Filter.COMPLETED;
-		TaskDisplay.getInstance().refreshTaskList();
+		this.refreshTaskList();
 	}
 	
 	/**

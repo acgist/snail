@@ -75,10 +75,10 @@ public final class WindowsTheme implements ITheme {
 		String color = null;
 		try (final var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 			while ((line = reader.readLine()) != null) {
-				line = line.trim();
+				line = line.strip();
 				if(StringUtils.startsWith(line, THEME_COLOR_KEY)) {
 					final int index = line.indexOf("0x");
-					color = line.substring(index).trim();
+					color = line.substring(index).strip();
 					break;
 				}
 			}
