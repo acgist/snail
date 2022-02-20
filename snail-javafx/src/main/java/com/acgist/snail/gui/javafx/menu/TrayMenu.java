@@ -80,25 +80,19 @@ public final class TrayMenu extends Menu {
 	@Override
 	protected void buildMenus() {
 		// 显示按钮
-		final var showMenu = this.buildMenuItem("显示", SnailIcon.AS_ENLARGE);
-		showMenu.setOnAction(this.showAction);
+		this.buildMenuItem("显示", SnailIcon.AS_ENLARGE, this.showAction);
 		// 隐藏按钮
-		final var hideMenu = this.buildMenuItem("隐藏", SnailIcon.AS_SHRINK);
-		hideMenu.setOnAction(this.hideAction);
+		this.buildMenuItem("隐藏", SnailIcon.AS_SHRINK, this.hideAction);
 		// 官网与源码按钮
-		final var sourceMenu = this.buildMenuItem("官网与源码", SnailIcon.AS_HOME2);
-		sourceMenu.setOnAction(this.sourceAction);
+		this.buildMenuItem("官网与源码", SnailIcon.AS_HOME2, this.sourceAction);
 		// 问题与建议按钮
-		final var supportMenu = this.buildMenuItem("问题与建议", SnailIcon.AS_ROCKET);
-		supportMenu.setOnAction(this.supportAction);
+		this.buildMenuItem("问题与建议", SnailIcon.AS_ROCKET, this.supportAction);
 		// 关于按钮
-		final var aboutMenu = this.buildMenuItem("关于", SnailIcon.AS_INFO);
-		aboutMenu.setOnAction(this.aboutAction);
+		this.buildMenuItem("关于", SnailIcon.AS_INFO, this.aboutAction);
 		// 分割线
 		this.buildSeparator();
 		// 退出按钮
-		final var exitMenu = this.buildMenuItem("退出", SnailIcon.AS_SWITCH);
-		exitMenu.setOnAction(this.exitAction);
+		this.buildMenuItem("退出", SnailIcon.AS_SWITCH, this.exitAction);
 		// 设置窗口隐藏事件
 		this.addEventFilter(WindowEvent.WINDOW_HIDDEN, this.windowHiddenAction);
 	}
@@ -114,13 +108,14 @@ public final class TrayMenu extends Menu {
 				if (event.getButton() == java.awt.event.MouseEvent.BUTTON1) {
 					// 左键：显示隐藏
 					if (MainWindow.getInstance().isShowing()) {
-						Platform.runLater(() -> MainWindow.getInstance().hide());
+						Platform.runLater(MainWindow.getInstance()::hide);
 					} else {
-						Platform.runLater(() -> MainWindow.getInstance().show());
+						Platform.runLater(MainWindow.getInstance()::show);
 					}
 				} else if(event.getButton() == java.awt.event.MouseEvent.BUTTON3) {
 					// 右键：托盘菜单
 					Platform.runLater(() -> {
+						// HiDPI支持
 						final double scaleX = Screen.getPrimary().getOutputScaleX();
 						final double scaleY = Screen.getPrimary().getOutputScaleY();
 						// 窗口高度（首次获取是零）：减去图标高度
@@ -223,12 +218,12 @@ public final class TrayMenu extends Menu {
 	/**
 	 * <p>显示</p>
 	 */
-	private EventHandler<ActionEvent> showAction = event -> Platform.runLater(() -> MainWindow.getInstance().show());
+	private EventHandler<ActionEvent> showAction = event -> Platform.runLater(MainWindow.getInstance()::show);
 	
 	/**
 	 * <p>隐藏</p>
 	 */
-	private EventHandler<ActionEvent> hideAction = event -> Platform.runLater(() -> MainWindow.getInstance().hide());
+	private EventHandler<ActionEvent> hideAction = event -> Platform.runLater(MainWindow.getInstance()::hide);
 	
 	/**
 	 * <p>官网与源码</p>

@@ -53,31 +53,25 @@ public final class TaskMenu extends Menu {
 	@Override
 	protected void buildMenus() {
 		// 开始按钮
-		final var startMenu = this.buildMenuItem("开始", SnailIcon.AS_PLAY3);
-		startMenu.setOnAction(this.startEvent);
+		this.buildMenuItem("开始", SnailIcon.AS_PLAY3, this.startEvent);
 		// 暂停按钮
-		final var pauseMenu = this.buildMenuItem("暂停", SnailIcon.AS_PAUSE2);
-		pauseMenu.setOnAction(this.pauseEvent);
+		this.buildMenuItem("暂停", SnailIcon.AS_PAUSE2, this.pauseEvent);
 		// 删除按钮
-		final var deleteMenu = this.buildMenuItem("删除", SnailIcon.AS_BIN);
-		deleteMenu.setOnAction(this.deleteEvent);
+		this.buildMenuItem("删除", SnailIcon.AS_BIN, this.deleteEvent);
 		// 复制链接按钮
-		final var copyUrlMenu = this.buildMenuItem("复制链接", SnailIcon.AS_LINK);
-		copyUrlMenu.setOnAction(this.copyUrlEvent);
+		this.buildMenuItem("复制链接", SnailIcon.AS_LINK, this.copyUrlEvent);
+		// 分割线
 		this.buildSeparator();
 		// 文件选择按钮
-		this.torrentMenu = this.buildMenuItem("文件选择", SnailIcon.AS_EQUALIZER);
-		this.torrentMenu.setOnAction(this.torrentEvent);
+		this.torrentMenu = this.buildMenuItem("文件选择", SnailIcon.AS_EQUALIZER, this.torrentEvent);
 		// 导出种子按钮
-		this.exportTorrentMenu = this.buildMenuItem("导出种子", SnailIcon.AS_SHARE);
-		this.exportTorrentMenu.setOnAction(this.exportTorrentEvent);
+		this.exportTorrentMenu = this.buildMenuItem("导出种子", SnailIcon.AS_SHARE, this.exportTorrentEvent);
+		// 分割线
 		this.buildSeparator();
 		// 文件校验按钮
-		final var verifyMenu = this.buildMenuItem("文件校验", SnailIcon.AS_CHECKMARK);
-		verifyMenu.setOnAction(this.verifyEvent);
+		this.buildMenuItem("文件校验", SnailIcon.AS_CHECKMARK, this.verifyEvent);
 		// 打开目录按钮
-		final var openFolderMenu = this.buildMenuItem("打开目录", SnailIcon.AS_FOLDER_OPEN);
-		openFolderMenu.setOnAction(this.openFolderEvent);
+		this.buildMenuItem("打开目录", SnailIcon.AS_FOLDER_OPEN, this.openFolderEvent);
 		// 窗口显示事件
 		// 事件捕获阶段处理事件
 		this.addEventFilter(WindowEvent.WINDOW_SHOWN, this.windowShownAction);
@@ -116,9 +110,7 @@ public final class TaskMenu extends Menu {
 		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
 			return;
 		}
-		MainWindow.getInstance().controller().selectedTorrent().forEach(
-			session -> TorrentWindow.getInstance().show(session)
-		);
+		MainWindow.getInstance().controller().selectedTorrent().forEach(TorrentWindow.getInstance()::show);
 	};
 	
 	/**
@@ -130,10 +122,11 @@ public final class TaskMenu extends Menu {
 		}
 		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
 		if (file != null) {
+			final String exportPath = file.getAbsolutePath();
 			MainWindow.getInstance().controller().selectedTorrent().forEach(session -> {
 				final String torrent = session.getTorrent();
 				final String fileName = FileUtils.fileName(torrent);
-				final String targetFile = FileUtils.file(file.getAbsolutePath(), fileName);
+				final String targetFile = FileUtils.file(exportPath, fileName);
 				FileUtils.copy(torrent, targetFile);
 			});
 		}
