@@ -24,7 +24,7 @@ public final class HideEvent extends HideEventAdapter {
 
 	@Override
 	protected void executeNative(Object ... args) {
-		Platform.runLater(() -> MainWindow.getInstance().hide());
+		Platform.runLater(MainWindow.getInstance()::hide);
 	}
 
 }
