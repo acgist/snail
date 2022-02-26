@@ -4,8 +4,10 @@ import java.util.function.Function;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.context.SystemContext.SystemType;
-import com.acgist.snail.context.recycle.Recycle;
-import com.acgist.snail.context.recycle.WindowsRecycle;
+import com.acgist.snail.gui.recycle.LinuxRecycle;
+import com.acgist.snail.gui.recycle.MacRecycle;
+import com.acgist.snail.gui.recycle.Recycle;
+import com.acgist.snail.gui.recycle.WindowsRecycle;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;
@@ -29,6 +31,10 @@ public final class RecycleContext implements IContext {
 		LOGGER.debug("初始化回收站：{}", systemType);
 		if(systemType == SystemType.WINDOWS) {
 			BUILDER = WindowsRecycle::new;
+		} else if(systemType == SystemType.LINUX) {
+			BUILDER = LinuxRecycle::new;
+		} else if(systemType == SystemType.MAC) {
+			BUILDER = MacRecycle::new;
 		} else {
 			LOGGER.warn("不支持回收站：{}", systemType);
 			BUILDER = null;

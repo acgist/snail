@@ -1,4 +1,4 @@
-package com.acgist.snail.context.recycle;
+package com.acgist.snail.gui.recycle;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

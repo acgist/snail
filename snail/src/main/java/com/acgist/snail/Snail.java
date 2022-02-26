@@ -111,6 +111,7 @@ public final class Snail {
 						LOGGER.debug("线程等待异常", e);
 					}
 				}
+				this.lock = false;
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package com.acgist.snail.context.recycle;
+package com.acgist.snail.gui.recycle;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

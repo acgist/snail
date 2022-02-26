@@ -49,7 +49,7 @@ public final class Application {
 		SystemContext.info();
 		SystemContext.build();
 		if(Snail.available()) {
-			registerGuiEvent();
+			Application.registerGuiEvent();
 			GuiContext.getInstance().init(args).build();
 			LOGGER.info("系统启动完成");
 		} else {

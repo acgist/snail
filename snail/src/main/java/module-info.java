@@ -11,11 +11,12 @@ open module com.acgist.snail {
 	exports com.acgist.snail.config;
 	exports com.acgist.snail.context;
 	exports com.acgist.snail.context.exception;
-	exports com.acgist.snail.context.recycle;
+	exports com.acgist.snail.context.initializer;
 	exports com.acgist.snail.downloader;
 	exports com.acgist.snail.format;
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
+	exports com.acgist.snail.gui.recycle;
 	exports com.acgist.snail.logger;
 	exports com.acgist.snail.net;
 	exports com.acgist.snail.net.application;
