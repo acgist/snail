@@ -210,7 +210,7 @@ public final class M3u8Builder {
 		Label label = null;
 		// 解析标签
 		for (int index = 0; index < this.lines.size(); index++) {
-			line = this.lines.get(index).trim();
+			line = this.lines.get(index).strip();
 			if(StringUtils.isEmpty(line)) {
 				// 空行跳过
 				continue;
@@ -222,11 +222,11 @@ public final class M3u8Builder {
 				jndex = line.indexOf(SymbolConfig.Symbol.COLON.toChar());
 				if(jndex < 0) {
 					// 没有属性
-					label.setName(line.substring(1).trim());
+					label.setName(line.substring(1).strip());
 				} else {
 					// 含有属性
-					label.setName(line.substring(1, jndex).trim());
-					label.setValue(line.substring(jndex + 1).trim());
+					label.setName(line.substring(1, jndex).strip());
+					label.setValue(line.substring(jndex + 1).strip());
 				}
 			} else {
 				// URL

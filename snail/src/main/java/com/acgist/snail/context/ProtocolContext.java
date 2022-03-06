@@ -130,7 +130,7 @@ public final class ProtocolContext implements IContext {
 		if(StringUtils.isEmpty(url)) {
 			return Optional.empty();
 		}
-		final String verify = url.trim();
+		final String verify = url.strip();
 		return this.protocols.stream()
 			.filter(Protocol::available)
 			.filter(protocol -> protocol.verify(verify))

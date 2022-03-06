@@ -294,7 +294,7 @@ public final class TrackerContext implements IContext {
 			announceUrls = new ArrayList<>();
 		}
 		return announceUrls.stream()
-			.map(announceUrl -> this.buildTrackerSession(announceUrl.trim()))
+			.map(announceUrl -> this.buildTrackerSession(announceUrl.strip()))
 			.filter(Objects::nonNull)
 			.filter(TrackerSession::available)
 			.collect(Collectors.toList());

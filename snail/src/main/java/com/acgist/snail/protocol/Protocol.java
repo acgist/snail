@@ -384,7 +384,7 @@ public abstract class Protocol {
 	 * @throws DownloadException 下载异常
 	 */
 	public synchronized ITaskSession buildTaskSession(String url) throws DownloadException {
-		this.url = url.trim();
+		this.url = url.strip();
 		boolean success = true;
 		try {
 			this.buildTaskEntity();

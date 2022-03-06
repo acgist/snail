@@ -160,17 +160,17 @@ public final class KeyValueWrapper {
 		String value;
 		final String[] keyValues = this.content.split(String.valueOf(this.separator));
 		for (String keyValue : keyValues) {
-			keyValue = keyValue.trim();
+			keyValue = keyValue.strip();
 			if(keyValue.isEmpty()) {
 				continue;
 			}
 			index = keyValue.indexOf(this.kvSeparator);
 			if(index < 0) {
-				key = keyValue.trim();
+				key = keyValue.strip();
 				value = null;
 			} else {
-				key = keyValue.substring(0, index).trim();
-				value = keyValue.substring(index + 1).trim();
+				key = keyValue.substring(0, index).strip();
+				value = keyValue.substring(index + 1).strip();
 			}
 			this.data.put(key, value);
 		}

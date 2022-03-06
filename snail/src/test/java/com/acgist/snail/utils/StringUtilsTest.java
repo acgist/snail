@@ -45,6 +45,10 @@ class StringUtilsTest extends Performance {
 		final String value = "测试";
 		final String hex = StringUtils.hex(value.getBytes());
 		assertEquals(value, new String(StringUtils.unhex(hex)));
+		assertEquals("3132333435", StringUtils.hex("12345".getBytes()));
+		assertEquals("e8bf99e5b0b1e698afe4b880e4b8aae6b58be8af95e8808ce5b7b2", StringUtils.hex("这就是一个测试而已".getBytes()));
+		assertEquals("12345", new String(StringUtils.unhex("3132333435")));
+		assertEquals("这就是一个测试而已", new String(StringUtils.unhex("e8bf99e5b0b1e698afe4b880e4b8aae6b58be8af95e8808ce5b7b2")));
 	}
 
 	@Test
@@ -69,13 +73,16 @@ class StringUtilsTest extends Performance {
 		assertEquals(target, StringUtils.toUnicode("测试代码"));
 		assertEquals(source, StringUtils.ofUnicode(target));
 		assertEquals("\\u0002", StringUtils.toUnicode(Character.toString(2)));
-		this.costed(100000, () -> StringUtils.toUnicode("测试代码"));
 	}
 	
 	@Test
 	void testArgValue() {
 		assertEquals(null, StringUtils.argValue("modeextend", "mode"));
+		assertEquals(null, StringUtils.argValue("moded=extend", "mode"));
 		assertEquals("extend", StringUtils.argValue("mode=extend", "mode"));
+		assertEquals("extend", StringUtils.argValue("mode= extend", "mode"));
+		assertEquals("extend", StringUtils.argValue("mode =extend", "mode"));
+		assertEquals("extend", StringUtils.argValue("mode = extend", "mode"));
 	}
 
 	@Test
@@ -85,9 +92,9 @@ class StringUtilsTest extends Performance {
 	}
 
 	@Test
-	void testTrimBlank() {
+	void testReplaceAllBlank() {
 		final String source = " 0 0 0 	\n \r ";
-		final String target = StringUtils.trimAllBlank(source);
+		final String target = StringUtils.replaceAllBlank(source);
 		assertEquals("000", target);
 	}
 

@@ -70,7 +70,7 @@ public final class LimitSession {
 					// 通过实际下载大小计算：不能直接使用一秒如果缓存较大就会出现误差
 					final long expectTime = limitBufferValue * SystemConfig.ONE_SECOND_MILLIS / maxLimitBuffer;
 					if(interval < expectTime) {
-						// 限速时间
+						// 限速时间：不要释放锁
 						ThreadUtils.sleep(expectTime - interval);
 					}
 					// 清零：不能在休眠前清零

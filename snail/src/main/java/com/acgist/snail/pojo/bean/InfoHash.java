@@ -82,7 +82,7 @@ public final class InfoHash implements Serializable {
 		if(StringUtils.isEmpty(hash)) {
 			throw new DownloadException("不支持的Hash：" + hash);
 		}
-		hash = hash.trim();
+		hash = hash.strip();
 		if(Protocol.Type.verifyMagnetHash40(hash)) {
 			return new InfoHash(StringUtils.unhex(hash));
 		} else if(Protocol.Type.verifyMagnetHash32(hash)) {

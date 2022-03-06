@@ -72,7 +72,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			LOGGER.warn("系统消息错误：{}", message);
 			return;
 		}
-		message = message.trim();
+		message = message.strip();
 		final ApplicationMessage applicationMessage = ApplicationMessage.valueOf(message);
 		if(applicationMessage == null) {
 			LOGGER.warn("系统消息错误（格式）：{}", message);

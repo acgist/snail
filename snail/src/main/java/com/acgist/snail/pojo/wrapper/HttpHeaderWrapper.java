@@ -165,7 +165,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			fileName = fileName.substring(0, index);
 		}
 		// 删除：空格
-		fileName = fileName.trim();
+		fileName = fileName.strip();
 		// 删除：单引号
 		final String singleQuote = SymbolConfig.Symbol.SINGLE_QUOTE.toString();
 		if(fileName.startsWith(singleQuote) && fileName.endsWith(singleQuote)) {
@@ -182,7 +182,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 			fileName = fileName.substring(0, index);
 		}
 		// 删除：空格
-		return fileName.trim();
+		return fileName.strip();
 	}
 	
 	/**

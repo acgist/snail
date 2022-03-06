@@ -66,8 +66,8 @@ class VerifyTest extends Performance {
 	
 	private String githubYml(String path, String name) throws IOException {
 		return Files.readAllLines(Paths.get(path)).stream()
-			.filter(line -> line.trim().startsWith(name))
-			.map(line -> line.trim().substring(name.length() + 1).trim())
+			.filter(line -> line.strip().startsWith(name))
+			.map(line -> line.strip().substring(name.length() + 1).strip())
 			.findFirst().get();
 	}
 	
@@ -89,7 +89,7 @@ class VerifyTest extends Performance {
 					if(line.endsWith(" ") && !line.endsWith("* ")) {
 						this.log("文件格式错误（空格）：{}-{}", file.getAbsolutePath(), line);
 					}
-					if(line.endsWith("	") && !line.trim().isEmpty()) {
+					if(line.endsWith("	") && !line.strip().isEmpty()) {
 						this.log("文件格式错误（制表）：{}-{}", file.getAbsolutePath(), line);
 					}
 				});

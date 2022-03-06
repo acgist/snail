@@ -176,7 +176,7 @@ public final class JSON {
 		if(StringUtils.isEmpty(content)) {
 			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
-		content = content.trim();
+		content = content.strip();
 		if(content.isEmpty()) {
 			throw new IllegalArgumentException("JSON格式错误：" + content);
 		}
@@ -430,7 +430,7 @@ public final class JSON {
 	 * @return Java对象
 	 */
 	private static final Object deserializeValue(String content) {
-		final String value = content.trim();
+		final String value = content.strip();
 		final int length = value.length();
 		char first = '0';
 		char last = '0';

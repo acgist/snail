@@ -206,7 +206,7 @@ public class HeaderWrapper {
 			) {
 				return null;
 			} else {
-				return firstLine.trim();
+				return firstLine.strip();
 			}
 		}
 	}
@@ -234,13 +234,13 @@ public class HeaderWrapper {
 			}
 			index = line.indexOf(this.headerSeparator);
 			if(index == -1) {
-				key = line.trim();
+				key = line.strip();
 				value = "";
 			} else if(index < line.length()) {
-				key = line.substring(0, index).trim();
-				value = line.substring(index + 1).trim();
+				key = line.substring(0, index).strip();
+				value = line.substring(index + 1).strip();
 			} else {
-				key = line.substring(0, index).trim();
+				key = line.substring(0, index).strip();
 				value = "";
 			}
 			list = this.headers.computeIfAbsent(key, newKey -> new ArrayList<>());
@@ -270,7 +270,7 @@ public class HeaderWrapper {
 			return null;
 		}
 		final String value = list.get(0);
-		return value == null ? value : value.trim();
+		return value == null ? value : value.strip();
 	}
 	
 	/**
@@ -333,7 +333,7 @@ public class HeaderWrapper {
 					builder.append(key).append(this.headerSeparator).append(this.headerPadding).append(HEADER_LINE_WRITER);
 				} else {
 					list.stream()
-					.map(value -> value == null ? "" : value.trim())
+					.map(value -> value == null ? "" : value.strip())
 					.forEach(value -> builder.append(key).append(this.headerSeparator).append(this.headerPadding).append(value).append(HEADER_LINE_WRITER));
 				}
 			});

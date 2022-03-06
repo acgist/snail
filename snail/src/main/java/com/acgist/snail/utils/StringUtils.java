@@ -33,6 +33,26 @@ public final class StringUtils {
 	}
 	
 	/**
+	 * <p>十六进制字符长度</p>
+	 */
+	private static final int HEX_LENGTH = 2;
+	/**
+	 * <p>Unicode字符长度</p>
+	 */
+	private static final int UNICODE_LENGTH = 4;
+	/**
+	 * <p>Unicode字符开头</p>
+	 */
+	private static final String UNICODE_PREFIX = "\\u";
+	/**
+	 * <p>Unicode字符正则表达式</p>
+	 */
+	private static final String UNICODE_REGEX = "\\\\u";
+	/**
+	 * <p>空白字符正则表达式：{@value}</p>
+	 */
+	private static final String BLANK_REGEX = "\\s";
+	/**
 	 * <p>数值正则表达式（正负整数）：{@value}</p>
 	 */
 	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
@@ -41,9 +61,9 @@ public final class StringUtils {
 	 */
 	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
 	/**
-	 * <p>空白字符正则表达式</p>
+	 * <p>HEX字符编码</p>
 	 */
-	private static final String BLANK_REGEX = "\\s";
+	private static final char[] HEX_CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 	
 	/**
 	 * <p>判断字符串是否为空</p>
@@ -168,16 +188,12 @@ public final class StringUtils {
 		if(bytes == null) {
 			return null;
 		}
-		String hex;
-		final StringBuilder builder = new StringBuilder();
-		for (int index = 0; index < bytes.length; index++) {
-			hex = Integer.toHexString(bytes[index] & 0xFF);
-			if (hex.length() < 2) {
-				builder.append(SymbolConfig.Symbol.ZERO.toString());
-			}
-			builder.append(hex);
+		final char[] chars = new char[bytes.length << 1];
+		for (int index = 0; index < chars.length; index = index + HEX_LENGTH) {
+			chars[index] = HEX_CHARS[bytes[index >>> 1] >>> 0x04 & 0x0F];
+			chars[index + 1] = HEX_CHARS[bytes[index >>> 1] & 0x0F];
 		}
-		return builder.toString().toLowerCase();
+		return new String(chars);
 	}
 	
 	/**
@@ -191,23 +207,24 @@ public final class StringUtils {
 		if(content == null) {
 			return null;
 		}
-		// byte十六进制长度
-		final int byteHexLength = 2;
-		int length = content.length();
-		if (length % byteHexLength != 0) {
-			// 填充字符
-			length++;
-			content = SymbolConfig.Symbol.ZERO.toString() + content;
+		char[] chars = content.toCharArray();
+		int length = chars.length;
+		if ((length & 0x01) != 0) {
+			// 奇数填充
+			chars = (SymbolConfig.Symbol.ZERO.toString() + content).toCharArray();
+			length = chars.length;
 		}
 		int jndex = 0;
-		final byte[] hexBytes = new byte[length / byteHexLength];
-		for (int index = 0; index < length; index += byteHexLength) {
-			hexBytes[jndex] = (byte) Integer.parseInt(content.substring(index, index + byteHexLength), 16);
-			jndex++;
+		final byte[] bytes = new byte[length >> 1];
+		for (int index = 0; index < length; index += HEX_LENGTH) {
+			bytes[jndex++] = (byte) (
+				(Character.digit(chars[index], 16) << 0x04 & 0xF0) |
+				(Character.digit(chars[index + 1], 16) & 0X0F)
+			);
 		}
-		return hexBytes;
+		return bytes;
 	}
-
+	
 	/**
 	 * <p>计算字节数组的十六进制SHA-1散列值字符串</p>
 	 * 
@@ -289,7 +306,7 @@ public final class StringUtils {
 		if(value == null || regex == null) {
 			return false;
 		}
-		Pattern pattern;
+		final Pattern pattern;
 		if(ignoreCase) {
 			pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		} else {
@@ -360,19 +377,18 @@ public final class StringUtils {
 	 */
 	public static final String toUnicode(String content) {
 		int length;
-		char value;
 		String hex;
-		final int charHexLength = Integer.BYTES;
+		final char[] chars = content.toCharArray();
+		final String zero = SymbolConfig.Symbol.ZERO.toString();
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < content.length(); index++) {
-			builder.append("\\u");
-			value = content.charAt(index);
-			hex = Integer.toHexString(value);
+			builder.append(UNICODE_PREFIX);
+			hex = Integer.toHexString(chars[index]);
 			length = hex.length();
-			if(length < charHexLength) {
-				builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(charHexLength - length));
+			if(length < UNICODE_LENGTH) {
+				builder.append(zero.repeat(UNICODE_LENGTH - length));
 			}
-			builder.append(Integer.toHexString(value));
+			builder.append(hex);
 		}
 		return builder.toString();
 	}
@@ -385,11 +401,11 @@ public final class StringUtils {
 	 * @return 字符串
 	 */
 	public static final String ofUnicode(String unicode) {
-		final String[] hex = unicode.split("\\\\u");
+		final String[] hex = unicode.split(UNICODE_REGEX);
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 1; index < hex.length; index++) {
 			// 去掉首个空白字符
-			builder.append((char) Integer.parseInt(hex[index], Character.SIZE));
+			builder.append((char) Integer.parseInt(hex[index], 16));
 		}
 		return builder.toString();
 	}
@@ -480,11 +496,11 @@ public final class StringUtils {
 		String value = arg;
 		if(startsWith(value, key)) {
 			// 去掉键值
-			value = value.substring(key.length()).trim();
-			final String equalsSign = SymbolConfig.Symbol.EQUALS.toString();
-			if(startsWith(value, equalsSign)) {
+			value = value.substring(key.length()).strip();
+			final String equals = SymbolConfig.Symbol.EQUALS.toString();
+			if(startsWith(value, equals)) {
 				// 去掉等号
-				return value.substring(equalsSign.length()).trim();
+				return value.substring(equals.length()).strip();
 			}
 		}
 		return null;
@@ -586,7 +602,7 @@ public final class StringUtils {
 	 * 
 	 * @return 目标内容
 	 */
-	public static final String trimAllBlank(String content) {
+	public static final String replaceAllBlank(String content) {
 		if(content == null) {
 			return content;
 		}
@@ -605,7 +621,7 @@ public final class StringUtils {
 			return List.of();
 		}
 		return Stream.of(content.split(SymbolConfig.Symbol.LINE_SEPARATOR.toString()))
-			 .map(String::trim)
+			 .map(String::strip)
 			 .filter(StringUtils::isNotEmpty)
 			 .collect(Collectors.toList());
 	}

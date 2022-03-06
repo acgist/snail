@@ -179,7 +179,7 @@ public final class FileUtils {
 		// 过滤：特殊字符
 		fileName = fileName.replaceAll(FILENAME_REPLACE_REGEX, "");
 		// 过滤：首尾空格
-		fileName = fileName.trim();
+		fileName = fileName.strip();
 		if(fileName.isEmpty()) {
 			LOGGER.warn("文件名称错误：{}-{}", fileName, url);
 		}

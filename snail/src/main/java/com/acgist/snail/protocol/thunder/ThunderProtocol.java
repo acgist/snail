@@ -86,7 +86,7 @@ public final class ThunderProtocol extends Protocol {
 		String thunderUrl = THUNDER_PREFIX + url + THUNDER_SUFFIX;
 		thunderUrl = Base64.getMimeEncoder().encodeToString(thunderUrl.getBytes());
 		thunderUrl = Protocol.Type.THUNDER.defaultPrefix() + thunderUrl;
-		return StringUtils.trimAllBlank(thunderUrl);
+		return StringUtils.replaceAllBlank(thunderUrl);
 	}
 	
 }

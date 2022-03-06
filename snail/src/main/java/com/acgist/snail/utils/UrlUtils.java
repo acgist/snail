@@ -76,7 +76,7 @@ public final class UrlUtils {
 	public static final String redirect(final String source, String target) {
 		Objects.requireNonNull(source, "原始页面链接不能为空");
 		Objects.requireNonNull(target, "目标页面链接不能为空");
-		target = target.trim();
+		target = target.strip();
 		// 去掉引号
 		if(target.startsWith(SymbolConfig.Symbol.DOUBLE_QUOTE.toString())) {
 			target = target.substring(1);

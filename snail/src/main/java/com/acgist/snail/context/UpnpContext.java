@@ -264,7 +264,7 @@ public final class UpnpContext implements IContext {
 		final String externalIPAddress = this.getExternalIPAddress();
 		if(NetUtils.localIP(externalIPAddress)) {
 			// 获取的公网IP地址为内网地址
-			LOGGER.warn("UPNP端口映射失败：多重路由环境");
+			LOGGER.warn("UPNP端口映射失败（多重路由环境）：{}", externalIPAddress);
 			return false;
 		}
 		SystemConfig.setExternalIPAddress(externalIPAddress);

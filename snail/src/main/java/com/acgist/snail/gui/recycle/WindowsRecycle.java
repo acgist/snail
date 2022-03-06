@@ -190,6 +190,7 @@ public final class WindowsRecycle extends Recycle {
 	 * @param value 数据
 	 */
 	private void buildInfoChar(ByteArrayOutputStream out, char value) {
+//		Character.reverseBytes(value);
 		if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
 			// 小端
 			out.write(value & 0xFF);
