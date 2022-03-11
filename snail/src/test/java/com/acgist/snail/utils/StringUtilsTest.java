@@ -24,11 +24,18 @@ class StringUtilsTest extends Performance {
 	void testNumber() {
 		assertFalse(StringUtils.isNumeric(""));
 		assertTrue(StringUtils.isNumeric("1"));
+		assertTrue(StringUtils.isNumeric("-1"));
+		assertTrue(StringUtils.isNumeric("+1"));
 		assertFalse(StringUtils.isNumeric("1.1"));
 		assertFalse(StringUtils.isNumeric("acgist"));
 		assertFalse(StringUtils.isDecimal(""));
 		assertTrue(StringUtils.isDecimal("1"));
 		assertTrue(StringUtils.isDecimal("1.1"));
+		assertTrue(StringUtils.isDecimal("-1.1"));
+		assertTrue(StringUtils.isDecimal("+1.1"));
+		assertFalse(StringUtils.isDecimal("-"));
+		assertFalse(StringUtils.isDecimal("+"));
+		assertFalse(StringUtils.isDecimal(".10"));
 		assertFalse(StringUtils.isDecimal("acgist"));
 	}
 

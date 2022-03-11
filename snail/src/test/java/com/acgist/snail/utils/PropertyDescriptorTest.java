@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,12 +52,37 @@ class PropertyDescriptorTest extends Performance {
 	}
 
 	@Test
+	void testWeakMap() {
+		TaskEntity task = new TaskEntity();
+		final Map<TaskEntity, Map<Integer, Integer>> taskMap = new WeakHashMap<>();
+		taskMap.put(task, Map.of(1, 2));
+		System.out.println(taskMap);
+		task = null;
+		System.gc();
+		System.out.println(taskMap);
+		Class<TaskEntity> clazz = TaskEntity.class;
+		final Map<Class<?>, Map<Integer, Integer>> clazzMap = new WeakHashMap<>();
+		clazzMap.put(clazz, Map.of(1, 2));
+		System.out.println(clazzMap);
+		clazz = null;
+		System.gc();
+		System.out.println(clazzMap);
+	}
+	
+	@Test
 	void testCosted() {
 		final TaskEntity task = new TaskEntity();
 		final var descriptor = PropertyDescriptor.newInstance(task);
 		this.costed(100000, () -> descriptor.get("id"));
 		this.costed(100000, () -> descriptor.set("id", "1234"));
 		assertNotNull(task);
+		this.costed(1000, () -> {
+			final var costed = PropertyDescriptor.newInstance(new TaskEntity());
+			costed.get("id");
+			costed.set("id", "1234");
+//			System.gc();
+		});
+		System.gc();
 	}
 	
 }

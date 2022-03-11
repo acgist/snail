@@ -453,8 +453,10 @@ public final class JSON {
 			return Boolean.valueOf(value);
 		} else if(JSON_NULL.equals(value)) {
 			return null;
+		} else if(StringUtils.isNumeric(value)) {
+			return Long.valueOf(value);
 		} else if(StringUtils.isDecimal(value)) {
-			return Integer.valueOf(value);
+			return Double.valueOf(value);
 		} else {
 			throw new IllegalArgumentException("JSON格式错误：" + value);
 		}

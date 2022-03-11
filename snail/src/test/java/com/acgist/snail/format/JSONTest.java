@@ -43,7 +43,8 @@ class JSONTest extends Performance {
 		final var like = List.of("动\"漫", "洞\\箫");
 		final var list = List.of(List.of(1, 2), 2, 3);
 		final Map<Object, Object> map = new HashMap<>(Map.of(
-			"age", 30,
+			"age", 30L,
+			"money", 100.100D,
 			"like", like,
 			"list", list,
 			"name", "\b你,:{}\"好",
@@ -57,11 +58,13 @@ class JSONTest extends Performance {
 		this.log(mapJson.toJSON());
 		final JSON json = JSON.ofString(mapJson.toJSON());
 		assertEquals(mapJson.get("age"), map.get("age"));
+		assertEquals(mapJson.get("money"), map.get("money"));
 		assertEquals(mapJson.get("name"), map.get("name"));
 		assertEquals(mapJson.get("wife"), map.get("wife"));
 		assertEquals(mapJson.get("marry"), map.get("marry"));
 		assertEquals(mapJson.get("escape"), map.get("escape"));
 		assertEquals(json.get("age"), map.get("age"));
+		assertEquals(json.get("money"), map.get("money"));
 		assertEquals(json.get("name"), map.get("name"));
 		assertEquals(json.get("wife"), map.get("wife"));
 		assertEquals(json.get("marry"), map.get("marry"));

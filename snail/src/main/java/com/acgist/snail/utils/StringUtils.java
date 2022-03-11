@@ -53,14 +53,6 @@ public final class StringUtils {
 	 */
 	private static final String BLANK_REGEX = "\\s";
 	/**
-	 * <p>数值正则表达式（正负整数）：{@value}</p>
-	 */
-	private static final String NUMERIC_REGEX = "\\-?[0-9]+";
-	/**
-	 * <p>数值正则表达式（正负小数、正负整数）：{@value}</p>
-	 */
-	private static final String DECIMAL_REGEX = "\\-?[0-9]+(\\.[0-9]+)?";
-	/**
 	 * <p>HEX字符编码</p>
 	 */
 	private static final char[] HEX_CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -88,29 +80,71 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>判断字符串是否为数值</p>
+	 * <p>判断字符串是否为数值（整数）</p>
 	 * 
 	 * @param value 字符串
 	 * 
 	 * @return 是否为数值
-	 * 
-	 * @see #NUMERIC_REGEX
 	 */
 	public static final boolean isNumeric(String value) {
-		return StringUtils.regex(value, NUMERIC_REGEX, true);
+		return number(value, false);
 	}
 
+	/**
+	 * <p>判断字符串是否为数值（整数、小数）</p>
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return 是否为数值
+	 */
+	public static final boolean isDecimal(String value) {
+		return number(value, true);
+	}
+	
 	/**
 	 * <p>判断字符串是否为数值</p>
 	 * 
 	 * @param value 字符串
+	 * @param decimal 是否允许小数
 	 * 
 	 * @return 是否为数值
-	 * 
-	 * @see #DECIMAL_REGEX
 	 */
-	public static final boolean isDecimal(String value) {
-		return StringUtils.regex(value, DECIMAL_REGEX, true);
+	public static final boolean number(String value, boolean decimal) {
+		if(value == null) {
+			return false;
+		}
+		final char[] chars = value.toCharArray();
+		if(chars.length == 0) {
+			return false;
+		}
+		if(chars.length == 1) {
+			if(Character.isDigit(chars[0])) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		// 判断符号
+		if(!(
+			Character.isDigit(chars[0]) ||
+			chars[0] == SymbolConfig.Symbol.PLUS.toChar() ||
+			chars[0] == SymbolConfig.Symbol.MINUS.toChar()
+		)) {
+			return false;
+		}
+		// 判断字符
+		for (int index = 1; index < chars.length; index++) {
+			if(Character.isDigit(chars[index])) {
+				continue;
+			} else if(decimal && Character.isDigit(chars[index-1]) && chars[index] == SymbolConfig.Symbol.DOT.toChar()) {
+				// 只能出现一次小数字符
+				decimal = false;
+				continue;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -189,7 +223,7 @@ public final class StringUtils {
 			return null;
 		}
 		final char[] chars = new char[bytes.length << 1];
-		for (int index = 0; index < chars.length; index = index + HEX_LENGTH) {
+		for (int index = 0; index < chars.length; index += HEX_LENGTH) {
 			chars[index] = HEX_CHARS[bytes[index >>> 1] >>> 0x04 & 0x0F];
 			chars[index + 1] = HEX_CHARS[bytes[index >>> 1] & 0x0F];
 		}
@@ -211,7 +245,10 @@ public final class StringUtils {
 		int length = chars.length;
 		if ((length & 0x01) != 0) {
 			// 奇数填充
-			chars = (SymbolConfig.Symbol.ZERO.toString() + content).toCharArray();
+			final char[] copy = chars;
+			chars = new char[length + 1];
+			System.arraycopy(copy, 0, chars, 1, length);
+			chars[0] = SymbolConfig.Symbol.ZERO.toChar();
 			length = chars.length;
 		}
 		int jndex = 0;

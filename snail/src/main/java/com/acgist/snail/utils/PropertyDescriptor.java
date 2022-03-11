@@ -4,13 +4,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * <p>对象属性工具</p>
- * <p>可以使用Java内省替换</p>
+ * <p>可以使用Java内省替换：Introspector</p>
  * 
  * @author acgist
  */
@@ -30,6 +33,10 @@ public final class PropertyDescriptor {
 	 * <p>SETTER前缀：{@value}</p>
 	 */
 	private static final String PREFIX_SET = "set";
+	/**
+	 * <p>对象方法缓存</p>
+	 */
+	private static final Map<Class<?>, Map<String, Method>> CACHE_METHOD = new WeakHashMap<>();
 	
 	/**
 	 * <p>类型</p>
@@ -86,18 +93,26 @@ public final class PropertyDescriptor {
 	 * @return GETTER
 	 */
 	public Method getter(String property) {
-		final Method[] methods = this.clazz.getMethods();
-		final String isMethod = PREFIX_IS + property;
 		final String getMethod = PREFIX_GET + property;
+		final Method result = CACHE_METHOD.computeIfAbsent(this.clazz, key -> new HashMap<>()).get(getMethod);
+		if(result != null) {
+			return result;
+		}
 		String methodName;
+		final String isMethod = PREFIX_IS + property;
+		final Method[] methods = this.clazz.getMethods();
 		for (Method method : methods) {
 			methodName = method.getName();
 			// 按照出现次数排序
 			if(
-				getMethod.equalsIgnoreCase(methodName) ||
-				isMethod.equalsIgnoreCase(methodName) ||
-				property.equalsIgnoreCase(methodName)
+				method.getParameterCount() == 0 &&
+				(
+					getMethod.equalsIgnoreCase(methodName) ||
+					isMethod.equalsIgnoreCase(methodName) ||
+					property.equalsIgnoreCase(methodName)
+				)
 			) {
+				CACHE_METHOD.get(this.clazz).put(getMethod, method);
 				return method;
 			}
 		}
@@ -132,12 +147,23 @@ public final class PropertyDescriptor {
 	 * @return SETTER
 	 */
 	public Method setter(String property) {
-		final Method[] methods = this.clazz.getMethods();
 		final String setMethod = PREFIX_SET + property;
+		final Method result = CACHE_METHOD.computeIfAbsent(this.clazz, key -> new HashMap<>()).get(setMethod);
+		if(result != null) {
+			return result;
+		}
 		String methodName;
+		final Method[] methods = this.clazz.getMethods();
 		for (Method method : methods) {
 			methodName = method.getName();
-			if(setMethod.equalsIgnoreCase(methodName)) {
+			if(
+				method.getParameterCount() == 1 &&
+				(
+					setMethod.equalsIgnoreCase(methodName) ||
+					property.equalsIgnoreCase(methodName)
+				)
+			) {
+				CACHE_METHOD.get(this.clazz).put(setMethod, method);
 				return method;
 			}
 		}
