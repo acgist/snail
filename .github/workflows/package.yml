@@ -76,18 +76,18 @@ jobs:
         # 打包项目：jlink&jpackage
         jpackage \
           --name snail \
+          --icon ${{ env.icon }} \
           --type ${{ env.suffix }} \
-          --app-version ${{ env.version }} \
+          --input ./build/snail/ \
           --vendor acgist \
+          --about-url "https://gitee.com/acgist/snail" \
           --copyright "Copyright (C) 2019 acgist. All Rights Reserved." \
           --description "Acgist Snail Downloader" \
-          --input ./build/snail/ \
+          --app-version ${{ env.version }} \
+          --license-file LICENSE \
           --main-jar snail.javafx-${{ env.version }}.jar \
           --add-modules "java.base,java.xml,java.desktop,java.scripting,jdk.unsupported" \
-          --icon ${{ env.icon }} \
-          --license-file LICENSE \
           --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
-          --about-url "https://gitee.com/acgist/snail" \
           --dest ./ \
           --verbose \
           ${{ env.args }}

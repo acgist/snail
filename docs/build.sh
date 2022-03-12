@@ -14,16 +14,19 @@ fi
 # 系统参数
 if [[ $system == "win" ]]; then
     # win:msi|exe
+    suffix="msi"
     icon="./docs/logo/logo.ico"
-    args="--type msi --win-shortcut --win-dir-chooser --win-per-user-install"
+    args="--win-shortcut --win-dir-chooser --win-per-user-install"
 elif [[ $system == "mac" ]]; then
     # mac:pkg|dmg
+    suffix="pkg"
     icon="./docs/logo/logo.icns"
-    args="--type pkg"
+    args=""
 elif [[ $system == "linux" ]]; then
     # linux:deb|rpm
+    suffix="deb"
     icon="./docs/logo/logo.png"
-    args="--type deb --linux-shortcut"
+    args="--linux-shortcut"
 else
     echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [all|build|pack]"
     exit
@@ -49,20 +52,20 @@ fi
 # 打包项目：jlink|jpackage
 if [[ $action == "all" || $action == "pack" ]]; then
     jpackage \
-        --resource-dir ./docs/logo \
-        --file-associations ./docs/torrent.properties \
         --name snail \
-        --app-version ${version} \
+        --icon "${icon}" \
+        --type ${suffix} \
+        --input ./build/snail/ \
         --vendor acgist \
+        --about-url "https://gitee.com/acgist/snail" \
         --copyright "Copyright (C) 2019 acgist. All Rights Reserved." \
         --description "Acgist Snail Downloader" \
-        --input ./build/snail/ \
+        --app-version ${version} \
+        --license-file ./LICENSE \
+        --file-associations ./docs/associations/torrent.properties \
         --main-jar snail.javafx-${version}.jar \
         --add-modules "java.base,java.xml,java.desktop,java.scripting,jdk.unsupported" \
-        --icon ${icon} \
-        --license-file ./LICENSE \
         --java-options "-server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -Dfile.encoding=UTF-8" \
-        --about-url "https://gitee.com/acgist/snail" \
         --dest ./build/ \
         --verbose \
         ${args}
