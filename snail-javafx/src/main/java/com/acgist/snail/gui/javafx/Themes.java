@@ -42,6 +42,10 @@ public final class Themes {
 	 */
 	public static final String LOGO_ICON_64 = "/image/64/logo.png";
 	/**
+	 * <p>LOGO文件路径（128PX）：{@value}</p>
+	 */
+	public static final String LOGO_ICON_128 = "/image/128/logo.png";
+	/**
 	 * <p>LOGO文件路径（256PX）：{@value}</p>
 	 */
 	public static final String LOGO_ICON_256 = "/image/logo.png";
@@ -139,8 +143,14 @@ public final class Themes {
 	 * 
 	 * @return Logo图标
 	 */
-	public static final Image getLogo() {
-		return new Image(LOGO_ICON_256);
+	public static final Image[] getLogo() {
+		return new Image[] {
+			new Image(LOGO_ICON_16),
+			new Image(LOGO_ICON_32),
+			new Image(LOGO_ICON_64),
+			new Image(LOGO_ICON_128),
+			new Image(LOGO_ICON_256)
+		};
 	}
 	
 	/**
@@ -167,7 +177,7 @@ public final class Themes {
 	 * @param icons 图标列表
 	 */
 	public static final void applyLogo(ObservableList<Image> icons) {
-		icons.add(Themes.getLogo());
+		icons.addAll(Themes.getLogo());
 	}
 	
 	/**

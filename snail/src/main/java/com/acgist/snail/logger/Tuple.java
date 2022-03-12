@@ -1,6 +1,8 @@
 package com.acgist.snail.logger;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>日志单元</p>
@@ -91,7 +93,12 @@ public final class Tuple {
 		for (int index = 0; index < formatLength; index++) {
 			builder.append(this.format[index]);
 			if(index < objectLength) {
-				builder.append(objects[index]);
+				if(objects[index] != null && objects[index].getClass().isArray()) {
+					// TODO：基本类型解决
+					builder.append(Stream.of(objects[index]).map(value -> String.valueOf(value)).collect(Collectors.joining(", ", "[", "]")));
+				} else {
+					builder.append(objects[index]);
+				}
 			} else {
 				builder.append(FORMAT_CODE);
 			}

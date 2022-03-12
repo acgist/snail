@@ -113,14 +113,7 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 使用JDK内置命令`jpackage`进行打包，可以使用[docs/build.sh](./build.sh)脚本打包：
 
 ```bash
-./docs/build.sh version [win|mac|linux] [pack]
-
-./docs/build.sh 1.7.16 win
-./docs/build.sh 1.7.16 win pack
-./docs/build.sh 1.7.16 mac
-./docs/build.sh 1.7.16 mac pack
-./docs/build.sh 1.7.16 linux
-./docs/build.sh 1.7.16 linux pack
+./docs/build.sh version [win|mac|linux] [all|build|pack]
 ```
 
 ##### 注意

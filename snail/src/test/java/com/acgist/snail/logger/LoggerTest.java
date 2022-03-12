@@ -1,5 +1,6 @@
 package com.acgist.snail.logger;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,7 +14,7 @@ class LoggerTest extends Performance {
 
 	@Test
 	void testCosted() {
-		// TODO：想想办法搞到400毫秒
+		// TODO：想想办法搞到500毫秒
 		final long costed = this.costed(100000, () -> this.log("----{}----", System.currentTimeMillis()));
 		assertTrue(costed < 3000);
 	}
@@ -36,6 +37,27 @@ class LoggerTest extends Performance {
 			LOGGER.error("error", e);
 		}
 		assertNotNull(LOGGER);
+	}
+	
+	@Test
+	void testArray() {
+		LOGGER.info("array：{}", new int[] {1, 2, 3});
+		LOGGER.info("array：{}", new byte[] {1, 2, 3});
+		LOGGER.info("array：{}", new char[] {1, 2, 3});
+		LOGGER.info("array：{}", new long[] {1, 2, 3});
+		LOGGER.info("array：{}", new short[] {1, 2, 3});
+		LOGGER.info("array：{}", new float[] {1, 2, 3});
+		LOGGER.info("array：{}", new double[] {1, 2, 3});
+		LOGGER.info("array：{}", new boolean[] {true, false, true});
+		LOGGER.info("array：{}-{}", new Integer[] {1, 2, 3}, "");
+		assertNotNull(LOGGER);
+	}
+	
+	@Test
+	void testBuildSimpleName() {
+		assertEquals("Test", LOGGER.buildSimpleName("Test"));
+		assertEquals("c.a.Test", LOGGER.buildSimpleName("com.acgist.Test"));
+		this.costed(100000, () -> LOGGER.buildSimpleName("com.acgist.Test"));
 	}
 	
 }

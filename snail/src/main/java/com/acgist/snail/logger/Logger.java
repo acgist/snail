@@ -58,7 +58,7 @@ public final class Logger {
 	 */
 	public Logger(String name) {
 		this.name = name;
-		this.nameFormat = String.format(" %s ", this.name);
+		this.nameFormat = String.format(" %s ", this.buildSimpleName(this.name));
 		this.level = LoggerConfig.getLevel();
 		this.system = LoggerConfig.getSystem();
 		this.systemFormat = String.format("[%s] ", this.system);
@@ -84,7 +84,7 @@ public final class Logger {
 			.append(" [")
 			.append(Thread.currentThread().getName())
 			.append("] ")
-			.append(level.name())
+			.append(level)
 			.append(this.nameFormat);
 		tuple.format(builder, args).append("\n");
 		final Throwable throwable = tuple.throwable(args);
@@ -128,6 +128,26 @@ public final class Logger {
 				this.adapters.forEach(adapter -> adapter.output(message));
 			}
 		}
+	}
+	
+	/**
+	 * <p>简化日志名称</p>
+	 * 
+	 * @param name 完整名称
+	 * 
+	 * @return 简版名称
+	 */
+	public String buildSimpleName(String name) {
+		int old;
+		int index = 0;
+		final char dot = '.';
+		final StringBuilder builder = new StringBuilder();
+		while((old = name.indexOf(dot, index)) != -1) {
+			builder.append(name.substring(index, index + 1)).append(dot);
+			index = old + 1;
+		}
+		builder.append(name.substring(index));
+		return builder.toString();
 	}
 	
 	public boolean isDebugEnabled() {

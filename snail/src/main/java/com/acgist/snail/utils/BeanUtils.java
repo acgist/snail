@@ -75,7 +75,7 @@ public final class BeanUtils {
 		} else if (object instanceof Date date) {
 			return DateUtils.dateFormat(date);
 		} else if (object instanceof byte[] bytes) {
-			return new String(bytes);
+			return StringUtils.hex(bytes);
 		} else {
 			return object;
 		}
