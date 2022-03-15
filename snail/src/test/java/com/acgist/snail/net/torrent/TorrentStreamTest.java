@@ -24,10 +24,10 @@ class TorrentStreamTest extends Performance {
 
 	@Test
 	void testReadWrite() throws DownloadException, IOException {
-		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
+		final var path = "D:/tmp/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var entity = new TaskEntity();
-		entity.setFile("E:/snail/tmp");
+		entity.setFile("D:/tmp/none");
 		entity.setType(Type.TORRENT);
 		entity.setName("acgist");
 		entity.setStatus(Status.COMPLETED);
@@ -46,7 +46,7 @@ class TorrentStreamTest extends Performance {
 		session.upload(TaskSession.newInstance(entity));
 		final var group = session.torrentStreamGroup();
 		final long pieceLength = session.torrent().getInfo().getPieceLength();
-		final String sourceFile = "E:/snail/server/Scans/Vol.1/Box_1.png";
+		final String sourceFile = "D:/tmp/snail/server/Scans/Vol.1/Box_1.png";
 		final var oldStream = TorrentStream.newInstance(
 			pieceLength,
 			sourceFile,
@@ -57,7 +57,7 @@ class TorrentStreamTest extends Performance {
 		);
 		oldStream.install();
 		oldStream.verify();
-		final String targetFile = "E:/snail/tmp/server/Scans/Vol.1/Box_1.png";
+		final String targetFile = "D:/tmp/none/server/Scans/Vol.1/Box_1.png";
 		final var newStream = TorrentStream.newInstance(
 			pieceLength,
 			targetFile,

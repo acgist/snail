@@ -199,8 +199,12 @@ public class MapUtils {
 		}
 		// 使用LinkedHashMap防止乱序
 		return result.entrySet().stream()
-			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+			.collect(Collectors.toMap(
+				entry -> entry.getKey() == null ? null : entry.getKey().toString(),
+				Map.Entry::getValue,
+				(a, b) -> b,
+				LinkedHashMap::new
+			));
 	}
 	
 }

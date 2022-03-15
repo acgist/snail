@@ -27,7 +27,7 @@ class PeerServerTest extends Performance {
 	
 	@Test
 	void testServer() throws DownloadException {
-		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
+		final var path = "D:/tmp/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		DownloadConfig.setBuffer(40 * 1024);
 		final List<String> list = new ArrayList<>();
@@ -41,7 +41,7 @@ class PeerServerTest extends Performance {
 				size.addAndGet(file.getLength());
 			});
 		final var entity = new TaskEntity();
-		entity.setFile("E:\\snail\\server");
+		entity.setFile("D:/tmp/snail/server");
 		entity.setType(Type.TORRENT);
 		entity.setSize(size.get());
 		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
@@ -54,7 +54,7 @@ class PeerServerTest extends Performance {
 
 	@Test
 	void testClient() throws DownloadException {
-		final var path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
+		final var path = "D:/tmp/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final var torrentSession = TorrentContext.getInstance().newTorrentSession(path);
 		DownloadConfig.setBuffer(40 * 1024);
 		final List<String> list = new ArrayList<>();
@@ -67,7 +67,7 @@ class PeerServerTest extends Performance {
 				}
 			});
 		final var entity = new TaskEntity();
-		entity.setFile("E://snail/tmp/client");
+		entity.setFile("D:/tmp/snail/client");
 		entity.setType(Type.TORRENT);
 		entity.setDescription(DescriptionWrapper.newEncoder(list).serialize());
 		// 禁止自动加载Peer
