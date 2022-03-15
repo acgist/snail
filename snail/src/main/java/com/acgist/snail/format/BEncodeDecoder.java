@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.logger.Logger;
@@ -339,6 +338,7 @@ public final class BEncodeDecoder {
 		int index;
 		char indexChar;
 		String key = null;
+		// 使用LinkedHashMap防止乱序
 		final Map<String, Object> map = new LinkedHashMap<>();
 		final StringBuilder lengthBuilder = new StringBuilder();
 		while ((index = inputStream.read()) != -1) {
@@ -429,22 +429,7 @@ public final class BEncodeDecoder {
 	 * @return 对象
 	 */
 	public Object get(String key) {
-		return get(this.map, key);
-	}
-	
-	/**
-	 * <p>获取对象</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 对象
-	 */
-	public static final Object get(Map<?, ?> map, String key) {
-		if(map == null) {
-			return null;
-		}
-		return map.get(key);
+		return MapUtils.get(this.map, key);
 	}
 	
 	/**
@@ -455,23 +440,7 @@ public final class BEncodeDecoder {
 	 * @return 字节
 	 */
 	public Byte getByte(String key) {
-		return getByte(this.map, key);
-	}
-	
-	/**
-	 * <p>获取字节</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 字节
-	 */
-	public static final Byte getByte(Map<?, ?> map, String key) {
-		final Long value = getLong(map, key);
-		if(value == null) {
-			return null;
-		}
-		return value.byteValue();
+		return MapUtils.getByte(this.map, key);
 	}
 	
 	/**
@@ -482,23 +451,7 @@ public final class BEncodeDecoder {
 	 * @return 数值
 	 */
 	public Integer getInteger(String key) {
-		return getInteger(this.map, key);
-	}
-	
-	/**
-	 * <p>获取数值</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 数值
-	 */
-	public static final Integer getInteger(Map<?, ?> map, String key) {
-		final Long value = getLong(map, key);
-		if(value == null) {
-			return null;
-		}
-		return value.intValue();
+		return MapUtils.getInteger(this.map, key);
 	}
 	
 	/**
@@ -509,22 +462,7 @@ public final class BEncodeDecoder {
 	 * @return 数值
 	 */
 	public Long getLong(String key) {
-		return getLong(this.map, key);
-	}
-	
-	/**
-	 * <p>获取数值</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 数值
-	 */
-	public static final Long getLong(Map<?, ?> map, String key) {
-		if(map == null) {
-			return null;
-		}
-		return (Long) map.get(key);
+		return MapUtils.getLong(this.map, key);
 	}
 	
 	/**
@@ -535,9 +473,9 @@ public final class BEncodeDecoder {
 	 * @return 字符串
 	 */
 	public String getString(String key) {
-		return getString(this.map, key);
+		return MapUtils.getString(this.map, key);
 	}
-	
+
 	/**
 	 * <p>获取字符串</p>
 	 * 
@@ -547,36 +485,7 @@ public final class BEncodeDecoder {
 	 * @return 字符串
 	 */
 	public String getString(String key, String encoding) {
-		return getString(this.map, key, encoding);
-	}
-	
-	/**
-	 * <p>获取字符串</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 字符串
-	 */
-	public static final String getString(Map<?, ?> map, String key) {
-		return getString(map, key, null);
-	}
-	
-	/**
-	 * <p>获取字符串</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * @param encoding 编码
-	 * 
-	 * @return 字符串
-	 */
-	public static final String getString(Map<?, ?> map, String key, String encoding) {
-		final var bytes = getBytes(map, key);
-		if(bytes == null) {
-			return null;
-		}
-		return StringUtils.getCharsetString(bytes, encoding);
+		return MapUtils.getString(this.map, key, encoding);
 	}
 	
 	/**
@@ -587,22 +496,7 @@ public final class BEncodeDecoder {
 	 * @return 字节数组
 	 */
 	public byte[] getBytes(String key) {
-		return getBytes(this.map, key);
-	}
-	
-	/**
-	 * <p>获取字节数组</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 字节数组
-	 */
-	public static final byte[] getBytes(Map<?, ?> map, String key) {
-		if(map == null) {
-			return null;
-		}
-		return (byte[]) map.get(key);
+		return MapUtils.getBytes(this.map, key);
 	}
 	
 	/**
@@ -613,27 +507,7 @@ public final class BEncodeDecoder {
 	 * @return 集合
 	 */
 	public List<Object> getList(String key) {
-		return getList(this.map, key);
-	}
-	
-	/**
-	 * <p>获取集合</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return 集合
-	 */
-	public static final List<Object> getList(Map<?, ?> map, String key) {
-		if(map == null) {
-			return List.of();
-		}
-		final var result = (List<?>) map.get(key);
-		if(result == null) {
-			return List.of();
-		}
-		return result.stream()
-			.collect(Collectors.toList());
+		return MapUtils.getList(this.map, key);
 	}
 	
 	/**
@@ -644,29 +518,7 @@ public final class BEncodeDecoder {
 	 * @return Map
 	 */
 	public Map<String, Object> getMap(String key) {
-		return getMap(this.map, key);
-	}
-	
-	/**
-	 * <p>获取Map</p>
-	 * 
-	 * @param map 数据
-	 * @param key 键
-	 * 
-	 * @return Map
-	 */
-	public static final Map<String, Object> getMap(Map<?, ?> map, String key) {
-		if(map == null) {
-			return Map.of();
-		}
-		final var result = (Map<?, ?>) map.get(key);
-		if(result == null) {
-			return Map.of();
-		}
-		// 使用LinkedHashMap防止乱序
-		return result.entrySet().stream()
-			.map(entry -> Map.entry(entry.getKey().toString(), entry.getValue()))
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+		return MapUtils.getMap(this.map, key);
 	}
 	
 	@Override

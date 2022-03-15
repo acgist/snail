@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -144,9 +143,9 @@ public final class JSON {
 	 * 
 	 * @return JSON对象
 	 */
-	public static final JSON ofMap(Map<Object, Object> map) {
+	public static final JSON ofMap(Map<?, ?> map) {
 		final JSON json = new JSON();
-		json.map = map;
+		json.map = new LinkedHashMap<>(map);
 		json.type = Type.MAP;
 		return json;
 	}
@@ -158,9 +157,9 @@ public final class JSON {
 	 * 
 	 * @return JSON对象
 	 */
-	public static final JSON ofList(List<Object> list) {
+	public static final JSON ofList(List<?> list) {
 		final JSON json = new JSON();
-		json.list = list;
+		json.list = new ArrayList<>(list);
 		json.type = Type.LIST;
 		return json;
 	}
@@ -539,13 +538,9 @@ public final class JSON {
 		} else if(value instanceof String string) {
 			return JSON.ofString(string);
 		} else if(value instanceof Map<?, ?> map) {
-			final Map<Object, Object> valueMap = map.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-			return JSON.ofMap(valueMap);
+			return JSON.ofMap(map);
 		} else if(value instanceof List<?> list) {
-			final List<Object> valueList = list.stream()
-				.collect(Collectors.toList());
-			return JSON.ofList(valueList);
+			return JSON.ofList(list);
 		} else {
 			throw new IllegalArgumentException("JSON转换错误：" + value);
 		}

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.format.BEncodeDecoder;
+import com.acgist.snail.utils.MapUtils;
 
 /**
  * <p>文件信息</p>
@@ -125,19 +125,19 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	public static final TorrentInfo valueOf(Map<String, Object> map, String encoding) {
 		Objects.requireNonNull(map, "文件信息为空");
 		final TorrentInfo info = new TorrentInfo();
-		info.setName(BEncodeDecoder.getString(map, ATTR_NAME, encoding));
-		info.setNameUtf8(BEncodeDecoder.getString(map, ATTR_NAME_UTF8));
-		info.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
-		info.setLength(BEncodeDecoder.getLong(map, ATTR_LENGTH));
-		info.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
-		info.setPieces(BEncodeDecoder.getBytes(map, ATTR_PIECES));
-		info.setPieceLength(BEncodeDecoder.getLong(map, ATTR_PIECE_LENGTH));
-		info.setPublisher(BEncodeDecoder.getString(map, ATTR_PUBLISHER, encoding));
-		info.setPublisherUtf8(BEncodeDecoder.getString(map, ATTR_PUBLISHER_UTF8));
-		info.setPublisherUrl(BEncodeDecoder.getString(map, ATTR_PUBLISHER_URL, encoding));
-		info.setPublisherUrlUtf8(BEncodeDecoder.getString(map, ATTR_PUBLISHER_URL_UTF8));
-		info.setPrivateTorrent(BEncodeDecoder.getLong(map, ATTR_PRIVATE));
-		info.setFiles(readFiles(BEncodeDecoder.getList(map, ATTR_FILES), encoding));
+		info.setName(MapUtils.getString(map, ATTR_NAME, encoding));
+		info.setNameUtf8(MapUtils.getString(map, ATTR_NAME_UTF8));
+		info.setEd2k(MapUtils.getBytes(map, ATTR_ED2K));
+		info.setLength(MapUtils.getLong(map, ATTR_LENGTH));
+		info.setFilehash(MapUtils.getBytes(map, ATTR_FILEHASH));
+		info.setPieces(MapUtils.getBytes(map, ATTR_PIECES));
+		info.setPieceLength(MapUtils.getLong(map, ATTR_PIECE_LENGTH));
+		info.setPublisher(MapUtils.getString(map, ATTR_PUBLISHER, encoding));
+		info.setPublisherUtf8(MapUtils.getString(map, ATTR_PUBLISHER_UTF8));
+		info.setPublisherUrl(MapUtils.getString(map, ATTR_PUBLISHER_URL, encoding));
+		info.setPublisherUrlUtf8(MapUtils.getString(map, ATTR_PUBLISHER_URL_UTF8));
+		info.setPrivateTorrent(MapUtils.getLong(map, ATTR_PRIVATE));
+		info.setFiles(readFiles(MapUtils.getList(map, ATTR_FILES), encoding));
 		return info;
 	}
 	

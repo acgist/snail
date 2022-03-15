@@ -3,9 +3,11 @@ package com.acgist.snail.net.torrent.dht;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.utils.BeanUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NetUtils;
 
 /**
@@ -118,26 +120,7 @@ public abstract class DhtMessage {
 	 * @return Integer参数
 	 */
 	public Integer getInteger(String key) {
-		final Long value = this.getLong(key);
-		if(value == null) {
-			return null;
-		}
-		return value.intValue();
-	}
-	
-	/**
-	 * <p>获取字符串参数</p>
-	 * 
-	 * @param key 参数名称
-	 * 
-	 * @return 字符串参数
-	 */
-	public String getString(String key) {
-		final byte[] value = this.getBytes(key);
-		if(value == null) {
-			return null;
-		}
-		return new String(value);
+		return MapUtils.getInteger(this.get(), key);
 	}
 	
 	/**
@@ -148,7 +131,18 @@ public abstract class DhtMessage {
 	 * @return Long参数
 	 */
 	public Long getLong(String key) {
-		return (Long) this.get(key);
+		return MapUtils.getLong(this.get(), key);
+	}
+	
+	/**
+	 * <p>获取字符串参数</p>
+	 * 
+	 * @param key 参数名称
+	 * 
+	 * @return 字符串参数
+	 */
+	public String getString(String key) {
+		return MapUtils.getString(this.get(), key);
 	}
 	
 	/**
@@ -159,7 +153,7 @@ public abstract class DhtMessage {
 	 * @return byte[]参数
 	 */
 	public byte[] getBytes(String key) {
-		return (byte[]) this.get(key);
+		return MapUtils.getBytes(this.get(), key);
 	}
 	
 	/**
@@ -169,8 +163,8 @@ public abstract class DhtMessage {
 	 * 
 	 * @return List参数
 	 */
-	public List<?> getList(String key) {
-		return (List<?>) this.get(key);
+	public List<Object> getList(String key) {
+		return MapUtils.getList(this.get(), key);
 	}
 	
 	/**
@@ -181,7 +175,16 @@ public abstract class DhtMessage {
 	 * 
 	 * @return Object参数
 	 */
-	public abstract Object get(String key);
+	public Object get(String key) {
+		return MapUtils.get(this.get(), key);
+	}
+	
+	/**
+	 * <p>获取参数</p>
+	 * 
+	 * @return 参数
+	 */
+	protected abstract Map<String, Object> get();
 	
 	/**
 	 * <p>设置参数</p>

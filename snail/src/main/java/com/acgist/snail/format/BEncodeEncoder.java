@@ -123,7 +123,7 @@ public final class BEncodeEncoder {
 	 * 
 	 * @return {@link BEncodeEncoder}
 	 */
-	public BEncodeEncoder put(Map<String, Object> map) {
+	public BEncodeEncoder put(Map<String, ?> map) {
 		if(this.type == Type.MAP) {
 			this.map.putAll(map);
 		}

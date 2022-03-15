@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -71,13 +71,13 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 	public static final TorrentFile valueOf(Map<?, ?> map, String encoding) {
 		Objects.requireNonNull(map, "文件信息为空");
 		final TorrentFile file = new TorrentFile();
-		file.setEd2k(BEncodeDecoder.getBytes(map, ATTR_ED2K));
-		file.setLength(BEncodeDecoder.getLong(map, ATTR_LENGTH));
-		file.setFilehash(BEncodeDecoder.getBytes(map, ATTR_FILEHASH));
-		final List<Object> path = BEncodeDecoder.getList(map, ATTR_PATH);
+		file.setEd2k(MapUtils.getBytes(map, ATTR_ED2K));
+		file.setLength(MapUtils.getLong(map, ATTR_LENGTH));
+		file.setFilehash(MapUtils.getBytes(map, ATTR_FILEHASH));
+		final List<Object> path = MapUtils.getList(map, ATTR_PATH);
 		final List<String> pathList = readPath(path, encoding);
 		file.setPath(pathList);
-		final List<Object> pathUtf8 = BEncodeDecoder.getList(map, ATTR_PATH_UTF8);
+		final List<Object> pathUtf8 = MapUtils.getList(map, ATTR_PATH_UTF8);
 		final List<String> pathUtf8List = readPath(pathUtf8, SystemConfig.CHARSET_UTF8);
 		file.setPathUtf8(pathUtf8List);
 		file.paddingFile = readPaddingFile(pathList, pathUtf8List);

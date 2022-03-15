@@ -146,11 +146,8 @@ public class DhtRequest extends DhtMessage {
 	}
 
 	@Override
-	public final Object get(String key) {
-		if(this.a == null) {
-			return null;
-		}
-		return this.a.get(key);
+	public final Map<String, Object> get() {
+		return this.a;
 	}
 	
 	@Override

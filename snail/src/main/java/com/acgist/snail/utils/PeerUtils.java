@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
@@ -123,8 +122,8 @@ public final class PeerUtils {
 			.map(value -> {
 				final Map<?, ?> map = (Map<?, ?>) value;
 				return Map.entry(
-					BEncodeDecoder.getString(map, "ip"),
-					BEncodeDecoder.getInteger(map, "port")
+					MapUtils.getString(map, "ip"),
+					MapUtils.getInteger(map, "port")
 				);
 			})
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

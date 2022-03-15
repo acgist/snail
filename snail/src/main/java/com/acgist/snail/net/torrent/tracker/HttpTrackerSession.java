@@ -20,6 +20,7 @@ import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.protocol.Protocol;
+import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.PeerUtils;
 import com.acgist.snail.utils.StringUtils;
 
@@ -229,9 +230,9 @@ public final class HttpTrackerSession extends TrackerSession {
 				final Map<?, ?> map = (Map<?, ?>) entry.getValue();
 				return ScrapeMessage.newInstance(
 					sid,
-					BEncodeDecoder.getInteger(map, "complete"),
-					BEncodeDecoder.getInteger(map, "downloaded"),
-					BEncodeDecoder.getInteger(map, "incomplete")
+					MapUtils.getInteger(map, "complete"),
+					MapUtils.getInteger(map, "downloaded"),
+					MapUtils.getInteger(map, "incomplete")
 				);
 			})
 			.collect(Collectors.toList());

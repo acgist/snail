@@ -99,11 +99,8 @@ public class DhtResponse extends DhtMessage {
 	}
 	
 	@Override
-	public final Object get(String key) {
-		if(this.r == null) {
-			return null;
-		}
-		return this.r.get(key);
+	protected Map<String, Object> get() {
+		return this.r;
 	}
 	
 	@Override
