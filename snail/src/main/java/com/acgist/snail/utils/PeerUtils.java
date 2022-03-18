@@ -137,18 +137,15 @@ public final class PeerUtils {
 	 * @return IPv4=端口
 	 */
 	public static final Map<String, Integer> readIPv4(Object object) {
-		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			peers = PeerUtils.readIPv4(bytes);
+			return PeerUtils.readIPv4(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
-			peers = PeerUtils.readIPv4(buffer);
+			return PeerUtils.readIPv4(buffer);
 		} else if (object instanceof List<?> list) {
-			peers = PeerUtils.read(list);
-		} else {
-			peers = new HashMap<>();
-			LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+			return PeerUtils.read(list);
 		}
-		return peers;
+		LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+		return Map.of();
 	}
 	
 	/**
@@ -159,18 +156,15 @@ public final class PeerUtils {
 	 * @return IPv6=端口
 	 */
 	public static final Map<String, Integer> readIPv6(Object object) {
-		Map<String, Integer> peers;
 		if(object instanceof byte[] bytes) {
-			peers = PeerUtils.readIPv6(bytes);
+			return PeerUtils.readIPv6(bytes);
 		} else if(object instanceof ByteBuffer buffer) {
-			peers = PeerUtils.readIPv6(buffer);
+			return PeerUtils.readIPv6(buffer);
 		} else if (object instanceof List<?> list) {
-			peers = PeerUtils.read(list);
-		} else {
-			peers = new HashMap<>();
-			LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+			return PeerUtils.read(list);
 		}
-		return peers;
+		LOGGER.debug("Peer声明消息格式没有适配：{}", object);
+		return Map.of();
 	}
 	
 	/**
@@ -217,7 +211,6 @@ public final class PeerUtils {
 	 */
 	public static final String urlEncode(byte[] bytes) {
 		char value;
-		String valueHex;
 		final StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < bytes.length; index++) {
 			value = (char) bytes[index];
@@ -227,11 +220,10 @@ public final class PeerUtils {
 			} else {
 				// 需要编码字符
 				builder.append(SymbolConfig.Symbol.PERCENT.toString());
-				valueHex = Integer.toHexString(value & 0xFF);
-				if(valueHex.length() < 2) {
+				if(value <= 0x0F) {
 					builder.append(SymbolConfig.Symbol.ZERO.toString());
 				}
-				builder.append(valueHex);
+				builder.append(Integer.toHexString(value & 0xFF));
 			}
 		}
 		return builder.toString();

@@ -50,8 +50,8 @@ class PeerUtilsTest extends Performance {
 	
 	@Test
 	void testUrlEncode() {
-		final byte[] source = {0x12, 0x34, 0x56, 0x78, (byte) 0x9A, (byte) 0xBC, (byte) 0xDE, (byte) 0xF1, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF, 0x12, 0x34, 0x56, 0x78, (byte) 0x9A};
-		final String target = "%124Vx%9A%BC%DE%F1%23Eg%89%AB%CD%EF%124Vx%9A";
+		final byte[] source = {0x01, (byte) 0xFF, 0x12, 0x34, 0x56, 0x78, (byte) 0x9A, (byte) 0xBC, (byte) 0xDE, (byte) 0xF1, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF, 0x12, 0x34, 0x56, 0x78, (byte) 0x9A};
+		final String target = "%01%FF%124Vx%9A%BC%DE%F1%23Eg%89%AB%CD%EF%124Vx%9A";
 		this.log(PeerUtils.urlEncode(source));
 		assertTrue(StringUtils.equalsIgnoreCase(target, PeerUtils.urlEncode(source)));
 		final var bytes = ArrayUtils.random(20);

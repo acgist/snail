@@ -14,9 +14,9 @@ class HttpTrackerSessionTest extends Performance {
 
 	@Test
 	void testAnnounce() throws DownloadException, NetException {
-		final String path = "E:/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
+		final String path = "D:/tmp/snail/902FFAA29EE632C8DC966ED9AB573409BA9A518E.torrent";
 		final TorrentSession torrentSession = TorrentContext.getInstance().newTorrentSession(path);
-		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://explodie.org:6969/announce");
+		final HttpTrackerSession session = HttpTrackerSession.newInstance("http://vps02.net.orel.ru:80/announce");
 		session.started(1000, torrentSession);
 		session.scrape(1000, torrentSession);
 		assertNotNull(session);
