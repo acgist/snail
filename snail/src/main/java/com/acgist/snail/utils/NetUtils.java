@@ -28,12 +28,12 @@ public final class NetUtils {
 	
 	/**
 	 * <p>本机名称</p>
-	 * <p>例子：192.168.1.100</p>
+	 * <p>例子：acgist</p>
 	 */
 	public static final String LOCAL_HOST_NAME;
 	/**
 	 * <p>本机地址</p>
-	 * <p>例子：acgist</p>
+	 * <p>例子：192.168.1.100</p>
 	 */
 	public static final String LOCAL_HOST_ADDRESS;
 	/**
@@ -97,7 +97,7 @@ public final class NetUtils {
 					if(
 						// 索引最小网卡
 						index.get() > nowIndex &&
-						// 本地地址
+						// 本地地址：A/B/C类本地地址
 //						address.isSiteLocalAddress() &&
 						// 通配地址
 						!address.isAnyLocalAddress() &&
@@ -382,7 +382,7 @@ public final class NetUtils {
 			inetAddress.isLinkLocalAddress() ||
 			// 组播地址
 			inetAddress.isMulticastAddress() ||
-			// 本地地址：A/B/C类
+			// 本地地址：A/B/C类本地地址
 			inetAddress.isSiteLocalAddress();
 	}
 	
