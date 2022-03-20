@@ -39,6 +39,7 @@ class FileUtilsTest extends Performance {
 		assertEquals("订单fds.mpe", FileUtils.fileName("%e8%ae%a2%e5%8d%95fds.mpe?xx"));
 		assertEquals("订单fds.mpe", FileUtils.fileName("http://acgist/%e8%ae%a2%e5%8d%95fds.mpe?xx"));
 		assertEquals("view", FileUtils.fileName("https://www.acgist.com/demo/weixin/view?xx?xx"));
+		assertEquals("view", FileUtils.fileName("https://www.acgist.com/demo/weixin/view#test"));
 		assertEquals("", FileUtils.fileName("https://www.acgist.com/demo/weixin/ ?xx?xx"));
 	}
 	

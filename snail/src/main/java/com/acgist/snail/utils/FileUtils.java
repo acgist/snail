@@ -165,16 +165,23 @@ public final class FileUtils {
 		String fileName = UrlUtils.decode(url);
 		// 反斜杠转换为斜杠
 		final char slash = SymbolConfig.Symbol.SLASH.toChar();
-		if(fileName.contains(SymbolConfig.Symbol.BACKSLASH.toString())) {
-			fileName = fileName.replace(SymbolConfig.Symbol.BACKSLASH.toChar(), slash);
+		final char backslash = SymbolConfig.Symbol.BACKSLASH.toChar();
+		int index = fileName.indexOf(backslash);
+		if(index != -1) {
+			fileName = fileName.replace(backslash, slash);
 		}
 		// 过滤：协议、域名、路径
-		int index = fileName.lastIndexOf(slash);
+		index = fileName.lastIndexOf(slash);
 		if(index != -1) {
 			fileName = fileName.substring(index + 1);
 		}
 		// 过滤：参数
 		index = fileName.indexOf(SymbolConfig.Symbol.QUESTION.toChar());
+		if(index != -1) {
+			fileName = fileName.substring(0, index);
+		}
+		// 过滤：标识
+		index = fileName.indexOf(SymbolConfig.Symbol.POUND.toChar());
 		if(index != -1) {
 			fileName = fileName.substring(0, index);
 		}
