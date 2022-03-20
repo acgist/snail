@@ -123,6 +123,7 @@ public final class FileUtils {
 	
 	/**
 	 * <p>删除文件</p>
+	 * <p>支持目录</p>
 	 * 
 	 * @param file 文件
 	 */
@@ -150,6 +151,7 @@ public final class FileUtils {
 	/**
 	 * <p>获取URL文件名称</p>
 	 * <p>过滤：协议、域名、路径、参数</p>
+	 * <p>不要使用URIWrapper解析：可能不是正常URI</p>
 	 * 
 	 * @param url URL
 	 * 

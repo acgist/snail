@@ -9,6 +9,8 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * <p>URI包装器</p>
  * 
+ * <p>URI里面数据已经缓存不需要自己在做缓存，含有RAW方法没有解码，不含RAW方法已经解码。</p>
+ * 
  * @author acgist
  */
 public final class URIWrapper {
@@ -17,6 +19,10 @@ public final class URIWrapper {
 	 * <p>链接地址</p>
 	 */
 	private String uri;
+	/**
+	 * <p>URI</p>
+	 */
+	private URI nativeUri;
 	/**
 	 * <p>默认端口</p>
 	 */
@@ -30,14 +36,6 @@ public final class URIWrapper {
 	 */
 	private String defaultPassword;
 	/**
-	 * <p>协议（Scheme）</p>
-	 */
-	private String scheme;
-	/**
-	 * <p>地址</p>
-	 */
-	private String host;
-	/**
 	 * <p>端口</p>
 	 */
 	private int port;
@@ -49,18 +47,6 @@ public final class URIWrapper {
 	 * <p>密码</p>
 	 */
 	private String password;
-	/**
-	 * <p>路径</p>
-	 */
-	private String path;
-	/**
-	 * <p>参数</p>
-	 */
-	private String query;
-	/**
-	 * <p>标识</p>
-	 */
-	private String fragment;
 	
 	/**
 	 * @param uri 链接地址
@@ -134,11 +120,13 @@ public final class URIWrapper {
 	 * @return {@link URIWrapper}
 	 */
 	public URIWrapper decode() {
-		final URI decodeUri = URI.create(this.uri);
-		// 解析协议
-		this.scheme = decodeUri.getScheme();
+		// 不能解码：空格新建URI抛出异常
+		this.nativeUri = URI.create(this.uri);
+		// 解析端口
+		final int decodePort = this.nativeUri.getPort();
+		this.port = decodePort == -1 ? this.defaultPort : decodePort;
 		// 解析用户信息
-		final String userInfo = decodeUri.getUserInfo();
+		final String userInfo = this.nativeUri.getUserInfo();
 		if(StringUtils.isEmpty(userInfo)) {
 			this.user = this.defaultUser;
 			this.password = this.defaultPassword;
@@ -155,21 +143,6 @@ public final class URIWrapper {
 				this.password = this.defaultPassword;
 			}
 		}
-		// 解析地址
-		this.host = decodeUri.getHost();
-		// 解析端口
-		final int decodePort = decodeUri.getPort();
-		if(decodePort == -1) {
-			this.port = this.defaultPort;
-		} else {
-			this.port = decodePort;
-		}
-		// 解析路径
-		this.path = decodeUri.getPath();
-		// 解析参数
-		this.query = decodeUri.getQuery();
-		// 解析标识
-		this.fragment = decodeUri.getFragment();
 		return this;
 	}
 	
@@ -179,7 +152,7 @@ public final class URIWrapper {
 	 * @return 协议
 	 */
 	public String scheme() {
-		return this.scheme;
+		return this.nativeUri.getScheme();
 	}
 	
 	/**
@@ -188,7 +161,7 @@ public final class URIWrapper {
 	 * @return 地址
 	 */
 	public String host() {
-		return this.host;
+		return this.nativeUri.getHost();
 	}
 	
 	/**
@@ -224,7 +197,7 @@ public final class URIWrapper {
 	 * @return 路径
 	 */
 	public String path() {
-		return this.path;
+		return this.nativeUri.getPath();
 	}
 	
 	/**
@@ -233,7 +206,7 @@ public final class URIWrapper {
 	 * @return 参数
 	 */
 	public String query() {
-		return this.query;
+		return this.nativeUri.getQuery();
 	}
 	
 	/**
@@ -242,7 +215,30 @@ public final class URIWrapper {
 	 * @return 标识
 	 */
 	public String fragment() {
-		return this.fragment;
+		return this.nativeUri.getFragment();
+	}
+	
+	/**
+	 * <p>获取特殊部分</p>
+	 * 
+	 * @return 特殊部分
+	 */
+	public String schemeSpecificPart() {
+		return this.nativeUri.getSchemeSpecificPart();
+	}
+	
+	/**
+	 * <p>解析获取参数</p>
+	 * 
+	 * @return 参数
+	 */
+	public String[] querys() {
+		if(this.query() != null) {
+			return this.query().split(SymbolConfig.Symbol.AND.toString());
+		} else {
+			final int queryIndex = this.schemeSpecificPart().indexOf(SymbolConfig.Symbol.QUESTION.toChar()) + 1;
+			return this.schemeSpecificPart().substring(queryIndex).split(SymbolConfig.Symbol.AND.toString());
+		}
 	}
 	
 	@Override

@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.magnet;
 
-import java.net.URI;
-
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.logger.Logger;
@@ -9,9 +7,9 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.bean.Magnet;
 import com.acgist.snail.pojo.bean.Magnet.Type;
+import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.StringUtils;
-import com.acgist.snail.utils.UrlUtils;
 
 /**
  * <p>磁力链接Builder</p>
@@ -107,14 +105,13 @@ public final class MagnetBuilder {
 		int index;
 		String key;
 		String value;
-		// 不能解码：空格新建URI抛出异常
-		final URI uri = URI.create(this.url);
-		final String[] querys = uri.getSchemeSpecificPart().substring(1).split(SymbolConfig.Symbol.AND.toString());
+		final String[] querys = URIWrapper.newInstance(this.url).decode().querys();
 		for (String query : querys) {
 			index = query.indexOf(SymbolConfig.Symbol.EQUALS.toChar());
 			if(index >= 0 && query.length() > index) {
 				key = query.substring(0, index);
-				value = UrlUtils.decode(query.substring(index + 1));
+				// 不用URL解码：URI已经解码
+				value = query.substring(index + 1);
 				switch (key) {
 					case QUERY_DN -> this.dn(value);
 					case QUERY_XL -> this.xl(value);

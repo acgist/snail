@@ -74,7 +74,9 @@ public final class NetUtils {
 	 * <p>IPv6地址正则表达式：{@value}</p>
 	 */
 	private static final String IPV6_REGEX =
+		// IPv6
 		"((([0-9a-f]{1,4}(:|::))|(::)){0,7}){1}" +
+		// IPv6 + IPv4
 		"(([0-9a-f]{1,4})|(\\d{1,3}\\.){3}\\d{1,3})?" +
 		// 子网前缀
 		"(/\\d{0,3})?" +

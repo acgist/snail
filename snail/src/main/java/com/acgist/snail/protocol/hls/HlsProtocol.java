@@ -1,7 +1,5 @@
 package com.acgist.snail.protocol.hls;
 
-import java.net.URI;
-
 import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.exception.DownloadException;
@@ -12,6 +10,7 @@ import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.M3u8;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -65,7 +64,7 @@ public final class HlsProtocol extends Protocol {
 	
 	@Override
 	protected String buildFileName() throws DownloadException {
-		final String path = URI.create(this.url).getPath();
+		final String path = URIWrapper.newInstance(this.url).decode().path();
 		if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
 			// 去掉斜杠和结尾
 			return path.substring(1, path.length() - INDEX_M3U8.length())
