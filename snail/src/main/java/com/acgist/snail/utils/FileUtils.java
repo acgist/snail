@@ -295,7 +295,10 @@ public final class FileUtils {
 	public static final String file(String folder, String fileName) {
 		Objects.requireNonNull(folder, "文件目录格式错误");
 		Objects.requireNonNull(fileName, "文件名称格式错误");
+		// 相对路径
 		return Paths.get(folder, fileName).toString();
+		// 绝对路径
+//		return Paths.get(folder, fileName).toAbsolutePath().toString();
 	}
 
 	/**

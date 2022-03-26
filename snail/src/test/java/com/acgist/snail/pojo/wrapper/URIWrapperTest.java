@@ -15,6 +15,7 @@ class URIWrapperTest extends Performance {
 	void testDecode() {
 		URIWrapper wrapper = URIWrapper.newInstance("ftp://localhost/path?query=query").decode();
 		assertEquals("ftp", wrapper.scheme());
+		assertEquals("localhost", wrapper.authority());
 		assertEquals("localhost", wrapper.host());
 		assertEquals("/path", wrapper.path());
 		assertEquals("query=query", wrapper.query());
@@ -29,6 +30,8 @@ class URIWrapperTest extends Performance {
 		assertEquals("password", wrapper.password());
 		wrapper = URIWrapper.newInstance("ftp://localhost:8080/path?query=query").decode();
 		assertEquals(8080, wrapper.port());
+		assertEquals("localhost", wrapper.host());
+		assertEquals("localhost:8080", wrapper.authority());
 		wrapper = URIWrapper.newInstance("ftp://user@localhost:8080/path?query=query").decode();
 		assertEquals("user", wrapper.user());
 		assertNull(wrapper.password());

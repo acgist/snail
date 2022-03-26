@@ -156,6 +156,15 @@ public final class URIWrapper {
 	}
 	
 	/**
+	 * <p>获取地址和端口</p>
+	 * 
+	 * @return 地址和端口
+	 */
+	public String authority() {
+		return this.nativeUri.getAuthority();
+	}
+	
+	/**
 	 * <p>获取地址</p>
 	 * 
 	 * @return 地址
