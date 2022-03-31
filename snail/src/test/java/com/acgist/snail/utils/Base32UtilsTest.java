@@ -12,7 +12,7 @@ class Base32UtilsTest extends Performance {
 		var content = Base32Utils.encode(StringUtils.unhex("fa493c8add6d907a0575631831033dcf94ba5217"));
 		assertEquals("7JETZCW5NWIHUBLVMMMDCAZ5Z6KLUUQX", content);
 		assertEquals("fa493c8add6d907a0575631831033dcf94ba5217", StringUtils.hex(Base32Utils.decode(content)));
-		assertEquals("f1f030f304fe5a0e88cdec1fff3da7f3bf557f17", StringUtils.hex(Base32Utils.decode("6HYDB4YE7ZNA5CGN5QP76PNH6O7VK7YX")));
+		assertEquals("f1f030f304fe5a0e88cdec1fff3da7f3bf557f17", StringUtils.hex(Base32Utils.decode("6HYDB4YE7ZNA5CGN5QP76PNH6O7VK7YX".toLowerCase())));
 		assertDoesNotThrow(() -> {
 			Base32Utils.encode((String) null);
 			Base32Utils.encode((byte[]) null);

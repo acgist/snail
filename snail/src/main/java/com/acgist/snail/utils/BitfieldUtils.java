@@ -26,7 +26,7 @@ public final class BitfieldUtils {
 		for (int index = 0; index < value.length; index++) {
 			value[index] = reverse(value[index]);
 		}
-		final int byteSize = NumberUtils.ceilDiv(pieceSize, 8);
+		final int byteSize = NumberUtils.ceilDiv(pieceSize, Byte.SIZE);
 		final byte[] bitfield = new byte[byteSize];
 		System.arraycopy(value, 0, bitfield, 0, value.length);
 		return bitfield;

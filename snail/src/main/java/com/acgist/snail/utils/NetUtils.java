@@ -206,7 +206,7 @@ public final class NetUtils {
 		Objects.requireNonNull(ip, "IP地址不能为空");
 		final StringTokenizer tokenizer = new StringTokenizer(ip, Symbol.DOT.toString());
 		int index = 0;
-		final byte[] bytes = new byte[4];
+		final byte[] bytes = new byte[Integer.BYTES];
 		while(tokenizer.hasMoreTokens()) {
 			if(bytes.length <= index) {
 				throw new IllegalArgumentException("IP地址错误：" + ip);
@@ -340,7 +340,7 @@ public final class NetUtils {
 				return true;
 			}
 			// 每个字节八位
-			return index * 8 >= LOCAL_PREFIX_LENGTH;
+			return index * Byte.SIZE >= LOCAL_PREFIX_LENGTH;
 		}
 		return false;
 	}

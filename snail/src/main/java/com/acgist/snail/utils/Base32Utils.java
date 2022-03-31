@@ -19,6 +19,18 @@ public final class Base32Utils {
 	 * <p>解码字符</p>
 	 */
 	private static final byte[] BASE_32_DECODE;
+	/**
+	 * 字符位数
+	 */
+	private static final int SIZE_BYTE = Byte.SIZE;
+	/**
+	 * Base32编码字符位数
+	 */
+	private static final int SIZE_BASE_32 = 5;
+	/**
+	 * Base32编码字符剩余位数
+	 */
+	private static final int SIZE_LEFT = SIZE_BYTE - SIZE_BASE_32;
 
 	static {
 		BASE_32_DECODE = new byte[128];
@@ -27,7 +39,8 @@ public final class Base32Utils {
 		}
 		for (int index = 0; index < BASE_32_ENCODE.length; index++) {
 			BASE_32_DECODE[(int) BASE_32_ENCODE[index]] = (byte) index;
-			if (index < 24) {
+			// 设置小写
+			if (index < 26) {
 				BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_ENCODE[index])] = (byte) index;
 			}
 		}
@@ -67,21 +80,21 @@ public final class Base32Utils {
 		int index = 0;
 		int contentIndex = 0;
 		final int contentLength = content.length;
-		final char[] chars = new char[((contentLength * 8) / 5) + ((contentLength % 5) != 0 ? 1 : 0)];
+		final char[] chars = new char[((contentLength * SIZE_BYTE) / SIZE_BASE_32) + ((contentLength % SIZE_BASE_32) != 0 ? 1 : 0)];
 		final int charsLength = chars.length;
 		for (int charsIndex = 0; charsIndex < charsLength; charsIndex++) {
-			if (index > 3) {
+			if (index > SIZE_LEFT) {
 				value = (content[contentIndex] & 0xFF) & (0xFF >> index);
-				index = (index + 5) % 8;
+				index = (index + SIZE_BASE_32) % SIZE_BYTE;
 				value <<= index;
 				if (contentIndex < contentLength - 1) {
-					value |= (content[contentIndex + 1] & 0xFF) >> (8 - index);
+					value |= (content[contentIndex + 1] & 0xFF) >> (SIZE_BYTE - index);
 				}
 				chars[charsIndex] = BASE_32_ENCODE[value];
 				contentIndex++;
 			} else {
-				chars[charsIndex] = BASE_32_ENCODE[((content[contentIndex] >> (8 - (index + 5))) & 0x1F)];
-				index = (index + 5) % 8;
+				chars[charsIndex] = BASE_32_ENCODE[((content[contentIndex] >> (SIZE_BYTE - (index + SIZE_BASE_32))) & 0x1F)];
+				index = (index + SIZE_BASE_32) % SIZE_BYTE;
 				if (index == 0) {
 					contentIndex++;
 				}
@@ -120,24 +133,26 @@ public final class Base32Utils {
 		int value;
 		int index = 0;
 		int bytesIndex = 0;
-		final char[] chars = content.toUpperCase().toCharArray();
+		final char[] chars = content.toCharArray();
+		// 不用转为大写：支持小写解码
+//		final char[] chars = content.toUpperCase().toCharArray();
 		final int charsLength = chars.length;
-		final byte[] bytes = new byte[(charsLength * 5) / 8];
+		final byte[] bytes = new byte[(charsLength * SIZE_BASE_32) / SIZE_BYTE];
 		final int bytesLength = bytes.length;
 		for (int charsIndex = 0; charsIndex < charsLength; charsIndex++) {
 			value = BASE_32_DECODE[chars[charsIndex]];
-			if (index <= 3) {
-				index = (index + 5) % 8;
+			if (index <= SIZE_LEFT) {
+				index = (index + SIZE_BASE_32) % SIZE_BYTE;
 				if (index == 0) {
 					bytes[bytesIndex++] |= value;
 				} else {
-					bytes[bytesIndex] |= value << (8 - index);
+					bytes[bytesIndex] |= value << (SIZE_BYTE - index);
 				}
 			} else {
-				index = (index + 5) % 8;
+				index = (index + SIZE_BASE_32) % SIZE_BYTE;
 				bytes[bytesIndex++] |= (value >> index);
 				if (bytesIndex < bytesLength) {
-					bytes[bytesIndex] |= value << (8 - index);
+					bytes[bytesIndex] |= value << (SIZE_BYTE - index);
 				}
 			}
 		}
