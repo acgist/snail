@@ -19,6 +19,10 @@ class Base32UtilsTest extends Performance {
 			Base32Utils.decode(null);
 			Base32Utils.decodeToString(null);
 		});
+		for (int index = Short.MIN_VALUE; index < Short.MAX_VALUE; index++) {
+			final String encode = Base32Utils.encode(String.valueOf(index));
+			assertEquals(String.valueOf(index), Base32Utils.decodeToString(encode));
+		}
 		String value = Base32Utils.encode("123456");
 		assertEquals("GEZDGNBVGY", value);
 		assertEquals("123456", Base32Utils.decodeToString(value));

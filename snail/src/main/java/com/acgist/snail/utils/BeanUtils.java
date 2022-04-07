@@ -35,7 +35,7 @@ public final class BeanUtils {
 	 * @return 实例
 	 */
 	public static final <T> T newInstance(final Class<T> clazz) {
-		Objects.requireNonNull(clazz);
+		Objects.requireNonNull(clazz, "无效类型");
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {

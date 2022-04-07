@@ -24,7 +24,7 @@ public final class Base32Utils {
 	 */
 	private static final int SIZE_BYTE = Byte.SIZE;
 	/**
-	 * Base32编码字符位数
+	 * Base32编码字符位数：五位三十二个字符
 	 */
 	private static final int SIZE_BASE_32 = 5;
 	/**
@@ -40,9 +40,7 @@ public final class Base32Utils {
 		for (int index = 0; index < BASE_32_ENCODE.length; index++) {
 			BASE_32_DECODE[(int) BASE_32_ENCODE[index]] = (byte) index;
 			// 设置小写
-			if (index < 26) {
-				BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_ENCODE[index])] = (byte) index;
-			}
+			BASE_32_DECODE[(int) Character.toLowerCase(BASE_32_ENCODE[index])] = (byte) index;
 		}
 	}
 	
@@ -80,7 +78,11 @@ public final class Base32Utils {
 		int index = 0;
 		int contentIndex = 0;
 		final int contentLength = content.length;
-		final char[] chars = new char[((contentLength * SIZE_BYTE) / SIZE_BASE_32) + ((contentLength % SIZE_BASE_32) != 0 ? 1 : 0)];
+		final char[] chars = new char[
+			((contentLength * SIZE_BYTE) / SIZE_BASE_32) +
+			// 因为除数是五所以可以直接判断
+			((contentLength % SIZE_BASE_32) != 0 ? 1 : 0)
+		];
 		final int charsLength = chars.length;
 		for (int charsIndex = 0; charsIndex < charsLength; charsIndex++) {
 			if (index > SIZE_LEFT) {
