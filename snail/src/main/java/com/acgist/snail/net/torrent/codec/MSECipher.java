@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.crypt;
+package com.acgist.snail.net.torrent.codec;
 
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;

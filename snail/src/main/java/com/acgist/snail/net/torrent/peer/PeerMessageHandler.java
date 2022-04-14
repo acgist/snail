@@ -7,6 +7,8 @@ import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;
+import com.acgist.snail.net.torrent.codec.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.codec.PeerUnpackMessageCodec;
 
 /**
  * <p>Peer消息代理</p>

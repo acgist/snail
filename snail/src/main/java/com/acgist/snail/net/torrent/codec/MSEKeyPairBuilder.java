@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.crypt;
+package com.acgist.snail.net.torrent.codec;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.peer;
+package com.acgist.snail.net.torrent.codec;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -8,7 +8,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.codec.MessageCodec;
-import com.acgist.snail.net.torrent.crypt.MSECryptHandshakeHandler;
+import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 
 /**
  * <p>Peer消息处理器：加密、解密</p>

@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.crypt;
+package com.acgist.snail.net.torrent.codec;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

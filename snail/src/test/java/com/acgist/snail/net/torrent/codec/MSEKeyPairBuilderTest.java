@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.crypt;
+package com.acgist.snail.net.torrent.codec;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -8,7 +8,7 @@ import java.security.InvalidKeyException;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.CryptConfig;
-import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder.MSEPrivateKey;
+import com.acgist.snail.net.torrent.codec.MSEKeyPairBuilder.MSEPrivateKey;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;

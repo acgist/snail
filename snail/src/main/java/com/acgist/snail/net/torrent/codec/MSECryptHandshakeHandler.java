@@ -1,4 +1,4 @@
-package com.acgist.snail.net.torrent.crypt;
+package com.acgist.snail.net.torrent.codec;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -17,9 +17,8 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.net.torrent.crypt.MSEKeyPairBuilder.MSEPrivateKey;
+import com.acgist.snail.net.torrent.codec.MSEKeyPairBuilder.MSEPrivateKey;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.pojo.bean.InfoHash;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.ArrayUtils;

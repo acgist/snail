@@ -17,9 +17,9 @@ import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.torrent.IEncryptMessageSender;
 import com.acgist.snail.net.torrent.IPeerConnect;
-import com.acgist.snail.net.torrent.peer.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.codec.PeerCryptMessageCodec;
+import com.acgist.snail.net.torrent.codec.PeerUnpackMessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
-import com.acgist.snail.net.torrent.peer.PeerUnpackMessageCodec;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;
 
