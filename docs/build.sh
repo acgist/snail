@@ -50,6 +50,7 @@ if [[ $action == "all" || $action == "build" ]]; then
 fi
 
 # 打包项目：jlink|jpackage
+# -XX:+UseG1GC -XX:+UseStringDeduplication
 if [[ $action == "all" || $action == "pack" ]]; then
     jpackage \
         --name snail \

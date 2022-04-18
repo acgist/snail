@@ -74,6 +74,7 @@ jobs:
         cp -v -r ./snail-javafx/target/snail.javafx-*.jar ./build/snail/
         tar -cvf snail-${{ env.system }}-${{ env.version }}-without-jre.tar -C ./build/ snail
         # 打包项目：jlink&jpackage
+	# -XX:+UseG1GC -XX:+UseStringDeduplication
         jpackage \
           --name snail \
           --icon ${{ env.icon }} \
