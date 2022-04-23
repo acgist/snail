@@ -15,6 +15,7 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.context.exception.TimerException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
@@ -585,13 +586,17 @@ public final class TorrentSession {
 	 * <p>重新并加载种子文件和InfoHash</p>
 	 */
 	public void saveTorrent() {
+		String torrentFilePath = null;
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
-		final String torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
 		try {
+			torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
 			this.torrent = TorrentContext.loadTorrent(torrentFilePath);
 			this.infoHash = this.torrent.infoHash();
-		} catch (DownloadException e) {
+		} catch (DownloadException | PacketSizeException e) {
 			LOGGER.error("加载种子异常：{}", torrentFilePath, e);
+		}
+		if(torrentFilePath == null) {
+			return;
 		}
 		final long torrentFileSize = FileUtils.fileSize(torrentFilePath);
 		this.taskSession.setTorrent(torrentFilePath);

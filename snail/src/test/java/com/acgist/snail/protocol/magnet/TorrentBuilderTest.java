@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 class TorrentBuilderTest extends Performance {
 
 	@Test
-	void testBuild() throws DownloadException {
+	void testBuild() throws DownloadException, PacketSizeException {
 		final var path = "E:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var infoHash = session.infoHash();

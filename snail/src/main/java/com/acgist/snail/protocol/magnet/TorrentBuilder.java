@@ -66,8 +66,10 @@ public final class TorrentBuilder {
 	 * @param path 保存目录
 	 * 
 	 * @return 文件路径
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
-	public String buildFile(String path) {
+	public String buildFile(String path) throws PacketSizeException {
 		final String fileName = this.buildFileName();
 		final String filePath = FileUtils.file(path, fileName);
 		final Map<String, Object> fileInfo = this.buildFileInfo();
@@ -79,8 +81,10 @@ public final class TorrentBuilder {
 	 * <p>新建种子信息</p>
 	 * 
 	 * @return 种子信息
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private Map<String, Object> buildFileInfo() {
+	private Map<String, Object> buildFileInfo() throws PacketSizeException {
 		final Map<String, Object> data = new LinkedHashMap<>();
 		data.put(Torrent.ATTR_COMMENT, SystemConfig.getSource());
 		data.put(Torrent.ATTR_COMMENT_UTF8, SystemConfig.getSource());
@@ -102,12 +106,15 @@ public final class TorrentBuilder {
 		if(CollectionUtils.isEmpty(this.trackers)) {
 			return;
 		}
+		// Tracker服务器主地址
 		data.put(Torrent.ATTR_ANNOUNCE, this.trackers.get(0));
-		if(this.trackers.size() > 1) {
+		// Tracker服务器地址列表
+		final int skipSize = 1;
+		if(this.trackers.size() > skipSize) {
 			data.put(
 				Torrent.ATTR_ANNOUNCE_LIST,
 				this.trackers.stream()
-					.skip(1)
+					.skip(skipSize)
 					.map(List::of)
 					.collect(Collectors.toList())
 			);
@@ -118,14 +125,12 @@ public final class TorrentBuilder {
 	 * <p>设置种子信息</p>
 	 * 
 	 * @param data 种子信息
+	 * 
+	 * @throws PacketSizeException 网络包大小异常
 	 */
-	private void buildInfo(Map<String, Object> data) {
-		try {
-			final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
-			data.put(Torrent.ATTR_INFO, decoder.nextMap());
-		} catch (PacketSizeException e) {
-			LOGGER.error("设置种子信息异常", e);
-		}
+	private void buildInfo(Map<String, Object> data) throws PacketSizeException {
+		final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
+		data.put(Torrent.ATTR_INFO, decoder.nextMap());
 	}
 
 	/**

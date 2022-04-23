@@ -106,7 +106,7 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 				this.available = false;
 				LOGGER.error("Tracker停用，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			} else {
-				LOGGER.error("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
+				LOGGER.debug("查找Peer异常，失败次数：{}，声明地址：{}", this.failTimes, this.announceUrl, e);
 			}
 		}
 	}
