@@ -91,4 +91,11 @@ class SnailTest extends Performance {
 		// 文件判断删除
 	}
 	
+	@Test
+	void testM3u8() throws DownloadException {
+		final Snail snail = SnailBuilder.newBuilder().enableHls().buildSync();
+		snail.download("https://s2.monidai.com/ppvod/5A114D1A0621ACDEC01E8C249A7551CD.m3u8");
+		snail.lockDownload();
+	}
+	
 }
