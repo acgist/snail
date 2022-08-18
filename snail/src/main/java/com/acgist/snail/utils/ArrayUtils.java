@@ -162,4 +162,22 @@ public final class ArrayUtils {
 		return -1;
 	}
 	
+	/**
+	 * <p>数组反转</p>
+	 * 
+	 * @param bytes 数组
+	 */
+	public static final void reverse(byte[] bytes) {
+		int index = 0;
+		int jndex = bytes.length - 1;
+		byte value;
+        while (jndex > index) {
+        	value = bytes[jndex];
+        	bytes[jndex] = bytes[index];
+            bytes[index] = value;
+            jndex--;
+            index++;
+        }
+	}
+	
 }

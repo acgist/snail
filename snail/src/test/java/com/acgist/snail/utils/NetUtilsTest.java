@@ -138,7 +138,8 @@ class NetUtilsTest extends Performance {
 	void testNetwork() throws SocketException {
 		NetworkInterface.networkInterfaces().forEach(networkInterfaces -> {
 			try {
-				this.log("网卡：{}-{}-{}-{}-{}",
+				this.log("网卡：{}-{}-{}-{}-{}-{}",
+					networkInterfaces.getIndex(),
 					networkInterfaces.isUp(),
 					networkInterfaces.isVirtual(),
 					networkInterfaces.isLoopback(),
@@ -180,7 +181,6 @@ class NetUtilsTest extends Performance {
 		costed = this.costed(100000, () -> NetUtils.bytesToIP(ipv6Bytes));
 		assertTrue(costed < 1000);
 	}
-	
 	
 	@Test
 	void testAreaIP() {

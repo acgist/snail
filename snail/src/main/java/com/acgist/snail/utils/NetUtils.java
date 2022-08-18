@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.config.SystemConfig;
@@ -84,22 +83,29 @@ public final class NetUtils {
 		"(%.+)?";
 	
 	static {
-		final AtomicInteger index = new AtomicInteger(Integer.MAX_VALUE);
 		final ModifyOptional<Short> localPrefixLength = ModifyOptional.newInstance();
 		final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
 		final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
 		try {
 			// 处理多个物理网卡和虚拟网卡
-			NetworkInterface.networkInterfaces().filter(NetUtils::available).forEach(networkInterface -> {
-				final int nowIndex = networkInterface.getIndex();
+			NetworkInterface.networkInterfaces().filter(NetUtils::available)
+			// 排序：保证每次获取网卡一致
+			.sorted((source, target) -> Integer.compare(target.getIndex(), source.getIndex()))
+			// TODO：VirtualBox Host-Only Ethernet Adapter
+			.findFirst()
+			.ifPresent(networkInterface -> {
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
+					// 物理地址：MAC地址
+//					networkInterface.getHardwareAddress()
 					// 本机地址
-					final var address = interfaceAddress.getAddress();
+					final InetAddress address = interfaceAddress.getAddress();
+					// IP地址
+					final String hostAddress = address.getHostAddress();
+					// 子网掩码位数
+					final short networkPrefixLength = interfaceAddress.getNetworkPrefixLength();
 					// 本地地址和公网地址
 					if(
-						// 索引最小网卡
-						index.get() > nowIndex &&
-						// 本地地址：A/B/C类本地地址
+						// 本地地址：A/B/C类本地地址（公网地址可以直接映射出去）
 //						address.isSiteLocalAddress() &&
 						// 通配地址
 						!address.isAnyLocalAddress() &&
@@ -110,10 +116,9 @@ public final class NetUtils {
 						// 组播地址
 						!address.isMulticastAddress()
 					) {
-						index.set(nowIndex);
-//						address.getHostName() // 速度太慢：buildLocalHostName()
-						localHostAddress.set(address.getHostAddress());
-						localPrefixLength.set(interfaceAddress.getNetworkPrefixLength());
+//						address.getHostName(); // 速度太慢改用：buildLocalHostName();
+						localHostAddress.set(hostAddress);
+						localPrefixLength.set(networkPrefixLength);
 						defaultNetworkInterface.set(networkInterface);
 					}
 				});
@@ -122,19 +127,19 @@ public final class NetUtils {
 			LOGGER.error("初始化本机网络信息异常", e);
 		}
 		LOCAL_HOST_NAME = buildLocalHostName();
-		LOCAL_HOST_ADDRESS = localHostAddress.get();
-		LOCAL_PREFIX_LENGTH = localPrefixLength.get((short) 0);
+		LOCAL_HOST_ADDRESS = localHostAddress.get(buildLocalHostAddress());
 		LOOPBACK_HOST_NAME = buildLoopbackHostName();
 		LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
+		LOCAL_PREFIX_LENGTH = localPrefixLength.get((short) 24);
 		DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
 		LOCAL_PROTOCOL_FAMILY = ipv4(LOCAL_HOST_ADDRESS) ? StandardProtocolFamily.INET : StandardProtocolFamily.INET6;
 		LOGGER.debug("本机名称：{}", LOCAL_HOST_NAME);
 		LOGGER.debug("本机地址：{}", LOCAL_HOST_ADDRESS);
-		LOGGER.debug("本机子网前缀：{}", LOCAL_PREFIX_LENGTH);
 		LOGGER.debug("本机环回名称：{}", LOOPBACK_HOST_NAME);
 		LOGGER.debug("本机环回地址：{}", LOOPBACK_HOST_ADDRESS);
-		LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
+		LOGGER.debug("本机子网前缀：{}", LOCAL_PREFIX_LENGTH);
 		LOGGER.debug("本机IP地址协议：{}", LOCAL_PROTOCOL_FAMILY);
+		LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
 	}
 	
 	private NetUtils() {
@@ -435,9 +440,23 @@ public final class NetUtils {
 	 * 
 	 * @return 本机名称
 	 */
-	private static final String buildLocalHostName() {
+	public static final String buildLocalHostName() {
 		try {
 			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			LOGGER.error("获取本机名称异常", e);
+		}
+		return null;
+	}
+	
+	/**
+	 * <p>获取本机地址</p>
+	 * 
+	 * @return 本机地址
+	 */
+	public static final String buildLocalHostAddress() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			LOGGER.error("获取本机名称异常", e);
 		}
@@ -449,7 +468,7 @@ public final class NetUtils {
 	 * 
 	 * @return 本机环回名称
 	 */
-	private static final String buildLoopbackHostName() {
+	public static final String buildLoopbackHostName() {
 		return InetAddress.getLoopbackAddress().getHostName();
 	}
 	
@@ -458,7 +477,7 @@ public final class NetUtils {
 	 * 
 	 * @return 本机环回地址
 	 */
-	private static final String buildLoopbackHostAddress() {
+	public static final String buildLoopbackHostAddress() {
 		return InetAddress.getLoopbackAddress().getHostAddress();
 	}
 	
