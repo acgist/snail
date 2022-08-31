@@ -33,7 +33,7 @@ class TorrentDownloaderTest extends Performance {
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());
-		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
+		MultifileEventAdapter.files(DescriptionWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 //		downloader.run(); // 不下载
@@ -55,7 +55,7 @@ class TorrentDownloaderTest extends Performance {
 			.map(TorrentFile::path)
 			.collect(Collectors.toList());
 		GuiContext.register(new MultifileEventAdapter());
-		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
+		MultifileEventAdapter.files(DescriptionWrapper.newEncoder(list).serialize());
 		final var taskSession = TorrentProtocol.getInstance().buildTaskSession(url);
 		final var downloader = taskSession.buildDownloader();
 		downloader.run();

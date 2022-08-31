@@ -65,6 +65,17 @@ public final class ModifyOptional<T> {
 	public T get() {
 		return this.t;
 	}
+	
+	/**
+	 * 删除旧的数据
+	 * 
+	 * @return 旧的数据
+	 */
+	public T delete() {
+		final T old = this.t;
+		this.t = null;
+		return old;
+	}
 
 	/**
 	 * <p>获取数据</p>

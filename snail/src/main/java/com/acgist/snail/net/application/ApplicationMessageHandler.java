@@ -15,6 +15,7 @@ import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.TcpMessageHandler;
@@ -108,6 +109,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			case HIDE -> this.onHide();
 			case ALERT -> this.onAlert(message);
 			case NOTICE -> this.onNotice(message);
+			case MULTIFILE -> this.onMultifile(message);
 			case REFRESH_TASK_LIST -> this.onRefreshTaskList();
 			case REFRESH_TASK_STATUS -> this.onRefreshTaskStatus();
 			case RESPONSE -> this.onResponse(message);
@@ -181,10 +183,14 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 			final String url = decoder.getString("url");
 			final String files = decoder.getString("files");
 			synchronized (this) {
-				// 设置选择文件
-				GuiContext.getInstance().files(files);
-				// 开始下载任务
-				TaskContext.getInstance().download(url);
+				if(StringUtils.isNotEmpty(files)) {
+					// 设置选择文件
+					MultifileEventAdapter.files(files);
+				}
+				if(StringUtils.isNotEmpty(url)) {
+					// 开始下载任务
+					TaskContext.getInstance().download(url);
+				}
 			}
 			this.send(ApplicationMessage.Type.RESPONSE.build(ApplicationMessage.SUCCESS));
 		} catch (NetException | DownloadException e) {
@@ -268,6 +274,15 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private void onHide() {
 		GuiContext.getInstance().hide();
+	}
+	
+	/**
+	 * 文件选择
+	 * 
+	 * @param message 系统消息
+	 */
+	private void onMultifile(ApplicationMessage message) {
+		LOGGER.debug("文件选择：{}", message.getBody());
 	}
 	
 	/**

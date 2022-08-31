@@ -12,7 +12,9 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.TorrentFile;
+import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.utils.ModifyOptional;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -23,6 +25,11 @@ import com.acgist.snail.utils.StringUtils;
 public class MultifileEventAdapter extends GuiEventArgs {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileEventAdapter.class);
+	
+	/**
+	 * 选择下载文件列表（B编码）
+	 */
+	private static final ModifyOptional<String> FILES = ModifyOptional.newInstance();
 	
 	public MultifileEventAdapter() {
 		super(Type.MULTIFILE, "选择下载文件事件");
@@ -56,23 +63,32 @@ public class MultifileEventAdapter extends GuiEventArgs {
 	 * @param taskSession 任务信息
 	 */
 	protected void executeExtendExtend(ITaskSession taskSession) {
-		String files = GuiContext.getInstance().files();
+		String files = FILES.get();
 		try {
-			List<String> selectFiles;
 			final var torrent = TorrentContext.getInstance().newTorrentSession(taskSession.getTorrent()).torrent();
-			if(StringUtils.isEmpty(files)) {
-				// 没有选择文件默认下载所有文件
-				selectFiles = torrent.getInfo().files().stream()
+			// 没有选择文件
+			while(StringUtils.isEmpty((files = FILES.get()))) {
+				final String allFiles = DescriptionWrapper.newEncoder(
+					torrent.getInfo().files().stream()
 					.filter(TorrentFile::notPaddingFile)
 					.map(TorrentFile::path)
-					.collect(Collectors.toList());
-				files = DescriptionWrapper.newEncoder(selectFiles).serialize();
-			} else {
-				// 选择文件列表
-				selectFiles = DescriptionWrapper.newDecoder(files).deserialize().stream()
-					.map(StringUtils::getString)
-					.collect(Collectors.toList());
+					.collect(Collectors.toList())
+				).serialize();
+				final ApplicationMessage message = ApplicationMessage.Type.MULTIFILE.build(allFiles);
+				GuiContext.getInstance().sendExtendGuiMessage(message);
+				synchronized (FILES) {
+					try {
+						FILES.wait();
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						LOGGER.error("文件选择等待异常", e);
+					}
+				}
 			}
+			// 选择文件列表
+			final List<String> selectFiles = DescriptionWrapper.newDecoder(files).deserialize().stream()
+				.map(StringUtils::getString)
+				.collect(Collectors.toList());
 			// 选择文件大小
 			final long size = torrent.getInfo().files().stream()
 				.filter(file -> selectFiles.contains(file.path()))
@@ -82,7 +98,19 @@ public class MultifileEventAdapter extends GuiEventArgs {
 		} catch (DownloadException e) {
 			LOGGER.error("设置选择下载文件异常：{}", files, e);
 		} finally {
-			GuiContext.getInstance().files(null);
+			FILES.delete();
+		}
+	}
+	
+	/**
+	 * 设置选择下载文件列表（B编码）
+	 * 
+	 * @param files 选择下载文件列表（B编码）
+	 */
+	public static final void files(String files) {
+		FILES.set(files);
+		synchronized (FILES) {
+			FILES.notifyAll();
 		}
 	}
 	

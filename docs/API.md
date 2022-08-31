@@ -117,7 +117,7 @@ final var list = torrent.getInfo().files().stream()
 	.filter(path -> path.endsWith(".mkv"))
 	.collect(Collectors.toList());
 // 设置下载文件
-GuiContext.getInstance().files(MultifileSelectorWrapper.newEncoder(list).serialize());
+MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
 // 注册文件选择事件
 GuiContext.register(new MultifileEventAdapter());
 // 开始下载
@@ -211,8 +211,10 @@ B编码Map
 
 |名称|必要|描述|
 |:--|:--|:--|
-|url|√|下载链接|
+|url|○|下载链接|
 |files|○|选择下载文件列表|
+
+> 多文件下载时收到`MULTIFILE`消息选择下载文件发送消息选择下载文件
 
 #### 任务列表响应主体
 
@@ -250,6 +252,7 @@ B编码List&lt;Map&gt;
 |隐藏窗口|HIDE|-|
 |窗口消息|ALERT|[窗口消息和提示消息主体](#窗口消息和提示消息主体)|
 |提示消息|NOTICE|[窗口消息和提示消息主体](#窗口消息和提示消息主体)|
+|选择下载文件|MULTIFILE|[文件选择消息主体](#文件选择消息主体)|
 |刷新任务列表|REFRESH_TASK_LIST|-|
 |刷新任务状态|REFRESH_TASK_STATUS|-|
 |响应消息|RESPONSE|文本|
@@ -263,6 +266,15 @@ B编码Map
 |type|√|类型|
 |title|√|标题|
 |message|√|内容|
+
+#### 文件选择消息主体
+
+B编码Map
+
+|名称|必要|描述|
+|:--|:--|:--|
+|path|√|路径|
+|length|√|大小|
 
 ## 启动模式
 
@@ -298,7 +310,7 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 |创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
 |窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
-|响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
 |选择下载文件|MULTIFILE|-|选择下载文件（静默处理）|MultifileEventAdapter|
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
 |刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
+|响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|

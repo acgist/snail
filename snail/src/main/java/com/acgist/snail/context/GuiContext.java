@@ -118,12 +118,6 @@ public final class GuiContext implements IContext {
 	 */
 	private Mode mode = Mode.NATIVE;
 	/**
-	 * <p>选择下载文件列表（B编码）</p>
-	 * 
-	 * @see GuiEvent.Type#MULTIFILE
-	 */
-	private String files;
-	/**
 	 * <p>扩展GUI阻塞锁</p>
 	 * <p>使用扩展GUI时阻止程序关闭</p>
 	 */
@@ -345,24 +339,6 @@ public final class GuiContext implements IContext {
 		LOGGER.debug("执行GUI事件：{}", type);
 		event.execute(this.mode, args);
 		return this;
-	}
-	
-	/**
-	 * <p>获取选择下载文件列表（B编码）</p>
-	 * 
-	 * @return 选择下载文件列表（B编码）
-	 */
-	public String files() {
-		return this.files;
-	}
-	
-	/**
-	 * <p>设置选择下载文件列表（B编码）</p>
-	 * 
-	 * @param files 选择下载文件列表（B编码）
-	 */
-	public void files(String files) {
-		this.files = files;
 	}
 	
 	/**

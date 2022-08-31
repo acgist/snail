@@ -98,6 +98,10 @@ public class ApplicationMessage {
 		 */
 		NOTICE,
 		/**
+		 * <p>系统通知：选择下载文件</p>
+		 */
+		MULTIFILE,
+		/**
 		 * <p>系统通知：刷新任务列表</p>
 		 */
 		REFRESH_TASK_LIST,

@@ -42,10 +42,6 @@ public abstract class GuiEvent {
 		 */
 		NOTICE,
 		/**
-		 * <p>响应消息</p>
-		 */
-		RESPONSE,
-		/**
 		 * <p>选择下载文件</p>
 		 * <p>多文件下载任务选择下载文件</p>
 		 */
@@ -57,7 +53,11 @@ public abstract class GuiEvent {
 		/**
 		 * <p>刷新任务状态：开始、暂停</p>
 		 */
-		REFRESH_TASK_STATUS;
+		REFRESH_TASK_STATUS,
+		/**
+		 * <p>响应消息</p>
+		 */
+		RESPONSE;
 		
 	}
 

@@ -45,7 +45,7 @@ class SnailTest extends Performance {
 			.filter(path -> path.endsWith(".mkv"))
 			.collect(Collectors.toList());
 		// 设置下载文件
-		GuiContext.getInstance().files(DescriptionWrapper.newEncoder(list).serialize());
+		MultifileEventAdapter.files(DescriptionWrapper.newEncoder(list).serialize());
 		// 注册文件选择事件
 		GuiContext.register(new MultifileEventAdapter());
 		// 开始下载
