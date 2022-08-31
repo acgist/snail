@@ -34,12 +34,17 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net.torrent.utp;
 	exports com.acgist.snail.net.upnp;
 	exports com.acgist.snail.pojo;
-	exports com.acgist.snail.pojo.bean;
 	exports com.acgist.snail.pojo.entity;
 	exports com.acgist.snail.pojo.message;
 	exports com.acgist.snail.pojo.session;
 	exports com.acgist.snail.pojo.wrapper;
 	exports com.acgist.snail.protocol;
+	exports com.acgist.snail.protocol.ftp;
+	exports com.acgist.snail.protocol.hls;
+	exports com.acgist.snail.protocol.http;
+	exports com.acgist.snail.protocol.magnet;
+	exports com.acgist.snail.protocol.thunder;
+	exports com.acgist.snail.protocol.torrent;
 	exports com.acgist.snail.utils;
 	
 	requires java.base;

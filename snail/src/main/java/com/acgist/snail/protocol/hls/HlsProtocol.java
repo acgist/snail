@@ -8,7 +8,7 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.bean.M3u8;
+import com.acgist.snail.pojo.M3u8;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;

@@ -7,7 +7,7 @@ import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.pojo.bean.Magnet;
+import com.acgist.snail.pojo.Magnet;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;

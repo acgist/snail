@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.InfoHash;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.CollectionUtils;

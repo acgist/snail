@@ -21,7 +21,7 @@ import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>DHT节点配置</p>
+ * DHT配置
  * 
  * @author acgist
  */
@@ -36,20 +36,19 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件：{@value}</p>
+	 * 配置文件：{@value}
 	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
-	 * <p>消息ID：{@value}</p>
-	 * <p>请求ID、响应ID</p>
+	 * 消息ID（请求ID、响应ID）：{@value}
 	 * 
 	 * @see DhtContext#buildRequestId()
 	 */
 	public static final String KEY_T = "t";
 	/**
-	 * <p>消息类型：{@value}</p>
-	 * <p>请求消息类型：{@link #KEY_Q}</p>
-	 * <p>响应消息类型：{@link #KEY_R}</p>
+	 * 消息类型：{@value}
+	 * 请求消息类型：{@link #KEY_Q}
+	 * 响应消息类型：{@link #KEY_R}
 	 */
 	public static final String KEY_Y = "y";
 	/**

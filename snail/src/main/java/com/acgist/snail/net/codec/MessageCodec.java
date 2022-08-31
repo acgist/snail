@@ -25,6 +25,8 @@ import com.acgist.snail.context.exception.NetException;
  * 	</tr>
  * </table>
  * 
+ * 消息解码一般都是从头到尾全部执行，但是消息编码却不一定，所以编码需要自己指定编码器和编码顺序。
+ * 
  * @param <I> 输入消息类型
  * @param <O> 输出消息类型
  * 

@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.pojo.Torrent;
+import com.acgist.snail.pojo.TorrentFile;
+import com.acgist.snail.pojo.TorrentInfo;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.Performance;

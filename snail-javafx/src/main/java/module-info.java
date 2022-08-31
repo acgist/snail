@@ -8,10 +8,6 @@
 open module com.acgist.snail.javafx {
 
 	exports com.acgist.main;
-	exports com.acgist.snail.gui.javafx;
-	exports com.acgist.snail.gui.javafx.menu;
-	exports com.acgist.snail.gui.javafx.theme;
-	exports com.acgist.snail.gui.javafx.window;
 	
 	requires java.base;
 	requires transitive com.acgist.snail;

@@ -8,7 +8,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.IPeerConnect;
 import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.pojo.bean.TorrentPiece;
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.pojo.session.PeerConnectSession;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;

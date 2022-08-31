@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.InfoHash;
 import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.StatisticsSession;

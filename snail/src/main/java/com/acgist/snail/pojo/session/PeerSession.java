@@ -433,8 +433,8 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	 * 
 	 * @return 是否支持扩展协议
 	 */
-	private boolean supportExtension(int index, int location) {
-		return this.reserved != null && (this.reserved[index] & location) != 0;
+	private boolean supportExtension(int index, byte location) {
+		return this.reserved != null && (this.reserved[index] & location) == location;
 	}
 	
 	/**
@@ -516,7 +516,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 		final PeerConfig.Source[] sources = PeerConfig.Source.values();
 		final List<PeerConfig.Source> list = new ArrayList<>();
 		for (Source value : sources) {
-			if((this.source & value.value()) != 0) {
+			if((this.source & value.value()) == value.value()) {
 				list.add(value);
 			}
 		}
@@ -553,7 +553,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	 * @return 是否处于状态
 	 */
 	private boolean verifyStatus(byte status) {
-		return (this.status & status) != 0;
+		return (this.status & status) == status;
 	}
 	
 	/**
@@ -625,7 +625,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	 * @return 是否含有属性
 	 */
 	private boolean verifyFlags(byte flags) {
-		return (this.flags & flags) != 0;
+		return (this.flags & flags) == flags;
 	}
 	
 	/**

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import com.acgist.snail.gui.javafx.Tooltips;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.TorrentFile;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 

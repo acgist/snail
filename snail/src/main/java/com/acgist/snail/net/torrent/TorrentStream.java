@@ -15,7 +15,7 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.bean.TorrentPiece;
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.FileUtils;

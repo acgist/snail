@@ -11,8 +11,8 @@ import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.bean.Torrent;
-import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.Torrent;
+import com.acgist.snail.pojo.TorrentFile;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 

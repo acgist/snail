@@ -14,7 +14,7 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.hls.HlsClient;
 import com.acgist.snail.pojo.IStatisticsSession;
 import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.bean.M3u8;
+import com.acgist.snail.pojo.M3u8;
 import com.acgist.snail.utils.BeanUtils;
 
 /**

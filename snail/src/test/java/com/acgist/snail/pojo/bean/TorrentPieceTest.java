@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.pojo.TorrentPiece;
 import com.acgist.snail.utils.DigestUtils;
 import com.acgist.snail.utils.Performance;
 

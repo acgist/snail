@@ -14,7 +14,7 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.initializer.TorrentInitializer;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
-import com.acgist.snail.pojo.bean.TorrentFile;
+import com.acgist.snail.pojo.TorrentFile;
 import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.utils.ArrayUtils;

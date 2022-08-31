@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.InfoHash;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

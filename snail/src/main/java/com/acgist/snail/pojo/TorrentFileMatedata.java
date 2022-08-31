@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.pojo;
 
 /**
  * <p>种子文件基本信息</p>

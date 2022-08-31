@@ -20,7 +20,7 @@ import com.acgist.snail.net.torrent.peer.extension.HolepunchMessageHnadler;
 import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.UploadOnlyExtensionMessageHandler;
-import com.acgist.snail.pojo.bean.InfoHash;
+import com.acgist.snail.pojo.InfoHash;
 import com.acgist.snail.pojo.session.PeerSession;
 import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.MapUtils;
