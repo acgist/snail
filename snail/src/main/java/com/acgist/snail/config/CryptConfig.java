@@ -64,13 +64,11 @@ public final class CryptConfig {
 		PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide),
 		/**
 		 * 偏爱明文
-		 * 
 		 * 对方客户端支持明文和加密时优先使用明文传输
 		 */
 		PREFER_PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide | CryptAlgo.ARC4.provide),
 		/**
 		 * 偏爱加密
-		 * 
 		 * 对方客户端支持明文和加密时优先使用加密传输
 		 */
 		PREFER_ENCRYPT(true, CryptAlgo.ARC4.provide | CryptAlgo.PLAINTEXT.provide),
@@ -85,7 +83,6 @@ public final class CryptConfig {
 		private final boolean crypt;
 		/**
 		 * 加密算法provide
-		 * 
 		 * 客户端支持多种加密算法时双方协商最优算法
 		 * 
 		 * @see CryptAlgo#provide
@@ -119,7 +116,6 @@ public final class CryptConfig {
 	
 	/**
 	 * Prime P(768 bit safe prime)
-	 * 
 	 * MSE加密算法计算公钥常量（模）
 	 */
 	public static final BigInteger P = new BigInteger(
@@ -128,7 +124,6 @@ public final class CryptConfig {
 	);
 	/**
 	 * Generator G
-	 * 
 	 * MSE加密算法计算公钥底数
 	 */
 	public static final BigInteger G = BigInteger.valueOf(2);

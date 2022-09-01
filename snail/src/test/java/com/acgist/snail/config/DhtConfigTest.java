@@ -1,6 +1,5 @@
 package com.acgist.snail.config;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -11,11 +10,6 @@ import com.acgist.snail.utils.Performance;
 
 class DhtConfigTest extends Performance {
 
-	@Test
-	void testNodes() {
-		assertNotNull(DhtConfig.getInstance().nodes());
-	}
-	
 	@Test
 	void testPersistent() {
 		FileUtils.userDirFile("/config/bt.dht.properties").delete();
