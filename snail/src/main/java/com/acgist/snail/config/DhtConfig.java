@@ -36,7 +36,7 @@ public final class DhtConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * 配置文件：{@value}
+	 * DHT配置文件：{@value}
 	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
@@ -149,7 +149,7 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
-	 * 是否自动获取端口：{@value}
+	 * 是否自动获取Peer端口：{@value}
 	 * 
 	 * @see #IMPLIED_PORT_AUTO
 	 * @see #IMPLIED_PORT_CONFIG
@@ -158,7 +158,7 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final String KEY_IMPLIED_PORT = "implied_port";
 	/**
 	 * 自动配置：忽略端口配置
-	 * 使用UDP连接端口作为对等端口（支持UTP）
+	 * 使用UDP连接端口作为Peer端口（支持UTP）
 	 */
 	public static final Integer IMPLIED_PORT_AUTO = 1;
 	/**
@@ -188,7 +188,6 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final int DHT_REQUEST_TIMEOUT_INTERVAL = 10;
 	
 	static {
-		LOGGER.debug("初始化DHT节点配置：{}", DHT_CONFIG);
 		INSTANCE.init();
 		INSTANCE.release();
 	}

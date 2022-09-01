@@ -157,7 +157,6 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	
 	static {
-		LOGGER.debug("初始化系统配置：{}", SYSTEM_CONFIG);
 		INSTANCE.init();
 		INSTANCE.logger();
 		INSTANCE.release();

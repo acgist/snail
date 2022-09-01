@@ -378,5 +378,11 @@ public final class Torrent implements Serializable {
 	public void setNodes(Map<String, Integer> nodes) {
 		this.nodes = nodes;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO：实现
+		return super.toString();
+	}
 
 }

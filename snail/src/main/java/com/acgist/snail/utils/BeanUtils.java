@@ -123,7 +123,6 @@ public final class BeanUtils {
 		final String[] properties = properties(instance.getClass());
 		final PropertyDescriptor descriptor = PropertyDescriptor.newInstance(instance);
 		for (String property : properties) {
-			// TODO：简单对象&复杂对象
 			map.put(property, objectToString(descriptor.get(property)));
 		}
 		return map;

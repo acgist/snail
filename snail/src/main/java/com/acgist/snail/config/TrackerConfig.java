@@ -41,7 +41,6 @@ public final class TrackerConfig extends PropertiesConfig {
 	public static final int MAX_TRACKER_SIZE = 512;
 	
 	static {
-		LOGGER.debug("初始化Tracker服务器配置：{}", TRACKER_CONFIG);
 		INSTANCE.init();
 		INSTANCE.release();
 	}

@@ -203,4 +203,10 @@ public final class TorrentFile extends TorrentFileMatedata implements Serializab
 		this.pathUtf8 = pathUtf8;
 	}
 
+	@Override
+	public String toString() {
+		// TODO：实现
+		return super.toString();
+	}
+	
 }

@@ -386,5 +386,11 @@ public final class TorrentInfo extends TorrentFileMatedata implements Serializab
 	public void setFiles(List<TorrentFile> files) {
 		this.files = files;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO：实现
+		return super.toString();
+	}
 
 }
