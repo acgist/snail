@@ -1,59 +1,22 @@
 # 开发帮助
 
-## 目录
+## 下载协议
 
-* [协议](#协议)
-  * [添加协议](#添加协议)
-  * [注册协议](#注册协议)
-* [任务管理](#任务管理)
-  * [添加任务](#添加任务)
-  * [添加BT任务](#添加bt任务)
-  * [任务信息](#任务信息)
-  * [开始任务](#开始任务)
-  * [暂停任务](#暂停任务)
-  * [删除任务](#删除任务)
-* [BT管理](#bt管理)
-  * [DHT管理](#dht管理)
-  * [Peer管理](#peer管理)
-  * [Tracker管理](#tracker管理)
-  * [Torrent管理](#torrent管理)
-* [消息通知](#消息通知)
-  * [系统消息](#系统消息)
-  * [系统通知](#系统通知)
-* [启动模式](#启动模式)
-  * [后台模式](#后台模式)
-  * [启动参数](#启动参数)
-* [GUI事件](#gui事件)
-
-## 协议
-
-### 添加协议
-
-#### 实现协议
-
-`com.acgist.snail.protocol.Protocol`
-
-#### 实现下载
-
-`com.acgist.snail.downloader.Downloader`
-
-##### 单文件下载器
-
-`com.acgist.snail.downloader.SingleFileDownloader`
-
-##### 多文件下载器
-
-`com.acgist.snail.downloader.MultifileDownloader`
-
-> 多文件下载完成调用`unlockDownload`方法结束下载
-
-### 注册协议
-
-```java
-ProtocolContext.getInstance().register(protocol);
-```
+|功能|接口/超类|说明|
+|:-|:-|:-|
+|添加协议|`com.acgist.snail.protocol.Protocol`|`ProtocolContext.getInstance().register(protocol);`注册协议|
+|实现下载|`com.acgist.snail.downloader.Downloader`||
+|单文件下载器|`com.acgist.snail.downloader.SingleFileDownloader`||
+|多文件下载器|`com.acgist.snail.downloader.MultifileDownloader`|多文件下载完成调用`unlockDownload`方法结束下载|
 
 ## 任务管理
+
+|任务管理|操作方法|说明|
+|:--|:--|:--|
+|任务信息|ITaskSession.getStatusValue();|下载状态或者下载速度（下载中）|
+|开始任务|ITaskSession.start();||
+|暂停任务|ITaskSession.pause();||
+|删除任务|ITaskSession.delete();||
 
 ### 添加任务
 
@@ -108,6 +71,8 @@ final String torrentPath = "种子文件";
 final var snail = SnailBuilder.newBuilder()
 	.enableTorrent()
 	.buildSync();
+// 注册文件选择事件
+GuiContext.register(new MultifileEventAdapter());
 // 解析种子文件
 final var torrent = TorrentContext.loadTorrent(torrentPath);
 // 过滤下载文件
@@ -118,8 +83,6 @@ final var list = torrent.getInfo().files().stream()
 	.collect(Collectors.toList());
 // 设置下载文件
 MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
-// 注册文件选择事件
-GuiContext.register(new MultifileEventAdapter());
 // 开始下载
 snail.download(torrentPath);
 snail.lockDownload();
@@ -133,48 +96,14 @@ TorrentSession.piecePos(int)
 
 > 如果能够从指定位置开始选择Piece，则优先从指定位置开始下载，反之则会忽略指定位置从0开始下载。
 
-### 任务信息
+## BT协议管理
 
-```java
-// 下载状态或者下载速度（下载中）
-ITaskSession.getStatusValue();
-```
-
-### 开始任务
-
-```java
-ITaskSession.start();
-```
-
-### 暂停任务
-
-```java
-ITaskSession.pause();
-```
-
-### 删除任务
-
-```java
-ITaskSession.delete();
-```
-
-## BT管理
-
-### DHT管理
-
-`NodeContext`
-
-### Peer管理
-
-`PeerContext`
-
-### Tracker管理
-
-`TrackerContext`
-
-### Torrent管理
-
-`TorrentContext`
+|协议|管理工具|
+|:--|:--|
+|DHT|`NodeContext`|
+|Peer|`PeerContext`|
+|Tracker|`TrackerContext`|
+|Torrent|`TorrentContext`|
 
 ## 消息通知
 
@@ -314,3 +243,9 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
 |刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
 |响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
+
+## 测试数据
+
+[测试数据](https://pan.baidu.com/s/1awl2rubJJNbdz5GBGMNx7Q)
+
+> 提取码：`16pd`
