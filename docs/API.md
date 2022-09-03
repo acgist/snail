@@ -2,21 +2,22 @@
 
 ## 下载协议
 
-|功能|接口/超类|说明|
+|功能|接口/超类/方法|说明|
 |:-|:-|:-|
-|添加协议|`com.acgist.snail.protocol.Protocol`|`ProtocolContext.getInstance().register(protocol);`注册协议|
+|添加协议|`com.acgist.snail.protocol.Protocol`||
+|注册协议|`ProtocolContext.getInstance().register(protocol);`||
 |实现下载|`com.acgist.snail.downloader.Downloader`||
 |单文件下载器|`com.acgist.snail.downloader.SingleFileDownloader`||
-|多文件下载器|`com.acgist.snail.downloader.MultifileDownloader`|多文件下载完成调用`unlockDownload`方法结束下载|
+|多文件下载器|`com.acgist.snail.downloader.MultifileDownloader`|下载完成调用`unlockDownload`方法结束下载|
 
 ## 任务管理
 
-|任务管理|操作方法|说明|
+|功能|方法|说明|
 |:--|:--|:--|
-|任务信息|ITaskSession.getStatusValue();|下载状态或者下载速度（下载中）|
-|开始任务|ITaskSession.start();||
-|暂停任务|ITaskSession.pause();||
-|删除任务|ITaskSession.delete();||
+|任务信息|`ITaskSession.getStatusValue();`|下载状态或者下载速度|
+|开始任务|`ITaskSession.start();`||
+|暂停任务|`ITaskSession.pause();`||
+|删除任务|`ITaskSession.delete();`||
 
 ### 添加任务
 
@@ -50,22 +51,6 @@ snail.lockDownload();
 
 ### 添加BT任务
 
-#### 下载所有文件
-
-```java
-final String torrentPath = "种子文件";
-final var snail = SnailBuilder.newBuilder()
-	.enableTorrent()
-	.buildSync();
-// 注册文件选择事件
-GuiContext.register(new MultifileEventAdapter());
-// 开始下载
-snail.download(torrentPath);
-snail.lockDownload();
-```
-
-#### 下载指定文件
-
 ```java
 final String torrentPath = "种子文件";
 final var snail = SnailBuilder.newBuilder()
@@ -85,6 +70,7 @@ final var list = torrent.getInfo().files().stream()
 MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
 // 开始下载
 snail.download(torrentPath);
+// 等待下载完成
 snail.lockDownload();
 ```
 
@@ -94,7 +80,7 @@ snail.lockDownload();
 TorrentSession.piecePos(int)
 ```
 
-> 如果能够从指定位置开始选择Piece，则优先从指定位置开始下载，反之则会忽略指定位置从0开始下载。
+> 如果能够从指定位置开始选择Piece，则优先从指定位置开始下载，反之则会忽略指定位置从`0`开始下载。
 
 ## BT协议管理
 
@@ -107,15 +93,13 @@ TorrentSession.piecePos(int)
 
 ## 消息通知
 
-系统消息和系统通知使用B编码Map类型消息，每条消息含有类型`type`和主体`body`。
+系统消息和系统通知使用B编码`Map`类型消息，每条消息含有类型`type`和主体`body`。
 
 ```
 d4:type4:TEXT4:body7:messagee
 ```
 
 > 通过`socket`连接系统端口`16888`发送系统消息和接收系统通知
-
-> 参考实现（测试代码）：`com.acgist.snail.gui.event`
 
 ### 系统消息
 
@@ -142,8 +126,6 @@ B编码Map
 |:--|:--|:--|
 |url|○|下载链接|
 |files|○|选择下载文件列表|
-
-> 多文件下载时收到`MULTIFILE`消息选择下载文件发送消息选择下载文件
 
 #### 任务列表响应主体
 
@@ -205,6 +187,8 @@ B编码Map
 |path|√|路径|
 |length|√|大小|
 
+> 选择文件发送`TASK_NEW`系统消息进行下载
+
 ## 启动模式
 
 ### 后台模式
@@ -229,7 +213,7 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 
 后台模式直接使用`GuiContext.registerAdapter()`，本地GUI按需适配。
 
-#### GUI适配
+### GUI适配
 
 |名称|类型|系统通知|详细描述|适配器|
 |:--|:--|:--|:--|:--|
@@ -239,7 +223,7 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 |创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
 |窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
-|选择下载文件|MULTIFILE|-|选择下载文件（静默处理）|MultifileEventAdapter|
+|选择下载文件|MULTIFILE|-|选择下载文件|MultifileEventAdapter|
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
 |刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
 |响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|

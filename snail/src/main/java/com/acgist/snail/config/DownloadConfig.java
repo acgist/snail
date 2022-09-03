@@ -10,8 +10,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载配置</p>
- * <p>默认加载配置文件配置，如果实体存在相同配置，使用实体配置覆盖。</p>
+ * 下载配置
  * 
  * @author acgist
  */
@@ -26,52 +25,52 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件：{@value}</p>
+	 * 下载配置文件：{@value}
 	 */
 	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	/**
-	 * <p>下载速度和上传速度的比例：{@value}</p>
-	 * <p>比例={@link #downloadBufferByte}/{@link #uploadBufferByte}</p>
+	 * 下载速度和上传速度的比例：{@value}
+	 * 比例计算公式 = {@link #downloadBufferByte} / {@link #uploadBufferByte}
 	 */
 	private static final int DOWNLOAD_UPLOAD_SCALE = 4;
 	/**
-	 * <p>下载目录配置名称：{@value}</p>
+	 * 下载目录配置名称：{@value}
 	 * 
 	 * @see #path
 	 */
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
 	/**
-	 * <p>下载数量配置名称：{@value}</p>
+	 * 下载数量配置名称：{@value}
 	 * 
 	 * @see #size
 	 */
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
 	/**
-	 * <p>消息提示配置名称：{@value}</p>
+	 * 消息提示配置名称：{@value}
 	 * 
 	 * @see #notice
 	 */
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	/**
-	 * <p>删除文件配置名称：{@value}</p>
+	 * 删除文件配置名称：{@value}
 	 * 
 	 * @see #delete
 	 */
 	private static final String DOWNLOAD_DELETE = "acgist.download.delete";
 	/**
-	 * <p>下载速度（单个）（KB）配置名称：{@value}</p>
+	 * 下载速度（单个）（KB）配置名称：{@value}
 	 * 
 	 * @see #buffer
 	 */
 	private static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	/**
-	 * <p>最后一次选择目录配置名称：{@value}</p>
+	 * 最后一次选择目录配置名称：{@value}
 	 * 
 	 * @see #lastPath
 	 */
 	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	/**
-	 * <p>磁盘缓存（单个）（MB）配置名称：{@value}</p>
+	 * 磁盘缓存（单个）（MB）配置名称：{@value}
 	 * 
 	 * @see #memoryBuffer
 	 */
@@ -91,51 +90,54 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>下载目录</p>
+	 * 下载目录
 	 */
 	private String path;
 	/**
-	 * <p>下载数量</p>
+	 * 下载数量
 	 */
 	private int size;
 	/**
-	 * <p>消息提示</p>
+	 * 消息提示
 	 */
 	private boolean notice;
 	/**
-	 * <p>删除文件</p>
+	 * 删除文件
 	 */
 	private boolean delete;
 	/**
-	 * <p>下载速度（单个）（KB）</p>
+	 * 下载速度（单个）（KB）
 	 */
 	private int buffer;
 	/**
-	 * <p>最后一次选择目录</p>
-	 */
-	private String lastPath;
-	/**
-	 * <p>磁盘缓存（单个）（MB）</p>
-	 */
-	private int memoryBuffer;
-	/**
-	 * <p>上传速度（单个）（B）</p>
-	 * <p>缓存：防止重复计算</p>
+	 * 上传速度（单个）（B）
+	 * 
+	 * @see #buffer
 	 */
 	private int uploadBufferByte;
 	/**
-	 * <p>下载速度（单个）（B）</p>
-	 * <p>缓存：防止重复计算</p>
+	 * 下载速度（单个）（B）
+	 * 
+	 * @see #buffer
 	 */
 	private int downloadBufferByte;
 	/**
-	 * <p>磁盘缓存（单个）（B）</p>
-	 * <p>缓存：防止重复计算</p>
+	 * 最后一次选择目录
+	 */
+	private String lastPath;
+	/**
+	 * 磁盘缓存（单个）（MB）
+	 */
+	private int memoryBuffer;
+	/**
+	 * 磁盘缓存（单个）（B）
+	 * 
+	 * @see #memoryBuffer
 	 */
 	private int memoryBufferByte;
 	
 	/**
-	 * <p>初始化配置：配置文件</p>
+	 * 初始化配置：配置文件
 	 */
 	private void initFromProperties() {
 		this.path = this.getString(DOWNLOAD_PATH);
@@ -148,7 +150,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>初始化配置：实体文件</p>
+	 * 初始化配置：实体文件
 	 */
 	private void initFromEntity() {
 		final EntityContext entityContext = EntityContext.getInstance();
@@ -162,7 +164,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>记录日志</p>
+	 * 记录日志
 	 */
 	private void logger() {
 		LOGGER.debug("下载目录：{}", this.path);
@@ -175,8 +177,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载目录</p>
-	 * 
 	 * @param path 下载目录
 	 */
 	public static final void setPath(String path) {
@@ -188,9 +188,8 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取下载目录</p>
-	 * <p>下载目录存在：返回下载目录</p>
-	 * <p>下载目录无效：返回用户工作目录 + 下载目录</p>
+	 * 下载目录存在：下载目录
+	 * 下载目录无效：用户工作目录 + 下载目录
 	 * 
 	 * @return 下载目录
 	 * 
@@ -208,11 +207,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取下载目录中的文件路径</p>
-	 * 
 	 * @param fileName 文件名称
 	 * 
-	 * @return 文件路径
+	 * @return 下载目录中的文件路径
 	 */
 	public static final String getPath(String fileName) {
 		if(StringUtils.isEmpty(fileName)) {
@@ -222,8 +219,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载数量</p>
-	 * 
 	 * @param size 下载数量
 	 */
 	public static final void setSize(int size) {
@@ -236,8 +231,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取下载数量</p>
-	 * 
 	 * @return 下载数量
 	 */
 	public static final int getSize() {
@@ -245,8 +238,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置消息提示</p>
-	 * 
 	 * @param notice 是否提示消息
 	 */
 	public static final void setNotice(boolean notice) {
@@ -258,8 +249,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取消息提示</p>
-	 * 
 	 * @return 是否提示消息
 	 */
 	public static final boolean getNotice() {
@@ -267,8 +256,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置删除文件</p>
-	 * 
 	 * @param delete 是否删除文件
 	 */
 	public static final void setDelete(boolean delete) {
@@ -280,8 +267,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取删除文件</p>
-	 * 
 	 * @return 是否删除文件
 	 */
 	public static final boolean getDelete() {
@@ -289,8 +274,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置下载速度（单个）（KB）</p>
-	 * 
 	 * @param buffer 下载速度（单个）（KB）
 	 */
 	public static final void setBuffer(int buffer) {
@@ -303,8 +286,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取下载速度（单个）（KB）</p>
-	 * 
 	 * @return 下载速度（单个）（KB）
 	 */
 	public static final int getBuffer() {
@@ -312,8 +293,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取上传速度（单个）（B）</p>
-	 * 
 	 * @return 上传速度（单个）（B）
 	 */
 	public static final int getUploadBufferByte() {
@@ -321,8 +300,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取下载速度（单个）（B）</p>
-	 * 
 	 * @return 下载速度（单个）（B）
 	 */
 	public static final int getDownloadBufferByte() {
@@ -330,7 +307,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>刷新下载速度和上传速度</p>
+	 * 刷新下载速度和上传速度
 	 */
 	private void refreshUploadDownloadBuffer() {
 		this.downloadBufferByte = this.buffer * SystemConfig.ONE_KB;
@@ -338,8 +315,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置最后一次选择目录</p>
-	 * 
 	 * @param lastPath 最后一次选择目录
 	 */
 	public static final void setLastPath(String lastPath) {
@@ -351,8 +326,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取最后一次选择目录</p>
-	 * <p>如果最后一次选择目录为空返回下载目录</p>
+	 * 如果最后一次选择目录为空返回下载目录
 	 * 
 	 * @return 最后一次选择目录
 	 * 
@@ -367,8 +341,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取最后一次选择目录文件</p>
-	 * 
 	 * @return 最后一次选择目录文件
 	 */
 	public static final File getLastPathFile() {
@@ -376,8 +348,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>设置磁盘缓存（单个）（MB）</p>
-	 * 
 	 * @param memoryBuffer 磁盘缓存（单个）（MB）
 	 */
 	public static final void setMemoryBuffer(int memoryBuffer) {
@@ -390,8 +360,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取磁盘缓存（单个）（MB）</p>
-	 * 
 	 * @return 磁盘缓存（单个）（MB）
 	 */
 	public static final int getMemoryBuffer() {
@@ -399,8 +367,6 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取磁盘缓存（单个）（B）</p>
-	 * 
 	 * @return 磁盘缓存（单个）（B）
 	 */
 	public static final int getMemoryBufferByte() {
@@ -408,9 +374,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>获取文件磁盘缓存（单个）（B）</p>
-	 * 
-	 * @param fileSize 文件大小（B）
+	 * @param fileSize 默认文件大小（B）
 	 * 
 	 * @return 文件磁盘缓存（单个）（B）
 	 */
@@ -428,7 +392,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>刷新磁盘缓存</p>
+	 * 刷新磁盘缓存
 	 */
 	private void refreshMemoryBuffer() {
 		this.memoryBufferByte = this.memoryBuffer * SystemConfig.ONE_MB;

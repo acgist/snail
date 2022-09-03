@@ -17,7 +17,6 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.dht.DhtClient;
 import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.ArrayUtils;
-import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
@@ -136,22 +135,21 @@ public final class NodeContext implements IContext {
 	 * <p>注册默认DHT节点</p>
 	 */
 	private void register() {
-		final var defaultNodes = DhtConfig.getInstance().nodes();
-		if(MapUtils.isNotEmpty(defaultNodes)) {
-			defaultNodes.forEach((nodeId, address) -> {
-				final int index = address.lastIndexOf(SymbolConfig.Symbol.COLON.toChar());
-				if(index != -1) {
+		DhtConfig.getInstance().nodes().forEach((nodeId, address) -> {
+			final int index = address.lastIndexOf(SymbolConfig.Symbol.COLON.toChar());
+			if(index > 0) {
+				final String host = address.substring(0, index);
+				final String port = address.substring(index + 1);
+				if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
 					LOGGER.debug("注册默认DHT节点：{}-{}", nodeId, address);
-					final String host = address.substring(0, index);
-					final String port = address.substring(index + 1);
-					if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
-						this.newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
-					}
+					this.newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
 				} else {
 					LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
 				}
-			});
-		}
+			} else {
+				LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);
+			}
+		});
 	}
 	
 	/**

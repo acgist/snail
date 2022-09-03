@@ -22,8 +22,10 @@ class DhtClientTest extends Performance {
 	// DHT节点
 //	private static final int PORT = 6881;
 //	private static final String HOST = "router.utorrent.com";
+//	private static final int PORT = 6881;
+//	private static final String HOST = "router.bittorrent.com";
 	private static final int PORT = 6881;
-	private static final String HOST = "router.bittorrent.com";
+	private static final String HOST = "dht.transmissionbt.com";
 	// 种子HASH
 	private static final String HASH = "5E5324691812EAA0032EA76E813CCFC4D04E7E9E";
 	

@@ -9,9 +9,9 @@ open module com.acgist.snail.javafx {
 
 	exports com.acgist.main;
 	
-	requires java.base;
 	requires transitive com.acgist.snail;
-	// GUI依赖：AWT/Swing/JavaFX
+	
+	requires java.base;
 	requires transitive java.desktop;
 	requires transitive java.scripting;
 	requires transitive jdk.unsupported;

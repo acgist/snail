@@ -70,6 +70,7 @@ public final class FtpMessageHandler extends TcpMessageHandler implements IMessa
 	private final AtomicBoolean lock = new AtomicBoolean(false);
 	
 	public FtpMessageHandler() {
+		// 注意：命令换行可能不同
 		final var multilineMessageCodec = new MultilineMessageCodec(this, SymbolConfig.LINE_SEPARATOR_COMPAT, MULTILINE_REGEX);
 		final var lineMessageCodec = new LineMessageCodec(multilineMessageCodec, SymbolConfig.LINE_SEPARATOR_COMPAT);
 		final var stringMessageCodec = new StringMessageCodec(lineMessageCodec);
