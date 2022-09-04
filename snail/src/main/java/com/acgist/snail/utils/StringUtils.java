@@ -87,7 +87,7 @@ public final class StringUtils {
 	 * @return 是否为数值
 	 */
 	public static final boolean isNumeric(String value) {
-		return number(value, false);
+		return isNumber(value, false);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public final class StringUtils {
 	 * @return 是否为数值
 	 */
 	public static final boolean isDecimal(String value) {
-		return number(value, true);
+		return isNumber(value, true);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class StringUtils {
 	 * 
 	 * @return 是否为数值
 	 */
-	public static final boolean number(String value, boolean decimal) {
+	public static final boolean isNumber(String value, boolean decimal) {
 		if(value == null) {
 			return false;
 		}

@@ -17,7 +17,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>配置文件</p>
+ * 配置文件
  * 
  * @author acgist
  */
@@ -26,12 +26,12 @@ public abstract class PropertiesConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfig.class);
 	
 	/**
-	 * <p>配置信息</p>
+	 * 配置信息
 	 */
 	protected final Properties properties;
 
 	/**
-	 * <p>加载配置文件</p>
+	 * 加载配置文件
 	 * 
 	 * @param path 配置文件相对路径
 	 */
@@ -41,7 +41,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>加载配置文件</p>
+	 * 加载配置文件
 	 * 
 	 * @param path 配置文件相对路径
 	 * 
@@ -62,7 +62,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>加载用户工作目录配置（UserDir）</p>
+	 * 加载用户工作目录配置（UserDir）
 	 * 
 	 * @param path 配置文件相对路径
 	 * 
@@ -84,7 +84,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>加载默认配置（Resource）</p>
+	 * 加载默认配置（Resource）
 	 * 
 	 * @param path 配置文件相对路径
 	 * 
@@ -105,8 +105,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>判断配置是否加载成功</p>
-	 * 
 	 * @return 是否加载成功
 	 */
 	protected final boolean hasProperties() {
@@ -114,7 +112,7 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>保存配置文件</p>
+	 * 保存配置文件
 	 * 
 	 * @param data 数据
 	 * @param path 路径
@@ -136,8 +134,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@link String}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * 
 	 * @return 配置值
@@ -147,8 +143,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@link String}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
 	 * 
@@ -160,8 +154,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@link String}配置</p>
-	 * 
 	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
@@ -172,8 +164,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@link Boolean}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * 
 	 * @return 配置值
@@ -190,8 +180,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@link Boolean}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
 	 * 
@@ -203,8 +191,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@link Boolean}配置</p>
-	 * 
 	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
@@ -215,8 +201,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@link Integer}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * 
 	 * @return 配置值
@@ -230,8 +214,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>读取{@link Integer}配置</p>
-	 * 
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
 	 * 
@@ -243,8 +225,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * <p>读取{@link Integer}配置</p>
-	 * 
 	 * @param entity 实体配置
 	 * @param defaultValue 默认值
 	 * 
@@ -255,7 +235,7 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * <p>释放配置</p>
+	 * 释放配置
 	 */
 	protected final void release() {
 		this.properties.clear();

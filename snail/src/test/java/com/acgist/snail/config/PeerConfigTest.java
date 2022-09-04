@@ -13,14 +13,14 @@ class PeerConfigTest extends Performance {
 
 	@Test
 	void testReserved() {
-		int value = PeerConfig.RESERVED_DHT_PROTOCOL + PeerConfig.RESERVED_PEER_EXCHANGE + PeerConfig.RESERVED_FAST_PROTOCOL;
 		this.log(PeerConfig.RESERVED);
+		int value = PeerConfig.RESERVED_DHT_PROTOCOL + PeerConfig.RESERVED_PEER_EXCHANGE + PeerConfig.RESERVED_FAST_PROTOCOL;
 		assertEquals(value, PeerConfig.RESERVED[7]);
 		assertEquals(PeerConfig.RESERVED_EXTENSION_PROTOCOL, PeerConfig.RESERVED[5]);
 		value += PeerConfig.RESERVED_NAT_TRAVERSAL;
 		PeerConfig.nat();
-		this.log(PeerConfig.RESERVED);
 		assertEquals(value, PeerConfig.RESERVED[7]);
+		this.log(PeerConfig.RESERVED);
 	}
 	
 	@Test
