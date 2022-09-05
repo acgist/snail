@@ -57,6 +57,17 @@ class PeerConfigTest extends Performance {
 	void testEnum() {
 		assertEquals(PeerConfig.Type.ALLOWED_FAST, PeerConfig.Type.of((byte) 0x11));
 		assertNull(PeerConfig.Type.of((byte) 0xFF));
+		final PeerConfig.Type[] types = PeerConfig.Type.values();
+		for (PeerConfig.Type type : types) {
+			assertEquals(PeerConfig.Type.of(type.id()), type);
+		}
+	}
+	
+	@Test
+	void testCosted() {
+		this.costed(1000000, () -> PeerConfig.Type.of((byte) 0xFF));
+		this.costed(1000000, () -> PeerConfig.Type.of((byte) 0x14));
+		this.costed(1000000, () -> PeerConfig.Type.of((byte) 0x00));
 	}
 	
 }

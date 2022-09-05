@@ -14,6 +14,7 @@ import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.PeerExchangeMessageHandler;
 import com.acgist.snail.net.torrent.peer.extension.UploadOnlyExtensionMessageHandler;
 import com.acgist.snail.utils.ArrayUtils;
+import com.acgist.snail.utils.EnumUtils;
 import com.acgist.snail.utils.PeerUtils;
 
 /**
@@ -160,27 +161,12 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	private static final String CLIENT_NAME_CONFIG = "/config/client.name.properties";
 	/**
-	 * PeerID和客户端名称配置
+	 * PeerId和客户端名称配置
 	 * PeerId名称=ClientName
 	 * 
-	 * <table border="1">
-	 * 	<caption>命名方式</caption>
-	 * 	<tr>
-	 * 		<th>名称</th>
-	 * 		<th>格式</th>
-	 * 		<th>示例</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Azureus-style</td>
-	 * 		<td>-名称（2）版本（4）-随机数</td>
-	 * 		<td>-SA1000-...</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Shadow's-style</td>
-	 * 		<td>名称（1）版本（4）-----随机数</td>
-	 * 		<td>S1000-----...</td>
-	 * 	</tr>
-	 * </table>
+	 * 命名方式
+	 * Azureus-style：-名称（2）版本（4）-随机数（-SA1000-...）
+	 * Shadow's-style：名称（1）版本（4）-----随机数（S1000-----...）
 	 */
 	private static final Map<String, String> CLIENT_NAMES = new HashMap<>();
 	/**
@@ -375,6 +361,11 @@ public final class PeerConfig extends PropertiesConfig {
 		private final byte id;
 		
 		/**
+		 * 索引数据
+		 */
+		private static final Type[] INDEX = EnumUtils.index(Type.class, Type::id);
+		
+		/**
 		 * @param id 消息ID
 		 */
 		private Type(byte id) {
@@ -394,13 +385,10 @@ public final class PeerConfig extends PropertiesConfig {
 		 * @return 协议消息类型
 		 */
 		public static final Type of(byte id) {
-			final var types = Type.values();
-			for (Type type : types) {
-				if(type.id == id) {
-					return type;
-				}
+			if(id < 0 || id >= INDEX.length) {
+				return null;
 			}
-			return null;
+			return INDEX[id];
 		}
 		
 	}

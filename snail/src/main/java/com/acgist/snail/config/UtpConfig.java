@@ -1,5 +1,7 @@
 package com.acgist.snail.config;
 
+import com.acgist.snail.utils.EnumUtils;
+
 /**
  * <p>UTP配置</p>
  * 
@@ -48,6 +50,11 @@ public final class UtpConfig {
 		private final byte typeVersion;
 		
 		/**
+		 * 索引数据
+		 */
+		private static final Type[] INDEX = EnumUtils.index(Type.class, Type::type);
+		
+		/**
 		 * @param type 类型
 		 */
 		private Type(byte type) {
@@ -83,14 +90,28 @@ public final class UtpConfig {
 		public static final Type of(byte typeVersion) {
 			// 获取类型
 			final byte value = (byte) (typeVersion >> 4);
-			// 使用switch效率更高：DATA类型数据最多基本没有影响
-			final Type[] types = Type.values();
-			for (Type type : types) {
-				if(type.type == value) {
-					return type;
-				}
+			// 使用索引
+			if(value < 0 || value >= INDEX.length) {
+				return null;
 			}
-			return null;
+			return INDEX[value];
+			// 使用switch
+//			return switch (value) {
+//			case 0x00 -> DATA;
+//			case 0x01 -> FIN;
+//			case 0x02 -> STATE;
+//			case 0x03 -> RESET;
+//			case 0x04 -> SYN;
+//			default -> null;
+//			};
+			// 使用for
+//			final Type[] types = Type.values();
+//			for (Type type : types) {
+//				if(type.type == value) {
+//					return type;
+//				}
+//			}
+//			return null;
 		}
 		
 	}

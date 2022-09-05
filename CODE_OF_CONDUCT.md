@@ -54,6 +54,38 @@ list.stream()
 	.collect(Collectors.toList());
 ```
 
+## 枚举转换
+
+```
+// 使用索引
+private static final Type[] INDEX = EnumUtils.index(Type.class, Type::id);
+if(value < 0 || value >= INDEX.length) {
+	return null;
+}
+return INDEX[value];
+
+// 使用switch
+return switch (value) {
+case 0x00 -> DATA;
+case 0x01 -> FIN;
+case 0x02 -> STATE;
+case 0x03 -> RESET;
+case 0x04 -> SYN;
+default -> null;
+};
+
+// 使用for
+final Type[] types = Type.values();
+for (Type type : types) {
+	if(type.type == value) {
+		return type;
+	}
+}
+return null;
+```
+
+> 使用索引必须连续数值
+
 ## 注释
 
 * 建议不要使用行尾注释

@@ -16,7 +16,7 @@ public final class UpnpResponse {
 	/**
 	 * <p>外网IP地址</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
@@ -25,7 +25,7 @@ public final class UpnpResponse {
 	 * 		</u:GetExternalIPAddressResponse>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @param body XML响应内容
@@ -42,7 +42,7 @@ public final class UpnpResponse {
 	/**
 	 * <p>端口映射信息</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
@@ -55,7 +55,7 @@ public final class UpnpResponse {
 	 * 		</u:GetSpecificPortMappingEntryResponse>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @param body XML响应内容

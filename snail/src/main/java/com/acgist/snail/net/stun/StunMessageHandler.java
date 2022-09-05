@@ -325,7 +325,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * @return 消息
 	 */
 	private byte[] buildMessage(StunConfig.MethodType methodType, StunConfig.MessageType messageType, byte[] message) {
-		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.HEADER_LENGTH_STUN + message.length);
+		final ByteBuffer buffer = ByteBuffer.allocate(StunConfig.HEADER_STUN_LENGTH + message.length);
 		buffer.putShort(messageType.of(methodType));
 		buffer.putShort((short) message.length);
 		buffer.putInt(StunConfig.MAGIC_COOKIE);
@@ -345,7 +345,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	private byte[] buildAttributeMessage(StunConfig.AttributeType attributeType, byte[] value) {
 		final short valueLength = (short) (value == null ? 0 : value.length);
 		// 对齐
-		final int length = NumberUtils.ceilMult(StunConfig.HEADER_LENGTH_ATTRIBUTE + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
+		final int length = NumberUtils.ceilMult(StunConfig.HEADER_ATTRIBUTE_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.putShort(attributeType.id());
 		buffer.putShort(valueLength);

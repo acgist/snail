@@ -67,6 +67,7 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 			// DHT消息
 			return this.dhtMessageHandler;
 		} else if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) {
+			// TODO：如果没有使用STUN直接忽略判断
 			// STUN消息
 			final int magicCookie = buffer.getInt(4);
 			if(magicCookie == StunConfig.MAGIC_COOKIE) {

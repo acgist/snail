@@ -68,14 +68,14 @@ public final class UpnpRequest {
 	/**
 	 * <p>外网IP地址</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
 	 * 		<u:GetExternalIPAddress xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1"></u:GetExternalIPAddress>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @return 请求内容
@@ -88,7 +88,7 @@ public final class UpnpRequest {
 	/**
 	 * <p>端口映射信息</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
@@ -99,7 +99,7 @@ public final class UpnpRequest {
 	 * 		</u:GetSpecificPortMappingEntry>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @param portExt 外网端口
@@ -118,7 +118,7 @@ public final class UpnpRequest {
 	/**
 	 * <p>端口映射</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
@@ -134,7 +134,7 @@ public final class UpnpRequest {
 	 * 		</u:AddPortMapping>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @param port 内网端口
@@ -160,7 +160,7 @@ public final class UpnpRequest {
 	/**
 	 * <p>删除端口映射</p>
 	 * <pre>
-	 * <xmp>
+	 * {@code
 	 * <?xml version="1.0" encoding="UTF-8"?>
 	 * <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 	 * 	<s:Body>
@@ -171,7 +171,7 @@ public final class UpnpRequest {
 	 * 		</u:DeletePortMapping>
 	 * 	</s:Body>
 	 * </s:Envelope>
-	 * </xmp>
+	 * }
 	 * </pre>
 	 * 
 	 * @param portExt 外网端口
