@@ -16,6 +16,7 @@ public final class EnumUtils {
 	
 	/**
 	 * 创建枚举索引数组
+	 * 注意：只有频繁使用枚举转义同时枚举索引和枚举数量差距不大时使用
 	 * 
 	 * @param <T> 枚举泛型
 	 * 
@@ -23,16 +24,21 @@ public final class EnumUtils {
 	 * @param mapper 索引函数
 	 * 
 	 * @return 索引数组
+	 * 
+	 * TODO：类型安全
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> T[] index(Class<T> clazz, Function<T, Byte> mapper) {
-		final Object[] array = clazz.getEnumConstants();
-		final int length = Stream.of(array).map(value -> mapper.apply((T) value)).max(Byte::compare).get() + 1;
-		final T[] index = (T[]) Array.newInstance(clazz, length);
-		for (final Object value : array) {
-			index[mapper.apply((T) value)] = (T) value;
+		if(clazz == null || !clazz.isEnum()) {
+			throw new IllegalArgumentException("必须输入枚举类型");
 		}
-		return (T[]) index;
+		final T[] array = clazz.getEnumConstants();
+		final int length = Stream.of(array).map(mapper::apply).max(Byte::compare).get() + 1;
+		final T[] index = (T[]) Array.newInstance(clazz, length);
+		for (final T value : array) {
+			index[mapper.apply(value)] = value;
+		}
+		return index;
 	}
 	
 }
