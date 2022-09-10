@@ -3,152 +3,152 @@ package com.acgist.snail.config;
 import java.util.StringJoiner;
 
 /**
- * <p>符号配置</p>
+ * 符号配置
  * 
  * @author acgist
  */
 public final class SymbolConfig {
 
 	/**
-	 * <p>分隔符号保留类型</p>
+	 * 分隔符号保留类型
 	 * 
 	 * @author acgist
 	 */
 	public enum FullType {
 		
 		/**
-		 * <p>过滤</p>
+		 * 过滤
 		 */
 		FILTER,
 		/**
-		 * <p>前缀</p>
+		 * 前缀
 		 */
 		PREFIX,
 		/**
-		 * <p>前缀</p>
+		 * 前缀
 		 */
 		SUFFIX
 		
 	}
 	
 	/**
-	 * <p>符号</p>
+	 * 符号
 	 * 
 	 * @author acgist
 	 */
 	public enum Symbol {
 		
 		/**
-		 * <p>或者</p>
+		 * 或者
 		 */
 		OR('|'),
 		/**
-		 * <p>并且</p>
+		 * 并且
 		 */
 		AND('&'),
 		/**
-		 * <p>点号</p>
+		 * 点号
 		 */
 		DOT('.'),
 		/**
-		 * <p>零</p>
+		 * 零
 		 */
 		ZERO('0'),
 		/**
-		 * <p>加号</p>
+		 * 加号
 		 */
 		PLUS('+'),
 		/**
-		 * <p>减号</p>
+		 * 减号
 		 */
 		MINUS('-'),
 		/**
-		 * <p>逗号</p>
-		 */
-		COMMA(','),
-		/**
-		 * <p>井号</p>
-		 */
-		POUND('#'),
-		/**
-		 * <p>冒号</p>
+		 * 冒号
 		 */
 		COLON(':'),
 		/**
-		 * <p>空格</p>
+		 * 逗号
+		 */
+		COMMA(','),
+		/**
+		 * 井号
+		 */
+		POUND('#'),
+		/**
+		 * 空格
 		 */
 		SPACE(' '),
 		/**
-		 * <p>斜杠</p>
+		 * 斜杠
 		 */
 		SLASH('/'),
 		/**
-		 * <p>反斜杠</p>
+		 * 反斜杠
 		 */
 		BACKSLASH('\\'),
 		/**
-		 * <p>等号</p>
+		 * 等号
 		 */
 		EQUALS('='),
 		/**
-		 * <p>百分号</p>
+		 * 百分号
 		 */
 		PERCENT('%'),
 		/**
-		 * <p>问号</p>
+		 * 问号
 		 */
 		QUESTION('?'),
 		/**
-		 * <p>分号</p>
+		 * 分号
 		 */
 		SEMICOLON(';'),
 		/**
-		 * <p>单引号</p>
+		 * 单引号
 		 */
 		SINGLE_QUOTE('\''),
 		/**
-		 * <p>双引号</p>
+		 * 双引号
 		 */
-		DOUBLE_QUOTE('\"'),
+		DOUBLE_QUOTE('"'),
 		/**
-		 * <p>换行符</p>
+		 * 换行符
 		 */
 		LINE_SEPARATOR('\n'),
 		/**
-		 * <p>回车符</p>
+		 * 回车符
 		 */
 		CARRIAGE_RETURN('\r'),
 		/**
-		 * <p>左花括号</p>
+		 * 左花括号
 		 */
 		OPEN_BRACE('{'),
 		/**
-		 * <p>右花括号</p>
+		 * 右花括号
 		 */
 		CLOSE_BRACE('}'),
 		/**
-		 * <p>左方括号</p>
+		 * 左方括号
 		 */
 		OPEN_BRACKET('['),
 		/**
-		 * <p>右方括号</p>
+		 * 右方括号
 		 */
 		CLOSE_BRACKET(']'),
 		/**
-		 * <p>左圆括号</p>
+		 * 左圆括号
 		 */
 		OPEN_PARENTHESIS('('),
 		/**
-		 * <p>右圆括号</p>
+		 * 右圆括号
 		 */
 		CLOSE_PARENTHESIS(')');
 		
 		/**
-		 * <p>字符值</p>
+		 * 字符值
 		 */
 		private final char charValue;
 		/**
-		 * <p>字符串值</p>
+		 * 字符串值
 		 */
 		private final String stringValue;
 		
@@ -161,7 +161,7 @@ public final class SymbolConfig {
 		}
 		
 		/**
-		 * <p>连接参数字符串</p>
+		 * 连接参数字符串
 		 * 
 		 * @param args 参数
 		 * 
@@ -179,7 +179,7 @@ public final class SymbolConfig {
 		}
 		
 		/**
-		 * <p>连接参数字符串</p>
+		 * 连接参数字符串
 		 * 
 		 * @param args 参数
 		 * 
@@ -257,8 +257,6 @@ public final class SymbolConfig {
 		}
 		
 		/**
-		 * <p>获取字符值</p>
-		 * 
 		 * @return 字符值
 		 */
 		public char toChar() {
@@ -273,7 +271,7 @@ public final class SymbolConfig {
 	}
 	
 	/**
-	 * <p>回车换行符（兼容）</p>
+	 * 回车换行符（兼容）
 	 * 
 	 * @see Symbol#CARRIAGE_RETURN
 	 * @see Symbol#LINE_SEPARATOR

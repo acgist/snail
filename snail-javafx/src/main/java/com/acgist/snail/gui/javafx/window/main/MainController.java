@@ -103,7 +103,7 @@ public final class MainController extends Controller {
 	@FXML
 	private TableColumn<ITaskSession, String> createDate;
 	@FXML
-	private TableColumn<ITaskSession, String> endDate;
+	private TableColumn<ITaskSession, String> completedDate;
 	/**
 	 * <p>任务列表显示筛选</p>
 	 */
@@ -122,7 +122,7 @@ public final class MainController extends Controller {
 		this.taskCell(this.status, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(1D).divide(10D));
 		this.taskCell(this.progress, Pos.CENTER_LEFT, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		this.taskCell(this.createDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
-		this.taskCell(this.endDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
+		this.taskCell(this.completedDate, Pos.CENTER, false, false, this.taskTable.widthProperty().multiply(2D).divide(10D));
 		// 设置行
 		this.taskTable.setRowFactory(this.rowFactory);
 		// 绑定属性

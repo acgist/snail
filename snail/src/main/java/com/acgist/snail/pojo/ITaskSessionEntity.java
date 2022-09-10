@@ -144,14 +144,14 @@ public interface ITaskSessionEntity {
 	 * 
 	 * @return 完成时间
 	 */
-	Date getEndDate();
+	Date getCompletedDate();
 	
 	/**
 	 * <p>设置完成时间</p>
 	 * 
-	 * @param endDate 完成时间
+	 * @param completedDate 完成时间
 	 */
-	void setEndDate(Date endDate);
+	void setCompletedDate(Date completedDate);
 	
 	/**
 	 * <p>获取下载描述</p>

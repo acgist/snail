@@ -23,7 +23,7 @@ class BeanUtilsTest extends Performance {
 	void testToString() {
 		final var task = new TaskEntity();
 		task.setId("1234");
-		task.setEndDate(new Date());
+		task.setCompletedDate(new Date());
 		assertEquals(null, BeanUtils.toString(null));
 		this.log(BeanUtils.toString(task));
 		this.log(BeanUtils.toString(task, "1234"));

@@ -69,9 +69,9 @@
 					下载：剩余时间：2小时
 					完成：2019-01-01 12:10
 				-->
-				<TableColumn fx:id="endDate" text="完成时间" styleClass="endDate">
+				<TableColumn fx:id="completedDate" text="完成时间" styleClass="completedDate">
 					<cellValueFactory>
-						<PropertyValueFactory property="endDateValue" />
+						<PropertyValueFactory property="completedDateValue" />
 					</cellValueFactory>
 				</TableColumn>
 			</columns>

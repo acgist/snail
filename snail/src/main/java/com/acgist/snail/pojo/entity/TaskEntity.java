@@ -57,7 +57,7 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	/**
 	 * <p>完成时间</p>
 	 */
-	private Date endDate;
+	private Date completedDate;
 	/**
 	 * <p>下载描述</p>
 	 * <p>多文件下载：保持下载文件列表（B编码）</p>
@@ -152,13 +152,13 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	}
 	
 	@Override
-	public Date getEndDate() {
-		return this.endDate;
+	public Date getCompletedDate() {
+		return this.completedDate;
 	}
 	
 	@Override
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setCompletedDate(Date completedDate) {
+		this.completedDate = completedDate;
 	}
 	
 	@Override

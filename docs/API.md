@@ -144,7 +144,7 @@ B编码List&lt;Map&gt;
 |torrent|○|种子文件路径|
 |status|√|任务状态|
 |size|√|文件大小|
-|endDate|○|完成时间|
+|completedDate|○|完成时间|
 |description|○|下载描述|
 |payload|○|任务负载|
 |statusValue|√|下载速度|

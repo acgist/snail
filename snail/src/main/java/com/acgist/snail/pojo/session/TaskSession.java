@@ -209,8 +209,8 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	@Override
-	public String getEndDateValue() {
-		if(this.getEndDate() == null) {
+	public String getCompletedDateValue() {
+		if(this.getCompletedDate() == null) {
 			if(this.statusDownload()) {
 				final long downloadSpeed = this.statistics.downloadSpeed();
 				if(downloadSpeed == 0L) {
@@ -227,7 +227,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 				return SymbolConfig.Symbol.MINUS.toString();
 			}
 		} else {
-			return DateUtils.dateFormat(this.getEndDate(), PATTERN);
+			return DateUtils.dateFormat(this.getCompletedDate(), PATTERN);
 		}
 	}
 	
@@ -272,7 +272,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		if(this.statusCompleted()) {
 			// 已经完成任务：修改状态、清空完成时间
 			this.setStatus(Status.AWAIT);
-			this.setEndDate(null);
+			this.setCompletedDate(null);
 		}
 		this.start();
 	}
@@ -294,7 +294,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	public void repause() {
 		if(this.statusCompleted()) {
 			this.setStatus(Status.PAUSE);
-			this.setEndDate(null);
+			this.setCompletedDate(null);
 			this.update();
 		}
 	}
@@ -394,7 +394,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		}
 		if(status == Status.COMPLETED) {
 			// 设置完成时间
-			this.setEndDate(new Date());
+			this.setCompletedDate(new Date());
 		}
 		this.setStatus(status);
 		this.update();
@@ -507,13 +507,13 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	@Override
-	public Date getEndDate() {
-		return this.entity.getEndDate();
+	public Date getCompletedDate() {
+		return this.entity.getCompletedDate();
 	}
 	
 	@Override
-	public void setEndDate(Date endDate) {
-		this.entity.setEndDate(endDate);
+	public void setCompletedDate(Date completedDate) {
+		this.entity.setCompletedDate(completedDate);
 	}
 	
 	@Override

@@ -42,6 +42,6 @@ public interface ITaskSessionTable {
 	 * 
 	 * @return 完成时间
 	 */
-	String getEndDateValue();
+	String getCompletedDateValue();
 	
 }
