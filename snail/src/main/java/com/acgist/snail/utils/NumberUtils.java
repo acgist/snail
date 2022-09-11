@@ -9,6 +9,9 @@ import java.util.Date;
 /**
  * <p>数值工具</p>
  * 
+ * 向上转型需要`& 0xFF`：类型转换并且去掉符号
+ * (byte) number = (byte) (number & 0xFF)
+ * 
  * @author acgist
  */
 public final class NumberUtils {

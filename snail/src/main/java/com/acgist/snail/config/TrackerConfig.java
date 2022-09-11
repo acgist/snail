@@ -12,7 +12,7 @@ import com.acgist.snail.pojo.session.TrackerSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Tracker服务器配置</p>
+ * Tracker配置
  * 
  * @author acgist
  */
@@ -27,16 +27,16 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>配置文件：{@value}</p>
+	 * 配置文件：{@value}
 	 */
 	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 	/**
-	 * <p>最大请求失败次数：{@value}</p>
-	 * <p>超过最大请求失败次数标记无效</p>
+	 * 最大请求失败次数：{@value}
+	 * 超过最大请求失败次数标记无效
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * <p>Tracker服务器最大保存数量：{@value}</p>
+	 * Tracker服务器最大保存数量：{@value}
 	 */
 	public static final int MAX_TRACKER_SIZE = 512;
 	
@@ -46,99 +46,35 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>声明事件</p>
-	 * 
-	 * @author acgist
-	 * 
-	 * @see Action#ANNOUNCE
-	 */
-	public enum Event {
-		
-		/**
-		 * <p>none</p>
-		 */
-		NONE(0, "none"),
-		/**
-		 * <p>完成</p>
-		 */
-		COMPLETED(1, "completed"),
-		/**
-		 * <p>开始</p>
-		 */
-		STARTED(2, "started"),
-		/**
-		 * <p>停止</p>
-		 */
-		STOPPED(3, "stopped");
-		
-		/**
-		 * <p>事件ID</p>
-		 */
-		private final int id;
-		/**
-		 * <p>事件名称</p>
-		 */
-		private final String value;
-
-		/**
-		 * @param id 事件ID
-		 * @param value 事件名称
-		 */
-		private Event(int id, String value) {
-			this.id = id;
-			this.value = value;
-		}
-
-		/**
-		 * <p>获取事件ID</p>
-		 * 
-		 * @return 事件ID
-		 */
-		public int id() {
-			return this.id;
-		}
-		
-		/**
-		 * <p>获取事件名称</p>
-		 * 
-		 * @return 事件名称
-		 */
-		public String value() {
-			return this.value;
-		}
-
-	}
-	
-	/**
-	 * <p>动作</p>
+	 * 动作
 	 * 
 	 * @author acgist
 	 */
 	public enum Action {
 		
 		/**
-		 * <p>连接</p>
+		 * 连接
 		 */
 		CONNECT(0, "connect"),
 		/**
-		 * <p>声明</p>
+		 * 声明
 		 */
 		ANNOUNCE(1, "announce"),
 		/**
-		 * <p>刮擦</p>
+		 * 刮擦
 		 */
 		SCRAPE(2, "scrape"),
 		/**
-		 * <p>错误</p>
+		 * 错误
 		 */
 		ERROR(3, "error");
 		
 		/**
-		 * <p>动作ID</p>
+		 * 动作ID
 		 */
 		private final int id;
 		/**
-		 * <p>动作名称</p>
+		 * 动作名称
 		 */
 		private final String value;
 
@@ -152,8 +88,6 @@ public final class TrackerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>获取动作ID</p>
-		 * 
 		 * @return 动作ID
 		 */
 		public int id() {
@@ -161,8 +95,6 @@ public final class TrackerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>获取动作名称</p>
-		 * 
 		 * @return 动作名称
 		 */
 		public String value() {
@@ -170,8 +102,6 @@ public final class TrackerConfig extends PropertiesConfig {
 		}
 		
 		/**
-		 * <p>通过动作ID获取动作</p>
-		 * 
 		 * @param id 动作ID
 		 * 
 		 * @return 动作
@@ -189,8 +119,68 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>默认Tracker服务器</p>
-	 * <p>index=AnnounceUrl</p>
+	 * 声明事件
+	 * 
+	 * @author acgist
+	 * 
+	 * @see Action#ANNOUNCE
+	 */
+	public enum Event {
+		
+		/**
+		 * none
+		 */
+		NONE(0, "none"),
+		/**
+		 * 完成
+		 */
+		COMPLETED(1, "completed"),
+		/**
+		 * 开始
+		 */
+		STARTED(2, "started"),
+		/**
+		 * 停止
+		 */
+		STOPPED(3, "stopped");
+		
+		/**
+		 * 事件ID
+		 */
+		private final int id;
+		/**
+		 * 事件名称
+		 */
+		private final String value;
+
+		/**
+		 * @param id 事件ID
+		 * @param value 事件名称
+		 */
+		private Event(int id, String value) {
+			this.id = id;
+			this.value = value;
+		}
+
+		/**
+		 * @return 事件ID
+		 */
+		public int id() {
+			return this.id;
+		}
+		
+		/**
+		 * @return 事件名称
+		 */
+		public String value() {
+			return this.value;
+		}
+
+	}
+	
+	/**
+	 * 默认Tracker服务器
+	 * index=AnnounceUrl
 	 */
 	private final List<String> announces = new ArrayList<>();
 	
@@ -199,7 +189,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>初始化配置</p>
+	 * 初始化配置
 	 */
 	private void init() {
 		this.properties.entrySet().forEach(entry -> {
@@ -213,8 +203,6 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * <p>获取默认Tracker服务器</p>
-	 * 
 	 * @return 默认Tracker服务器
 	 */
 	public List<String> announces() {
@@ -222,8 +210,8 @@ public final class TrackerConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * <p>保存Tracker服务器配置</p>
-	 * <p>注意：如果没有启动BT任务没有必要保存</p>
+	 * 保存Tracker服务器配置
+	 * 注意：如果没有启动BT任务没有必要保存
 	 */
 	public void persistent() {
 		final AtomicInteger index = new AtomicInteger(0);

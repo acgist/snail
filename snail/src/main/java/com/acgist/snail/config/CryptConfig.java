@@ -6,7 +6,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
 /**
- * 数据流加密（MSE）配置
+ * 加密配置
  * 
  * @author acgist
  */
