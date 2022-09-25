@@ -13,12 +13,12 @@ class EntityExceptionTest extends Performance {
 	void testEntityException() {
 		EntityException exception = assertThrows(EntityException.class, () -> {throw new EntityException();});
 		this.log(exception.getMessage());
-		exception = assertThrows(EntityException.class, () -> {throw new EntityException("网络包大小异常");});
+		exception = assertThrows(EntityException.class, () -> {throw new EntityException("测试实体异常");});
 		this.log(exception.getMessage());
 		final var nullPointerException = new NullPointerException();
 		exception = assertThrows(EntityException.class, () -> {throw new EntityException(nullPointerException);});
 		this.log(exception.getMessage());
-		exception = assertThrows(EntityException.class, () -> {throw new EntityException("网络包大小异常", nullPointerException);});
+		exception = assertThrows(EntityException.class, () -> {throw new EntityException("测试实体异常", nullPointerException);});
 		this.log(exception.getMessage());
 		exception = assertThrows(EntityException.class, () -> {EntityException.requireNull(nullPointerException);});
 		this.log(exception.getMessage());

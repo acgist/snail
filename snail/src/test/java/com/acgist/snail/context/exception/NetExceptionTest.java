@@ -12,11 +12,11 @@ class NetExceptionTest extends Performance {
 	void testNetException() {
 		NetException exception = assertThrows(NetException.class, () -> {throw new NetException();});
 		this.log(exception.getMessage());
-		exception = assertThrows(NetException.class, () -> {throw new NetException("网络异常");});
+		exception = assertThrows(NetException.class, () -> {throw new NetException("测试网络异常");});
 		this.log(exception.getMessage());
 		exception = assertThrows(NetException.class, () -> {throw new NetException(new NullPointerException());});
 		this.log(exception.getMessage());
-		exception = assertThrows(NetException.class, () -> {throw new NetException("网络异常", new NullPointerException());});
+		exception = assertThrows(NetException.class, () -> {throw new NetException("测试网络异常", new NullPointerException());});
 		this.log(exception.getMessage());
 	}
 	

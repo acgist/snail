@@ -1,7 +1,7 @@
 package com.acgist.snail.context.exception;
 
 /**
- * <p>实体异常</p>
+ * 实体异常
  * 
  * @author acgist
  */
@@ -10,7 +10,7 @@ public class EntityException extends IllegalArgumentException {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>验证参数必须为空</p>
+	 * 验证参数必须为空
 	 * 
 	 * @param object 参数
 	 */
@@ -21,7 +21,7 @@ public class EntityException extends IllegalArgumentException {
 	}
 	
 	/**
-	 * <p>验证参数不能为空</p>
+	 * 验证参数不能为空
 	 * 
 	 * @param object 参数
 	 */
@@ -36,8 +36,6 @@ public class EntityException extends IllegalArgumentException {
 	}
 
 	/**
-	 * <p>实体异常</p>
-	 * 
 	 * @param message 错误信息
 	 */
 	public EntityException(String message) {
@@ -45,8 +43,6 @@ public class EntityException extends IllegalArgumentException {
 	}
 
 	/**
-	 * <p>实体异常</p>
-	 * 
 	 * @param cause 原始异常
 	 */
 	public EntityException(Throwable cause) {
@@ -54,8 +50,6 @@ public class EntityException extends IllegalArgumentException {
 	}
 	
 	/**
-	 * <p>实体异常</p>
-	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */

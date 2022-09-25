@@ -3,7 +3,8 @@ package com.acgist.snail.context.exception;
 import com.acgist.snail.config.SystemConfig;
 
 /**
- * <p>网络包大小异常</p>
+ * 网络包大小异常
+ * 限制来自网络包指定创建数组的大小，防止内存泄露和频繁GC问题。
  * 
  * @author acgist
  */
@@ -12,7 +13,7 @@ public final class PacketSizeException extends NetException {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * <p>验证网络包大小</p>
+	 * 验证网络包大小
 	 * 
 	 * @param length 网络包大小
 	 * 
@@ -27,7 +28,7 @@ public final class PacketSizeException extends NetException {
 	}
 	
 	/**
-	 * <p>验证网络包大小</p>
+	 * 验证网络包大小
 	 * 
 	 * @param length 网络包大小
 	 * 
@@ -46,8 +47,6 @@ public final class PacketSizeException extends NetException {
 	}
 	
 	/**
-	 * <p>网络包大小异常</p>
-	 * 
 	 * @param size 网络包大小
 	 */
 	public PacketSizeException(int size) {
@@ -55,8 +54,6 @@ public final class PacketSizeException extends NetException {
 	}
 
 	/**
-	 * <p>网络包大小异常</p>
-	 * 
 	 * @param message 错误信息
 	 */
 	public PacketSizeException(String message) {
@@ -64,8 +61,6 @@ public final class PacketSizeException extends NetException {
 	}
 
 	/**
-	 * <p>网络包大小异常</p>
-	 * 
 	 * @param cause 原始异常
 	 */
 	public PacketSizeException(Throwable cause) {
@@ -73,8 +68,6 @@ public final class PacketSizeException extends NetException {
 	}
 	
 	/**
-	 * <p>网络包大小异常</p>
-	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */

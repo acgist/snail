@@ -3,46 +3,46 @@ package com.acgist.snail.config;
 import com.acgist.snail.utils.EnumUtils;
 
 /**
- * <p>UTP配置</p>
+ * UTP配置
  * 
  * @author acgist
  */
 public final class UtpConfig {
 
 	/**
-	 * <p>消息类型</p>
+	 * 消息类型
 	 * 
 	 * @author acgist
 	 */
 	public enum Type {
 		
 		/**
-		 * <p>数据</p>
+		 * 数据
 		 */
 		DATA((byte) 0),
 		/**
-		 * <p>结束</p>
+		 * 结束
 		 */
 		FIN((byte) 1),
 		/**
-		 * <p>响应</p>
+		 * 响应
 		 */
 		STATE((byte) 2),
 		/**
-		 * <p>重置</p>
+		 * 重置
 		 */
 		RESET((byte) 3),
 		/**
-		 * <p>握手</p>
+		 * 握手
 		 */
 		SYN((byte) 4);
 		
 		/**
-		 * <p>类型</p>
+		 * 类型
 		 */
 		private final byte type;
 		/**
-		 * <p>版本类型：类型 + 版本</p>
+		 * 版本类型：类型 + 版本
 		 * 
 		 * @see #type
 		 * @see UtpConfig#VERSION
@@ -63,8 +63,6 @@ public final class UtpConfig {
 		}
 		
 		/**
-		 * <p>获取类型</p>
-		 * 
 		 * @return 类型
 		 */
 		public byte type() {
@@ -72,8 +70,6 @@ public final class UtpConfig {
 		}
 		
 		/**
-		 * <p>获取版本类型</p>
-		 * 
 		 * @return 版本类型
 		 */
 		public byte typeVersion() {
@@ -81,8 +77,6 @@ public final class UtpConfig {
 		}
 		
 		/**
-		 * <p>通过版本类型获取消息类型</p>
-		 * 
 		 * @param typeVersion 版本类型
 		 * 
 		 * @return 消息类型
@@ -117,44 +111,44 @@ public final class UtpConfig {
 	}
 	
 	/**
-	 * <p>UTP版本：{@value}</p>
+	 * UTP版本：{@value}
 	 */
 	public static final byte VERSION = 1;
 	/**
-	 * <p>UTP消息请求头默认长度：{@value}</p>
+	 * UTP消息请求头默认长度：{@value}
 	 */
 	public static final int HEADER_LENGTH = 20;
 	/**
-	 * <p>UTP消息请求头最小长度：{@value}</p>
+	 * UTP消息请求头最小长度：{@value}
 	 */
 	public static final int HEADER_MIN_LENGTH = 20;
 	/**
-	 * <p>UTP扩展：{@value}</p>
+	 * UTP扩展：{@value}
 	 */
 	public static final byte EXTENSION = 0;
 	/**
-	 * <p>UTP扩展消息最小长度：{@value}</p>
+	 * UTP扩展消息最小长度：{@value}
 	 */
 	public static final int EXTENSION_MIN_LENGTH = 2;
 	/**
-	 * <p>UTP最大包长度：{@value}</p>
-	 * <p>UDP最大包长度：1500 - 20（IP头） - 8（UDP头） = 1472</p>
-	 * <p>UTP最大包长度：1472 - 20（UTP扩展消息头） = 1452</p>
+	 * UTP最大包长度：{@value}
+	 * UDP最大包长度：1500 - 20（IP头） - 8（UDP头） = 1472
+	 * UTP最大包长度：1472 - 20（UTP扩展消息头） = 1452
 	 * 
 	 * @see #EXTENSION
 	 * @see #HEADER_MIN_LENGTH
 	 */
 	public static final int PACKET_MAX_LENGTH = 1452;
 	/**
-	 * <p>默认窗口大小：{@value}</p>
+	 * 默认窗口大小：{@value}
 	 */
 	public static final int WND_SIZE = SystemConfig.ONE_MB;
 	/**
-	 * <p>最大发送次数：{@value}</p>
+	 * 最大发送次数：{@value}
 	 */
 	public static final byte MAX_PUSH_TIMES = 3;
 	/**
-	 * <p>快速重传发送ACK次数：{@value}</p>
+	 * 快速重传发送ACK次数：{@value}
 	 */
 	public static final byte FAST_ACK_RETRY_TIMES = 3;
 	

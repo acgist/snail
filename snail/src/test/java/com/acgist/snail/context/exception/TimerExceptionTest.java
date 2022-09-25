@@ -13,12 +13,12 @@ class TimerExceptionTest extends Performance {
 	void testTimerException() {
 		TimerException exception = assertThrows(TimerException.class, () -> {throw new TimerException();});
 		this.log(exception.getMessage());
-		exception = assertThrows(TimerException.class, () -> {throw new TimerException("网络包大小异常");});
+		exception = assertThrows(TimerException.class, () -> {throw new TimerException("测试网络包大小异常");});
 		this.log(exception.getMessage());
 		final var nullPointerException = new NullPointerException();
 		exception = assertThrows(TimerException.class, () -> {throw new TimerException(nullPointerException);});
 		this.log(exception.getMessage());
-		exception = assertThrows(TimerException.class, () -> {throw new TimerException("网络包大小异常", nullPointerException);});
+		exception = assertThrows(TimerException.class, () -> {throw new TimerException("测试网络包大小异常", nullPointerException);});
 		this.log(exception.getMessage());
 		exception = assertThrows(TimerException.class, () -> {TimerException.verify(-1L);});
 		this.log(exception.getMessage());

@@ -1,7 +1,7 @@
 package com.acgist.snail.context.exception;
 
 /**
- * <p>定时任务时间周期异常</p>
+ * 定时任务时间周期异常
  * 
  * @author acgist
  */
@@ -10,13 +10,13 @@ public final class TimerException extends IllegalArgumentException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>验证定时任务时间周期</p>
+	 * 验证定时任务时间周期
 	 * 
-	 * @param time 时间周期
+	 * @param duration 时间周期
 	 */
-	public static final void verify(long time) {
-		if(time < 0) {
-			throw new TimerException(time);
+	public static final void verify(long duration) {
+		if(duration < 0) {
+			throw new TimerException(duration);
 		}
 	}
 	
@@ -25,17 +25,13 @@ public final class TimerException extends IllegalArgumentException {
 	}
 	
 	/**
-	 * <p>定时任务时间周期异常</p>
-	 * 
-	 * @param time 时间周期
+	 * @param duration 时间周期
 	 */
-	public TimerException(long time) {
-		super("定时任务时间周期错误：" + time);
+	public TimerException(long duration) {
+		super("定时任务时间周期错误：" + duration);
 	}
 
 	/**
-	 * <p>定时任务时间周期异常</p>
-	 * 
 	 * @param message 错误信息
 	 */
 	public TimerException(String message) {
@@ -43,8 +39,6 @@ public final class TimerException extends IllegalArgumentException {
 	}
 
 	/**
-	 * <p>定时任务时间周期异常</p>
-	 * 
 	 * @param cause 原始异常
 	 */
 	public TimerException(Throwable cause) {
@@ -52,8 +46,6 @@ public final class TimerException extends IllegalArgumentException {
 	}
 
 	/**
-	 * <p>定时任务时间周期异常</p>
-	 * 
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */

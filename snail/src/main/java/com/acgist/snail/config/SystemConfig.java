@@ -1,5 +1,6 @@
 package com.acgist.snail.config;
 
+import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.NetUtils;
@@ -72,6 +73,9 @@ public final class SystemConfig extends PropertiesConfig {
 	/**
 	 * 最大的网络包大小：{@value}
 	 * 校验网络数据大小：防止太长导致内存泄漏
+	 * 取值最大来源已知最大Piece大小：4MB
+	 * 
+	 * @see PacketSizeException
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
