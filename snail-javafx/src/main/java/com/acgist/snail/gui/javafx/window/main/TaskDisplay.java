@@ -39,13 +39,13 @@ public final class TaskDisplay {
 	 * 
 	 * @param controller 主窗口控制器
 	 */
-	public void newTimer(MainController controller) {
+	public void newScheduled(MainController controller) {
 		LOGGER.debug("启动任务列表刷新定时器");
 		if(this.controller == null) {
 			synchronized (this.lock) {
 				if(this.controller == null) {
 					this.controller = controller;
-					SystemThreadContext.timerAtFixedRate(
+					SystemThreadContext.scheduledAtFixedRate(
 						0,
 						SystemConfig.REFRESH_INTERVAL,
 						TimeUnit.SECONDS,

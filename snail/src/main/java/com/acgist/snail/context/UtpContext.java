@@ -58,7 +58,7 @@ public final class UtpContext implements IContext, IChannelHandler<DatagramChann
 	private UtpContext() {
 		this.context = MessageHandlerContext.getInstance();
 		this.utpMessageHandlers = new ConcurrentHashMap<>();
-		SystemThreadContext.timerAtFixedDelay(
+		SystemThreadContext.scheduledAtFixedDelay(
 			UTP_TIMEOUT_INTERVAL,
 			UTP_TIMEOUT_INTERVAL,
 			TimeUnit.SECONDS,

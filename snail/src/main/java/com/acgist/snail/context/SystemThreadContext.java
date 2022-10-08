@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.acgist.snail.IContext;
-import com.acgist.snail.context.exception.TimerException;
+import com.acgist.snail.context.exception.ScheduledException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
@@ -47,11 +47,11 @@ public final class SystemThreadContext implements IContext {
 	/**
 	 * <p>定时线程名称：{@value}</p>
 	 */
-	public static final String SNAIL_THREAD_TIMER = SNAIL_THREAD + "-Timer";
+	public static final String SNAIL_THREAD_SCHEDULED = SNAIL_THREAD + "-Scheduled";
 	/**
 	 * <p>BT定时线程名称：{@value}</p>
 	 */
-	public static final String SNAIL_THREAD_BT_TIMER = SNAIL_THREAD_BT + "-Timer";
+	public static final String SNAIL_THREAD_BT_SCHEDULED = SNAIL_THREAD_BT + "-Scheduled";
 	/**
 	 * <p>UTP队列线程名称：{@value}</p>
 	 */
@@ -84,7 +84,7 @@ public final class SystemThreadContext implements IContext {
 	/**
 	 * <p>系统定时线程池：定时任务</p>
 	 */
-	private static final ScheduledExecutorService EXECUTOR_TIMER;
+	private static final ScheduledExecutorService EXECUTOR_SCHEDULED;
 	/**
 	 * <p>任务拒绝执行处理</p>
 	 */
@@ -104,7 +104,7 @@ public final class SystemThreadContext implements IContext {
 	
 	static {
 		EXECUTOR = newExecutor(threadSize(4, 8), threadSize(16, 32), 1000, 60L, SNAIL_THREAD);
-		EXECUTOR_TIMER = newTimerExecutor(threadSize(2, 4), SNAIL_THREAD_TIMER);
+		EXECUTOR_SCHEDULED = newScheduledExecutor(threadSize(2, 4), SNAIL_THREAD_SCHEDULED);
 		REJECTED_HANDLER = (runnable, executor) -> LOGGER.warn("任务拒绝执行：{}-{}", runnable, executor);
 		LOGGER.info("系统默认线程数量：{}", DEFAULT_THREAD_SIZE);
 	}
@@ -145,9 +145,9 @@ public final class SystemThreadContext implements IContext {
 	 * 
 	 * @return 定时任务
 	 */
-	public static final ScheduledFuture<?> timer(long delay, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		return EXECUTOR_TIMER.schedule(runnable, delay, unit);
+	public static final ScheduledFuture<?> scheduled(long delay, TimeUnit unit, Runnable runnable) {
+		ScheduledException.verify(delay);
+		return EXECUTOR_SCHEDULED.schedule(runnable, delay, unit);
 	}
 	
 	/**
@@ -161,10 +161,10 @@ public final class SystemThreadContext implements IContext {
 	 * 
 	 * @return 定时任务
 	 */
-	public static final ScheduledFuture<?> timerAtFixedRate(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		TimerException.verify(period);
-		return EXECUTOR_TIMER.scheduleAtFixedRate(runnable, delay, period, unit);
+	public static final ScheduledFuture<?> scheduledAtFixedRate(long delay, long period, TimeUnit unit, Runnable runnable) {
+		ScheduledException.verify(delay);
+		ScheduledException.verify(period);
+		return EXECUTOR_SCHEDULED.scheduleAtFixedRate(runnable, delay, period, unit);
 	}
 	
 	/**
@@ -178,10 +178,10 @@ public final class SystemThreadContext implements IContext {
 	 * 
 	 * @return 定时任务
 	 */
-	public static final ScheduledFuture<?> timerAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		TimerException.verify(period);
-		return EXECUTOR_TIMER.scheduleWithFixedDelay(runnable, delay, period, unit);
+	public static final ScheduledFuture<?> scheduledAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+		ScheduledException.verify(delay);
+		ScheduledException.verify(period);
+		return EXECUTOR_SCHEDULED.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	
 	/**
@@ -235,7 +235,7 @@ public final class SystemThreadContext implements IContext {
 	 * 
 	 * @return 定时线程池
 	 */
-	public static final ScheduledExecutorService newTimerExecutor(int minPoolSize, String name) {
+	public static final ScheduledExecutorService newScheduledExecutor(int minPoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
 			minPoolSize,
 			newThreadFactory(name)
@@ -271,7 +271,7 @@ public final class SystemThreadContext implements IContext {
 	public static final void shutdown() {
 		LOGGER.debug("关闭系统线程池");
 		shutdown(EXECUTOR);
-		shutdown(EXECUTOR_TIMER);
+		shutdown(EXECUTOR_SCHEDULED);
 	}
 	
 	/**

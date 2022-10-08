@@ -16,7 +16,7 @@ import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.context.exception.PacketSizeException;
-import com.acgist.snail.context.exception.TimerException;
+import com.acgist.snail.context.exception.ScheduledException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.TorrentStreamGroup;
@@ -111,31 +111,31 @@ public final class TorrentSession {
 	/**
 	 * <p>定时线程池</p>
 	 */
-	private ScheduledExecutorService executorTimer;
+	private ScheduledExecutorService executorScheduled;
 	/**
 	 * <p>PEX定时器</p>
 	 */
-	private ScheduledFuture<?> pexTimer;
+	private ScheduledFuture<?> pexScheduled;
 	/**
 	 * <p>HAVE定时器</p>
 	 */
-	private ScheduledFuture<?> haveTimer;
+	private ScheduledFuture<?> haveScheduled;
 	/**
 	 * <p>DHT定时器</p>
 	 */
-	private ScheduledFuture<?> dhtLauncherTimer;
+	private ScheduledFuture<?> dhtLauncherScheduled;
 	/**
 	 * <p>PeerUploaderGroup定时器</p>
 	 */
-	private ScheduledFuture<?> peerUploaderGroupTimer;
+	private ScheduledFuture<?> peerUploaderGroupScheduled;
 	/**
 	 * <p>PeerDownloaderGroup定时器</p>
 	 */
-	private ScheduledFuture<?> peerDownloaderGroupTimer;
+	private ScheduledFuture<?> peerDownloaderGroupScheduled;
 	/**
 	 * <p>TrackerLauncherGroup定时器</p>
 	 */
-	private ScheduledFuture<?> trackerLauncherGroupTimer;
+	private ScheduledFuture<?> trackerLauncherGroupScheduled;
 	
 	/**
 	 * @param infoHash InfoHash
@@ -187,15 +187,15 @@ public final class TorrentSession {
 		}
 		this.loadMagnet();
 		this.loadExecutor();
-		this.loadExecutorTimer();
+		this.loadExecutorScheduled();
 		this.loadTrackerLauncherGroup();
-		this.loadTrackerLauncherGroupTimer();
+		this.loadTrackerLauncherGroupScheduled();
 		this.loadDhtLauncher();
-		this.loadDhtLauncherTimer();
+		this.loadDhtLauncherScheduled();
 		this.loadPeerUploaderGroup();
-		this.loadPeerUploaderGroupTimer();
+		this.loadPeerUploaderGroupScheduled();
 		this.loadPeerDownloaderGroup();
-		this.loadPeerDownloaderGroupTimer();
+		this.loadPeerDownloaderGroupScheduled();
 		this.useable = true;
 		this.uploadable = false;
 		this.downloadable = false;
@@ -218,10 +218,10 @@ public final class TorrentSession {
 			return this;
 		}
 		this.taskSession = taskSession;
-		this.loadExecutorTimer();
+		this.loadExecutorScheduled();
 		this.loadTorrentStreamGroup();
 		this.loadPeerUploaderGroup();
-		this.loadPeerUploaderGroupTimer();
+		this.loadPeerUploaderGroupScheduled();
 		this.useable = true;
 		this.uploadable = true;
 		return this;
@@ -268,23 +268,23 @@ public final class TorrentSession {
 		final boolean privateTorrent = this.privateTorrent();
 		if(findPeer) {
 			this.loadTrackerLauncherGroup();
-			this.loadTrackerLauncherGroupTimer();
+			this.loadTrackerLauncherGroupScheduled();
 			if(privateTorrent) {
 				LOGGER.debug("私有种子：不加载DHT定时任务");
 			} else {
 				this.loadDhtLauncher();
-				this.loadDhtLauncherTimer();
+				this.loadDhtLauncherScheduled();
 			}
 		}
 		this.loadPeerDownloaderGroup();
-		this.loadPeerDownloaderGroupTimer();
+		this.loadPeerDownloaderGroupScheduled();
 		this.loadPeerUploaderDownload();
 		if(privateTorrent) {
 			LOGGER.debug("私有种子：不加载PEX定时任务");
 		} else {
-			this.loadPexTimer();
+			this.loadPexScheduled();
 		}
-		this.loadHaveTimer();
+		this.loadHaveScheduled();
 		this.downloadable = true;
 		return false;
 	}
@@ -308,9 +308,9 @@ public final class TorrentSession {
 	/**
 	 * <p>加载定时线程池</p>
 	 */
-	private void loadExecutorTimer() {
+	private void loadExecutorScheduled() {
 		final int poolSize = SystemThreadContext.threadSize(2, 4);
-		this.executorTimer = SystemThreadContext.newTimerExecutor(poolSize, SystemThreadContext.SNAIL_THREAD_BT_TIMER);
+		this.executorScheduled = SystemThreadContext.newScheduledExecutor(poolSize, SystemThreadContext.SNAIL_THREAD_BT_SCHEDULED);
 	}
 	
 	/**
@@ -334,10 +334,10 @@ public final class TorrentSession {
 	/**
 	 * <p>加载PeerDownloader定时任务</p>
 	 */
-	private void loadPeerDownloaderGroupTimer() {
+	private void loadPeerDownloaderGroupScheduled() {
 		// 任务加载完成立即执行
 		final int peerOptimizeInterval = SystemConfig.getPeerOptimizeInterval();
-		this.peerDownloaderGroupTimer = this.timerAtFixedDelay(
+		this.peerDownloaderGroupScheduled = this.scheduledAtFixedDelay(
 			0L,
 			peerOptimizeInterval,
 			TimeUnit.SECONDS,
@@ -355,9 +355,9 @@ public final class TorrentSession {
 	/**
 	 * <p>加载PeerUploader定时任务</p>
 	 */
-	private void loadPeerUploaderGroupTimer() {
+	private void loadPeerUploaderGroupScheduled() {
 		final int peerOptimizeInterval = SystemConfig.getPeerOptimizeInterval();
-		this.peerUploaderGroupTimer = this.timerAtFixedDelay(
+		this.peerUploaderGroupScheduled = this.scheduledAtFixedDelay(
 			peerOptimizeInterval,
 			peerOptimizeInterval,
 			TimeUnit.SECONDS,
@@ -383,10 +383,10 @@ public final class TorrentSession {
 	/**
 	 * <p>加载Tracker定时任务</p>
 	 */
-	private void loadTrackerLauncherGroupTimer() {
+	private void loadTrackerLauncherGroupScheduled() {
 		// 任务加载完成立即执行
 		final int trackerInterval = SystemConfig.getTrackerInterval();
-		this.trackerLauncherGroupTimer = this.timerAtFixedDelay(
+		this.trackerLauncherGroupScheduled = this.scheduledAtFixedDelay(
 			0L,
 			trackerInterval,
 			TimeUnit.SECONDS,
@@ -411,9 +411,9 @@ public final class TorrentSession {
 	/**
 	 * <p>加载DHT定时任务</p>
 	 */
-	private void loadDhtLauncherTimer() {
+	private void loadDhtLauncherScheduled() {
 		final int dhtInterval = SystemConfig.getDhtInterval();
-		this.dhtLauncherTimer = this.timerAtFixedDelay(
+		this.dhtLauncherScheduled = this.scheduledAtFixedDelay(
 			dhtInterval,
 			dhtInterval,
 			TimeUnit.SECONDS,
@@ -424,9 +424,9 @@ public final class TorrentSession {
 	/**
 	 * <p>加载PEX定时任务</p>
 	 */
-	private void loadPexTimer() {
+	private void loadPexScheduled() {
 		final int pexInterval = SystemConfig.getPexInterval();
-		this.pexTimer = this.timerAtFixedDelay(
+		this.pexScheduled = this.scheduledAtFixedDelay(
 			pexInterval,
 			pexInterval,
 			TimeUnit.SECONDS,
@@ -439,9 +439,9 @@ public final class TorrentSession {
 	 * 
 	 * TODO：调小定时时间或者固定长度通知
 	 */
-	private void loadHaveTimer() {
+	private void loadHaveScheduled() {
 		final int haveInterval = SystemConfig.getHaveInterval();
-		this.haveTimer = this.timerAtFixedDelay(
+		this.haveScheduled = this.scheduledAtFixedDelay(
 			haveInterval,
 			haveInterval,
 			TimeUnit.SECONDS,
@@ -469,10 +469,10 @@ public final class TorrentSession {
 	 * 
 	 * @return 定时任务
 	 */
-	public ScheduledFuture<?> timerAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
-		TimerException.verify(delay);
-		TimerException.verify(period);
-		return this.executorTimer.scheduleWithFixedDelay(runnable, delay, period, unit);
+	public ScheduledFuture<?> scheduledAtFixedDelay(long delay, long period, TimeUnit unit, Runnable runnable) {
+		ScheduledException.verify(delay);
+		ScheduledException.verify(period);
+		return this.executorScheduled.scheduleWithFixedDelay(runnable, delay, period, unit);
 	}
 	
 	/**
@@ -538,14 +538,14 @@ public final class TorrentSession {
 		if(this.completed()) {
 			PeerContext.getInstance().uploadOnly(this.infoHashHex());
 		}
-		SystemThreadContext.shutdownNow(this.haveTimer);
-		SystemThreadContext.shutdownNow(this.pexTimer);
-		SystemThreadContext.shutdownNow(this.peerDownloaderGroupTimer);
+		SystemThreadContext.shutdownNow(this.haveScheduled);
+		SystemThreadContext.shutdownNow(this.pexScheduled);
+		SystemThreadContext.shutdownNow(this.peerDownloaderGroupScheduled);
 		if(this.peerDownloaderGroup != null) {
 			this.peerDownloaderGroup.release();
 		}
-		SystemThreadContext.shutdownNow(this.dhtLauncherTimer);
-		SystemThreadContext.shutdownNow(this.trackerLauncherGroupTimer);
+		SystemThreadContext.shutdownNow(this.dhtLauncherScheduled);
+		SystemThreadContext.shutdownNow(this.trackerLauncherGroupScheduled);
 		if(this.trackerLauncherGroup != null) {
 			this.trackerLauncherGroup.release();
 		}
@@ -562,14 +562,14 @@ public final class TorrentSession {
 		this.useable = false;
 		this.uploadable = false;
 		LOGGER.debug("Torrent释放资源（上传）");
-		SystemThreadContext.shutdownNow(this.peerUploaderGroupTimer);
+		SystemThreadContext.shutdownNow(this.peerUploaderGroupScheduled);
 		if(this.peerUploaderGroup != null) {
 			this.peerUploaderGroup.release();
 		}
 		if(this.torrentStreamGroup != null) {
 			this.torrentStreamGroup.release();
 		}
-		SystemThreadContext.shutdownNow(this.executorTimer);
+		SystemThreadContext.shutdownNow(this.executorScheduled);
 	}
 
 	/**

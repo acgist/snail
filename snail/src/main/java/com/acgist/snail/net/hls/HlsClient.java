@@ -125,7 +125,7 @@ public final class HlsClient implements Runnable {
 			this.hlsSession.downloadSize(downloadSize);
 			this.hlsSession.checkCompletedAndDone();
 		} else {
-			LOGGER.debug("HLS文件下载失败：{}", this.link);
+			LOGGER.debug("HLS文件下载失败（重新下载）：{}", this.link);
 			// 下载失败重新添加下载
 			this.hlsSession.download(this);
 		}

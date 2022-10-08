@@ -75,7 +75,7 @@ public abstract class Initializer {
 		if(this.delay <= 0) {
 			SystemThreadContext.submit(runnable);
 		} else {
-			SystemThreadContext.timer(
+			SystemThreadContext.scheduled(
 				this.delay,
 				TimeUnit.SECONDS,
 				runnable

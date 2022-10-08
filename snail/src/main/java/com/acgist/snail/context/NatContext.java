@@ -89,7 +89,7 @@ public final class NatContext implements IContext {
 				LOGGER.debug("注册NAT服务成功：{}", this.type);
 			} else {
 				LOGGER.debug("注册NAT服务失败：{}", NAT_INTERVAL);
-				SystemThreadContext.timer(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
+				SystemThreadContext.scheduled(NAT_INTERVAL, TimeUnit.SECONDS, this::register);
 			}
 		} else {
 			LOGGER.debug("注册NAT服务成功：已是公网IP地址");

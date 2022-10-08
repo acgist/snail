@@ -5,7 +5,7 @@ package com.acgist.snail.context.exception;
  * 
  * @author acgist
  */
-public final class TimerException extends IllegalArgumentException {
+public final class ScheduledException extends IllegalArgumentException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -16,32 +16,32 @@ public final class TimerException extends IllegalArgumentException {
 	 */
 	public static final void verify(long duration) {
 		if(duration < 0) {
-			throw new TimerException(duration);
+			throw new ScheduledException(duration);
 		}
 	}
 	
-	public TimerException() {
+	public ScheduledException() {
 		super("定时任务时间周期异常");
 	}
 	
 	/**
 	 * @param duration 时间周期
 	 */
-	public TimerException(long duration) {
+	public ScheduledException(long duration) {
 		super("定时任务时间周期错误：" + duration);
 	}
 
 	/**
 	 * @param message 错误信息
 	 */
-	public TimerException(String message) {
+	public ScheduledException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause 原始异常
 	 */
-	public TimerException(Throwable cause) {
+	public ScheduledException(Throwable cause) {
 		super(cause);
 	}
 
@@ -49,7 +49,7 @@ public final class TimerException extends IllegalArgumentException {
 	 * @param message 错误信息
 	 * @param cause 原始异常
 	 */
-	public TimerException(String message, Throwable cause) {
+	public ScheduledException(String message, Throwable cause) {
 		super(message, cause);
 	}
 	

@@ -55,7 +55,7 @@ public final class DhtContext implements IContext {
 	private DhtContext() {
 		this.token = this.buildToken();
 		this.requests = new LinkedList<>();
-		SystemThreadContext.timerAtFixedDelay(
+		SystemThreadContext.scheduledAtFixedDelay(
 			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,
 			DhtConfig.DHT_REQUEST_TIMEOUT_INTERVAL,
 			TimeUnit.MINUTES,

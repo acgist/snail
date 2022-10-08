@@ -134,7 +134,7 @@ public final class MainController extends Controller {
 		this.taskTable.setOnDragOver(this.dragOverAction);
 		this.taskTable.setOnDragDropped(this.dragDroppedAction);
 		// 定时刷新
-		TaskDisplay.getInstance().newTimer(this);
+		TaskDisplay.getInstance().newScheduled(this);
 	}
 
 	/**

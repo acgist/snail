@@ -4,7 +4,7 @@ import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
 
 /**
- * <p>配置初始化器</p>
+ * 配置初始化器
  * 
  * @author acgist
  */
