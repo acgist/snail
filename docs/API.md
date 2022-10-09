@@ -221,7 +221,7 @@ GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出
 |创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
 |窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
-|选择下载文件|MULTIFILE|-|选择下载文件|MultifileEventAdapter|
+|选择下载文件|MULTIFILE|MULTIFILE|选择下载文件|MultifileEventAdapter|
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
 |刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
 |响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
