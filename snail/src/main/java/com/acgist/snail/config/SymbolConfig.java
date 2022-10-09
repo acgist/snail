@@ -111,13 +111,13 @@ public final class SymbolConfig {
 		 */
 		DOUBLE_QUOTE('"'),
 		/**
-		 * 换行符
-		 */
-		LINE_SEPARATOR('\n'),
-		/**
 		 * 回车符
 		 */
 		CARRIAGE_RETURN('\r'),
+		/**
+		 * 换行符
+		 */
+		LINE_SEPARATOR('\n'),
 		/**
 		 * 左花括号
 		 */

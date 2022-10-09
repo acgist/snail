@@ -2,6 +2,7 @@ package com.acgist.snail.config;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,19 @@ class SymbolConfigTest extends Performance {
 		assertArrayEquals(new String[] { "", ",1" }, SymbolConfig.Symbol.COMMA.split(",1", SymbolConfig.FullType.SUFFIX));
 		assertArrayEquals(new String[] { "1", "," }, SymbolConfig.Symbol.COMMA.split("1,", SymbolConfig.FullType.SUFFIX));
 		assertArrayEquals(new String[] { "1", ",2" }, SymbolConfig.Symbol.COMMA.split("1,2", SymbolConfig.FullType.SUFFIX));
+	}
+	
+	@Test
+	void testLine() {
+		assertNotEquals("", "\r");
+		assertNotEquals("", "\n");
+		assertNotEquals("", "\r\n");
+		assertEquals("", "\r".trim());
+		assertEquals("", "\n".trim());
+		assertEquals("", "\r\n".trim());
+		assertEquals("", "\r".strip());
+		assertEquals("", "\n".strip());
+		assertEquals("", "\r\n".strip());
 	}
 	
 	@Test

@@ -4,17 +4,17 @@
 
 |功能|接口/超类/方法|说明|
 |:-|:-|:-|
-|添加协议|`com.acgist.snail.protocol.Protocol`||
+|添加协议|`Protocol`||
 |注册协议|`ProtocolContext.getInstance().register(protocol);`||
-|实现下载|`com.acgist.snail.downloader.Downloader`||
-|单文件下载器|`com.acgist.snail.downloader.SingleFileDownloader`||
-|多文件下载器|`com.acgist.snail.downloader.MultifileDownloader`|下载完成调用`unlockDownload`方法结束下载|
+|实现下载|`Downloader`||
+|单文件下载器|`SingleFileDownloader`||
+|多文件下载器|`MultifileDownloader`|下载完成调用`unlockDownload`方法结束下载|
 
 ## 任务管理
 
 |功能|方法|说明|
 |:--|:--|:--|
-|任务信息|`ITaskSession.getStatusValue();`|下载状态或者下载速度|
+|任务状态|`ITaskSession.getStatusValue();`|下载状态或者下载速度|
 |开始任务|`ITaskSession.start();`||
 |暂停任务|`ITaskSession.pause();`||
 |删除任务|`ITaskSession.delete();`||
@@ -31,7 +31,7 @@ final Snail snail = SnailBuilder.newBuilder()
 //	.enableHttp()
 // 启用磁力链接下载协议
 //	.enableMagnet()
-// 启用BT下载协议
+// 启用BitTorrent下载协议
 //	.enableTorrent()
 // 启用所有下载协议
 	.enableAllProtocol()
@@ -46,8 +46,6 @@ snail.download("下载链接");
 // 等待下载完成：可以自行实现阻塞替换
 snail.lockDownload();
 ```
-
-> 任务添加完成自动开始下载不用调用开始任务方法
 
 ### 添加BT任务
 
@@ -74,22 +72,22 @@ snail.download(torrentPath);
 snail.lockDownload();
 ```
 
+#### BT协议管理
+
+|协议|管理工具|
+|:--|:--|
+|DHT|`DhtContext`/`NodeContext`|
+|Peer|`PeerContext`|
+|Tracker|`TrackerContext`|
+|Torrent|`TorrentContext`|
+
 #### BT任务指定优先下载位置
 
 ```java
 TorrentSession.piecePos(int)
 ```
 
-> 如果能够从指定位置开始选择Piece，则优先从指定位置开始下载，反之则会忽略指定位置从`0`开始下载。
-
-## BT协议管理
-
-|协议|管理工具|
-|:--|:--|
-|DHT|`NodeContext`|
-|Peer|`PeerContext`|
-|Tracker|`TrackerContext`|
-|Torrent|`TorrentContext`|
+> 默认从头开始顺序下载，指定后优先从指定位置开始顺序下载。
 
 ## 消息通知
 
@@ -120,16 +118,18 @@ d4:type4:TEXT4:body7:messagee
 
 #### 新建任务请求主体
 
-B编码Map
+B编码`Map`
 
 |名称|必要|描述|
 |:--|:--|:--|
-|url|○|下载链接|
+|url|○|下载链接或者种子路径|
 |files|○|选择下载文件列表|
+
+> 下载多文件任务时参考`MULTIFILE`通知
 
 #### 任务列表响应主体
 
-B编码List&lt;Map&gt;
+B编码`List&lt;Map&gt;`
 
 |名称|必要|描述|
 |:--|:--|:--|
@@ -147,11 +147,9 @@ B编码List&lt;Map&gt;
 |completedDate|○|完成时间|
 |description|○|下载描述|
 |payload|○|任务负载|
-|statusValue|√|下载速度|
+|statusValue|√|下载状态|
 
 *√=必要、○-可选*
-
-> 下载速度：下载中任务才返回速度，其他情况返回任务状态。
 
 ### 系统通知
 
@@ -170,7 +168,7 @@ B编码List&lt;Map&gt;
 
 #### 窗口消息和提示消息主体
 
-B编码Map
+B编码`Map`
 
 |名称|必要|描述|
 |:--|:--|:--|
@@ -180,7 +178,7 @@ B编码Map
 
 #### 文件选择消息主体
 
-B编码Map
+B编码`Map`
 
 |名称|必要|描述|
 |:--|:--|:--|
@@ -209,7 +207,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ## GUI事件
 
-GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出什么提示。
+GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出什么响应。
 
 后台模式直接使用`GuiContext.registerAdapter()`，本地GUI按需适配。
 

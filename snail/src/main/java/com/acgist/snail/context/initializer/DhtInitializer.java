@@ -5,7 +5,7 @@ import com.acgist.snail.context.DhtContext;
 import com.acgist.snail.context.NodeContext;
 
 /**
- * <p>DHT初始化器</p>
+ * DHT初始化器
  * 
  * @author acgist
  */
@@ -14,11 +14,11 @@ public final class DhtInitializer extends Initializer {
 	private DhtInitializer() {
 		super("DHT");
 	}
-	
+
 	public static final DhtInitializer newInstance() {
 		return new DhtInitializer();
 	}
-	
+
 	@Override
 	protected void init() {
 		DhtConfig.getInstance();
