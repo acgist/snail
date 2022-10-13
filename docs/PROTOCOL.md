@@ -71,9 +71,6 @@
 |0022|[BitTorrent Local Tracker Discovery Protocol](http://www.bittorrent.org/beps/bep_0022.html)|?|
 |0026|[Zeroconf Peer Advertising and Discovery](http://www.bittorrent.org/beps/bep_0026.html)|?|
 |0028|[Tracker exchange](http://www.bittorrent.org/beps/bep_0028.html)|?|
-|其他|-|-|
-|-|upload_only|√|
-|-|[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
 
 > [完整协议](http://www.bittorrent.org/beps/bep_0000.html)
 
@@ -81,11 +78,10 @@
 
 |协议|进度|
 |:--|:--:|
-|FTP|√|
-|[HLS](https://tools.ietf.org/html/rfc8216)|√|
-|HTTP|√|
 |IPv6|○|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
+|upload_only|√|
+|[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
 
 *√=完成、○-进行中、×-未开始、?-待定*

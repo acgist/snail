@@ -5,9 +5,9 @@ action=$3
 system=$2
 version=$1
 
-# 判断条件
+# 判断参数
 if [[ $version == "" || $system == "" || $action == "" ]]; then
-    echo "setting version and system：build.sh 1.0.0 [win|mac|linux] [all|build|pack]"
+    echo "Usage: build.sh 1.0.0 [win|mac|linux] [all|build|pack]"
     exit
 fi
 

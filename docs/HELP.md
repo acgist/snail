@@ -42,7 +42,7 @@
 
 ## 使用
 
-Snail基于Java开发所以支持多种平台：
+`Snail`基于`Java`开发所以支持多种平台：
 
 * Mac
 * Linux：CentOS/Ubuntu
@@ -72,7 +72,7 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 
 ### 打包
 
-使用JDK内置命令`jpackage`进行打包，可以使用[docs/build.sh](./build.sh)脚本打包：
+使用JDK内置命令`jpackage`进行打包，现已提供打包脚本[docs/build.sh](./build.sh)，命令如下：
 
 ```bash
 ./docs/build.sh version [win|mac|linux] [all|build|pack]
@@ -80,25 +80,24 @@ mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
 
 ##### 注意
 
-* 打包命令需要安装正确Java环境
-* 参数`pack`可选：是否打包
+* 打包命令需要安装正确`Java`环境
 
 ##### Windows
 
-可以在Git Bash命令行里面执行
+可以在`Git Bash`命令行里面执行
 
 ##### Ubuntu
 
-提示缺少fakeroot：`sudo apt install alien`
+提示缺少`fakeroot`：`sudo apt install alien`
 
 ##### CentOS
 
-提示错误：类型[rpm]无效或不受支持：`yum install rpm-build redhat-rpm-config`
+提示错误：类型`[rpm]`无效或不受支持：`yum install rpm-build redhat-rpm-config`
 
 ### 乱码
 
-* Windows控制台乱码设置编码：`chcp 65001`
 * 添加启动参数：`-D file.encoding=UTF-8`
+* `Windows`控制台乱码设置编码：`chcp 65001`
 
 ### 运行
 
@@ -134,15 +133,11 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ## BT任务
 
-BT任务需要用户提供种子文件（.torrent）
+BT任务需要用户提供种子文件（`.torrent`）
 
 ### BT任务速度
 
 BT任务的速度会随着查找到的Peer数量增加慢慢增加
-
-> 商业软件由于用户数量庞大，拥有自己的离线服务器，还有一些特殊协议和规则，所以速度比较快。
-
-> Snail完全依赖公共资源和用户做种进行下载，当然Snail也会更加努力变得越来越快。
 
 ### BT任务分享
 
@@ -152,27 +147,26 @@ BT任务上传速度是下载速度的四分之一，任务只要开始下载都
 
 * 接入多条网络
 * 处于多重路由网络环境
-* 路由没有开启UPNP功能
 * [内网穿透](#内网穿透)设置失败
 
 ### BT任务无法下载
 
 * 网络故障
 * 种子损坏
-* 无人分享（[做种](./GUI.md#来源统计)）
+* 无人分享（[做种](./GUI.md#peer来源统计)）
 * 任务文件不完整（[健康度](./GUI.md#piece统计)）
-* 没有可用的[Tracker服务器](./GUI.md#tracker统计)和[DHT网络节点](./GUI.md#节点统计)
+* 没有可用的[Tracker服务器](./GUI.md#tracker统计)和[DHT网络节点](./GUI.md#dht节点统计)
 
 ### BT文件校验
 
-BT文件是分片下载的，部分任务会存在一个分片里面包含多个文件，这样的分片如果文件不是同时下载校验时就需要下载不需要下载的文件。
-这样的文件大多数客户端都不会进行下载，导致文件没有数据分享然后导致下载卡住，所以蜗牛选择忽略这样的分片数据校验。
+BT任务文件都是分片下载的，分片大小都是固定的，所以就会存在部分文件开始和结束所处分片里面包含多个文件的情况，如果这些分片相关文件没有选择全部下载，校验时就需要下载不需要下载的文件。
+然而这样的文件大多数客户端都不会进行下载，进而导致文件没有客户端提供数据分享，最终导致下载卡住，所以蜗牛选择直接忽略这些分片的数据校验。
 
-> 忽略分片都是文件第一片和最后一片
+> 忽略分片都是文件开始和结束所处的分片
 
 ### BT文件修复
 
-由于不可抗力因素（断电、软件崩溃、系统崩溃）导致任务没有正常结束，重启软件然后右键任务选择**文件校验**修复下载任务。
+由于不可抗力因素（断电、软件崩溃、系统崩溃）导致任务没有正常结束，重启软件然后右键任务选择**文件校验**即可修复下载任务。
 
 * 文件校验非常消耗性能不建议按着玩
 * 文件校验要在任务开始下载后才有效
@@ -192,12 +186,12 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 
 ### 磁力链接任务原理
 
-磁力链接下载使用Tracker服务器和DHT网络先加载Peer，然后连接Peer进行种子交换，最后转为BT任务进行下载。
+磁力链接下载通过Tracker服务器和DHT网络先加载Peer，然后连接Peer进行种子交换，最后转为BT任务进行下载。
 
 ### 磁力链接任务无法下载
 
 * 磁力链接错误
-* 系统没有配置Tracker服务器和DHT网络
+* 没有可用的[Tracker服务器](./GUI.md#tracker统计)和[DHT网络节点](./GUI.md#dht节点统计)
 
 > 磁力链接在转种子过程中会出现长时间的等待（查找和连接Peer）
 
@@ -212,24 +206,13 @@ BT文件是分片下载的，部分任务会存在一个分片里面包含多个
 |UPNP|TCP、UDP|
 |STUN|UDP|
 
-优先使用UPNP进行端口映射，如果映射失败再使用STUN实现穿透。
+> 优先使用UPNP进行端口映射，如果映射失败再使用STUN实现穿透。
 
 ### UPNP映射失败原因
 
 * 处于多重路由网络环境
 * 路由没有开启UPNP功能
 * 系统没有自动获取IP（电脑配置固定IP）
-* 其他错误原因
-
-#### 通过UPNP进行TCP内网穿透
-
-```java
-UpnpClient.newInstance().mSearch();
-NatContext.getInstance().lock();
-if(UpnpContext.getInstance().available()) {
-	UpnpContext.getInstance().addPortMapping(8080, 8080, Protocol.Type.TCP);
-}
-```
 
 ## 优化下载体验
 
@@ -241,8 +224,7 @@ if(UpnpContext.getInstance().available()) {
 在软件根目录文件`/config/bt.tracker.properties`配置键值对：`index=AnnounceUrl`
 
 > index=任意值
-
-> AnnounceUrl=Tracker服务器地址
+AnnounceUrl=Tracker服务器地址
 
 优质Tracker服务器：[trackerslist](https://github.com/ngosang/trackerslist)
 
@@ -251,24 +233,21 @@ if(UpnpContext.getInstance().available()) {
 在软件根目录文件`/config/bt.dht.properties`配置键值对：`NodeID=host:port`
 
 > NodeID=节点ID
-
-> host:port=节点地址（域名|IP）:端口
+host:port=节点地址（域名|IP）:端口
 
 ## 常见问题
 
 ### 内存溢出
 
-使用FTP、HLS、HTTP下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`
+使用`FTP`、`HLS`、`HTTP`下载大文件时如果出现内存溢出，建议优化JVM参数：`-XX:NewRatio=2 -XX:SurvivorRatio=2`或者调小磁盘缓存
 
 ```bash
 java -server -Xms128m -Xmx256m -XX:NewRatio=2 -XX:SurvivorRatio=2 -jar snail.javafx-{version}.jar
 ```
 
-或者调小磁盘缓存
-
 ### 下载一段时间没有速度
 
-如果出现开始下载有速度，下载一段时间后没有速度了，可以先暂停任务或重启软件再开始下载。
+如果出现开始下载有速度，下载一段时间后没有速度了，可以尝试先暂停任务或重启软件再开始下载。
 
 ### 启动后没有出现GUI界面
 

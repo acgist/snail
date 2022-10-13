@@ -97,3 +97,4 @@ jobs:
         # upload-release-asset不能一次上传多个文件使用hub命令上传
         hub release edit -a snail-${{ env.version }}.${{ env.suffix }} -m "${{ env.version }}" ${{ env.version }}
         hub release edit -a snail-${{ env.system }}-${{ env.version }}-without-jre.tar -m "${{ env.version }}" ${{ env.version }}
+        

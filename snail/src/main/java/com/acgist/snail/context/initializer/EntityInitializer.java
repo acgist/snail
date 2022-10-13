@@ -3,7 +3,7 @@ package com.acgist.snail.context.initializer;
 import com.acgist.snail.context.EntityContext;
 
 /**
- * <p>实体初始化器</p>
+ * 实体初始化器
  * 
  * @author acgist
  */
