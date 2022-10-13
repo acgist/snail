@@ -223,17 +223,11 @@ BT任务文件都是分片下载的，分片大小都是固定的，所以就会
 
 在软件根目录文件`/config/bt.tracker.properties`配置键值对：`index=AnnounceUrl`
 
-> index=任意值
-AnnounceUrl=Tracker服务器地址
-
-优质Tracker服务器：[trackerslist](https://github.com/ngosang/trackerslist)
+> 优质Tracker服务器：[trackerslist](https://github.com/ngosang/trackerslist)
 
 ### 自定义DHT网络
 
 在软件根目录文件`/config/bt.dht.properties`配置键值对：`NodeID=host:port`
-
-> NodeID=节点ID
-host:port=节点地址（域名|IP）:端口
 
 ## 常见问题
 
