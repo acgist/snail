@@ -9,7 +9,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
 /**
- * <p>初始化器</p>
+ * 初始化器
  * 
  * @author acgist
  */
@@ -18,19 +18,17 @@ public abstract class Initializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	
 	/**
-	 * <p>名称</p>
+	 * 名称
 	 */
 	private final String name;
 	/**
-	 * <p>延迟时间（秒）</p>
+	 * 延迟时间（秒）
 	 * 
 	 * @see #asyn()
 	 */
 	private final int delay;
 
 	/**
-	 * <p>初始化器</p>
-	 * 
 	 * @param name 名称
 	 */
 	protected Initializer(String name) {
@@ -38,8 +36,6 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * <p>初始化器</p>
-	 * 
 	 * @param name 名称
 	 * @param delay 延迟时间（秒）
 	 */
@@ -49,7 +45,7 @@ public abstract class Initializer {
 	}
 
 	/**
-	 * <p>同步执行初始方法</p>
+	 * 同步执行初始方法
 	 */
 	public final void sync() {
 		try {
@@ -61,7 +57,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * <p>异步执行初始方法</p>
+	 * 异步执行初始方法
 	 */
 	public final void asyn() {
 		final Runnable runnable = () -> {
@@ -84,7 +80,7 @@ public abstract class Initializer {
 	}
 	
 	/**
-	 * <p>初始方法</p>
+	 * 初始方法
 	 * 
 	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常

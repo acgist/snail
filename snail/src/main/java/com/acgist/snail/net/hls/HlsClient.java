@@ -11,7 +11,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.logger.Logger;
@@ -58,26 +57,32 @@ public final class HlsClient implements Runnable {
 	/**
 	 * <p>输入流</p>
 	 */
-	protected ReadableByteChannel input;
+	private ReadableByteChannel input;
 	/**
 	 * <p>输出流</p>
 	 */
-	protected WritableByteChannel output;
+	private WritableByteChannel output;
+	/**
+	 * 共享本地缓存
+	 */
+	private final ThreadLocal<ByteBuffer> threadLocal;
 	
 	/**
 	 * @param link 下载路径
 	 * @param taskSession 任务信息
 	 * @param hlsSession HLS任务信息
+	 * @param threadLocal 本地缓存
 	 */
-	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession) {
+	public HlsClient(String link, ITaskSession taskSession, HlsSession hlsSession, ThreadLocal<ByteBuffer> threadLocal) {
 		this.link = link;
 		final String fileName = FileUtils.fileName(link);
 		this.path = FileUtils.file(taskSession.getFile(), fileName);
 		this.range = false;
 		this.completed = false;
 		this.hlsSession = hlsSession;
+		this.threadLocal = threadLocal;
 	}
-
+	
 	@Override
 	public void run() {
 		if(!this.downloadable()) {
@@ -92,7 +97,10 @@ public final class HlsClient implements Runnable {
 			LOGGER.debug("HLS文件校验成功：{}", this.link);
 		} else {
 			int length = 0;
-			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_LENGTH);
+			// 共享ByteBuffer
+			final ByteBuffer buffer = this.threadLocal.get();
+			buffer.clear();
+//			final ByteBuffer buffer = ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_LENGTH);
 			try {
 				this.buildInput(downloadSize);
 				this.buildOutput();
@@ -215,11 +223,14 @@ public final class HlsClient implements Runnable {
 
 	/**
 	 * <p>释放资源</p>
+	 * 由于Client下载完成没有立即从队列中删除，所以导致内存一直增长，需要手动设置输入流和输出流为空方便内存回收。
 	 */
 	public void release() {
 		LOGGER.debug("HLS客户端释放：{}", this.link);
 		IoUtils.close(this.input);
+		this.input = null;
 		IoUtils.close(this.output);
+		this.output = null;
 	}
 	
 }

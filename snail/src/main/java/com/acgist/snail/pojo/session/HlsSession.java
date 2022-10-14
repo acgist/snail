@@ -1,5 +1,6 @@
 package com.acgist.snail.pojo.session;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -7,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.crypto.Cipher;
 
+import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.HlsContext;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.logger.Logger;
@@ -39,6 +41,10 @@ public final class HlsSession {
 	 */
 	private final int fileSize;
 	/**
+	 * <p>线程池</p>
+	 */
+	private ExecutorService executor;
+	/**
 	 * <p>累计下载大小</p>
 	 */
 	private final AtomicLong downloadSize;
@@ -47,18 +53,19 @@ public final class HlsSession {
 	 */
 	private final ITaskSession taskSession;
 	/**
-	 * <p>统计信息</p>
-	 */
-	private final IStatisticsSession statistics;
-	/**
 	 * <p>HLS客户端</p>
 	 * <p>HLS客户端下载成功移除列表，否者重新添加继续下载。</p>
 	 */
 	private final List<HlsClient> clients;
 	/**
-	 * <p>线程池</p>
+	 * <p>统计信息</p>
 	 */
-	private ExecutorService executor;
+	private final IStatisticsSession statistics;
+	/**
+	 * 共享本地缓存
+	 * 任务所有分片共享本地缓存，防止创建过多对象。
+	 */
+	private final ThreadLocal<ByteBuffer> threadLocal;
 	
 	/**
 	 * @param m3u8 M3U8
@@ -70,12 +77,16 @@ public final class HlsSession {
 		this.fileSize = links.size();
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
-		this.statistics = taskSession.statistics();
 		this.clients = new ArrayList<>(this.fileSize);
-		for (String link : links) {
-			final var client = new HlsClient(link, taskSession, this);
-			this.clients.add(client);
-		}
+		this.statistics = taskSession.statistics();
+		this.threadLocal = new ThreadLocal<>() {
+			protected ByteBuffer initialValue() {
+				return ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_LENGTH);
+			};
+		};
+		links.stream()
+		.map(link -> new HlsClient(link, taskSession, this, this.threadLocal))
+		.forEach(this.clients::add);
 	}
 	
 	/**
