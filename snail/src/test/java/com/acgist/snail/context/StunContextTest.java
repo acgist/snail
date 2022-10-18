@@ -1,6 +1,7 @@
 package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +20,18 @@ class StunContextTest extends Performance {
 			ThreadUtils.sleep(2000);
 		}
 		assertNotNull(SystemConfig.getExternalIPAddress());
+	}
+
+	@Test
+	void testKeepAlive() {
+		final StunContext context = StunContext.getInstance();
+		assertNull(SystemConfig.getExternalIPAddress());
+		while(true) {
+			if(SystemConfig.getExternalIPAddress() == null) {
+				context.mapping();
+			}
+			ThreadUtils.sleep(2000);
+		}
 	}
 	
 }

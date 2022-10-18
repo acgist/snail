@@ -94,6 +94,7 @@ public final class NatContext implements IContext {
 		} else {
 			LOGGER.debug("注册NAT服务成功：已是公网IP地址");
 			this.type = Type.OPEN;
+			SystemConfig.setTorrentPortExt(SystemConfig.getTorrentPort());
 			SystemConfig.setExternalIPAddress(NetUtils.LOCAL_HOST_ADDRESS);
 			NodeContext.getInstance().buildNodeId(NetUtils.LOCAL_HOST_ADDRESS);
 		}

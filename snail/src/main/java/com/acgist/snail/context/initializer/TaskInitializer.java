@@ -3,7 +3,7 @@ package com.acgist.snail.context.initializer;
 import com.acgist.snail.context.TaskContext;
 
 /**
- * <p>任务初始化器</p>
+ * 任务初始化器
  * 
  * @author acgist
  */

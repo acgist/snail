@@ -1,6 +1,7 @@
 package com.acgist.snail.context;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 import com.acgist.snail.IContext;
 import com.acgist.snail.config.PeerConfig;
@@ -29,6 +30,14 @@ public final class StunContext implements IContext {
 	 */
 	private int index = 0;
 	/**
+	 * 服务器地址
+	 */
+	private String server;
+	/**
+	 * 是否启动定时任务
+	 */
+	private volatile boolean scheduled = false;
+	/**
 	 * <p>是否是否注册成功</p>
 	 */
 	private volatile boolean available = false;
@@ -55,6 +64,7 @@ public final class StunContext implements IContext {
 	public void mapping() {
 		final var address = this.buildServerAddress();
 		if(address == null) {
+			LOGGER.warn("STUN端口映射地址无效");
 			return;
 		}
 		StunClient.newInstance(address).mappedAddress();
@@ -67,13 +77,33 @@ public final class StunContext implements IContext {
 	 * @param port 外网端口
 	 */
 	public void mapping(String externalIPAddress, int port) {
-		LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
-		this.available = true;
-		PeerConfig.nat();
-		SystemConfig.setExternalIPAddress(externalIPAddress);
-		NodeContext.getInstance().buildNodeId(externalIPAddress);
-		SystemConfig.setTorrentPortExt(port);
-		NatContext.getInstance().unlock();
+		if(
+			!this.available ||
+			port != SystemConfig.getTorrentPortExt() ||
+			!StringUtils.equals(externalIPAddress, SystemConfig.getExternalIPAddress())
+		) {
+			LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
+			this.available = true;
+			PeerConfig.nat();
+			SystemConfig.setTorrentPortExt(port);
+			SystemConfig.setExternalIPAddress(externalIPAddress);
+			NodeContext.getInstance().buildNodeId(externalIPAddress);
+			NatContext.getInstance().unlock();
+		} else {
+			LOGGER.debug("STUN端口映射（没有变化）：{}-{}", externalIPAddress, port);
+		}
+		// 开启定时任务：端口保活
+		if(!this.scheduled) {
+			this.scheduled = true;
+			final int interval = SystemConfig.getStunInterval();
+			LOGGER.debug("启动STUN端口映射定时服务：{}", interval);
+			SystemThreadContext.scheduledAtFixedRate(
+				interval,
+				interval,
+				TimeUnit.SECONDS,
+				this::mapping
+			);
+		}
 	}
 
 	/**
@@ -87,40 +117,29 @@ public final class StunContext implements IContext {
 			LOGGER.warn("STUN服务器列表格式错误：{}", server);
 			return null;
 		}
-		final String[] servers = server.split(SymbolConfig.Symbol.COMMA.toString());
-		final int index = Math.abs(this.index++ % servers.length);
-		return this.buildServerAddress(servers[index]);
+		final String[] servers = SymbolConfig.Symbol.COMMA.split(server);
+		if(!this.available) {
+			final int index = Math.abs(this.index++ % servers.length);
+			this.server = servers[index];
+		}
+		return this.buildServerAddress(this.server);
 	}
 	
 	/**
-	 * <p>获取STUN服务器地址</p>
+	 * 获取STUN服务器地址，支持格式：
 	 * 
-	 * <table border="1">
-	 * 	<caption>支持格式</caption>
-	 * 	<tr>
-	 * 		<th>格式</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>stun1.l.google.com</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>stun:stun1.l.google.com</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>stun1.l.google.com:19302</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>stun:stun1.l.google.com:19302</td>
-	 * 	</tr>
-	 * </table>
+	 * stun1.l.google.com
+	 * stun:stun1.l.google.com
+	 * stun1.l.google.com:19302
+	 * stun:stun1.l.google.com:19302
 	 * 
-	 * @param server STUN服务器地址
+	 * @param server STUN服务器地址列表
 	 * 
 	 * @return STUN服务器地址
 	 */
 	private InetSocketAddress buildServerAddress(String server) {
 		LOGGER.debug("STUN服务器地址：{}", server);
-		final String[] args = server.split(SymbolConfig.Symbol.COLON.toString());
+		final String[] args = SymbolConfig.Symbol.COLON.split(server);
 		final int argLength = args.length;
 		final String lastArg = args[argLength - 1];
 		if(argLength == 0) {
@@ -128,12 +147,10 @@ public final class StunContext implements IContext {
 			return null;
 		} else if(argLength == 1) {
 			return NetUtils.buildSocketAddress(lastArg, StunConfig.DEFAULT_PORT);
+		} else if(StringUtils.isNumeric(lastArg)) {
+			return NetUtils.buildSocketAddress(args[argLength - 2], Integer.parseInt(lastArg));
 		} else {
-			if(StringUtils.isNumeric(lastArg)) {
-				return NetUtils.buildSocketAddress(args[argLength - 2], Integer.parseInt(lastArg));
-			} else {
-				return NetUtils.buildSocketAddress(lastArg, StunConfig.DEFAULT_PORT);
-			}
+			return NetUtils.buildSocketAddress(lastArg, StunConfig.DEFAULT_PORT);
 		}
 	}
 	

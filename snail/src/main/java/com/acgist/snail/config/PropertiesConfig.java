@@ -139,7 +139,11 @@ public abstract class PropertiesConfig {
 	 * @return 配置值
 	 */
 	protected final String getString(String name) {
-		return this.properties.getProperty(name);
+		final String value = this.properties.getProperty(name);
+		if(value == null) {
+			LOGGER.debug("配置没有默认设置：{}", name);
+		}
+		return value;
 	}
 	
 	/**

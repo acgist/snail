@@ -43,14 +43,20 @@ class SymbolConfigTest extends Performance {
 		assertArrayEquals(new String[] { "", "1" }, SymbolConfig.Symbol.COMMA.split(",1"));
 		assertArrayEquals(new String[] { "1", "" }, SymbolConfig.Symbol.COMMA.split("1,"));
 		assertArrayEquals(new String[] { "1", "2" }, SymbolConfig.Symbol.COMMA.split("1,2"));
+		assertArrayEquals(new String[] { "1", "", "2" }, SymbolConfig.Symbol.COMMA.split("1,,2"));
+		assertArrayEquals(new String[] { "1", " ", "2" }, SymbolConfig.Symbol.COMMA.split("1, ,2"));
 		assertArrayEquals(new String[] { "1" }, SymbolConfig.Symbol.COMMA.split("1", SymbolConfig.FullType.PREFIX));
 		assertArrayEquals(new String[] { ",", "1" }, SymbolConfig.Symbol.COMMA.split(",1", SymbolConfig.FullType.PREFIX));
 		assertArrayEquals(new String[] { "1,", "" }, SymbolConfig.Symbol.COMMA.split("1,", SymbolConfig.FullType.PREFIX));
 		assertArrayEquals(new String[] { "1,", "2" }, SymbolConfig.Symbol.COMMA.split("1,2", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { "1,", ",", "2" }, SymbolConfig.Symbol.COMMA.split("1,,2", SymbolConfig.FullType.PREFIX));
+		assertArrayEquals(new String[] { "1,", " ,", "2" }, SymbolConfig.Symbol.COMMA.split("1, ,2", SymbolConfig.FullType.PREFIX));
 		assertArrayEquals(new String[] { "1" }, SymbolConfig.Symbol.COMMA.split("1", SymbolConfig.FullType.SUFFIX));
 		assertArrayEquals(new String[] { "", ",1" }, SymbolConfig.Symbol.COMMA.split(",1", SymbolConfig.FullType.SUFFIX));
 		assertArrayEquals(new String[] { "1", "," }, SymbolConfig.Symbol.COMMA.split("1,", SymbolConfig.FullType.SUFFIX));
 		assertArrayEquals(new String[] { "1", ",2" }, SymbolConfig.Symbol.COMMA.split("1,2", SymbolConfig.FullType.SUFFIX));
+		assertArrayEquals(new String[] { "1", ",", ",2" }, SymbolConfig.Symbol.COMMA.split("1,,2", SymbolConfig.FullType.SUFFIX));
+		assertArrayEquals(new String[] { "1", ", ", ",2" }, SymbolConfig.Symbol.COMMA.split("1, ,2", SymbolConfig.FullType.SUFFIX));
 	}
 	
 	@Test
@@ -72,6 +78,10 @@ class SymbolConfigTest extends Performance {
 		String value = "value";
 		this.costed(1000000, () -> {
 			final String result = key + ":" + value;
+			assertNotNull(result);
+		});
+		this.costed(1000000, () -> {
+			final String result = String.join(":", key, value);
 			assertNotNull(result);
 		});
 		this.costed(1000000, () -> {

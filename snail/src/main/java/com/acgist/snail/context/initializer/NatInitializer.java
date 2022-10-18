@@ -3,7 +3,7 @@ package com.acgist.snail.context.initializer;
 import com.acgist.snail.context.NatContext;
 
 /**
- * <p>NAT初始化器</p>
+ * NAT初始化器
  * 
  * @author acgist
  */

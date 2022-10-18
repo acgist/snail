@@ -250,6 +250,10 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int haveInterval;
 	/**
+	 * Stun消息执行周期（秒）
+	 */
+	private int stunInterval;
+	/**
 	 * Tracker执行周期（秒）
 	 */
 	private int trackerInterval;
@@ -291,17 +295,18 @@ public final class SystemConfig extends PropertiesConfig {
 		this.support = this.getString("acgist.system.support");
 		this.latestRelease = this.getString("acgist.system.latest.release");
 		this.stunServer = this.getString("acgist.system.stun.server");
-		this.servicePort = this.getInteger("acgist.service.port", 16888);
-		this.torrentPort = this.getInteger("acgist.torrent.port", 18888);
-		this.peerSize = this.getInteger("acgist.peer.size", 20);
-		this.trackerSize = this.getInteger("acgist.tracker.size", 50);
-		this.pieceRepeatSize = this.getInteger("acgist.piece.repeat.size", 8);
-		this.dhtInterval = this.getInteger("acgist.dht.interval", 120);
-		this.pexInterval = this.getInteger("acgist.pex.interval", 120);
-		this.lsdInterval = this.getInteger("acgist.lsd.interval", 120);
-		this.haveInterval = this.getInteger("acgist.have.interval", 30);
-		this.trackerInterval = this.getInteger("acgist.tracker.interval", 120);
-		this.peerOptimizeInterval = this.getInteger("acgist.peer.optimize.interval", 60);
+		this.servicePort = this.getInteger("acgist.system.service.port", 16888);
+		this.torrentPort = this.getInteger("acgist.system.torrent.port", 18888);
+		this.peerSize = this.getInteger("acgist.system.peer.size", 20);
+		this.trackerSize = this.getInteger("acgist.system.tracker.size", 50);
+		this.pieceRepeatSize = this.getInteger("acgist.system.piece.repeat.size", 8);
+		this.dhtInterval = this.getInteger("acgist.system.dht.interval", 120);
+		this.pexInterval = this.getInteger("acgist.system.pex.interval", 120);
+		this.lsdInterval = this.getInteger("acgist.system.lsd.interval", 120);
+		this.haveInterval = this.getInteger("acgist.system.have.interval", 30);
+		this.stunInterval = this.getInteger("acgist.system.stun.interval", 30);
+		this.trackerInterval = this.getInteger("acgist.system.tracker.interval", 120);
+		this.peerOptimizeInterval = this.getInteger("acgist.system.peer.optimize.interval", 60);
 		this.nameEnAndVersion = SymbolConfig.Symbol.SPACE.join(this.nameEn, this.version);
 	}
 
@@ -328,6 +333,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("PEX执行周期（秒）：{}", this.pexInterval);
 		LOGGER.debug("本地发现执行周期（秒）：{}", this.lsdInterval);
 		LOGGER.debug("Have消息执行周期（秒）：{}", this.haveInterval);
+		LOGGER.debug("Stun消息执行周期（秒）：{}", this.stunInterval);
 		LOGGER.debug("Tracker执行周期（秒）：{}", this.trackerInterval);
 		LOGGER.debug("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.debug("软件信息：{}", this.nameEnAndVersion);
@@ -491,6 +497,13 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final int getHaveInterval() {
 		return INSTANCE.haveInterval;
+	}
+	
+	/**
+	 * @return Stun消息执行周期（秒）
+	 */
+	public static final int getStunInterval() {
+		return INSTANCE.stunInterval;
 	}
 	
 	/**

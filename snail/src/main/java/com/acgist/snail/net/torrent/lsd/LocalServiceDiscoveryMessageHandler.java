@@ -40,7 +40,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	 * <p>Cookie：{@value}</p>
 	 * <p>区别软件本身消息</p>
 	 */
-	public static final String HEADER_COOKIE = "cookie";
+	public static final String HEADER_COOKIE = "Cookie";
 	/**
 	 * <p>InfoHash：{@value}</p>
 	 */
