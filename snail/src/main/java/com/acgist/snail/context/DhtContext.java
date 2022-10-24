@@ -16,7 +16,7 @@ import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.utils.NumberUtils;
 
 /**
- * <p>DHT上下文</p>
+ * DHT上下文
  * 
  * @author acgist
  */
@@ -31,24 +31,26 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>Token长度：{@value}</p>
+	 * Token长度：{@value}
 	 */
 	private static final int TOKEN_LENGTH = 8;
 	/**
-	 * <p>Token字符：{@value}</p>
+	 * Token字符：{@value}
 	 */
-	private static final String TOKEN_CHARACTER = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+	private static final String TOKEN_CHARACTER =
+		"0123456789" +
+		"abcdefghijklmnopqrstuvwxyz" +
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	/**
-	 * <p>Token</p>
+	 * Token
 	 */
 	private final byte[] token;
 	/**
-	 * <p>消息ID</p>
+	 * 消息ID
 	 */
 	private short requestId = Short.MIN_VALUE;
 	/**
-	 * <p>DHT请求列表</p>
+	 * DHT请求列表
 	 */
 	private final List<DhtRequest> requests;
 	
@@ -64,8 +66,6 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取Token</p>
-	 * 
 	 * @return Token
 	 */
 	public byte[] token() {
@@ -73,8 +73,6 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>生成Token</p>
-	 * 
 	 * @return Token
 	 */
 	private byte[] buildToken() {
@@ -86,14 +84,12 @@ public final class DhtContext implements IContext {
 			token[index] = bytes[random.nextInt(length)];
 		}
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("生成Token：{}", new String(token));
+			LOGGER.debug("生成DHT的Token：{}", new String(token));
 		}
 		return token;
 	}
 	
 	/**
-	 * <p>生成消息ID</p>
-	 * 
 	 * @return 消息ID
 	 */
 	public byte[] buildRequestId() {
@@ -103,7 +99,7 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>放入请求</p>
+	 * 放入请求
 	 * 
 	 * @param request 请求
 	 */
@@ -115,18 +111,18 @@ public final class DhtContext implements IContext {
 			// 删除旧的请求
 			final DhtRequest oldRequest = this.remove(request.getT());
 			if (oldRequest != null) {
-				LOGGER.debug("删除没有收到响应DHT请求：{}", oldRequest);
+				LOGGER.debug("删除没有收到响应的DHT请求：{}", oldRequest);
 			}
 			this.requests.add(request);
 		}
 	}
 	
 	/**
-	 * <p>设置响应</p>
+	 * 设置响应
 	 * 
 	 * @param response 响应
 	 * 
-	 * @return 请求
+	 * @return 响应对应的请求
 	 */
 	public DhtRequest response(DhtResponse response) {
 		if (response == null) {
@@ -147,13 +143,13 @@ public final class DhtContext implements IContext {
 	}
 	
 	/**
-	 * <p>处理DHT超时请求</p>
+	 * 处理DHT超时请求
 	 */
 	private void timeout() {
-		LOGGER.debug("处理DHT超时请求");
 		final long timeout = SystemConfig.RECEIVE_TIMEOUT_MILLIS;
 		final long timestamp = System.currentTimeMillis();
 		synchronized (this.requests) {
+			final int oldSize = this.requests.size();
 			DhtRequest request;
 			final var iterator = this.requests.iterator();
 			while(iterator.hasNext()) {
@@ -162,11 +158,18 @@ public final class DhtContext implements IContext {
 					iterator.remove();
 				}
 			}
+			final int newSize = this.requests.size();
+			LOGGER.debug("""
+				处理DHT超时请求
+				处理之前请求数量：{}
+				处理之后请求数量：{}
+				""", oldSize, newSize);
 		}
 	}
 	
 	/**
-	 * <p>删除并返回删除的请求</p>
+	 * 删除并返回删除的请求
+	 * 注意线程安全
 	 * 
 	 * @param id 消息ID
 	 * 

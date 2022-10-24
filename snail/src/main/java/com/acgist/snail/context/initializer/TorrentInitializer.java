@@ -6,7 +6,7 @@ import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.peer.PeerServer;
 
 /**
- * <p>Torrent初始化器</p>
+ * Torrent初始化器
  * 
  * @author acgist
  */
@@ -22,8 +22,8 @@ public final class TorrentInitializer extends Initializer {
 	
 	@Override
 	protected void init() {
-		PeerConfig.getInstance();
 		UtpContext.getInstance();
+		PeerConfig.getInstance();
 		PeerServer.getInstance();
 		TorrentServer.getInstance();
 	}

@@ -24,7 +24,7 @@ import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>实体上下文</p>
+ * 实体上下文
  * 
  * @author acgist
  */
@@ -39,16 +39,16 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>实体文件：{@value}</p>
+	 * 实体文件：{@value}
 	 */
 	private static final String ENTITY_FILE_PATH = "./config/snail.entities";
 
 	/**
-	 * <p>任务列表</p>
+	 * 任务列表
 	 */
 	private final List<TaskEntity> taskEntities;
 	/**
-	 * <p>配置列表</p>
+	 * 配置列表
 	 */
 	private final List<ConfigEntity> configEntities;
 	
@@ -58,8 +58,6 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有任务列表</p>
-	 * 
 	 * @return 所有任务列表
 	 */
 	public List<TaskEntity> allTask() {
@@ -67,8 +65,6 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有配置列表</p>
-	 * 
 	 * @return 所有配置列表
 	 */
 	public List<ConfigEntity> allConfig() {
@@ -76,11 +72,11 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>设置保存信息</p>
+	 * 设置保存实体信息
 	 * 
 	 * @param entity 实体
 	 */
-	private void buildSave(Entity entity) {
+	private void preSave(Entity entity) {
 		EntityException.requireNotNull(entity);
 		EntityException.requireNull(entity.getId());
 		entity.setId(UUID.randomUUID().toString());
@@ -90,11 +86,11 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>设置更新信息</p>
+	 * 设置更新实体信息
 	 * 
 	 * @param entity 实体
 	 */
-	private void buildUpdate(Entity entity) {
+	private void preUpdate(Entity entity) {
 		EntityException.requireNotNull(entity);
 		EntityException.requireNotNull(entity.getId());
 		entity.setModifyDate(new Date());
@@ -102,12 +98,12 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>保存任务</p>
+	 * 保存任务
 	 * 
 	 * @param entity 任务
 	 */
 	public void save(TaskEntity entity) {
-		this.buildSave(entity);
+		this.preSave(entity);
 		synchronized (this) {
 			this.taskEntities.add(entity);
 		}
@@ -115,17 +111,17 @@ public final class EntityContext implements IContext {
 	}
 
 	/**
-	 * <p>更新任务</p>
+	 * 更新任务
 	 * 
 	 * @param entity 任务
 	 */
 	public void update(TaskEntity entity) {
-		this.buildUpdate(entity);
+		this.preUpdate(entity);
 		this.persistent();
 	}
 	
 	/**
-	 * <p>删除任务</p>
+	 * 删除任务
 	 * 
 	 * @param entity 任务
 	 * 
@@ -145,12 +141,12 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>保存配置</p>
+	 * 保存配置
 	 * 
 	 * @param entity 配置
 	 */
 	public void save(ConfigEntity entity) {
-		this.buildSave(entity);
+		this.preSave(entity);
 		synchronized (this) {
 			this.configEntities.add(entity);
 		}
@@ -158,17 +154,17 @@ public final class EntityContext implements IContext {
 	}
 
 	/**
-	 * <p>更新配置</p>
+	 * 更新配置
 	 * 
 	 * @param entity 配置
 	 */
 	public void update(ConfigEntity entity) {
-		this.buildUpdate(entity);
+		this.preUpdate(entity);
 		this.persistent();
 	}
 	
 	/**
-	 * <p>删除配置</p>
+	 * 删除配置
 	 * 
 	 * @param entity 配置
 	 * 
@@ -180,7 +176,7 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>根据配置名称查询配置</p>
+	 * 根据配置名称查询配置
 	 * 
 	 * @param name 配置名称
 	 * 
@@ -196,8 +192,8 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>根据配置名称合并配置</p>
-	 * <p>配置存在更新反之新建</p>
+	 * 根据配置名称合并配置
+	 * 配置存在更新反之新建
 	 * 
 	 * @param name 配置名称
 	 * @param value 配置值
@@ -216,7 +212,7 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>删除实体</p>
+	 * 删除实体
 	 * 
 	 * @param id 实体ID
 	 * 
@@ -239,14 +235,14 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>加载实体</p>
+	 * 加载实体
 	 */
 	public void load() {
 		final File file = new File(ENTITY_FILE_PATH);
 		if(!file.exists()) {
 			return;
 		}
-		try (ObjectInput input = new ObjectInputStream(new FileInputStream(file))) {
+		try (final ObjectInput input = new ObjectInputStream(new FileInputStream(file))) {
 			final List<?> list = (List<?>) input.readObject();
 			synchronized (this) {
 				this.taskEntities.clear();
@@ -271,7 +267,7 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * <p>保存实体</p>
+	 * 保存实体
 	 */
 	public void persistent() {
 		final List<Entity> list = new ArrayList<>();
@@ -284,7 +280,7 @@ public final class EntityContext implements IContext {
 		}
 		final File file = new File(ENTITY_FILE_PATH);
 		FileUtils.buildParentFolder(file);
-		try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(file))) {
+		try (final ObjectOutput output = new ObjectOutputStream(new FileOutputStream(file))) {
 			output.writeObject(list);
 		} catch (IOException e) {
 			LOGGER.error("保存实体异常", e);

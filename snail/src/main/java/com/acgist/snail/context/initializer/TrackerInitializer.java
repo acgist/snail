@@ -6,7 +6,7 @@ import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.net.torrent.tracker.TrackerServer;
 
 /**
- * <p>Tracker初始化器</p>
+ * Tracker初始化器
  * 
  * @author acgist
  */
