@@ -2,6 +2,7 @@ package com.acgist.snail.context;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +12,8 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.IMessageHandler;
 
 /**
- * <p>消息代理上下文</p>
+ * 消息代理上下文
+ * 管理接收消息连接信息，防止部分连接没有受到相关上下文管理，进而导致连接不能被释放占用系统资源。
  * 
  * @author acgist
  */
@@ -26,17 +28,17 @@ public final class MessageHandlerContext implements IContext {
 	}
 	
 	/**
-	 * <p>处理无效消息执行周期（秒）：{@value}</p>
+	 * 处理无效消息执行周期（秒）：{@value}
 	 */
 	private static final int USELESS_INTERVAL = 60;
 	
 	/**
-	 * <p>消息代理列表</p>
+	 * 消息代理列表
 	 */
 	private final List<IMessageHandler> handlers;
 	
 	private MessageHandlerContext() {
-		this.handlers = new ArrayList<>();
+		this.handlers = new LinkedList<>();
 		SystemThreadContext.scheduledAtFixedDelay(
 			USELESS_INTERVAL,
 			USELESS_INTERVAL,
@@ -46,7 +48,7 @@ public final class MessageHandlerContext implements IContext {
 	}
 	
 	/**
-	 * <p>管理消息代理</p>
+	 * 管理消息代理
 	 * 
 	 * @param handler 消息代理
 	 */
@@ -57,15 +59,13 @@ public final class MessageHandlerContext implements IContext {
 	}
 
 	/**
-	 * <p>处理无效消息代理</p>
+	 * 处理无效消息代理
 	 */
 	private void useless() {
 		final List<IMessageHandler> uselessList = new ArrayList<>();
 		synchronized (this.handlers) {
-			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("开始处理无效消息代理：{}", this.handlers.size());
-			}
 			IMessageHandler handler;
+			final int total = this.handlers.size();
 			final Iterator<IMessageHandler> iterator = this.handlers.iterator();
 			while(iterator.hasNext()) {
 				handler = iterator.next();
@@ -81,7 +81,7 @@ public final class MessageHandlerContext implements IContext {
 				}
 			}
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("处理完成无效消息代理：{}-{}", this.handlers.size(), uselessList.size());
+				LOGGER.debug("处理完成无效消息代理：{}-{}-{}", total, this.handlers.size(), uselessList.size());
 			}
 		}
 		uselessList.forEach(IMessageHandler::close);

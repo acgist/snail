@@ -1,6 +1,7 @@
 package com.acgist.snail.context;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.acgist.snail.IContext;
@@ -11,7 +12,7 @@ import com.acgist.snail.pojo.M3u8;
 import com.acgist.snail.pojo.session.HlsSession;
 
 /**
- * <p>HLS上下文</p>
+ * HLS上下文
  * 
  * @author acgist
  */
@@ -26,33 +27,33 @@ public final class HlsContext implements IContext {
 	}
 
 	/**
-	 * <p>M3U8</p>
-	 * <p>任务ID=M3U8</p>
+	 * M3U8信息
+	 * 任务ID=M3U8信息
 	 */
-	private final Map<String, M3u8> m3u8s;
+	private final Map<String, M3u8> m3u8Mapping;
 	/**
-	 * <p>HLS任务信息</p>
-	 * <p>任务ID=HLS任务信息</p>
+	 * HLS任务信息
+	 * 任务ID=HLS任务信息
 	 */
-	private final Map<String, HlsSession> sessions;
+	private final Map<String, HlsSession> sessionMapping;
 	
 	private HlsContext() {
-		this.m3u8s = new ConcurrentHashMap<>();
-		this.sessions = new ConcurrentHashMap<>();
+		this.m3u8Mapping = new ConcurrentHashMap<>();
+		this.sessionMapping = new ConcurrentHashMap<>();
 	}
 
 	/**
-	 * <p>设置M3U8</p>
+	 * 设置M3U8信息
 	 * 
 	 * @param id 任务ID
-	 * @param m3u8 M3U8
+	 * @param m3u8 M3U8信息
 	 */
 	public void m3u8(String id, M3u8 m3u8) {
-		this.m3u8s.put(id, m3u8);
+		this.m3u8Mapping.put(id, m3u8);
 	}
 	
 	/**
-	 * <p>获取HLS任务信息</p>
+	 * 生成HLS任务信息
 	 * 
 	 * @param taskSession 任务信息
 	 * 
@@ -60,20 +61,21 @@ public final class HlsContext implements IContext {
 	 */
 	public HlsSession hlsSession(ITaskSession taskSession) {
 		final String id = taskSession.getId();
-		final M3u8 m3u8 = this.m3u8s.get(id);
-		return this.sessions.computeIfAbsent(id, key -> HlsSession.newInstance(m3u8, taskSession));
+		final M3u8 m3u8 = this.m3u8Mapping.get(id);
+		Objects.requireNonNull(m3u8, "下载任务缺失M3U8信息");
+		return this.sessionMapping.computeIfAbsent(id, key -> HlsSession.newInstance(m3u8, taskSession));
 	}
 	
 	/**
-	 * <p>删除HLS任务信息</p>
+	 * 删除HLS任务信息
 	 * 
 	 * @param taskSession 任务信息
 	 */
 	public void remove(ITaskSession taskSession) {
 		LOGGER.debug("HLS任务删除信息：{}", taskSession);
 		final String id = taskSession.getId();
-		this.m3u8s.remove(id);
-		this.sessions.remove(id);
+		this.m3u8Mapping.remove(id);
+		this.sessionMapping.remove(id);
 	}
 	
 }

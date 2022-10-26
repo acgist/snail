@@ -12,7 +12,7 @@ import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.NetUtils;
 
 /**
- * <p>NAT（内网穿透）上下文</p>
+ * NAT（内网穿透）上下文
  * 
  * @author acgist
  */
@@ -27,46 +27,46 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>内网穿透类型</p>
+	 * 内网穿透类型
 	 * 
 	 * @author acgist
 	 */
 	public enum Type {
 		
 		/**
-		 * <p>UPNP</p>
+		 * UPNP
 		 */
 		UPNP,
 		/**
-		 * <p>STUN</p>
+		 * STUN
 		 */
 		STUN,
 		/**
-		 * <p>公网IP</p>
+		 * 公网IP
 		 */
 		OPEN,
 		/**
-		 * <p>没有使用内网穿透</p>
+		 * 没有使用内网穿透
 		 */
 		NONE;
 		
 	}
 	
 	/**
-	 * <p>端口映射超时时间（毫秒）：{@value}</p>
+	 * 端口映射超时时间（毫秒）：{@value}
 	 */
 	private static final long MAPPING_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * <p>注册NAT服务执行周期（秒）：{@value}</p>
+	 * 注册NAT服务执行周期（秒）：{@value}
 	 */
-	private static final int NAT_INTERVAL = 4;
+	private static final int NAT_INTERVAL = 5;
 	
 	/**
-	 * <p>内网穿透类型</p>
+	 * 内网穿透类型
 	 */
 	private Type type = Type.NONE;
 	/**
-	 * <p>端口映射等待锁</p>
+	 * 端口映射等待锁
 	 */
 	private final Object lock = new Object();
 	
@@ -74,9 +74,9 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>注册NAT服务</p>
-	 * <p>必须外部调用不能单例注册：导致不能唤醒</p>
-	 * <p>公网IP地址不用穿透，优先使用UPNP进行端口映射，如果映射失败使用STUN穿透。</p>
+	 * 注册NAT服务
+	 * 必须外部调用不能单例注册：导致不能唤醒
+	 * 公网IP地址不用穿透，优先使用UPNP进行端口映射，如果UPNP映射失败使用STUN穿透。
 	 */
 	public void register() {
 		if(NetUtils.localIP(NetUtils.LOCAL_HOST_ADDRESS)) {
@@ -101,8 +101,6 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取内网穿透类型</p>
-	 * 
 	 * @return 内网穿透类型
 	 */
 	public Type type() {
@@ -110,7 +108,7 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>设置UPNP穿透类型</p>
+	 * 设置UPNP穿透类型
 	 * 
 	 * @return 是否成功
 	 */
@@ -132,7 +130,7 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>设置STUN穿透类型</p>
+	 * 设置STUN穿透类型
 	 * 
 	 * @return 是否成功
 	 */
@@ -141,16 +139,17 @@ public final class NatContext implements IContext {
 		if(StunContext.getInstance().available()) {
 			return true;
 		}
+		// 发送端口映射
 		StunContext.getInstance().mapping();
 		this.lock();
 		return StunContext.getInstance().available();
 	}
 	
 	/**
-	 * <p>关闭NAT服务</p>
+	 * 关闭NAT服务
 	 */
 	public void shutdown() {
-		LOGGER.debug("关闭NAT服务");
+		LOGGER.debug("关闭NAT服务：{}", this.type);
 		if(this.type == Type.UPNP) {
 			UpnpContext.getInstance().release();
 			UpnpServer.getInstance().close();
@@ -158,7 +157,7 @@ public final class NatContext implements IContext {
 	}
 
 	/**
-	 * <p>添加端口映射等待锁</p>
+	 * 添加端口映射等待锁
 	 */
 	public void lock() {
 		synchronized (this.lock) {
@@ -172,7 +171,7 @@ public final class NatContext implements IContext {
 	}
 	
 	/**
-	 * <p>释放端口映射等待锁</p>
+	 * 释放端口映射等待锁
 	 */
 	public void unlock() {
 		synchronized (this.lock) {

@@ -83,13 +83,10 @@ class StringUtilsTest extends Performance {
 	}
 	
 	@Test
-	void testArgValue() {
-		assertEquals(null, StringUtils.argValue("modeextend", "mode"));
-		assertEquals(null, StringUtils.argValue("moded=extend", "mode"));
-		assertEquals("extend", StringUtils.argValue("mode=extend", "mode"));
-		assertEquals("extend", StringUtils.argValue("mode= extend", "mode"));
-		assertEquals("extend", StringUtils.argValue("mode =extend", "mode"));
-		assertEquals("extend", StringUtils.argValue("mode = extend", "mode"));
+	void testArgsMap() {
+		assertTrue(StringUtils.argsMap("mode", "mode").containsKey("mode"));
+		this.log(StringUtils.argsMap("mode1=extend", "mode2 =extend", "mode3= extend", " mode4 = extend", "mode5  =  extend ", " mode6 = extend "));
+		this.log(StringUtils.argsMap("mode", "mode").get("vm"));
 	}
 
 	@Test

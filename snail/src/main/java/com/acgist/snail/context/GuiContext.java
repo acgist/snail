@@ -23,10 +23,11 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.IMessageSender;
 import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>GUI上下文</p>
+ * GUI上下文
  * 
  * @author acgist
  */
@@ -41,57 +42,70 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>运行模式</p>
+	 * 运行模式
 	 * 
 	 * @author acgist
 	 */
 	public enum Mode {
 		
 		/**
-		 * <p>本地模式：本地GUI（JavaFX）</p>
+		 * 本地模式：本地GUI（JavaFX）
 		 */
 		NATIVE,
 		/**
-		 * <p>后台模式：扩展GUI</p>
-		 * <p>通过系统消息和系统通知来完成系统管理和任务管理</p>
+		 * 后台模式：扩展GUI
+		 * 通过系统消息和系统通知来完成系统管理和任务管理
 		 * 
 		 * @see ApplicationMessage.Type
 		 */
 		EXTEND;
+
+		/**
+		 * @param mode 运行模式
+		 * 
+		 * @return 运行模式
+		 */
+		public static final Mode of(String mode) {
+			final var values = Mode.values();
+			for (Mode value : values) {
+				if(value.name().equalsIgnoreCase(mode)) {
+					return value;
+				}
+			}
+			return Mode.NATIVE;
+		}
 		
 	}
 	
 	/**
-	 * <p>消息类型</p>
+	 * 消息类型
 	 * 
 	 * @author acgist
 	 */
 	public enum MessageType {
 		
 		/**
-		 * <p>普通</p>
+		 * 普通
 		 */
 		NONE,
 		/**
-		 * <p>提示</p>
+		 * 提示
 		 */
 		INFO,
 		/**
-		 * <p>警告</p>
+		 * 警告
 		 */
 		WARN,
 		/**
-		 * <p>确认</p>
+		 * 错误
 		 */
-		CONFIRM,
+		ERROR,
 		/**
-		 * <p>错误</p>
+		 * 确认
 		 */
-		ERROR;
+		CONFIRM;
 		
 		/**
-		 * <p>获取消息类型</p>
-		 * 
 		 * @param value 消息类型
 		 * 
 		 * @return 消息类型
@@ -109,36 +123,35 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>启动参数：运行模式</p>
+	 * 启动参数：运行模式
 	 */
 	private static final String ARGS_MODE = "mode";
 	
 	/**
-	 * <p>运行模式</p>
+	 * 运行模式
 	 */
 	private Mode mode = Mode.NATIVE;
 	/**
-	 * <p>扩展GUI阻塞锁</p>
-	 * <p>使用扩展GUI时阻止程序关闭</p>
+	 * 扩展GUI阻塞锁（阻止程序关闭）
 	 */
 	private final Object lock;
 	/**
-	 * <p>扩展GUI消息代理</p>
+	 * 扩展GUI消息代理
 	 */
 	private IMessageSender extendGuiMessageSender;
 	/**
-	 * <p>事件Map</p>
-	 * <p>事件类型=事件</p>
+	 * 事件Map
+	 * 事件类型=事件
 	 */
-	private final Map<GuiEvent.Type, GuiEvent> events;
+	private final Map<GuiEvent.Type, GuiEvent> eventMapping;
 	
 	private GuiContext() {
 		this.lock = new Object();
-		this.events = new EnumMap<>(GuiEvent.Type.class);
+		this.eventMapping = new EnumMap<>(GuiEvent.Type.class);
 	}
 	
 	/**
-	 * <p>注册GUI事件</p>
+	 * 注册GUI事件
 	 * 
 	 * @param event GUI事件
 	 */
@@ -146,11 +159,11 @@ public final class GuiContext implements IContext {
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
 		}
-		INSTANCE.events.put(event.type(), event);
+		INSTANCE.eventMapping.put(event.type(), event);
 	}
 
 	/**
-	 * <p>注册GUI事件默认适配器</p>
+	 * 注册GUI事件默认适配器
 	 */
 	public static final void registerAdapter() {
 		GuiContext.register(new ShowEventAdapter());
@@ -166,160 +179,190 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>初始化GUI上下文</p>
+	 * 初始化GUI上下文
 	 * 
 	 * @param args 启动参数
 	 * 
 	 * @return GuiContext
 	 */
 	public GuiContext init(String ... args) {
-		if(args == null) {
+		if(ArrayUtils.isEmpty(args)) {
 			LOGGER.debug("没有设置启动参数");
 		} else {
 			if(LOGGER.isInfoEnabled()) {
 				LOGGER.info("启动参数：{}", SymbolConfig.Symbol.COMMA.join(args));
 			}
-			String value;
-			for (String arg : args) {
-				// 运行模式
-				value = StringUtils.argValue(arg, ARGS_MODE);
-				if(Mode.EXTEND.name().equalsIgnoreCase(value)) {
-					this.mode = Mode.EXTEND;
-				}
-			}
+			final Map<String, String> argsMap = StringUtils.argsMap(args);
+			// 运行模式
+			final String mode = argsMap.get(ARGS_MODE);
+			this.mode = Mode.of(mode);
 			LOGGER.debug("运行模式：{}", this.mode);
 		}
 		return this;
 	}
 	
 	/**
-	 * <p>显示窗口</p>
+	 * 显示窗口
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#SHOW
+	 * @see ShowEventAdapter
 	 */
 	public GuiContext show() {
 		return this.event(Type.SHOW);
 	}
 	
 	/**
-	 * <p>隐藏窗口</p>
+	 * 隐藏窗口
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type@HIDE
+	 * @see HideEventAdapter
 	 */
 	public GuiContext hide() {
 		return this.event(Type.HIDE);
 	}
 	
 	/**
-	 * <p>退出窗口</p>
+	 * 退出窗口
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#EXIT
+	 * @see ExitEventAdapter
 	 */
 	public GuiContext exit() {
 		return this.event(Type.EXIT);
 	}
 
 	/**
-	 * <p>新建窗口</p>
+	 * 新建窗口
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#BUILD
+	 * @see BuildEventAdapter
 	 */
 	public GuiContext build() {
 		return this.event(Type.BUILD);
 	}
 	
 	/**
-	 * <p>窗口消息</p>
+	 * 窗口消息
 	 * 
 	 * @param title 标题
 	 * @param message 内容
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#ALERT
+	 * @see MessageType#INFO
+	 * @see AlertEventAdapter
 	 */
 	public GuiContext alert(String title, String message) {
 		return this.alert(title, message, GuiContext.MessageType.INFO);
 	}
 
 	/**
-	 * <p>窗口消息</p>
+	 * 窗口消息
 	 * 
 	 * @param title 标题
 	 * @param message 内容
 	 * @param type 类型
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#ALERT
+	 * @see AlertEventAdapter
 	 */
 	public GuiContext alert(String title, String message, GuiContext.MessageType type) {
 		return this.event(Type.ALERT, title, message, type);
 	}
 	
 	/**
-	 * <p>提示消息</p>
+	 * 提示消息
 	 * 
 	 * @param title 标题
 	 * @param message 内容
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#NOTICE
+	 * @see MessageType#INFO
+	 * @see NoticeEventAdapter
 	 */
 	public GuiContext notice(String title, String message) {
 		return this.notice(title, message, GuiContext.MessageType.INFO);
 	}
 	
 	/**
-	 * <p>提示消息</p>
+	 * 提示消息
 	 * 
 	 * @param title 标题
 	 * @param message 内容
 	 * @param type 类型
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#NOTICE
+	 * @see NoticeEventAdapter
 	 */
 	public GuiContext notice(String title, String message, GuiContext.MessageType type) {
 		return this.event(Type.NOTICE, title, message, type);
 	}
 	
 	/**
-	 * <p>响应消息</p>
-	 * 
-	 * @param message 消息
-	 * 
-	 * @return GuiContext
-	 */
-	public GuiContext response(String message) {
-		return this.event(Type.RESPONSE, message);
-	}
-	
-	/**
-	 * <p>选择下载文件</p>
+	 * 选择下载文件
 	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#MULTIFILE
 	 */
 	public GuiContext multifile(ITaskSession taskSession) {
 		return this.event(Type.MULTIFILE, taskSession);
 	}
 	
 	/**
-	 * <p>刷新任务列表</p>
+	 * 刷新任务列表
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#REFRESH_TASK_LIST
 	 */
 	public GuiContext refreshTaskList() {
 		return this.event(Type.REFRESH_TASK_LIST);
 	}
 	
 	/**
-	 * <p>刷新任务状态</p>
+	 * 刷新任务状态
 	 * 
 	 * @return GuiContext
+	 * 
+	 * @see Type#REFRESH_TASK_STATUS
 	 */
 	public GuiContext refreshTaskStatus() {
 		return this.event(Type.REFRESH_TASK_STATUS);
 	}
 
 	/**
-	 * <p>执行事件</p>
+	 * 响应消息
+	 * 
+	 * @param message 消息
+	 * 
+	 * @return GuiContext
+	 * 
+	 * @see Type#RESPONSE
+	 */
+	public GuiContext response(String message) {
+		return this.event(Type.RESPONSE, message);
+	}
+	
+	/**
+	 * 执行事件
 	 * 
 	 * @param type 类型
 	 * @param args 参数
@@ -331,7 +374,7 @@ public final class GuiContext implements IContext {
 			LOGGER.warn("错误GUI事件：{}", type);
 			return this;
 		}
-		final GuiEvent event = this.events.get(type);
+		final GuiEvent event = this.eventMapping.get(type);
 		if(event == null) {
 			LOGGER.warn("未知GUI事件：{}", type);
 			return this;
@@ -342,7 +385,7 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>注册扩展GUI消息代理</p>
+	 * 注册扩展GUI消息代理
 	 * 
 	 * @param extendGuiMessageSender 扩展GUI消息代理
 	 * 
@@ -350,7 +393,7 @@ public final class GuiContext implements IContext {
 	 */
 	public boolean extendGuiMessageHandler(IMessageSender extendGuiMessageSender) {
 		if(this.mode == Mode.NATIVE) {
-			LOGGER.debug("已经启用本地GUI：忽略注册扩展GUI消息代理");
+			LOGGER.debug("忽略注册扩展GUI消息代理：已经启用本地GUI");
 			return false;
 		} else {
 			LOGGER.debug("注册扩展GUI消息代理");
@@ -360,7 +403,7 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>发送扩展GUI消息</p>
+	 * 发送扩展GUI消息
 	 * 
 	 * @param message 扩展GUI消息
 	 */
@@ -381,7 +424,7 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>添加扩展GUI阻塞锁</p>
+	 * 添加扩展GUI阻塞锁
 	 */
 	public void lock() {
 		synchronized (this.lock) {
@@ -395,7 +438,7 @@ public final class GuiContext implements IContext {
 	}
 	
 	/**
-	 * <p>释放扩展GUI阻塞锁</p>
+	 * 释放扩展GUI阻塞锁
 	 */
 	public void unlock() {
 		synchronized (this.lock) {

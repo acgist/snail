@@ -9,8 +9,11 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -522,25 +525,32 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>获取参数值</p>
+	 * 参数键值对转为Map
 	 * 
-	 * @param arg 参数键值对
-	 * @param key 参数键
+	 * @param args 参数键值对
 	 * 
-	 * @return 参数值
+	 * @return Map
 	 */
-	public static final String argValue(final String arg, final String key) {
-		String value = arg;
-		if(startsWith(value, key)) {
-			// 去掉键值
-			value = value.substring(key.length()).strip();
-			final String equals = SymbolConfig.Symbol.EQUALS.toString();
-			if(startsWith(value, equals)) {
-				// 去掉等号
-				return value.substring(equals.length()).strip();
+	public static final Map<String, String> argsMap(final String ... args) {
+		final Map<String, String> map = new HashMap<>();
+		if(ArrayUtils.isEmpty(args)) {
+			return map;
+		}
+		// 设置VM参数
+		final Properties properties = System.getProperties();
+		properties.forEach((k, v) -> map.put(String.valueOf(k), String.valueOf(v)));
+		// 设置应用参数
+		final char equals = SymbolConfig.Symbol.EQUALS.toChar();
+		int index;
+		for (String arg : args) {
+			index = arg.indexOf(equals);
+			if(index < 0) {
+				map.put(arg.toLowerCase(), null);
+			} else {
+				map.put(arg.substring(0, index).strip().toLowerCase(), arg.substring(index + 1).strip());
 			}
 		}
-		return null;
+		return map;
 	}
 	
 	/**

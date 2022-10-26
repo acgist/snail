@@ -538,7 +538,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	
 	@Override
 	public String toString() {
-		return BeanUtils.toString(this, this.getName());
+		return BeanUtils.toString(this, this.getId(), this.getName());
 	}
 	
 }
