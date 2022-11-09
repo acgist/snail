@@ -20,13 +20,13 @@ class NodeContextTest extends Performance {
 	void testNewNodeSession() {
 		LoggerConfig.off();
 //		this.costed(1000, () -> {
-//			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+//			NodeContext.getInstance().newNodeSession(StringUtils.unhex(this.buildId()), "0", 0);
 //		});
 //		this.costed(1000, () -> {
 //			NodeContext.getInstance().sortNodes();
 //		});
 		this.costed(10000, () -> {
-			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(this.buildId()), "0", 0);
 		});
 		var oldNodes = NodeContext.getInstance().nodes();
 		var newNodes = NodeContext.getInstance().nodes();
@@ -46,11 +46,13 @@ class NodeContextTest extends Performance {
 	void testFindNode() {
 		LoggerConfig.off();
 		this.costed(10000, () -> {
-			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(this.buildId()), "0", 0);
 		});
 		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::useable).count();
 		this.log("可用节点：{}", size);
-		final var target = buildId();
+		final var target = this.buildId();
+//		final var target = "0".repeat(40);
+//		final var target = "f".repeat(40);
 //		final var target = StringUtils.hex(NodeContext.getInstance().nodes().get(0).getId());
 //		NodeContext.getInstance().nodes().forEach(node -> this.log(StringUtils.hex(node.getId())));
 //		this.log("----");
@@ -75,7 +77,7 @@ class NodeContextTest extends Performance {
 	void testResize() {
 		LoggerConfig.off();
 		this.costed(10000, () -> {
-			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(this.buildId()), "0", 0);
 		});
 		long size = NodeContext.getInstance().nodes().stream().filter(NodeSession::useable).count();
 		this.log("可用节点：{}", size);
@@ -90,9 +92,9 @@ class NodeContextTest extends Performance {
 	void testMinFindNode() {
 		LoggerConfig.off();
 		this.costed(2, () -> {
-			NodeContext.getInstance().newNodeSession(StringUtils.unhex(buildId()), "0", 0);
+			NodeContext.getInstance().newNodeSession(StringUtils.unhex(this.buildId()), "0", 0);
 		});
-		final var target = buildId();
+		final var target = this.buildId();
 		final var nodes = NodeContext.getInstance().findNode(target);
 		nodes.forEach(node -> this.log(StringUtils.hex(node.getId())));
 		assertTrue(8 > nodes.size());
@@ -117,6 +119,13 @@ class NodeContextTest extends Performance {
 			listE.add(StringUtils.hex(NodeContext.getInstance().buildNodeId("43.213.53.83")));
 		}
 		this.costed();
+		assertTrue(
+			listA.stream().filter(value -> value.endsWith("01")).count() > 0L &&
+			listB.stream().filter(value -> value.endsWith("56")).count() > 0L &&
+			listC.stream().filter(value -> value.endsWith("16")).count() > 0L &&
+			listD.stream().filter(value -> value.endsWith("41")).count() > 0L &&
+			listE.stream().filter(value -> value.endsWith("5a")).count() > 0L
+		);
 //		IP           rand  example node ID
 //		============ ===== ==========================================
 //		124.31.75.21   1   5fbfbf  f10c5d6a4ec8a88e4c6ab4c28b95eee4 01

@@ -22,11 +22,14 @@ import com.acgist.snail.utils.NumberUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>DHT节点上下文</p>
- * <p>协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia</p>
- * <p>BT=DHT、eMule=KAD</p>
- * <p>DHT Security extension</p>
- * <p>协议链接：http://www.bittorrent.org/beps/bep_0042.html</p>
+ * DHT节点上下文
+ * 协议链接（DHT）：https://baike.baidu.com/item/DHT
+ * 协议链接（Kademlia）：https://baike.baidu.com/item/Kademlia
+ * DHT Security extension
+ * 协议链接：http://www.bittorrent.org/beps/bep_0042.html
+ * 
+ * BT协议使用DHT网络
+ * eMule协议使用KAD网络
  * 
  * @author acgist
  */
@@ -41,46 +44,37 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>Node查找时返回的列表长度：{@value}</p>
+	 * Node查找时返回的列表长度：{@value}
 	 */
 	private static final int MAX_NODE_SIZE = 8;
 	/**
-	 * <p>IPv4 MASK</p>
+	 * IPv4 MASK
 	 */
 	private static final byte[] IPV4_MASK = NumberUtils.intToBytes(0x030F3FFF);
 	/**
-	 * <p>IPv6 MASK</p>
+	 * IPv6 MASK
 	 */
 	private static final byte[] IPV6_MASK = NumberUtils.longToBytes(0x0103070F1F3F7FFFL);
-	/**
-	 * <p>NodeId随机填充位置：{@value}</p>
-	 */
-	private static final int NODE_ID_RANDOM_INDEX = 3;
-	/**
-	 * <p>NodeId随机填充长度：{@value}</p>
-	 */
-	private static final int NODE_ID_RANDOM_LENGTH = 16;
 	
 	/**
-	 * <p>NodeId</p>
+	 * NodeId
 	 */
 	private final byte[] nodeId;
 	/**
-	 * <p>节点列表</p>
-	 * <p>不要使用LinkedList：大量使用索引操作所以性能很差</p>
-	 * <p>如果节点数量太多建议使用循环链表使用分片查询，或者提取每个节点首个字母实现跳表。</p>
+	 * 节点列表
+	 * 不要使用LinkedList：大量使用索引操作所以LinkedList性能很差
+	 * 如果节点数量太多，建议使用分片查找算法，或者按照节点开始字母实现跳表。
 	 */
 	private final List<NodeSession> nodes;
 	
 	private NodeContext() {
-		this.nodeId = this.buildNodeId();
+		// 随机生成NodeId：拿到外网IP后再重新生成
+		this.nodeId = ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
 		this.nodes = new ArrayList<>();
 		this.register();
 	}
 	
 	/**
-	 * <p>获取NodeId</p>
-	 * 
 	 * @return NodeId
 	 */
 	public byte[] nodeId() {
@@ -88,18 +82,9 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>生成NodeId</p>
+	 * 通过外网IP生成NodeId
 	 * 
-	 * @return NodeId
-	 */
-	private byte[] buildNodeId() {
-		return ArrayUtils.random(DhtConfig.NODE_ID_LENGTH);
-	}
-
-	/**
-	 * <p>通过IP生成NodeId</p>
-	 * 
-	 * @param ip IP
+	 * @param ip 外网IP
 	 * 
 	 * @return NodeId
 	 */
@@ -116,27 +101,33 @@ public final class NodeContext implements IContext {
 		for (int index = 0; index < length; ++index) {
 			ipBytes[index] &= mask[index];
 		}
-		final CRC32C crc32c = new CRC32C();
+		// 生成随机种子
 		final Random random = NumberUtils.random();
 		final byte rand = (byte) (random.nextInt());
 		final byte r = (byte) (rand & 0x07);
+		// 生成IP的循环冗余校验码
+		final CRC32C crc32c = new CRC32C();
 		ipBytes[0] |= r << 5;
 		crc32c.update(ipBytes, 0, length);
+		// 设置IP的循环冗余校验码
 		final int crc = (int) crc32c.getValue();
 		this.nodeId[0] = (byte) (crc >> 24);
 		this.nodeId[1] = (byte) (crc >> 16);
 		this.nodeId[2] = (byte) ((crc >> 8 & 0xF8) | (random.nextInt() & 0x07));
-		System.arraycopy(ArrayUtils.random(NODE_ID_RANDOM_LENGTH), 0, this.nodeId, NODE_ID_RANDOM_INDEX, NODE_ID_RANDOM_LENGTH);
+		// 随机填充3-18位置数据
+		System.arraycopy(ArrayUtils.random(16), 0, this.nodeId, 3, 16);
+		// 设置随机种子
 		this.nodeId[19] = rand;
 		return this.nodeId;
 	}
 	
 	/**
-	 * <p>注册默认DHT节点</p>
+	 * 注册默认DHT节点
 	 */
 	private void register() {
+		final char colon = SymbolConfig.Symbol.COLON.toChar();
 		DhtConfig.getInstance().nodes().forEach((nodeId, address) -> {
-			final int index = address.lastIndexOf(SymbolConfig.Symbol.COLON.toChar());
+			final int index = address.lastIndexOf(colon);
 			if(index > 0) {
 				final String host = address.substring(0, index);
 				final String port = address.substring(index + 1);
@@ -153,8 +144,6 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有节点拷贝</p>
-	 * 
 	 * @return 所有节点拷贝
 	 */
 	public List<NodeSession> nodes() {
@@ -164,8 +153,8 @@ public final class NodeContext implements IContext {
 	}
 
 	/**
-	 * <p>整理节点长度</p>
-	 * <p>超过最大保存数量：删除验证节点和多余节点</p>
+	 * 整理节点长度
+	 * 超过最大保存数量：删除验证节点和多余节点
 	 * 
 	 * @return 所有节点拷贝
 	 * 
@@ -173,8 +162,8 @@ public final class NodeContext implements IContext {
 	 */
 	public List<NodeSession> resize() {
 		synchronized (this.nodes) {
-			final int size = this.nodes.size();
-			if(size < DhtConfig.MAX_NODE_SIZE) {
+			final int oldSize = this.nodes.size();
+			if(oldSize < DhtConfig.MAX_NODE_SIZE) {
 				return this.nodes();
 			}
 			NodeSession session;
@@ -182,32 +171,28 @@ public final class NodeContext implements IContext {
 			final Iterator<NodeSession> iterator = this.nodes.iterator();
 			while(iterator.hasNext()) {
 				session = iterator.next();
-				switch (session.getStatus()) {
-				case UNUSE:
-					// 随机均匀剔除
-					if(random.nextInt(size) >= DhtConfig.MAX_NODE_SIZE) {
-						iterator.remove();
-					}
-					break;
-				case VERIFY:
-					// 验证状态剔除
+				final boolean remove = switch (session.getStatus()) {
+				// 随机均匀剔除
+				case UNUSE -> random.nextInt(oldSize) >= DhtConfig.MAX_NODE_SIZE;
+				// 验证状态剔除
+				case VERIFY -> true;
+				// 可用状态保存
+				default -> false;
+				};
+				if(remove) {
 					iterator.remove();
-					break;
-				default:
-					// 可用状态保存
-					break;
 				}
 			}
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("整理节点长度：{}-{}", size, this.nodes.size());
+				LOGGER.debug("整理节点长度：{}-{}", oldSize, this.nodes.size());
 			}
 			return this.nodes();
 		}
 	}
 	
 	/**
-	 * <p>添加DHT节点</p>
-	 * <p>需要验证节点状态</p>
+	 * 添加DHT节点
+	 * 需要验证节点状态
 	 * 
 	 * @param host 地址
 	 * @param port 端口
@@ -224,8 +209,8 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>添加DHT节点</p>
-	 * <p>不用验证节点状态</p>
+	 * 添加DHT节点
+	 * 不用验证节点状态
 	 * 
 	 * @param nodeId 节点ID
 	 * @param host 地址
@@ -234,6 +219,10 @@ public final class NodeContext implements IContext {
 	 * @return DHT节点
 	 */
 	public NodeSession newNodeSession(byte[] nodeId, String host, Integer port) {
+		if(nodeId.length != DhtConfig.NODE_ID_LENGTH) {
+			LOGGER.warn("添加Node失败：{}-{}-{}", nodeId, host, port);
+			return null;
+		}
 		synchronized (this.nodes) {
 			final int[] nodeIndex = this.close(nodeId);
 			final int index = nodeIndex[0];
@@ -242,19 +231,15 @@ public final class NodeContext implements IContext {
 				return this.nodes.get(index);
 			}
 			final NodeSession nodeSession = NodeSession.newInstance(nodeId, host, port);
-			if(nodeSession.getId().length == DhtConfig.NODE_ID_LENGTH) {
-				LOGGER.debug("添加Node：{}", nodeSession);
-				// 添加指定节点位置
-				this.nodes.add(index, nodeSession);
-			} else {
-				LOGGER.debug("添加Node失败：{}", nodeSession);
-			}
+			LOGGER.debug("添加Node：{}", nodeSession);
+			// 添加指定节点位置
+			this.nodes.add(index, nodeSession);
 			return nodeSession;
 		}
 	}
 	
 	/**
-	 * <p>查找节点列表</p>
+	 * 查找节点列表
 	 * 
 	 * @param target InfoHashHex或者NodeIdHex
 	 * 
@@ -265,8 +250,7 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>查找节点列表</p>
-	 * <p>如果节点数据很大：可以使用分片查找或者二分查找算法</p>
+	 * 查找节点列表
 	 * 
 	 * @param target InfoHash或者NodeId
 	 * 
@@ -285,8 +269,9 @@ public final class NodeContext implements IContext {
 				final int[] nodeIndex = this.close(target);
 				final int index = nodeIndex[0];
 				int size = 0;
-				int leftPos = 0;
-				int rightPos = 1;
+				// 查找位置大于当前节点
+				int leftPos = 1;
+				int rightPos = 0;
 				NodeSession leftNode;
 				NodeSession rightNode;
 				while(
@@ -315,7 +300,7 @@ public final class NodeContext implements IContext {
 	}
 
 	/**
-	 * <p>标记节点为可用状态</p>
+	 * 标记节点为可用状态
 	 * 
 	 * @param nodeId 节点ID
 	 */
@@ -329,7 +314,7 @@ public final class NodeContext implements IContext {
 	}
 
 	/**
-	 * <p>选择节点</p>
+	 * 选择节点
 	 * 
 	 * @param index 节点索引
 	 * @param nodeSize 节点数量
@@ -346,7 +331,7 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>选择节点</p>
+	 * 选择节点
 	 * 
 	 * @param nodeId 节点ID
 	 * 
@@ -362,31 +347,16 @@ public final class NodeContext implements IContext {
 	}
 	
 	/**
-	 * <p>查找最近节点信息</p>
+	 * 查找最近节点信息
 	 * 
-	 * <table border="1">
-	 * 	<caption>节点标记</caption>
-	 * 	<tr>
-	 * 		<th>标记</th>
-	 * 		<th>描述</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>正数</td>
-	 * 		<td>节点索引ID小于返回节点ID</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>0</td>
-	 * 		<td>节点索引ID等于返回节点ID</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>负数</td>
-	 * 		<td>节点索引ID大于返回节点ID</td>
-	 * 	</tr>
-	 * </table>
+	 * 节点标记
+	 * 正数=节点索引ID小于返回节点ID
+	 * 0=节点索引ID等于返回节点ID
+	 * 负数=节点索引ID大于返回节点ID
 	 * 
 	 * @param nodeId 节点ID
 	 * 
-	 * @return 最近节点信息：[ 节点索引, 节点标记 ]
+	 * @return [ 节点索引, 节点标记 ]
 	 */
 	private int[] close(byte[] nodeId) {
 		int index = 0;

@@ -85,6 +85,18 @@ public interface IMessageSender {
 	InetSocketAddress remoteSocketAddress();
 	
 	/**
+	 * 重连
+	 */
+	default void reconnect() {
+	}
+	
+	/**
+	 * 心跳
+	 */
+	default void heartbeat() {
+	}
+	
+	/**
 	 * <p>关闭资源</p>
 	 */
 	void close();

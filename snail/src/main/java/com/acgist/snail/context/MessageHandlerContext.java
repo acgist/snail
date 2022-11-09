@@ -65,7 +65,7 @@ public final class MessageHandlerContext implements IContext {
 		final List<IMessageHandler> uselessList = new ArrayList<>();
 		synchronized (this.handlers) {
 			IMessageHandler handler;
-			final int total = this.handlers.size();
+			final int oldSize = this.handlers.size();
 			final Iterator<IMessageHandler> iterator = this.handlers.iterator();
 			while(iterator.hasNext()) {
 				handler = iterator.next();
@@ -81,7 +81,7 @@ public final class MessageHandlerContext implements IContext {
 				}
 			}
 			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("处理完成无效消息代理：{}-{}-{}", total, this.handlers.size(), uselessList.size());
+				LOGGER.debug("处理完成无效消息代理：{}-{}-{}", oldSize, this.handlers.size(), uselessList.size());
 			}
 		}
 		uselessList.forEach(IMessageHandler::close);

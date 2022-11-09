@@ -78,5 +78,5 @@ public abstract class Client<T extends IMessageSender> implements IMessageSender
 			this.handler.close();
 		}
 	}
-
+	
 }
