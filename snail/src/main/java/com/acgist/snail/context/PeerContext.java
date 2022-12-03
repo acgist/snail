@@ -19,7 +19,7 @@ import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>Peer上下文</p>
+ * Peer上下文
  * 
  * @author acgist
  */
@@ -34,29 +34,30 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>have消息队列</p>
+	 * have消息队列
+	 * have消息不是每个Piece下载完成立即发出，使用定时任务减小交互次数。
 	 */
 	private final Map<String, List<Integer>> haves;
 	/**
-	 * <p>Peer下载队列</p>
-	 * <p>Peer使用时从下载队列中取出，使用结束后重新放回下载队列。</p>
-	 * <p>InfoHashHex=Peer双端队列（尾部优先使用）</p>
+	 * Peer下载队列
+	 * Peer使用时从下载队列中取出，使用结束后重新放回下载队列。
+	 * InfoHashHex=Peer双端队列（尾部优先使用）
 	 */
-	private final Map<String, Deque<PeerSession>> peers;
+	private final Map<String, Deque<PeerSession>> activePeers;
 	/**
-	 * <p>Peer存档队列</p>
-	 * <p>InfoHashHex=Peer队列</p>
+	 * Peer存档列表
+	 * InfoHashHex=Peer存档列表
 	 */
-	private final Map<String, List<PeerSession>> storagePeers;
+	private final Map<String, List<PeerSession>> archivePeers;
 	
 	private PeerContext() {
 		this.haves = new ConcurrentHashMap<>();
-		this.peers = new ConcurrentHashMap<>();
-		this.storagePeers = new ConcurrentHashMap<>();
+		this.activePeers = new ConcurrentHashMap<>();
+		this.archivePeers = new ConcurrentHashMap<>();
 	}
 	
 	/**
-	 * <p>查找PeerSession</p>
+	 * 查找Peer信息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param host Peer地址
@@ -72,8 +73,6 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取Peer存档队列</p>
-	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
 	 * @return Peer存档队列
@@ -86,7 +85,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>判断是否找到Peer</p>
+	 * 判断是否找到Peer
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
@@ -100,20 +99,20 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>删除InfoHashHex所有队列</p>
+	 * 删除InfoHashHex所有队列
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
 	public void remove(String infoHashHex) {
 		LOGGER.debug("删除Peer队列：{}", infoHashHex);
 		this.haves.remove(infoHashHex);
-		this.peers.remove(infoHashHex);
-		this.storagePeers.remove(infoHashHex);
+		this.activePeers.remove(infoHashHex);
+		this.archivePeers.remove(infoHashHex);
 	}
 	
 	/**
-	 * <p>添加Peer</p>
-	 * <p>高优先级Peer插入尾部优先使用</p>
+	 * 添加Peer
+	 * 高优先级Peer插入尾部优先使用
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param parent 任务下载统计
@@ -150,7 +149,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>添加劣质Peer：插入头部</p>
+	 * 添加劣质Peer：插入头部
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param peerSession Peer信息
@@ -163,7 +162,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>添加优质Peer：插入尾部</p>
+	 * 添加优质Peer：插入尾部
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param peerSession Peer信息
@@ -176,7 +175,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>挑选优质Peer</p>
+	 * 挑选优质Peer信息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
@@ -192,6 +191,7 @@ public final class PeerContext implements IContext {
 				if(++index > size) {
 					break;
 				}
+				// 注意不要直接删除：防止重复进入下载队列添加不必要的验证
 				peerSession = deque.pollLast();
 				if(peerSession.available()) {
 					return peerSession;
@@ -204,7 +204,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>发送have消息</p>
+	 * 添加have消息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 * @param index Piece索引
@@ -217,7 +217,7 @@ public final class PeerContext implements IContext {
 	}
 
 	/**
-	 * <p>发送have消息</p>
+	 * 发送have消息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
@@ -240,12 +240,12 @@ public final class PeerContext implements IContext {
 			}
 		});
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送have消息：{}-{}", sessions.size(), indexArray.length);
+			LOGGER.debug("发送have消息：{}-{}-{}", infoHashHex, sessions.size(), indexArray.length);
 		}
 	}
 	
 	/**
-	 * <p>发送PEX消息</p>
+	 * 发送PEX消息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
@@ -267,12 +267,12 @@ public final class PeerContext implements IContext {
 			}
 		});
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送PEX消息：{}", sessions.size());
+			LOGGER.debug("发送PEX消息：{}-{}-{}", infoHashHex, sessions.size(), optimize.size());
 		}
 	}
 	
 	/**
-	 * <p>发送uploadOnly消息</p>
+	 * 发送uploadOnly消息
 	 * 
 	 * @param infoHashHex InfoHashHex
 	 */
@@ -285,13 +285,11 @@ public final class PeerContext implements IContext {
 			}
 		});
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("发送uploadOnly消息：{}", sessions.size());
+			LOGGER.debug("发送uploadOnly消息：{}-{}", infoHashHex, sessions.size());
 		}
 	}
 	
 	/**
-	 * <p>获取have消息队列</p>
-	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
 	 * @return have消息队列
@@ -303,37 +301,31 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取Peer下载队列</p>
-	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
 	 * @return Peer下载队列
 	 */
 	private Deque<PeerSession> deque(String infoHashHex) {
-		synchronized (this.peers) {
-			return this.peers.computeIfAbsent(infoHashHex, key -> new LinkedBlockingDeque<>());
+		synchronized (this.activePeers) {
+			return this.activePeers.computeIfAbsent(infoHashHex, key -> new LinkedBlockingDeque<>());
 		}
 	}
 
 	/**
-	 * <p>获取Peer存档队列</p>
-	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
 	 * @return Peer存档队列
 	 */
 	private List<PeerSession> list(String infoHashHex) {
-		synchronized (this.storagePeers) {
-			return this.storagePeers.computeIfAbsent(infoHashHex, key -> new ArrayList<>());
+		synchronized (this.archivePeers) {
+			return this.archivePeers.computeIfAbsent(infoHashHex, key -> new ArrayList<>());
 		}
 	}
 	
 	/**
-	 * <p>获取存档队列连接中的Peer队列</p>
-	 * 
 	 * @param infoHashHex InfoHashHex
 	 * 
-	 * @return 连接中的Peer队列
+	 * @return 存档队列连接中的Peer队列
 	 */
 	private List<PeerSession> listConnectPeerSession(String infoHashHex) {
 		final var list = this.list(infoHashHex);
@@ -349,7 +341,7 @@ public final class PeerContext implements IContext {
 	}
 	
 	/**
-	 * <p>查找PeerSession</p>
+	 * 查找Peer信息
 	 * 
 	 * @param list 队列
 	 * @param host 地址
