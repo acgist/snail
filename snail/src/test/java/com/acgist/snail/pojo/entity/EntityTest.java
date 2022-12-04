@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.entity.ConfigEntity;
+import com.acgist.snail.context.entity.TaskEntity;
 import com.acgist.snail.utils.Performance;
 
 class EntityTest extends Performance {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 

@@ -3,8 +3,6 @@ package com.acgist.snail.net;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.context.exception.NetException;
-
 /**
  * <p>客户端</p>
  * <p>发送方法全部调用消息代理发送方法：否者子类重写将会导致发送失败</p>

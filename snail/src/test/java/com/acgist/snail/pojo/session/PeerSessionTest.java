@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.PeerConfig.ExtensionType;
+import com.acgist.snail.context.session.StatisticsSession;
+import com.acgist.snail.net.torrent.peer.PeerSession;
 import com.acgist.snail.utils.Performance;
 
 class PeerSessionTest extends Performance {

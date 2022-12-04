@@ -5,12 +5,9 @@ import java.nio.ByteBuffer;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.TrackerConfig.Action;
-import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.pojo.message.AnnounceMessage;
-import com.acgist.snail.pojo.message.ScrapeMessage;
 import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.PeerUtils;
 

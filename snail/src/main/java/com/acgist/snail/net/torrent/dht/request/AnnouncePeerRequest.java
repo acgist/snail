@@ -7,15 +7,15 @@ import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.DhtContext;
-import com.acgist.snail.context.PeerContext;
-import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentSession;
+import com.acgist.snail.net.torrent.dht.DhtContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
 import com.acgist.snail.net.torrent.dht.response.AnnouncePeerResponse;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.torrent.peer.PeerContext;
 import com.acgist.snail.utils.StringUtils;
 
 /**

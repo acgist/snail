@@ -2,15 +2,14 @@ package com.acgist.snail.net.upnp;
 
 import java.net.InetSocketAddress;
 
-import com.acgist.snail.context.NatContext;
-import com.acgist.snail.context.UpnpContext;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.wrapper.HeaderWrapper;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NatContext;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.StringMessageCodec;
-import com.acgist.snail.pojo.wrapper.HeaderWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**

@@ -3,9 +3,8 @@ package com.acgist.snail.net.torrent.dht;
 import java.net.InetSocketAddress;
 
 import com.acgist.snail.net.UdpClient;
+import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.net.torrent.TorrentServer;
-import com.acgist.snail.pojo.InfoHash;
-import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.StringUtils;
 

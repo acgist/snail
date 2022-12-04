@@ -1,8 +1,8 @@
 package com.acgist.snail.gui.event.adapter;
 
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
-import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.net.application.ApplicationMessage;
 
 /**
  * <p>GUI隐藏窗口事件</p>

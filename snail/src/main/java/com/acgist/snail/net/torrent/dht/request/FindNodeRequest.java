@@ -1,8 +1,8 @@
 package com.acgist.snail.net.torrent.dht.request;
 
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
+import com.acgist.snail.net.torrent.dht.NodeContext;
 import com.acgist.snail.net.torrent.dht.response.FindNodeResponse;
 
 /**

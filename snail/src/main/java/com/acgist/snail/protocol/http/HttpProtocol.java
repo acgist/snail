@@ -1,12 +1,12 @@
 package com.acgist.snail.protocol.http;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.http.HttpDownloader;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.http.HttpClient;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.protocol.Protocol;
 
 /**

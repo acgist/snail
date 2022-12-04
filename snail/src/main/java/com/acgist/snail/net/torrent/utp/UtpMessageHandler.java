@@ -9,10 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.config.UtpConfig;
-import com.acgist.snail.context.UtpContext;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.torrent.IEncryptMessageSender;

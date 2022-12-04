@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.LoggerConfig;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.Performance;
 
 class LineMessageCodecTest extends Performance {

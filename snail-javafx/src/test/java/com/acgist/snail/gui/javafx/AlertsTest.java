@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.GuiContext.MessageType;
+import com.acgist.snail.gui.GuiContext.MessageType;
 import com.acgist.snail.utils.Performance;
 
 import javafx.application.Platform;

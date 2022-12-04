@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.session.TrackerSession;
+import com.acgist.snail.net.torrent.tracker.TrackerContext;
+import com.acgist.snail.net.torrent.tracker.TrackerSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**

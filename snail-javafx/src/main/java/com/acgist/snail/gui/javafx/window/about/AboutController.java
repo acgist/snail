@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.window.Controller;

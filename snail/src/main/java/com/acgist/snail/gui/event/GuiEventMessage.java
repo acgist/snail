@@ -2,11 +2,11 @@ package com.acgist.snail.gui.event;
 
 import java.util.Map;
 
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.GuiContext.MessageType;
-import com.acgist.snail.context.GuiContext.Mode;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.MessageType;
+import com.acgist.snail.gui.GuiContext.Mode;
+import com.acgist.snail.net.application.ApplicationMessage;
 
 /**
  * <p>GUI消息事件</p>

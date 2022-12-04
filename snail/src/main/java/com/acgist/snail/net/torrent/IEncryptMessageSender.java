@@ -3,8 +3,8 @@ package com.acgist.snail.net.torrent;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.IMessageSender;
+import com.acgist.snail.net.NetException;
 
 /**
  * <p>加密消息代理接口</p>

@@ -13,14 +13,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.Torrent;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.TorrentPiece;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 

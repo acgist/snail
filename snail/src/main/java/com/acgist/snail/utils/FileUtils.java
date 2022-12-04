@@ -18,9 +18,9 @@ import java.util.Objects;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.ITaskSession.FileType;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession.FileType;
 
 /**
  * <p>文件工具</p>

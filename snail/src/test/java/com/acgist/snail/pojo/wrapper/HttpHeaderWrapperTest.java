@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.utils.Performance;
 
 class HttpHeaderWrapperTest extends Performance {

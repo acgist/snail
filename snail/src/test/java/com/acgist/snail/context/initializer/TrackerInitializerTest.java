@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.LoggerConfig;
+import com.acgist.snail.net.torrent.tracker.TrackerContext;
+import com.acgist.snail.net.torrent.tracker.TrackerInitializer;
 import com.acgist.snail.utils.Performance;
 
 class TrackerInitializerTest extends Performance {

@@ -1,14 +1,14 @@
 package com.acgist.snail.downloader.hls;
 
-import com.acgist.snail.context.HlsContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.downloader.MultifileDownloader;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.hls.HlsContext;
+import com.acgist.snail.net.hls.HlsSession;
 import com.acgist.snail.net.hls.TsLinker;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.session.HlsSession;
 
 /**
  * <p>HLS任务下载器</p>

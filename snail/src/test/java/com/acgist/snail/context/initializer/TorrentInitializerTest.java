@@ -9,6 +9,7 @@ import java.net.Socket;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.torrent.TorrentInitializer;
 import com.acgist.snail.utils.Performance;
 
 class TorrentInitializerTest extends Performance {

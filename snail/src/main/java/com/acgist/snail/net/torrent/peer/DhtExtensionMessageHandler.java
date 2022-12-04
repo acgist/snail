@@ -6,8 +6,7 @@ import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.NetUtils;
 import com.acgist.snail.utils.NumberUtils;
 

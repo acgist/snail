@@ -5,12 +5,12 @@ import java.io.File;
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.EntityContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.ITaskSessionStatus.Status;
+import com.acgist.snail.context.entity.TaskEntity;
+import com.acgist.snail.context.session.TaskSession;
 import com.acgist.snail.downloader.IDownloader;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSessionStatus.Status;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

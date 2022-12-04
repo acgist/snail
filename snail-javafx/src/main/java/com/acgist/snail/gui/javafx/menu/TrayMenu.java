@@ -13,8 +13,8 @@ import javax.swing.event.MouseInputAdapter;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.javafx.Desktops;
 import com.acgist.snail.gui.javafx.Fonts.SnailIcon;
 import com.acgist.snail.gui.javafx.Themes;

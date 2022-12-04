@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.session.SpeedSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

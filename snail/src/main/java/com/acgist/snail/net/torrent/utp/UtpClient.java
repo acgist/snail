@@ -2,8 +2,8 @@ package com.acgist.snail.net.torrent.utp;
 
 import com.acgist.snail.net.UdpClient;
 import com.acgist.snail.net.torrent.TorrentServer;
+import com.acgist.snail.net.torrent.peer.PeerSession;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
-import com.acgist.snail.pojo.session.PeerSession;
 
 /**
  * <p>UTP客户端</p>

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.Performance;
 
 class NetExceptionTest extends Performance {

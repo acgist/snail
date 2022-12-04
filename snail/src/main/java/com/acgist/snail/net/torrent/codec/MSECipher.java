@@ -12,8 +12,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.InfoHash;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.DigestUtils;
 

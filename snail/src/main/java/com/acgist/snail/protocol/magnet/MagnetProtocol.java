@@ -1,13 +1,13 @@
 package com.acgist.snail.protocol.magnet;
 
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.ITaskSession.FileType;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.Magnet;
+import com.acgist.snail.net.torrent.TorrentContext;
 import com.acgist.snail.net.torrent.peer.extension.MetadataMessageHandler;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.pojo.Magnet;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;

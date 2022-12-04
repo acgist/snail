@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.gui.recycle.local.LinuxRecycle;
 import com.acgist.snail.utils.Performance;
 
 public class LinuxRecycleTest extends Performance {

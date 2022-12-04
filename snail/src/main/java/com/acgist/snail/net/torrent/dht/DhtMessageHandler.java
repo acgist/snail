@@ -7,22 +7,19 @@ import java.util.function.Predicate;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.DhtConfig.ErrorCode;
 import com.acgist.snail.config.DhtConfig.QType;
-import com.acgist.snail.context.DhtContext;
-import com.acgist.snail.context.NodeContext;
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.UdpMessageHandler;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;
 import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
 import com.acgist.snail.net.torrent.dht.request.PingRequest;
 import com.acgist.snail.net.torrent.dht.response.FindNodeResponse;
 import com.acgist.snail.net.torrent.dht.response.GetPeersResponse;
-import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.pojo.session.TorrentSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**

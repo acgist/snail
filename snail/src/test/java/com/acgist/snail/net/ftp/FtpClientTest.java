@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 

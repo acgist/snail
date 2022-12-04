@@ -8,7 +8,7 @@ import java.beans.PropertyDescriptor;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.entity.ConfigEntity;
+import com.acgist.snail.context.entity.ConfigEntity;
 import com.acgist.snail.utils.Performance;
 
 class IntrospectorTest extends Performance {

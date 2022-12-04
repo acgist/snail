@@ -8,9 +8,9 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.M3u8.Type;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.hls.M3u8.Type;
 import com.acgist.snail.utils.Performance;
 
 class M3u8BuilderTest extends Performance {

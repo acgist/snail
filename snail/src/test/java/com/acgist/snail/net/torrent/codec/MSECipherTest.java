@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.InfoHash;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.Performance;
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 class PacketSizeExceptionTest extends Performance {

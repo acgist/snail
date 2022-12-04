@@ -14,8 +14,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.acgist.snail.IContext;
-import com.acgist.snail.context.exception.ScheduledException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 

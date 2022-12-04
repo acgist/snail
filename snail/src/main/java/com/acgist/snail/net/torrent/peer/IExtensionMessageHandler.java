@@ -2,7 +2,7 @@ package com.acgist.snail.net.torrent.peer;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.NetException;
 
 /**
  * <p>扩展协议接口</p>

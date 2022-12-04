@@ -1,8 +1,8 @@
 package com.acgist.snail.gui.javafx.event;
 
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
-import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.application.Platform;
 

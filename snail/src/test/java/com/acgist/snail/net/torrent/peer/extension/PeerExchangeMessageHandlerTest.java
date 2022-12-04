@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.format.BEncodeDecoder;
-import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.net.torrent.peer.PeerSession;
 import com.acgist.snail.utils.Performance;
 
 class PeerExchangeMessageHandlerTest extends Performance {

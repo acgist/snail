@@ -3,17 +3,17 @@ package com.acgist.snail.gui.javafx.window.torrent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.Torrent;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.Torrent;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentFile;
 import com.acgist.snail.protocol.Protocol.Type;
 
 import javafx.event.ActionEvent;

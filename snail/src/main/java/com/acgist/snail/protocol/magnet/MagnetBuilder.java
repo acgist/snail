@@ -1,13 +1,13 @@
 package com.acgist.snail.protocol.magnet;
 
 import com.acgist.snail.config.SymbolConfig;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.wrapper.URIWrapper;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.InfoHash;
-import com.acgist.snail.pojo.Magnet;
-import com.acgist.snail.pojo.Magnet.Type;
-import com.acgist.snail.pojo.wrapper.URIWrapper;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.InfoHash;
+import com.acgist.snail.net.torrent.Magnet;
+import com.acgist.snail.net.torrent.Magnet.Type;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.StringUtils;
 

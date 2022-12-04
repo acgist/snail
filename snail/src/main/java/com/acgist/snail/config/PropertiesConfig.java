@@ -10,9 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
+import com.acgist.snail.context.entity.ConfigEntity;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.entity.ConfigEntity;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 

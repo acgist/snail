@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.MapUtils;

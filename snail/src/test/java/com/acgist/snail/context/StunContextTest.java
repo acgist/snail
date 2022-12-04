@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.net.stun.StunContext;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

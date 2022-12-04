@@ -2,7 +2,7 @@ package com.acgist.snail.net.codec;
 
 import java.net.InetSocketAddress;
 
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**

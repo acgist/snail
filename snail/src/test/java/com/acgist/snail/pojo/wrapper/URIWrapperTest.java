@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.wrapper.URIWrapper;
 import com.acgist.snail.utils.Performance;
 
 class URIWrapperTest extends Performance {

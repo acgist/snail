@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.main.Application;
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.utils.ThreadUtils;
 
 class EventTest {

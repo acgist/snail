@@ -5,7 +5,7 @@ import java.util.List;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.net.torrent.dht.NodeSession;
 
 /**
  * <p>查找Node</p>

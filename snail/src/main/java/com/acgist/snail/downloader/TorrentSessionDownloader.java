@@ -1,10 +1,10 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
 
 /**

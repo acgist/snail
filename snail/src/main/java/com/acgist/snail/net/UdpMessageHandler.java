@@ -6,7 +6,6 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 

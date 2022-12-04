@@ -2,7 +2,7 @@ package com.acgist.snail.net.torrent.peer;
 
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.torrent.IEncryptMessageSender;

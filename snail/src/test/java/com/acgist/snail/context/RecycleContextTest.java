@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.gui.recycle.RecycleContext;
 import com.acgist.snail.utils.Performance;
 
 class RecycleContextTest extends Performance {

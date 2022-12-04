@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.Performance;
 
 class HlsProtocolTest extends Performance {

@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.javafx.window.torrent;
 
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.gui.javafx.window.Window;
-import com.acgist.snail.pojo.ITaskSession;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;

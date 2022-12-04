@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.ProtocolContext;
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.initializer.TorrentInitializer;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentFile;
+import com.acgist.snail.net.torrent.TorrentInitializer;
+import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.protocol.torrent.TorrentProtocol;
 import com.acgist.snail.utils.ArrayUtils;
 import com.acgist.snail.utils.FileUtils;

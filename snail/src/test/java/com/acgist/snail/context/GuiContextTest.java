@@ -11,11 +11,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail;
-import com.acgist.snail.context.GuiContext.MessageType;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.MessageType;
 import com.acgist.snail.gui.event.GuiEventMessage;
 import com.acgist.snail.net.application.ApplicationClient;
-import com.acgist.snail.pojo.message.ApplicationMessage.Type;
+import com.acgist.snail.net.application.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
 class GuiContextTest extends Performance {

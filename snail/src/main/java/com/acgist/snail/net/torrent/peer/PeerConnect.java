@@ -4,14 +4,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.acgist.snail.config.SystemConfig;
+import com.acgist.snail.context.IStatisticsSession;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.IPeerConnect;
-import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.pojo.TorrentPiece;
-import com.acgist.snail.pojo.session.PeerConnectSession;
-import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.torrent.TorrentPiece;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.BeanUtils;
 
 /**

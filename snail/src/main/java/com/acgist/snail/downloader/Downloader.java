@@ -1,13 +1,13 @@
 package com.acgist.snail.downloader;
 
 import com.acgist.snail.Snail;
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.context.IStatisticsSession;
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.SystemContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.IStatisticsSession;
-import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**

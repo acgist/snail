@@ -5,10 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.InfoHash;
-import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.session.TrackerSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.InfoHash;
+import com.acgist.snail.net.torrent.TorrentSession;
+import com.acgist.snail.net.torrent.tracker.TrackerContext;
+import com.acgist.snail.net.torrent.tracker.TrackerSession;
 import com.acgist.snail.utils.Performance;
 
 class TrackerContextTest extends Performance {

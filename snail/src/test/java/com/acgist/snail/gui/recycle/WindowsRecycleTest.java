@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.gui.recycle.local.WindowsRecycle;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;

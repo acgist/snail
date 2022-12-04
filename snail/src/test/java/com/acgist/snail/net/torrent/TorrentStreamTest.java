@@ -9,13 +9,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskSessionStatus.Status;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.context.ITaskSessionStatus.Status;
+import com.acgist.snail.context.entity.TaskEntity;
+import com.acgist.snail.context.session.TaskSession;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;

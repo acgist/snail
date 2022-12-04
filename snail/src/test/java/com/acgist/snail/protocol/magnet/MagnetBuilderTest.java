@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.pojo.Magnet;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.Magnet;
 import com.acgist.snail.utils.Performance;
 
 class MagnetBuilderTest extends Performance {

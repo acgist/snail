@@ -8,8 +8,8 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 class MSEPaddingSyncTest extends Performance {

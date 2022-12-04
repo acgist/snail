@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.context.session.StatisticsSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.utils.StringUtils;
 
 /**

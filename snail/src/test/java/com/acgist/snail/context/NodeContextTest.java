@@ -10,7 +10,8 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.pojo.session.NodeSession;
+import com.acgist.snail.net.torrent.dht.NodeContext;
+import com.acgist.snail.net.torrent.dht.NodeSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;
 

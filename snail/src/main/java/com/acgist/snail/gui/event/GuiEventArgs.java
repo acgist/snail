@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event;
 
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.GuiContext.Mode;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.Mode;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 

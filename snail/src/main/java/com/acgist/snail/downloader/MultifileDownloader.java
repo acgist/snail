@@ -1,10 +1,10 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**

@@ -2,9 +2,9 @@ package com.acgist.snail.gui.javafx;
 
 import java.io.IOException;
 
+import com.acgist.snail.context.ITaskSession.FileType;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession.FileType;
 
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;

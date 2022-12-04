@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.Torrent;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.TorrentInfo;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.Torrent;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentFile;
+import com.acgist.snail.net.torrent.TorrentInfo;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;

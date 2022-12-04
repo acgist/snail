@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.TaskInitializer;
 import com.acgist.snail.utils.Performance;
 
 class TaskInitializerTest extends Performance {

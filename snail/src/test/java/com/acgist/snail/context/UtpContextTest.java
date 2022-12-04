@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.net.torrent.utp.UtpContext;
 import com.acgist.snail.utils.Performance;
 
 class UtpContextTest extends Performance {

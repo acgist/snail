@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.NodeContext;
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.PacketSizeException;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.dht.NodeContext;
 import com.acgist.snail.utils.Performance;
 
 class TorrentBuilderTest extends Performance {

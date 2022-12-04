@@ -10,10 +10,12 @@ open module com.acgist.snail {
 	exports com.acgist.snail;
 	exports com.acgist.snail.config;
 	exports com.acgist.snail.context;
-	exports com.acgist.snail.context.exception;
-	exports com.acgist.snail.context.initializer;
+	exports com.acgist.snail.context.entity;
+	exports com.acgist.snail.context.session;
+	exports com.acgist.snail.context.wrapper;
 	exports com.acgist.snail.downloader;
 	exports com.acgist.snail.format;
+	exports com.acgist.snail.gui;
 	exports com.acgist.snail.gui.event;
 	exports com.acgist.snail.gui.event.adapter;
 	exports com.acgist.snail.gui.recycle;
@@ -33,11 +35,6 @@ open module com.acgist.snail {
 	exports com.acgist.snail.net.torrent.tracker;
 	exports com.acgist.snail.net.torrent.utp;
 	exports com.acgist.snail.net.upnp;
-	exports com.acgist.snail.pojo;
-	exports com.acgist.snail.pojo.entity;
-	exports com.acgist.snail.pojo.message;
-	exports com.acgist.snail.pojo.session;
-	exports com.acgist.snail.pojo.wrapper;
 	exports com.acgist.snail.protocol;
 	exports com.acgist.snail.protocol.ftp;
 	exports com.acgist.snail.protocol.hls;

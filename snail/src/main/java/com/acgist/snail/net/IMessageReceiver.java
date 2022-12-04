@@ -3,8 +3,6 @@ package com.acgist.snail.net;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import com.acgist.snail.context.exception.NetException;
-
 /**
  * <p>消息接收代理接口</p>
  * 

@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.TorrentFile;
+import com.acgist.snail.net.torrent.TorrentFile;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.FileUtils;
 

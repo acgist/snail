@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.config.StunConfig;
-import com.acgist.snail.context.UtpContext;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.stun.StunMessageHandler;
 import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
+import com.acgist.snail.net.torrent.utp.UtpContext;
 
 /**
  * <p>Torrent（UTP、DHT、STUN）消息接收代理</p>

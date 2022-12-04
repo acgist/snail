@@ -11,7 +11,7 @@ import javax.crypto.Cipher;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 

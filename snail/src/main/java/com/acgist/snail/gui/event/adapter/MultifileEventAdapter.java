@@ -3,17 +3,17 @@ package com.acgist.snail.gui.event.adapter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.GuiContext.Mode;
-import com.acgist.snail.context.TorrentContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.Mode;
 import com.acgist.snail.gui.event.GuiEventArgs;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.TorrentFile;
-import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.application.ApplicationMessage;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentFile;
 import com.acgist.snail.utils.ModifyOptional;
 import com.acgist.snail.utils.StringUtils;
 

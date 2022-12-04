@@ -12,7 +12,7 @@ import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.ITaskSession.FileType;
+import com.acgist.snail.context.ITaskSession.FileType;
 
 class FileUtilsTest extends Performance {
 	

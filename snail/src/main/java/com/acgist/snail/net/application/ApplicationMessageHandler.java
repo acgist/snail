@@ -6,26 +6,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SymbolConfig;
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.GuiContext.Mode;
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.context.TaskContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.Mode;
+import com.acgist.snail.gui.GuiMessage;
 import com.acgist.snail.gui.event.adapter.MultifileEventAdapter;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.IMessageEncoder;
 import com.acgist.snail.net.codec.LineMessageCodec;
 import com.acgist.snail.net.codec.StringMessageCodec;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.message.ApplicationMessage;
-import com.acgist.snail.pojo.message.GuiMessage;
 import com.acgist.snail.utils.StringUtils;
 
 /**

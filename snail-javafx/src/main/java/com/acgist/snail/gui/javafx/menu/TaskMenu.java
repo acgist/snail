@@ -3,7 +3,7 @@ package com.acgist.snail.gui.javafx.menu;
 import java.io.File;
 import java.util.Optional;
 
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.javafx.Alerts;
 import com.acgist.snail.gui.javafx.Choosers;
 import com.acgist.snail.gui.javafx.Clipboards;

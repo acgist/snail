@@ -1,16 +1,16 @@
 package com.acgist.snail.protocol.hls;
 
 import com.acgist.snail.config.SymbolConfig.Symbol;
-import com.acgist.snail.context.HlsContext;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
+import com.acgist.snail.context.wrapper.URIWrapper;
 import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.downloader.hls.HlsDownloader;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.hls.HlsContext;
+import com.acgist.snail.net.hls.M3u8;
 import com.acgist.snail.net.http.HttpClient;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.M3u8;
-import com.acgist.snail.pojo.wrapper.DescriptionWrapper;
-import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;

@@ -11,13 +11,12 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.downloader.Downloader;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.http.HttpClient;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.session.HlsSession;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 

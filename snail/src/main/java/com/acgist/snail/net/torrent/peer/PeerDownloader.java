@@ -3,9 +3,8 @@ package com.acgist.snail.net.torrent.peer;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.net.torrent.utp.UtpClient;
-import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TorrentSession;
 
 /**
  * <p>Peer下载</p>

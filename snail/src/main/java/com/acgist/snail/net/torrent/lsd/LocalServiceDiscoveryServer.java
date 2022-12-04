@@ -4,10 +4,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.context.SystemThreadContext;
-import com.acgist.snail.context.TorrentContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.UdpServer;
+import com.acgist.snail.net.torrent.TorrentContext;
 import com.acgist.snail.utils.NetUtils;
 
 /**

@@ -1,9 +1,9 @@
 package com.acgist.snail.downloader;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSessionStatus;
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.ITaskSessionStatus;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.NetException;
 
 /**
  * <p>下载器接口</p>

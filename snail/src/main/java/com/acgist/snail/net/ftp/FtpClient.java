@@ -5,11 +5,11 @@ import java.util.stream.Stream;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.wrapper.URIWrapper;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.pojo.wrapper.URIWrapper;
 import com.acgist.snail.utils.StringUtils;
 
 /**

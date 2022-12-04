@@ -1,8 +1,8 @@
 package com.acgist.main;
 
 import com.acgist.snail.Snail;
-import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.SystemContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.javafx.event.AlertEvent;
 import com.acgist.snail.gui.javafx.event.BuildEvent;
 import com.acgist.snail.gui.javafx.event.ExitEvent;

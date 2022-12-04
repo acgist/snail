@@ -4,8 +4,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.context.exception.NetException;
-import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.net.NetException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.net.codec.MessageCodec;
 import com.acgist.snail.net.torrent.peer.PeerSubMessageHandler;
 

@@ -4,7 +4,6 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
-import com.acgist.snail.context.MessageHandlerContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.BeanUtils;

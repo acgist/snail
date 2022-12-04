@@ -2,7 +2,6 @@ package com.acgist.snail.net.torrent.peer;
 
 import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.pojo.session.PeerSession;
 
 /**
  * <p>Peer客户端</p>

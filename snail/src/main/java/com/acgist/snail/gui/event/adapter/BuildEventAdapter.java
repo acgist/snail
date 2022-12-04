@@ -1,6 +1,6 @@
 package com.acgist.snail.gui.event.adapter;
 
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
 
 /**

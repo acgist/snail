@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.context.DhtContext;
-import com.acgist.snail.context.NodeContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.torrent.dht.DhtContext;
+import com.acgist.snail.net.torrent.dht.NodeContext;
+import com.acgist.snail.net.torrent.dht.NodeSession;
 import com.acgist.snail.net.torrent.dht.request.AnnouncePeerRequest;
 import com.acgist.snail.net.torrent.dht.request.FindNodeRequest;
 import com.acgist.snail.net.torrent.dht.request.GetPeersRequest;
@@ -17,7 +18,6 @@ import com.acgist.snail.net.torrent.dht.response.AnnouncePeerResponse;
 import com.acgist.snail.net.torrent.dht.response.FindNodeResponse;
 import com.acgist.snail.net.torrent.dht.response.GetPeersResponse;
 import com.acgist.snail.net.torrent.dht.response.PingResponse;
-import com.acgist.snail.pojo.session.NodeSession;
 import com.acgist.snail.utils.StringUtils;
 
 /**

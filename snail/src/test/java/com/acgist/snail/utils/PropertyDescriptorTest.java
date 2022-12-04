@@ -11,8 +11,8 @@ import java.util.WeakHashMap;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.ITaskSessionStatus.Status;
-import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.context.ITaskSessionStatus.Status;
+import com.acgist.snail.context.entity.TaskEntity;
 
 class PropertyDescriptorTest extends Performance {
 

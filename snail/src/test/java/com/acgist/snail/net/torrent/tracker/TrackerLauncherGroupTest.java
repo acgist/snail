@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.InfoHash;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.session.TaskSession;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.context.entity.TaskEntity;
+import com.acgist.snail.context.session.TaskSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.InfoHash;
+import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

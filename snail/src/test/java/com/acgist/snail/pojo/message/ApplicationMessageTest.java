@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.message.ApplicationMessage.Type;
+import com.acgist.snail.net.application.ApplicationMessage;
+import com.acgist.snail.net.application.ApplicationMessage.Type;
 import com.acgist.snail.utils.Performance;
 
 class ApplicationMessageTest extends Performance {

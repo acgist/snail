@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.TorrentContext;
 import com.acgist.snail.utils.Performance;
 
 class TorrentContextTest extends Performance {

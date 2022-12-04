@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.TcpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.IMessageEncoder;

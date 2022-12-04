@@ -1,9 +1,9 @@
 package com.acgist.snail.gui.javafx.window.main;
 
+import com.acgist.snail.context.ITaskSession;
+import com.acgist.snail.context.ITaskSession.FileType;
 import com.acgist.snail.gui.javafx.Fonts;
 import com.acgist.snail.gui.javafx.Tooltips;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSession.FileType;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

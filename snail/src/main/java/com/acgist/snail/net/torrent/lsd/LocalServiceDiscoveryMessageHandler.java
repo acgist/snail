@@ -5,15 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.context.PeerContext;
-import com.acgist.snail.context.TorrentContext;
+import com.acgist.snail.context.wrapper.HeaderWrapper;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.UdpMessageHandler;
 import com.acgist.snail.net.codec.IMessageDecoder;
 import com.acgist.snail.net.codec.StringMessageCodec;
-import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.wrapper.HeaderWrapper;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentSession;
+import com.acgist.snail.net.torrent.peer.PeerContext;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 

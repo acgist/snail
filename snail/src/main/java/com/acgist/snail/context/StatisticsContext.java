@@ -1,9 +1,6 @@
 package com.acgist.snail.context;
 
-import com.acgist.snail.IContext;
-import com.acgist.snail.pojo.ISpeedGetter;
-import com.acgist.snail.pojo.StatisticsGetter;
-import com.acgist.snail.pojo.session.StatisticsSession;
+import com.acgist.snail.context.session.StatisticsSession;
 
 /**
  * <p>系统统计上下文</p>

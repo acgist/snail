@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail.SnailBuilder;
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.ITaskSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.utils.Base32Utils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;

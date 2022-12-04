@@ -3,13 +3,10 @@ package com.acgist.snail.net.torrent.tracker;
 import java.util.Map;
 
 import com.acgist.snail.config.PeerConfig;
-import com.acgist.snail.context.PeerContext;
-import com.acgist.snail.context.TrackerContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.message.AnnounceMessage;
-import com.acgist.snail.pojo.session.TorrentSession;
-import com.acgist.snail.pojo.session.TrackerSession;
+import com.acgist.snail.net.torrent.TorrentSession;
+import com.acgist.snail.net.torrent.peer.PeerContext;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;
 

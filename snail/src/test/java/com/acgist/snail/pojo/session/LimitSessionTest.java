@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.pojo.session.LimitSession.Type;
+import com.acgist.snail.context.session.LimitSession;
+import com.acgist.snail.context.session.LimitSession.Type;
 import com.acgist.snail.utils.Performance;
 
 class LimitSessionTest extends Performance {

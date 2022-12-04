@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.TrackerContext;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.tracker.TrackerContext;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 

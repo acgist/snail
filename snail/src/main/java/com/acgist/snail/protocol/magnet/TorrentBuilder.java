@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.NodeContext;
-import com.acgist.snail.context.exception.PacketSizeException;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.InfoHash;
-import com.acgist.snail.pojo.Torrent;
+import com.acgist.snail.net.PacketSizeException;
+import com.acgist.snail.net.torrent.InfoHash;
+import com.acgist.snail.net.torrent.Torrent;
+import com.acgist.snail.net.torrent.dht.NodeContext;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.DateUtils;

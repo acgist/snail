@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.pojo.entity.TaskEntity;
+import com.acgist.snail.context.entity.TaskEntity;
 
 class BeanUtilsTest extends Performance {
 

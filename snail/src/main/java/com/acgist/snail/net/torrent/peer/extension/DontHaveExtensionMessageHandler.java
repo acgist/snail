@@ -7,7 +7,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.torrent.peer.ExtensionMessageHandler;
 import com.acgist.snail.net.torrent.peer.ExtensionTypeMessageHandler;
-import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.net.torrent.peer.PeerSession;
 import com.acgist.snail.utils.NumberUtils;
 
 /**

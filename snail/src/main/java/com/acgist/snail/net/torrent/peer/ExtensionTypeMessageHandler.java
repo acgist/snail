@@ -3,10 +3,9 @@ package com.acgist.snail.net.torrent.peer;
 import java.nio.ByteBuffer;
 
 import com.acgist.snail.config.PeerConfig.ExtensionType;
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.session.PeerSession;
+import com.acgist.snail.net.NetException;
 
 /**
  * <p>扩展协议类型</p>

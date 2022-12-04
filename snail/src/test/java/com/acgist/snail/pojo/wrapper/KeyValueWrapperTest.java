@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SymbolConfig;
+import com.acgist.snail.context.wrapper.KeyValueWrapper;
 import com.acgist.snail.utils.Performance;
 
 class KeyValueWrapperTest extends Performance {

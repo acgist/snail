@@ -7,14 +7,14 @@ import java.util.List;
 import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.PeerConfig;
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.DhtContext;
-import com.acgist.snail.context.PeerContext;
-import com.acgist.snail.context.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentContext;
+import com.acgist.snail.net.torrent.TorrentSession;
+import com.acgist.snail.net.torrent.dht.DhtContext;
 import com.acgist.snail.net.torrent.dht.DhtRequest;
 import com.acgist.snail.net.torrent.dht.DhtResponse;
-import com.acgist.snail.pojo.session.NodeSession;
-import com.acgist.snail.pojo.session.PeerSession;
-import com.acgist.snail.pojo.session.TorrentSession;
+import com.acgist.snail.net.torrent.dht.NodeSession;
+import com.acgist.snail.net.torrent.peer.PeerContext;
+import com.acgist.snail.net.torrent.peer.PeerSession;
 import com.acgist.snail.utils.NetUtils;
 
 /**

@@ -13,11 +13,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.EntityException;
+import com.acgist.snail.context.ITaskSession.FileType;
+import com.acgist.snail.context.entity.ConfigEntity;
+import com.acgist.snail.context.entity.TaskEntity;
 import com.acgist.snail.logger.LoggerConfig;
-import com.acgist.snail.pojo.ITaskSession.FileType;
-import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.Performance;
 

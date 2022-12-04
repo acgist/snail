@@ -13,14 +13,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.acgist.snail.IContext;
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.exception.EntityException;
+import com.acgist.snail.context.entity.ConfigEntity;
+import com.acgist.snail.context.entity.Entity;
+import com.acgist.snail.context.entity.TaskEntity;
+import com.acgist.snail.gui.recycle.RecycleContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.entity.ConfigEntity;
-import com.acgist.snail.pojo.entity.Entity;
-import com.acgist.snail.pojo.entity.TaskEntity;
 import com.acgist.snail.utils.FileUtils;
 
 /**

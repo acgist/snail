@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.PacketSizeException;
+import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 class BEncodeTest extends Performance {

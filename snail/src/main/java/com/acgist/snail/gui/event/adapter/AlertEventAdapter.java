@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event.adapter;
 
 import com.acgist.snail.gui.event.GuiEventMessage;
-import com.acgist.snail.pojo.message.ApplicationMessage;
+import com.acgist.snail.net.application.ApplicationMessage;
 
 /**
  * <p>GUI窗口消息事件</p>

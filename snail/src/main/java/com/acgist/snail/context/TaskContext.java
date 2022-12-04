@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-import com.acgist.snail.IContext;
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.entity.TaskEntity;
+import com.acgist.snail.context.session.TaskSession;
+import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.entity.TaskEntity;
-import com.acgist.snail.pojo.session.TaskSession;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**

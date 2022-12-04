@@ -19,10 +19,10 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.context.exception.NetException;
+import com.acgist.snail.context.wrapper.HttpHeaderWrapper;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
-import com.acgist.snail.pojo.wrapper.HttpHeaderWrapper;
+import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.IoUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.NumberUtils;

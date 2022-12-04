@@ -2,7 +2,7 @@ package com.acgist.snail.gui.javafx;
 
 import java.util.Optional;
 
-import com.acgist.snail.context.GuiContext;
+import com.acgist.snail.gui.GuiContext;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;

@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channel;
 
-import com.acgist.snail.context.exception.NetException;
 import com.acgist.snail.net.codec.IMessageDecoder;
 
 /**

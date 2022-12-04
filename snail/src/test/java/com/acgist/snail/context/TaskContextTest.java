@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail.SnailBuilder;
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.exception.DownloadException;
+import com.acgist.snail.context.ITaskSessionStatus.Status;
 import com.acgist.snail.downloader.magnet.MagnetDownloader;
 import com.acgist.snail.downloader.torrent.TorrentDownloader;
-import com.acgist.snail.pojo.ITaskSession;
-import com.acgist.snail.pojo.ITaskSessionStatus.Status;
+import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.protocol.Protocol.Type;
+import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.protocol.http.HttpProtocol;
 import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;

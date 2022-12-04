@@ -4,7 +4,6 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.TcpClient;
-import com.acgist.snail.pojo.message.ApplicationMessage;
 import com.acgist.snail.utils.NetUtils;
 
 /**

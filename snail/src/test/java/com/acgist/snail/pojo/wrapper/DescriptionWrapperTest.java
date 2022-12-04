@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
 import com.acgist.snail.utils.Performance;
 
 class DescriptionWrapperTest extends Performance {

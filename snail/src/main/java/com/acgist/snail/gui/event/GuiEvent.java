@@ -1,7 +1,7 @@
 package com.acgist.snail.gui.event;
 
-import com.acgist.snail.context.GuiContext;
-import com.acgist.snail.context.GuiContext.Mode;
+import com.acgist.snail.gui.GuiContext;
+import com.acgist.snail.gui.GuiContext.Mode;
 
 /**
  * <p>GUI事件</p>

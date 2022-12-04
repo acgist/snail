@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.exception.DownloadException;
-import com.acgist.snail.pojo.InfoHash;
+import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.utils.Performance;
 
 class InfoHashTest extends Performance {
