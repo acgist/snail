@@ -25,7 +25,7 @@ public final class TaskDisplay {
 	/**
 	 * <p>主窗口控制器</p>
 	 */
-	private MainController controller;
+	private volatile MainController controller;
 	/**
 	 * <p>初始化锁</p>
 	 */

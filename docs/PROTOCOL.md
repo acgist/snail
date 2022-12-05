@@ -8,6 +8,7 @@
 |FTP|√|
 |HLS|√|
 |HTTP|√|
+|RTSP|○|
 
 ## BT协议
 
@@ -81,7 +82,6 @@
 |IPv6|○|
 |[STUN](https://www.rfc-editor.org/rfc/rfc5389.txt)|√|
 |[UPnP](http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0.pdf)|√|
-|upload_only|√|
 |[Message Stream Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption)|√|
 
 *√=完成、○-进行中、×-未开始、?-待定*

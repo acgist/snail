@@ -1,10 +1,11 @@
-package com.acgist.snail.gui.javafx.theme;
+package com.acgist.snail.gui.javafx.theme.local;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.acgist.snail.gui.javafx.Themes;
+import com.acgist.snail.gui.javafx.theme.ITheme;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.StringUtils;

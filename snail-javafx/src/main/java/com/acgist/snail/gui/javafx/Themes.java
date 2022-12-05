@@ -3,7 +3,7 @@ package com.acgist.snail.gui.javafx;
 import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.context.SystemContext.SystemType;
 import com.acgist.snail.gui.javafx.theme.ITheme;
-import com.acgist.snail.gui.javafx.theme.WindowsTheme;
+import com.acgist.snail.gui.javafx.theme.local.WindowsTheme;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
