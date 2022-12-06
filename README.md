@@ -95,10 +95,8 @@ snail.lockDownload();
 使用快捷键`F12`进入统计页面可以查看当前下载任务的统计信息
 
 [开发帮助](./docs/API.md)
-
+[界面帮助](./docs/GUI.md)
 [使用帮助](./docs/HELP.md)
-
-[界面使用帮助](./docs/GUI.md)
 
 ## 其他
 
@@ -126,3 +124,4 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ### 白嫖
 
 [阿里云服务器](https://www.acgist.com/collect/server)
+
