@@ -123,14 +123,6 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 ![蜗牛](./docs/gui/main.png "蜗牛")
 
-### 贡献
-
-提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请阅读[代码规范](./CODE_OF_CONDUCT.md)、[贡献规范](./CONTRIBUTING.md)
-
-谢谢！
-
 ### 白嫖
 
 [阿里云服务器](https://www.acgist.com/collect/server)
-
-> 确实便宜
