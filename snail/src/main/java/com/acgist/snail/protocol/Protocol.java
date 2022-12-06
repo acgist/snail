@@ -19,7 +19,7 @@ import com.acgist.snail.utils.StringUtils;
  * 
  * @author acgist
  */
-public abstract class Protocol {
+public abstract class Protocol implements IProtocol {
 	
 	/**
 	 * <p>磁力链接（标准）：{@value}</p>

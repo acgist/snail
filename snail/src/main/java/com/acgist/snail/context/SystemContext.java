@@ -110,6 +110,17 @@ public final class SystemContext implements IContext {
 	 * <p>系统信息</p>
 	 */
 	public static final void info() {
+		LOGGER.info(
+			"""
+			
+			
+			:: Snail : 碧螺萧萧
+			:: https://gitee.com/acgist/snail
+			
+			月落乌啼霜满天，江枫渔火对愁眠。
+			姑苏城外寒山寺，夜半钟声到客船。
+			"""
+		);
 		final var runtime = Runtime.getRuntime();
 		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
 		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());

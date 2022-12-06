@@ -198,6 +198,10 @@ public final class GuiContext implements IContext {
 			this.mode = Mode.of(mode);
 			LOGGER.debug("运行模式：{}", this.mode);
 		}
+		if(this.mode == Mode.EXTEND) {
+			LOGGER.debug("扩展GUI注册事件代理");
+			GuiContext.registerAdapter();
+		}
 		return this;
 	}
 	

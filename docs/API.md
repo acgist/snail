@@ -2,13 +2,13 @@
 
 ## 下载协议
 
-|功能|接口/超类/方法|说明|
-|:-|:-|:-|
-|添加协议|`Protocol`||
-|注册协议|`ProtocolContext.getInstance().register(protocol);`||
-|实现下载|`Downloader`||
-|单文件下载器|`SingleFileDownloader`||
-|多文件下载器|`MultifileDownloader`|下载完成调用`unlockDownload`方法结束下载|
+|功能|描述|
+|:-|:-|
+|添加协议|`Protocol`|
+|注册协议|`ProtocolContext.getInstance().register(protocol);`|
+|下载器适配器|`Downloader`|
+|单文件下载器|`MonofileDownloader`|
+|多文件下载器|`MultifileDownloader`|
 
 ## 任务管理
 
@@ -23,34 +23,30 @@
 
 ```java
 final Snail snail = SnailBuilder.newBuilder()
-// 启用FTP下载协议
+// 启用下载协议
 //	.enableFtp()
-// 启用HLS下载协议
 //	.enableHls()
-// 启用HTTP下载协议
 //	.enableHttp()
-// 启用磁力链接下载协议
 //	.enableMagnet()
-// 启用BitTorrent下载协议
 //	.enableTorrent()
 // 启用所有下载协议
 	.enableAllProtocol()
-// 加载下载任务
+// 加载已有下载任务
 //	.loadTask()
-// 启动系统监听
+// 启动系统服务监听
 //	.application()
 // 同步创建
 	.buildSync();
 // 添加下载
 snail.download("下载链接");
-// 等待下载完成：可以自行实现阻塞替换
+// 等待下载完成
 snail.lockDownload();
 ```
 
 ### 添加BT任务
 
 ```java
-final String torrentPath = "种子文件";
+final var torrentPath = "种子文件";
 final var snail = SnailBuilder.newBuilder()
 	.enableTorrent()
 	.buildSync();
@@ -66,28 +62,11 @@ final var list = torrent.getInfo().files().stream()
 	.collect(Collectors.toList());
 // 设置下载文件
 MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
-// 开始下载
+// 添加下载
 snail.download(torrentPath);
 // 等待下载完成
 snail.lockDownload();
 ```
-
-#### BT协议管理
-
-|协议|管理工具|
-|:--|:--|
-|DHT|`DhtContext`/`NodeContext`|
-|Peer|`PeerContext`|
-|Tracker|`TrackerContext`|
-|Torrent|`TorrentContext`|
-
-#### BT任务指定优先下载位置
-
-```java
-TorrentSession.piecePos(int)
-```
-
-> 默认从头开始顺序下载，指定后优先从指定位置开始顺序下载。
 
 ## 消息通知
 
@@ -153,7 +132,7 @@ B编码`List<Map>`
 
 ### 系统通知
 
-通知系统事件，方便GUI做出相应操作。
+通知系统事件（方便GUI做出相应操作）
 
 |名称|类型|主体|
 |:--|:--|:--|
@@ -189,17 +168,17 @@ B编码`Map`
 
 ## 启动模式
 
-### 后台模式
-
-后台模式运行时，不使用本地GUI界面，可以通过[系统消息](#系统消息)和[系统通知](#系统通知)来完成系统管理和任务管理。
-
 ### 启动参数
 
 |参数|默认|描述|
 |:--:|:--|:--|
-|`mode`|`native`|`native`：本地GUI；`extend`：扩展GUI（后台模式）；|
+|`mode`|`native`|`native`：本地GUI；`extend`：扩展GUI；|
 
-#### 示例
+扩展GUI使用参考[后台模式](#后台模式)
+
+### 后台模式
+
+后台模式运行不使用本地GUI，可以通过[系统消息](#系统消息)和[系统通知](#系统通知)来完成系统管理和任务管理，方便扩展第三方非`Java`语言GUI。
 
 ```bash
 java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|extend]
@@ -207,18 +186,12 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ## GUI事件
 
-GUI分为**本地GUI**和**扩展GUI**，GUI事件用来通知界面应该做出什么响应。
-
-后台模式直接使用`GuiContext.registerAdapter()`，本地GUI按需适配。
-
-### GUI适配
-
 |名称|类型|系统通知|详细描述|适配器|
 |:--|:--|:--|:--|:--|
 |显示窗口|SHOW|SHOW|显示窗口|ShowEventAdapter|
 |隐藏窗口|HIDE|HIDE|隐藏窗口|HideEventAdapter|
 |退出窗口|EXIT|-|退出系统（静默处理）|ExitEventAdapter|
-|创建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
+|新建窗口|BUILD|-|阻塞系统（静默处理）|BuildEventAdapter|
 |窗口消息|ALERT|ALERT|窗口消息|AlertEventAdapter|
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
 |选择下载文件|MULTIFILE|MULTIFILE|选择下载文件|MultifileEventAdapter|

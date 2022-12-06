@@ -22,7 +22,7 @@ import com.acgist.snail.utils.IoUtils;
  * 
  * @author acgist
  */
-public abstract class SingleFileDownloader extends Downloader {
+public abstract class MonofileDownloader extends Downloader {
 	
 	/**
 	 * <p>快速失败时间（毫秒）：{@value}</p>
@@ -46,7 +46,7 @@ public abstract class SingleFileDownloader extends Downloader {
 	/**
 	 * @param taskSession 下载任务
 	 */
-	protected SingleFileDownloader(ITaskSession taskSession) {
+	protected MonofileDownloader(ITaskSession taskSession) {
 		super(taskSession);
 	}
 

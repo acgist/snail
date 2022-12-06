@@ -8,11 +8,11 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.NetException;
 
 /**
- * 初始化器
+ * 初始化适配器
  * 
  * @author acgist
  */
-public abstract class Initializer {
+public abstract class Initializer implements IInitializer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Initializer.class);
 	

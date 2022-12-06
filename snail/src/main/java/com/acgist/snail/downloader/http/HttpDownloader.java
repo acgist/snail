@@ -3,7 +3,7 @@ package com.acgist.snail.downloader.http;
 import java.nio.channels.Channels;
 
 import com.acgist.snail.context.ITaskSession;
-import com.acgist.snail.downloader.SingleFileDownloader;
+import com.acgist.snail.downloader.MonofileDownloader;
 import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.utils.FileUtils;
@@ -14,7 +14,7 @@ import com.acgist.snail.utils.IoUtils;
  * 
  * @author acgist
  */
-public final class HttpDownloader extends SingleFileDownloader {
+public final class HttpDownloader extends MonofileDownloader {
 
 	/**
 	 * @param taskSession 任务信息

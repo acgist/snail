@@ -1,10 +1,9 @@
-package com.acgist.snail.context.initializer;
+package com.acgist.snail.config;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.config.ConfigInitializer;
 import com.acgist.snail.utils.Performance;
 
 class ConfigInitializerTest extends Performance {

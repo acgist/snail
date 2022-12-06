@@ -1,9 +1,5 @@
 # 代码规范
 
-提交PR、问题建议[Issues](https://gitee.com/acgist/snail/issues)前请大家阅读本代码规范
-
-谢谢！
-
 总则：规范、可读、优美
 
 ## 缩进
@@ -124,25 +120,10 @@ return null;
 
 #### 稳定版本
 
-稳定版本（Release分支）只有使用Java长期支持版本（TLS）才会发布，同时发布Maven中央仓库。
-其他版本发布标签（Tag）不会发布Maven中央仓库。
+稳定版本（`Release`分支）只有使用`Java`长期支持版本（`TLS`）才会发布，同时发布`Maven`中央仓库。
+其他版本发布标签（`Tag`）不会发布`Maven`中央仓库。
 
 ### 包命名
-
-包功能描述
-
-|包名|描述|
-|:--|:--|
-|config|配置|
-|context|上下文|
-|downloader|下载器|
-|format|格式|
-|gui|Gui|
-|logger|日志|
-|net|网络|
-|pojo|POJO|
-|protocol|协议|
-|utils|工具|
 
 ### 类命名
 
@@ -187,12 +168,12 @@ DateUtils
 #### Getter
 
 * 纯数据类自动生成
-* 其他类建议直接使用变量名称作为Getter
+* 其他类建议直接使用变量名称作为`Getter`
 
 #### Setter
 
 * 纯数据类自动生成
-* 其他类建议直接使用变量名称作为Setter
+* 其他类建议直接使用变量名称作为`Setter`
 
 #### 测试方法
 
