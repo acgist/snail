@@ -25,6 +25,12 @@
 
 [最新稳定版本下载](https://gitee.com/acgist/snail/attach_files)
 
+### 版本
+
+`主版本号.Java版本号.修订号`
+
+`1.11.0`、`1.17.0`、`1.17.1`
+
 ### 附件说明
 
 |文件|描述|
@@ -35,8 +41,6 @@
 |snail-win-x.x.x-without-jre.tar|Win绿色版|
 |snail-mac-x.x.x-without-jre.tar|Mac绿色版|
 |snail-linux-x.x.x-without-jre.tar|Linux绿色版|
-
-* 版本：`snail-主版本号.Java版本号.修订号`
 
 * 带有`-without-jre`绿色版需要自己安装`Java`运行环境
 

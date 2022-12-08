@@ -92,8 +92,6 @@ snail.lockDownload();
 
 ### 帮助
 
-使用快捷键`F12`进入统计页面可以查看当前下载任务的统计信息
-
 [开发帮助](./docs/API.md)
 [界面帮助](./docs/GUI.md)
 [使用帮助](./docs/HELP.md)
@@ -102,8 +100,7 @@ snail.lockDownload();
 
 ### 仓库
 
-GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
-
+GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)<br />
 GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 ### 协议

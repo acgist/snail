@@ -201,6 +201,4 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 ## 测试数据
 
-[测试数据](https://pan.baidu.com/s/1awl2rubJJNbdz5GBGMNx7Q)
-
-> 提取码：`16pd`
+[测试数据](https://pan.baidu.com/s/1awl2rubJJNbdz5GBGMNx7Q?pwd=16pd)

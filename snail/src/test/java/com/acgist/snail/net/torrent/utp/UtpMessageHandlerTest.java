@@ -24,21 +24,6 @@ class UtpMessageHandlerTest extends Performance {
 	}
 	
 	@Test
-	void testSelect() {
-		final UtpConfig.Type[] types = UtpConfig.Type.values();
-		for (UtpConfig.Type type : types) {
-			this.log("{}-{}-{}-{}", type, type.type(), type.typeVersion(), Integer.toHexString(type.typeVersion()));
-			assertEquals(UtpConfig.Type.of(type.typeVersion()), type);
-		}
-		this.log("{}-{}-{}", 'd', (int) 'd', Integer.toHexString('d'));
-		this.log("{}-{}-{}", 'f', (int) 'f', Integer.toHexString('f'));
-		assertEquals(0x00, UtpConfig.Type.DATA.type());
-		assertEquals(0x01, UtpConfig.Type.DATA.typeVersion());
-		assertEquals(0x04, UtpConfig.Type.SYN.type());
-		assertEquals(0x41, UtpConfig.Type.SYN.typeVersion());
-	}
-	
-	@Test
 	void testConnect() {
 		final var socketAddress = NetUtils.buildSocketAddress("127.0.0.1", 18888);
 		final var handler = new UtpMessageHandler(PeerSubMessageHandler.newInstance(), socketAddress);
@@ -49,6 +34,33 @@ class UtpMessageHandlerTest extends Performance {
 		connect = handler.connect();
 		this.log("连接：{}", connect);
 		assertTrue(connect);
+	}
+	
+	@Test
+	void testSelect() {
+		final UtpConfig.Type[] types = UtpConfig.Type.values();
+		for (UtpConfig.Type type : types) {
+			this.log("{}-{}-{}-{}", type, type.type(), type.typeVersion(), Integer.toHexString(type.typeVersion()));
+			assertEquals(UtpConfig.Type.of(type.typeVersion()), type);
+		}
+		this.log("{}-{}-{}", 'd', (int) 'd', Integer.toHexString('d'));
+		this.log("{}-{}-{}", 'f', (int) 'f', Integer.toHexString('f'));
+		this.log("{}-{}-{}", 'q', (int) 'q', Integer.toHexString('q'));
+		assertEquals(0x00, UtpConfig.Type.DATA.type());
+		assertEquals(0x01, UtpConfig.Type.DATA.typeVersion());
+		assertEquals(0x04, UtpConfig.Type.SYN.type());
+		assertEquals(0x41, UtpConfig.Type.SYN.typeVersion());
+	}
+	
+	@Test
+	void testCosted() {
+		final byte value = 'f';
+		this.costed(10000000, () -> {
+			boolean a = value == 'd';
+			boolean b = value == 'q';
+			if(a && b) {
+			}
+		});
 	}
 	
 }
