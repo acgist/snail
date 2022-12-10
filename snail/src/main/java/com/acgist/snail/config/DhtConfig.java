@@ -40,6 +40,10 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	private static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
+	 * <p>DHT消息开头字符</p>
+	 */
+	public static final byte DHT_HEADER = 'd';
+	/**
 	 * 消息ID（请求ID、响应ID）：{@value}
 	 * 
 	 * @see DhtContext#buildRequestId()

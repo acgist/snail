@@ -4,11 +4,12 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
+import com.acgist.snail.config.DhtConfig;
 import com.acgist.snail.config.QuickConfig;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.quick.QuickMessageHandler;
+import com.acgist.snail.net.quick.QuickContext;
 import com.acgist.snail.net.stun.StunMessageHandler;
 import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpContext;
@@ -27,22 +28,13 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	}
 	
 	/**
-	 * <p>DHT消息开头字符</p>
-	 */
-	private static final byte DHT_HEADER = 'd';
-	/**
-	 * <p>STUN消息开头字符：请求、指示</p>
-	 */
-	private static final byte STUN_HEADER_SEND = 0x00;
-	/**
-	 * <p>STUN消息开头字符：响应</p>
-	 */
-	private static final byte STUN_HEADER_RECV = 0x01;
-	
-	/**
 	 * <p>UTP上下文</p>
 	 */
 	private final UtpContext utpContext = UtpContext.getInstance();
+	/**
+	 * 快传上下文
+	 */
+	private final QuickContext quickContext = QuickContext.getInstance();
 	/**
 	 * <p>DHT消息代理</p>
 	 */
@@ -51,10 +43,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	 * <p>STUN消息代理</p>
 	 */
 	private final StunMessageHandler stunMessageHandler = new StunMessageHandler();
-	/**
-	 * 快传消息代理
-	 */
-	private final QuickMessageHandler quickMessageHandler = QuickMessageHandler.getInstance();
 	
 	private TorrentAcceptHandler() {
 	}
@@ -62,23 +50,24 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	@Override
 	public void handle(DatagramChannel channel) {
 		this.utpContext.handle(channel);
+		this.quickContext.handle(channel);
 		this.dhtMessageHandler.handle(channel);
 		this.stunMessageHandler.handle(channel);
-		this.quickMessageHandler.handle(channel);
 	}
 	
 	@Override
 	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
 		final byte header = buffer.get(0);
-		if(DHT_HEADER == header) {
+		if(DhtConfig.DHT_HEADER == header) {
 			// DHT消息
 			return this.dhtMessageHandler;
 		}
 		if(QuickConfig.QUICK_HEADER == header) {
 			// 快传消息
-			return this.quickMessageHandler;
+			final short sessionId = buffer.getShort(2);
+			return this.quickContext.get(sessionId, socketAddress);
 		}
-		if(STUN_HEADER_SEND == header || STUN_HEADER_RECV == header) {
+		if(StunConfig.STUN_HEADER_SEND == header || StunConfig.STUN_HEADER_RECV == header) {
 			// STUN消息
 			final int magicCookie = buffer.getInt(4);
 			if(magicCookie == StunConfig.MAGIC_COOKIE) {

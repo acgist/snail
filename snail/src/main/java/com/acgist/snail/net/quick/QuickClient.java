@@ -16,13 +16,8 @@ import com.acgist.snail.net.torrent.TorrentServer;
  */
 public class QuickClient extends UdpClient<QuickMessageHandler> {
 
-	/**
-	 * 是否关闭
-	 */
-	private volatile boolean close;
-	
 	public QuickClient() {
-		super("Quick Client", QuickMessageHandler.getInstance());
+		super("Quick Client", QuickContext.getInstance().build());
 	}
 
 	@Override
@@ -30,10 +25,10 @@ public class QuickClient extends UdpClient<QuickMessageHandler> {
 		return super.open(TorrentServer.getInstance().channel());
 	}
 	
-	public boolean quick(String list) throws NetException {
+	public boolean connect(String list) throws NetException {
 		final List<Candidate> array = this.list(list);
 		boolean connect = false;
-		while(!this.close && !connect) {
+		while(!connect) {
 			for (Candidate candidate : array) {
 				connect = this.handler.connect(candidate);
 				if(connect) {
@@ -44,9 +39,8 @@ public class QuickClient extends UdpClient<QuickMessageHandler> {
 		return connect;
 	}
 	
-	public void quick(String list, File file) throws NetException {
-		final boolean connect = this.quick(list);
-		if(!this.close && connect) {
+	public void quick(File file) throws NetException {
+		if(this.handler.available()) {
 			this.handler.quick(file);
 		}
 	}

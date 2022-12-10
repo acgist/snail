@@ -36,4 +36,29 @@ public final class ByteUtils {
 		return new String(remainingToBytes(buffer));
 	}
 	
+	/**
+	 * 读取int字节数据
+	 * 
+	 * @param buffer 缓冲数据
+	 * 
+	 * @return int字节数据
+	 */
+	public static final byte[] intToBytes(ByteBuffer buffer) {
+		final int length = buffer.getInt();
+		final byte[] bytes = new byte[length];
+		buffer.get(bytes);
+		return bytes;
+	}
+	
+	/**
+	 * 读取int字节数据转为字符串
+	 * 
+	 * @param buffer 缓冲数据
+	 * 
+	 * @return int字节数据字符串
+	 */
+	public static final String intToString(ByteBuffer buffer) {
+		return new String(intToBytes(buffer));
+	}
+	
 }

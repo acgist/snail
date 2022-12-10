@@ -8,8 +8,6 @@
 |FTP|√|FTP|
 |HLS|√|HLS|
 |HTTP|√|HTTP|
-|RTSP|×|RTSP|
-|QUICK|○|P2P文件快传|
 
 ## BT协议
 

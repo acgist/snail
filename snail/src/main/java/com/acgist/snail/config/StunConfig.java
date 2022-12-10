@@ -35,6 +35,14 @@ public final class StunConfig {
 	 * IPv6：{@value}
 	 */
 	public static final int IPV6 = 0x02;
+	/**
+	 * <p>STUN消息开头字符：请求、指示</p>
+	 */
+	public static final byte STUN_HEADER_SEND = 0x00;
+	/**
+	 * <p>STUN消息开头字符：响应</p>
+	 */
+	public static final byte STUN_HEADER_RECV = 0x01;
 	
 	private StunConfig() {
 	}
