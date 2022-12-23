@@ -85,6 +85,25 @@
 	-fx-border-color:-fx-snail-main-color;
 }
 /**
+ * <p>文本框样式：TextArea</p>
+ */
+.root .text-area {
+	-fx-border-width:1px;
+	-fx-border-color:-fx-snail-border-color;
+	-fx-background-insets:0;
+	-fx-background-radius:0;
+	-fx-background-color:transparent, #FFFFFF;
+	-fx-prompt-text-fill:-fx-snail-border-color;
+}
+.root .text-area .content {
+	-fx-padding:1px;
+	-fx-background-color:transparent, #FFFFFF;
+}
+.root .text-area:hover,
+.root .text-area:focused {
+	-fx-border-color:-fx-snail-main-color;
+}
+/**
  * <p>下拉框样式：ChoiceBox</p>
  */
 .root .choice-box {
@@ -261,6 +280,22 @@
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
 	/** 影藏箭头 */
 	-fx-background-color:transparent;
+}
+/**
+ * <p>快传窗口：quick.fxml</p>
+ */
+.quick .button-box {
+	-fx-spacing:10px;
+	-fx-padding:10px 0;
+	-fx-alignment:center;
+}
+.quick .stun {
+}
+.quick .file {
+	-fx-alignment:center;
+}
+.quick .progress {
+	-fx-alignment:center;
 }
 /**
  * <p>设置窗口：setting.fxml</p>

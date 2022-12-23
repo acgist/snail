@@ -159,12 +159,6 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
 	
-	static {
-		INSTANCE.init();
-		INSTANCE.logger();
-		INSTANCE.release();
-	}
-	
 	/**
 	 * 软件名称
 	 */
@@ -279,12 +273,13 @@ public final class SystemConfig extends PropertiesConfig {
 	
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
+		this.init();
+		this.release();
 	}
 	
-	/**
-	 * 初始化配置
-	 */
-	private void init() {
+	@Override
+	public void init() {
+		// 加载配置
 		this.name = this.getString("acgist.system.name");
 		this.nameEn = this.getString("acgist.system.name.en");
 		this.version = this.getString("acgist.system.version");
@@ -308,12 +303,7 @@ public final class SystemConfig extends PropertiesConfig {
 		this.trackerInterval = this.getInteger("acgist.system.tracker.interval", 120);
 		this.peerOptimizeInterval = this.getInteger("acgist.system.peer.optimize.interval", 60);
 		this.nameEnAndVersion = SymbolConfig.Symbol.SPACE.join(this.nameEn, this.version);
-	}
-
-	/**
-	 * 记录日志
-	 */
-	private void logger() {
+		// 记录日志
 		LOGGER.debug("软件名称：{}", this.name);
 		LOGGER.debug("软件名称（英文）：{}", this.nameEn);
 		LOGGER.debug("软件版本：{}", this.version);
@@ -338,7 +328,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("Peer（连接、接入）优化周期（秒）：{}", this.peerOptimizeInterval);
 		LOGGER.debug("软件信息：{}", this.nameEnAndVersion);
 	}
-	
+
 	/**
 	 * @return 软件名称
 	 */

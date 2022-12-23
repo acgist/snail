@@ -12,7 +12,7 @@
 	</a>
 	<img alt="Gitee stars" src="https://img.shields.io/badge/dynamic/json?style=flat-square&label=Gitee%20stars&color=crimson&url=https://gitee.com/api/v5/repos/acgist/snail&query=$.stargazers_count&cacheSeconds=3600" />
 	<br />
-	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/acgist/snail/build?style=flat-square" />
+	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/acgist/snail/build.yml?style=flat-square&branch=master" />
 	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square&color=orange" />
 	<img alt="Maven Central" src="https://img.shields.io/maven-central/v/com.acgist/snail?style=flat-square&color=orange" />
 	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?style=flat-square&color=blue" />

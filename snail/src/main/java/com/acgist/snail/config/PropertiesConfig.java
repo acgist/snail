@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
-import com.acgist.snail.context.entity.ConfigEntity;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.utils.FileUtils;
@@ -158,16 +157,6 @@ public abstract class PropertiesConfig {
 	}
 	
 	/**
-	 * @param entity 实体配置
-	 * @param defaultValue 默认值
-	 * 
-	 * @return 配置值
-	 */
-	protected final String getString(ConfigEntity entity, String defaultValue) {
-		return entity == null ? defaultValue : entity.getValue();
-	}
-
-	/**
 	 * @param name 配置名称
 	 * 
 	 * @return 配置值
@@ -195,16 +184,6 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * @param entity 实体配置
-	 * @param defaultValue 默认值
-	 * 
-	 * @return 配置值
-	 */
-	protected final boolean getBoolean(ConfigEntity entity, boolean defaultValue) {
-		return entity == null ? defaultValue : Boolean.parseBoolean(entity.getValue());
-	}
-
-	/**
 	 * @param name 配置名称
 	 * 
 	 * @return 配置值
@@ -229,13 +208,15 @@ public abstract class PropertiesConfig {
 	}
 
 	/**
-	 * @param entity 实体配置
-	 * @param defaultValue 默认值
-	 * 
-	 * @return 配置值
+	 * 初始配置
 	 */
-	protected final int getInteger(ConfigEntity entity, int defaultValue) {
-		return entity == null ? defaultValue : Integer.parseInt(entity.getValue());
+	public void init() {
+	}
+	
+	/**
+	 * 保存配置
+	 */
+	public void persistent() {
 	}
 	
 	/**

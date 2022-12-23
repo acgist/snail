@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.context.entity.ConfigEntity;
 import com.acgist.snail.context.entity.Entity;
 import com.acgist.snail.context.entity.TaskEntity;
 import com.acgist.snail.gui.recycle.RecycleContext;
@@ -46,14 +45,9 @@ public final class EntityContext implements IContext {
 	 * 任务列表
 	 */
 	private final List<TaskEntity> taskEntities;
-	/**
-	 * 配置列表
-	 */
-	private final List<ConfigEntity> configEntities;
 	
 	private EntityContext() {
 		this.taskEntities = new ArrayList<>();
-		this.configEntities = new ArrayList<>();
 	}
 	
 	/**
@@ -61,13 +55,6 @@ public final class EntityContext implements IContext {
 	 */
 	public List<TaskEntity> allTask() {
 		return new ArrayList<>(this.taskEntities);
-	}
-	
-	/**
-	 * @return 所有配置列表
-	 */
-	public List<ConfigEntity> allConfig() {
-		return new ArrayList<>(this.configEntities);
 	}
 	
 	/**
@@ -94,6 +81,26 @@ public final class EntityContext implements IContext {
 		EntityException.requireNotNull(entity.getId());
 		entity.setModifyDate(new Date());
 		LOGGER.debug("更新实体：{}", entity);
+	}
+	
+	/**
+	 * 删除实体
+	 * 
+	 * @param id 实体ID
+	 * 
+	 * @return 是否删除成功
+	 */
+	private boolean delete(String id) {
+		LOGGER.debug("删除实体：{}", id);
+		boolean success = false;
+		synchronized (this) {
+			success = this.taskEntities.removeIf(entity -> entity.getId().equals(id));
+		}
+		if(success) {
+			// 删除成功保存实体
+			this.persistent();
+		}
+		return success;
 	}
 	
 	/**
@@ -130,107 +137,16 @@ public final class EntityContext implements IContext {
 		EntityException.requireNotNull(entity);
 		LOGGER.debug("删除任务：{}", entity);
 		if(DownloadConfig.getDelete()) {
-			// 删除文件
 			final var file = entity.getFile();
-			if(!RecycleContext.recycle(file)) {
+			if(RecycleContext.recycle(file)) {
+				// 回收文件
+				LOGGER.debug("删除任务回收文件成功：{}", file);
+			} else {
+				// 删除文件
 				FileUtils.delete(file);
 			}
 		}
 		return this.delete(entity.getId());
-	}
-	
-	/**
-	 * 保存配置
-	 * 
-	 * @param entity 配置
-	 */
-	public void save(ConfigEntity entity) {
-		this.preSave(entity);
-		synchronized (this) {
-			this.configEntities.add(entity);
-		}
-		this.persistent();
-	}
-
-	/**
-	 * 更新配置
-	 * 
-	 * @param entity 配置
-	 */
-	public void update(ConfigEntity entity) {
-		this.preUpdate(entity);
-		this.persistent();
-	}
-	
-	/**
-	 * 删除配置
-	 * 
-	 * @param entity 配置
-	 * 
-	 * @return 是否删除成功
-	 */
-	public boolean delete(ConfigEntity entity) {
-		EntityException.requireNotNull(entity);
-		return this.delete(entity.getId());
-	}
-	
-	/**
-	 * 根据配置名称查询配置
-	 * 
-	 * @param name 配置名称
-	 * 
-	 * @return 配置
-	 */
-	public ConfigEntity findConfig(String name) {
-		synchronized (this) {
-			return this.configEntities.stream()
-				.filter(entity -> entity.getName().equals(name))
-				.findFirst()
-				.orElse(null);
-		}
-	}
-	
-	/**
-	 * 根据配置名称合并配置
-	 * 配置存在更新反之新建
-	 * 
-	 * @param name 配置名称
-	 * @param value 配置值
-	 */
-	public void mergeConfig(String name, String value) {
-		ConfigEntity entity = this.findConfig(name);
-		if(entity == null) {
-			entity = new ConfigEntity();
-			entity.setName(name);
-			entity.setValue(value);
-			this.save(entity);
-		} else {
-			entity.setValue(value);
-			this.update(entity);
-		}
-	}
-	
-	/**
-	 * 删除实体
-	 * 
-	 * @param id 实体ID
-	 * 
-	 * @return 是否删除成功
-	 */
-	private boolean delete(String id) {
-		LOGGER.debug("删除实体：{}", id);
-		boolean success = false;
-		synchronized (this) {
-			// 使用或者判断：任务删除成功不再删除配置
-			success =
-				this.taskEntities.removeIf(entity -> entity.getId().equals(id)) ||
-				this.configEntities.removeIf(entity -> entity.getId().equals(id));
-		}
-		if(success) {
-			// 删除成功保存实体
-			this.persistent();
-		}
-		return success;
 	}
 	
 	/**
@@ -239,25 +155,22 @@ public final class EntityContext implements IContext {
 	public void load() {
 		final File file = new File(ENTITY_FILE_PATH);
 		if(!file.exists()) {
+			LOGGER.debug("加载实体文件无效：{}", file);
 			return;
 		}
 		try (final ObjectInput input = new ObjectInputStream(new FileInputStream(file))) {
 			final List<?> list = (List<?>) input.readObject();
 			synchronized (this) {
 				this.taskEntities.clear();
-				this.configEntities.clear();
 				list.forEach(object -> {
 					if(object instanceof TaskEntity entity) {
 						this.taskEntities.add(entity);
-					} else if(object instanceof ConfigEntity entity) {
-						this.configEntities.add(entity);
 					} else {
 						LOGGER.warn("未知实体类型：{}", object);
 					}
 				});
 				if(LOGGER.isDebugEnabled()) {
 					LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());
-					LOGGER.debug("加载配置实体数量：{}", this.configEntities.size());
 				}
 			}
 		} catch (IOException | ClassNotFoundException e) {
@@ -272,7 +185,6 @@ public final class EntityContext implements IContext {
 		final List<Entity> list = new ArrayList<>();
 		synchronized (this) {
 			list.addAll(this.taskEntities);
-			list.addAll(this.configEntities);
 		}
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("保存实体：{}", list.size());

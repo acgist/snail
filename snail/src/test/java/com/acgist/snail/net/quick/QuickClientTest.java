@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.config.QuickConfig;
 import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.FileUtils;
+import com.acgist.snail.utils.Performance;
 
-class QuickClientTest {
+class QuickClientTest extends Performance {
 
 	@Test
 	void testTransport() throws NetException {
@@ -22,8 +23,8 @@ class QuickClientTest {
 //		final String file = "D:/软件/graalvm-ce-java17-windows-amd64-22.3.0.zip";
 //		final String download = "D:/download/graalvm-ce-java17-windows-amd64-22.3.0.zip";
 		final QuickClient client = new QuickClient();
-		client.connect("host:localhost:18888");
-		client.quick(new File(file));
+		client.connect("host:localhost:18888", v -> {});
+		client.quick(new File(file), progress -> {});
 		client.close();
 		assertEquals(FileUtils.md5(file), FileUtils.md5(download));
 	}

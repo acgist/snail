@@ -193,9 +193,6 @@ public final class PeerConfig extends PropertiesConfig {
 		RESERVED[7] |= RESERVED_PEER_EXCHANGE;
 		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
 		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
-		// 初始化
-		INSTANCE.init();
-		INSTANCE.release();
 	}
 	
 	/**
@@ -213,6 +210,8 @@ public final class PeerConfig extends PropertiesConfig {
 		this.peerIdUrl = PeerUtils.urlEncode(this.peerId);
 		LOGGER.debug("PeerId：{}", this.peerId);
 		LOGGER.debug("PeerIdUrl：{}", this.peerIdUrl);
+		this.init();
+		this.release();
 	}
 	
 	/**
@@ -776,10 +775,8 @@ public final class PeerConfig extends PropertiesConfig {
 		
 	}
 	
-	/**
-	 * 初始化配置
-	 */
-	private void init() {
+	@Override
+	public void init() {
 		this.properties.forEach((key, value) -> CLIENT_NAMES.put(key.toString(), value.toString()));
 	}
 	

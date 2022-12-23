@@ -79,6 +79,7 @@ public final class CryptConfig {
 		
 		/**
 		 * 是否加密
+		 * 对方客户端询问本端客户端是否使用加密
 		 */
 		private final boolean crypt;
 		/**
@@ -106,7 +107,7 @@ public final class CryptConfig {
 		}
 		
 		/**
-		 * @return 加密模式
+		 * @return 加密算法provide
 		 */
 		public final int provide() {
 			return this.provide;
@@ -159,7 +160,9 @@ public final class CryptConfig {
 	public static final Strategy STRATEGY = Strategy.PREFER_PLAINTEXT;
 
 	static {
-		LOGGER.debug("默认加密策略：{}", CryptConfig.STRATEGY);
+		LOGGER.debug("MSE公钥长度：{}", CryptConfig.PUBLIC_KEY_LENGTH);
+		LOGGER.debug("MSE私钥长度：{}", CryptConfig.PRIVATE_KEY_LENGTH);
+		LOGGER.debug("MSE默认加密策略：{}", CryptConfig.STRATEGY);
 	}
 	
 	private CryptConfig() {

@@ -130,7 +130,6 @@ public final class NodeContext implements IContext {
 				final String host = address.substring(0, index);
 				final String port = address.substring(index + 1);
 				if(StringUtils.isNotEmpty(host) && StringUtils.isNumeric(port)) {
-					LOGGER.debug("注册默认DHT节点：{}-{}", nodeId, address);
 					this.newNodeSession(StringUtils.unhex(nodeId), host, Integer.valueOf(port));
 				} else {
 					LOGGER.warn("注册默认DHT节点失败：{}-{}", nodeId, address);

@@ -40,11 +40,6 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	public static final int MAX_TRACKER_SIZE = 512;
 	
-	static {
-		INSTANCE.init();
-		INSTANCE.release();
-	}
-	
 	/**
 	 * 动作
 	 * 
@@ -186,12 +181,12 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	private TrackerConfig() {
 		super(TRACKER_CONFIG);
+		this.init();
+		this.release();
 	}
 	
-	/**
-	 * 初始化配置
-	 */
-	private void init() {
+	@Override
+	public void init() {
 		this.properties.entrySet().forEach(entry -> {
 			final String announce = (String) entry.getValue();
 			if(StringUtils.isNotEmpty(announce)) {

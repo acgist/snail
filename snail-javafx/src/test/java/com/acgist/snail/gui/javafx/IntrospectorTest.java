@@ -8,14 +8,14 @@ import java.beans.PropertyDescriptor;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.entity.ConfigEntity;
+import com.acgist.snail.context.entity.TaskEntity;
 import com.acgist.snail.utils.Performance;
 
 class IntrospectorTest extends Performance {
 
 	@Test
 	void testBeans() throws IntrospectionException {
-		final var bean = Introspector.getBeanInfo(ConfigEntity.class);
+		final var bean = Introspector.getBeanInfo(TaskEntity.class);
 		final var properties = bean.getPropertyDescriptors();
 		for (PropertyDescriptor property : properties) {
 			this.log(property);

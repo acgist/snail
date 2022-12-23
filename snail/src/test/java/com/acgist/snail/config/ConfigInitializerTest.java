@@ -10,7 +10,8 @@ class ConfigInitializerTest extends Performance {
 
 	@Test
 	void testConfigInitializer() {
-		assertDoesNotThrow(() -> ConfigInitializer.newInstance().sync());
+		assertDoesNotThrow(ConfigInitializer.newInstance()::sync);
+		assertDoesNotThrow(ConfigInitializer.newInstance()::asyn);
 	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.torrent.TorrentAcceptHandler;
 import com.acgist.snail.net.torrent.dht.DhtContext;
 import com.acgist.snail.net.torrent.dht.NodeContext;
 import com.acgist.snail.net.torrent.dht.NodeSession;
@@ -38,9 +39,12 @@ public final class DhtConfig extends PropertiesConfig {
 	/**
 	 * DHT配置文件：{@value}
 	 */
-	private static final String DHT_CONFIG = "/config/bt.dht.properties";
+	public static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
-	 * <p>DHT消息开头字符</p>
+	 * DHT消息字符：{@value}
+	 * 用来区分不同协议
+	 * 
+	 * @see TorrentAcceptHandler
 	 */
 	public static final byte DHT_HEADER = 'd';
 	/**
@@ -118,19 +122,23 @@ public final class DhtConfig extends PropertiesConfig {
 	public static final String KEY_NODES6 = "nodes6";
 	/**
 	 * IPv4节点
+	 * 
+	 * @see #KEY_WANT
 	 */
 	public static final String KEY_WANT_N4 = "n4";
 	/**
 	 * IPv6节点
+	 * 
+	 * @see #KEY_WANT
 	 */
 	public static final String KEY_WANT_N6 = "n6";
 	/**
 	 * 请求返回节点类型
 	 * 
-	 * @see QType#FIND_NODE
-	 * @see QType#GET_PEERS
 	 * @see #KEY_WANT_N4
 	 * @see #KEY_WANT_N6
+	 * @see QType#FIND_NODE
+	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_WANT = "want";
 	/**
@@ -190,11 +198,6 @@ public final class DhtConfig extends PropertiesConfig {
 	 * DHT超时请求清理执行周期（分钟）：{@value}
 	 */
 	public static final int DHT_REQUEST_TIMEOUT_INTERVAL = 10;
-	
-	static {
-		INSTANCE.init();
-		INSTANCE.release();
-	}
 	
 	/**
 	 * 请求类型
@@ -323,12 +326,12 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	private DhtConfig() {
 		super(DHT_CONFIG);
+		this.init();
+		this.release();
 	}
 	
-	/**
-	 * 初始化配置
-	 */
-	private void init() {
+	@Override
+	public void init() {
 		this.properties.entrySet().forEach(entry -> {
 			final String nodeId = (String) entry.getKey();
 			final String address = (String) entry.getValue();
@@ -338,19 +341,12 @@ public final class DhtConfig extends PropertiesConfig {
 				LOGGER.warn("默认DHT节点注册失败：{}-{}", nodeId, address);
 			}
 		});
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("加载DHT节点数量：{}", this.nodes.size());
+		}
 	}
 
-	/**
-	 * @return 默认DHT节点
-	 */
-	public Map<String, String> nodes() {
-		return this.nodes;
-	}
-
-	/**
-	 * 保存DHT节点配置
-	 * 注意：如果没有启动BT任务没有必要保存
-	 */
+	@Override
 	public void persistent() {
 		final var data = NodeContext.getInstance().resize().stream()
 			.filter(NodeSession::useable)
@@ -358,10 +354,17 @@ public final class DhtConfig extends PropertiesConfig {
 				node -> StringUtils.hex(node.getId()),
 				node -> SymbolConfig.Symbol.COLON.join(node.getHost(), node.getPort())
 			));
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("保存DHT节点配置：{}", data.size());
-		}
 		this.persistent(data, DHT_CONFIG);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("保存DHT节点数量：{}", data.size());
+		}
+	}
+	
+	/**
+	 * @return 默认DHT节点
+	 */
+	public Map<String, String> nodes() {
+		return this.nodes;
 	}
 	
 }

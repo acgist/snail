@@ -4,6 +4,7 @@ import com.acgist.snail.context.Initializer;
 
 /**
  * 配置初始化器
+ * 初始化下载必须的配置，对于可选下载功能不在此初始化。
  * 
  * @author acgist
  */

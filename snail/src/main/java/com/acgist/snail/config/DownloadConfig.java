@@ -1,8 +1,10 @@
 package com.acgist.snail.config;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
@@ -27,7 +29,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 下载配置文件：{@value}
 	 */
-	private static final String DOWNLOAD_CONFIG = "/config/download.properties";
+	public static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	/**
 	 * 下载速度和上传速度的比例：{@value}
 	 * 比例计算公式 = {@link #downloadBufferByte} / {@link #uploadBufferByte}
@@ -76,17 +78,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
 	
-	static {
-		INSTANCE.initFromProperties();
-		INSTANCE.initFromEntity();
-		INSTANCE.refreshUploadDownloadBuffer();
-		INSTANCE.refreshMemoryBuffer();
-		INSTANCE.logger();
-		INSTANCE.release();
-	}
-	
 	private DownloadConfig() {
 		super(DOWNLOAD_CONFIG);
+		this.init();
+		this.release();
+		this.refreshBuffer();
+		this.refreshMemoryBuffer();
 	}
 	
 	/**
@@ -136,10 +133,9 @@ public final class DownloadConfig extends PropertiesConfig {
 	 */
 	private int memoryBufferByte;
 	
-	/**
-	 * 初始化配置：配置文件
-	 */
-	private void initFromProperties() {
+	@Override
+	public void init() {
+		// 加载配置
 		this.path = this.getString(DOWNLOAD_PATH);
 		this.size = this.getInteger(DOWNLOAD_SIZE, 4);
 		this.notice = this.getBoolean(DOWNLOAD_NOTICE, true);
@@ -147,26 +143,7 @@ public final class DownloadConfig extends PropertiesConfig {
 		this.buffer = this.getInteger(DOWNLOAD_BUFFER, 1024);
 		this.lastPath = this.getString(DOWNLOAD_LAST_PATH);
 		this.memoryBuffer = this.getInteger(DOWNLOAD_MEMORY_BUFFER, 8);
-	}
-	
-	/**
-	 * 初始化配置：实体文件
-	 */
-	private void initFromEntity() {
-		final EntityContext entityContext = EntityContext.getInstance();
-		this.path = this.getString(entityContext.findConfig(DOWNLOAD_PATH), this.path);
-		this.size = this.getInteger(entityContext.findConfig(DOWNLOAD_SIZE), this.size);
-		this.notice = this.getBoolean(entityContext.findConfig(DOWNLOAD_NOTICE), this.notice);
-		this.delete = this.getBoolean(entityContext.findConfig(DOWNLOAD_DELETE), this.delete);
-		this.buffer = this.getInteger(entityContext.findConfig(DOWNLOAD_BUFFER), this.buffer);
-		this.lastPath = this.getString(entityContext.findConfig(DOWNLOAD_LAST_PATH), this.lastPath);
-		this.memoryBuffer = this.getInteger(entityContext.findConfig(DOWNLOAD_MEMORY_BUFFER), this.memoryBuffer);
-	}
-	
-	/**
-	 * 记录日志
-	 */
-	private void logger() {
+		// 记录日志
 		LOGGER.debug("下载目录：{}", this.path);
 		LOGGER.debug("下载数量：{}", this.size);
 		LOGGER.debug("消息提示：{}", this.notice);
@@ -174,6 +151,19 @@ public final class DownloadConfig extends PropertiesConfig {
 		LOGGER.debug("下载速度（单个）（KB）：{}", this.buffer);
 		LOGGER.debug("最后一次选择目录：{}", this.lastPath);
 		LOGGER.debug("磁盘缓存（单个）（MB）：{}", this.memoryBuffer);
+	}
+	
+	@Override
+	public void persistent() {
+		final Map<String, String> data = new HashMap<>();
+		data.put(DOWNLOAD_PATH, this.path);
+		data.put(DOWNLOAD_SIZE, Objects.toString(this.size, "4"));
+		data.put(DOWNLOAD_NOTICE, Objects.toString(this.notice, "true"));
+		data.put(DOWNLOAD_DELETE, Objects.toString(this.delete, "false"));
+		data.put(DOWNLOAD_BUFFER, Objects.toString(this.buffer, "1024"));
+		data.put(DOWNLOAD_LAST_PATH, this.lastPath);
+		data.put(DOWNLOAD_MEMORY_BUFFER, Objects.toString(this.memoryBuffer, "8"));
+		this.persistent(data, DOWNLOAD_CONFIG);
 	}
 	
 	/**
@@ -184,7 +174,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.path = path;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_PATH, path);
+		INSTANCE.persistent();
 	}
 	
 	/**
@@ -196,12 +186,11 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * @see FileUtils#userDir(String)
 	 */
 	public static final String getPath() {
-		String path = INSTANCE.path;
-		final File file = new File(path);
-		if(file.exists()) {
-			return path;
+		final File file = new File(INSTANCE.path);
+		if(file.exists() && file.isDirectory()) {
+			return INSTANCE.path;
 		}
-		path = FileUtils.userDir(path);
+		final String path = FileUtils.userDir(INSTANCE.path);
 		FileUtils.buildFolder(path);
 		return path;
 	}
@@ -226,7 +215,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.size = size;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_SIZE, String.valueOf(size));
+		INSTANCE.persistent();
 		TaskContext.getInstance().refresh();
 	}
 
@@ -245,7 +234,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.notice = notice;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_NOTICE, String.valueOf(notice));
+		INSTANCE.persistent();
 	}
 
 	/**
@@ -263,7 +252,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.delete = delete;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_DELETE, String.valueOf(delete));
+		INSTANCE.persistent();
 	}
 	
 	/**
@@ -281,8 +270,8 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.buffer = buffer;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_BUFFER, String.valueOf(buffer));
-		INSTANCE.refreshUploadDownloadBuffer();
+		INSTANCE.persistent();
+		INSTANCE.refreshBuffer();
 	}
 	
 	/**
@@ -309,7 +298,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * 刷新下载速度和上传速度
 	 */
-	private void refreshUploadDownloadBuffer() {
+	private void refreshBuffer() {
 		this.downloadBufferByte = this.buffer * SystemConfig.ONE_KB;
 		this.uploadBufferByte = this.downloadBufferByte / DOWNLOAD_UPLOAD_SCALE;
 	}
@@ -322,7 +311,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.lastPath = lastPath;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_LAST_PATH, lastPath);
+		INSTANCE.persistent();
 	}
 	
 	/**
@@ -335,9 +324,12 @@ public final class DownloadConfig extends PropertiesConfig {
 	public static final String getLastPath() {
 		if(StringUtils.isEmpty(INSTANCE.lastPath)) {
 			return getPath();
-		} else {
+		}
+		final File file = new File(INSTANCE.lastPath);
+		if(file.exists() && file.isDirectory()) {
 			return INSTANCE.lastPath;
 		}
+		return getPath();
 	}
 	
 	/**
@@ -355,7 +347,7 @@ public final class DownloadConfig extends PropertiesConfig {
 			return;
 		}
 		INSTANCE.memoryBuffer = memoryBuffer;
-		EntityContext.getInstance().mergeConfig(DOWNLOAD_MEMORY_BUFFER, String.valueOf(memoryBuffer));
+		INSTANCE.persistent();
 		INSTANCE.refreshMemoryBuffer();
 	}
 
@@ -376,7 +368,7 @@ public final class DownloadConfig extends PropertiesConfig {
 	/**
 	 * @param fileSize 默认文件大小（B）
 	 * 
-	 * @return 文件磁盘缓存（单个）（B）
+	 * @return 磁盘缓存（单个）（B）
 	 */
 	public static final int getMemoryBufferByte(final long fileSize) {
 		final int bufferSize = getMemoryBufferByte();

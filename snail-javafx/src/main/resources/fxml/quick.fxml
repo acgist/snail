@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane
+	fx:id="root"
+	styleClass="root,quick" stylesheets="@/style/fxml.css"
+	fx:controller="com.acgist.snail.gui.javafx.window.quick.QuickController"
+	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+
+	<top>
+		<VBox>
+			<TextArea fx:id="stun" styleClass="stun"></TextArea>
+			<HBox styleClass="button-box">
+				<Button fx:id="copy" text="拷贝" onAction="#handleCopyAction" />
+				<Button fx:id="paste" text="粘贴" onAction="#handlePasteAction" />
+				<Button fx:id="connect" text="连接" onAction="#handleConnectAction" />
+			</HBox>
+		</VBox>
+	</top>
+	
+	<center>
+		<VBox>
+			<HBox styleClass="button-box">
+				<Button fx:id="choose" text="选择文件" onAction="#handleChooseAction" />
+				<Button fx:id="transport" text="开始传输" onAction="#handleTransportAction" />
+				<Button fx:id="cancel" text="取消传输" onAction="#handleCancelAction" />
+			</HBox>
+			<Text fx:id="file" styleClass="file"></Text>
+		</VBox>
+	</center>
+	
+	<bottom>
+		<ProgressBar fx:id="progress" styleClass="progress"></ProgressBar>
+	</bottom>
+	
+</BorderPane>

@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.config.QuickConfig;
@@ -72,10 +73,6 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 */
 	private volatile byte retryTimes;
 	/**
-	 * 延迟时间
-	 */
-	private volatile long rtt;
-	/**
 	 * 上次消息时间戳
 	 */
 	private volatile long timestamp;
@@ -115,6 +112,14 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 * 成功候选
 	 */
 	private Candidate candidate;
+	/**
+	 * 进度
+	 */
+	private volatile double progress;
+	/**
+	 * 进度通知
+	 */
+	private Consumer<Double> consumer;
 	/**
 	 * <p>输入流</p>
 	 */
@@ -180,7 +185,6 @@ public class QuickMessageHandler extends UdpMessageHandler {
 		super(socketAddress);
 		this.sendSeq = 0;
 		this.recvSeq = 0;
-		this.rtt = 0;
 		this.timestamp = System.currentTimeMillis();
 		this.fileSize = 0L;
 		this.sendSize = 0L;
@@ -204,14 +208,16 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 * 发送文件
 	 * 
 	 * @param file 文件
+	 * @param consumer 进度通知
 	 * 
 	 * @throws NetException 
 	 */
-	public boolean quick(File file) throws NetException {
+	public boolean quick(File file, Consumer<Double> consumer) throws NetException {
 		if(this.sendFile != null) {
 			return false;
 		}
 		this.sendFile = file;
+		this.consumer = consumer;
 		if(this.sendFile == null || !this.sendFile.exists() || !this.sendFile.isFile()) {
 			throw new NetException("文件无效：" + this.sendFile);
 		}
@@ -264,9 +270,6 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	private void req(int seq) throws NetException {
-		final long timestamp = System.currentTimeMillis();
-		this.rtt = timestamp - this.timestamp;
-		this.timestamp = timestamp;
 	}
 	
 	/**
@@ -277,6 +280,9 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 * @throws NetException 网络异常
 	 */
 	private void ack(int seq) throws NetException {
+		final long timestamp = System.currentTimeMillis();
+		final long rtt = timestamp - this.timestamp;
+		this.timestamp = timestamp;
 		try {
 			this.lock.lock();
 			// 处理已经响应数据
@@ -301,8 +307,10 @@ public class QuickMessageHandler extends UdpMessageHandler {
 					this.sendMap.isEmpty()
 				) {
 					this.finishCondition.signalAll();
-				} else {
+				} else if(rtt < 100) {
 					this.semaphore.release(2);
+				} else {
+					this.semaphore.release();
 				}
 			} else if(diff < 2) {
 				this.semaphore.release(2);
@@ -694,6 +702,11 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	 * @param buffer 数据
 	 */
 	public void transportAck(ByteBuffer buffer) {
+		final double progress = 1.0D * this.sendSize / this.fileSize;
+		if(progress >= 1.0D || progress - this.progress >= 1.0D) {
+			this.progress = progress;
+			this.consumer.accept(progress);
+		}
 	}
 	
 	/**
@@ -737,7 +750,6 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	private void release() {
 		this.sendSeq = 0;
 		this.recvSeq = 0;
-		this.rtt = 0;
 		this.timestamp = System.currentTimeMillis();
 		this.fileSize = 0L;
 		this.sendSize = 0L;
