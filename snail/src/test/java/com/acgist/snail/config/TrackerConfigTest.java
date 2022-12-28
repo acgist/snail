@@ -21,11 +21,11 @@ class TrackerConfigTest extends Performance {
 	
 	@Test
 	void testPersistent() throws DownloadException {
-		FileUtils.userDirFile("/config/bt.tracker.properties").delete();
+		FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).delete();
 		final TrackerConfig config = TrackerConfig.getInstance();
-		TrackerContext.getInstance().sessions("https://www.acgit.com", Arrays.asList("https://www.baidu.com"));
+		TrackerContext.getInstance().sessions("https://www.acgist.com", Arrays.asList("https://www.baidu.com"));
 		config.persistent();
-		assertTrue(FileUtils.userDirFile("/config/bt.tracker.properties").exists());
+		assertTrue(FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).exists());
 	}
 	
 }

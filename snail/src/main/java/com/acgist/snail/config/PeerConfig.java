@@ -30,22 +30,16 @@ public final class PeerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeerConfig.class);
 	
-	private static final PeerConfig INSTANCE = new PeerConfig();
-	
-	public static final PeerConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
-	 * 未知终端：{@value}
+	 * 未知终端
 	 */
 	public static final String UNKNOWN = "unknown";
 	/**
-	 * Peer最大连接失败次数：{@value}
+	 * Peer最大连接失败次数
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * PeerId长度：{@value}
+	 * PeerId长度
 	 */
 	public static final int PEER_ID_LENGTH = 20;
 	/**
@@ -65,46 +59,46 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	public static final int RESERVED_LENGTH = RESERVED.length;
 	/**
-	 * DHT协议保留位：{@value}
+	 * DHT协议保留位
 	 * [7]-0x01：DHT Protocol
 	 * 
 	 * @see DhtExtensionMessageHandler
 	 */
 	public static final byte RESERVED_DHT_PROTOCOL = 1 << 0;
 	/**
-	 * PEX协议保留位：{@value}
+	 * PEX协议保留位
 	 * [7]-0x02：Peer Exchange
 	 * 
 	 * @see PeerExchangeMessageHandler
 	 */
 	public static final byte RESERVED_PEER_EXCHANGE = 1 << 1;
 	/**
-	 * FAST协议保留位：{@value}
+	 * FAST协议保留位
 	 * [7]-0x04：FAST Protocol
 	 * 
 	 * @see PeerSubMessageHandler
 	 */
 	public static final byte RESERVED_FAST_PROTOCOL = 1 << 2;
 	/**
-	 * NAT保留位：{@value}
+	 * NAT保留位
 	 * [7]-0x08：NAT Traversal
 	 * 
 	 * @see #nat()
 	 */
 	public static final byte RESERVED_NAT_TRAVERSAL = 1 << 3;
 	/**
-	 * 扩展协议保留位：{@value}
+	 * 扩展协议保留位
 	 * [5]-0x10：Extension Protocol
 	 * 
 	 * @see ExtensionMessageHandler
 	 */
 	public static final byte RESERVED_EXTENSION_PROTOCOL = 1 << 4;
 	/**
-	 * 握手消息长度：{@value}
+	 * 握手消息长度
 	 */
 	public static final int HANDSHAKE_LENGTH = 68;
 	/**
-	 * 协议名称：{@value}
+	 * 协议名称
 	 */
 	public static final String PROTOCOL_NAME = "BitTorrent protocol";
 	/**
@@ -128,36 +122,36 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	public static final byte STATUS_DOWNLOAD = 1 << 0;
 	/**
-	 * pex flags：{@value}
+	 * pex flags
 	 * 偏爱加密：0x01
 	 */
 	public static final byte PEX_PREFER_ENCRYPTION = 1 << 0;
 	/**
-	 * pex flags：{@value}
+	 * pex flags
 	 * 只上传不下载：0x02
 	 */
 	public static final byte PEX_UPLOAD_ONLY = 1 << 1;
 	/**
-	 * pex flags：{@value}
+	 * pex flags
 	 * 支持UTP协议：0x04
 	 */
 	public static final byte PEX_UTP = 1 << 2;
 	/**
-	 * pex flags：{@value}
+	 * pex flags
 	 * 支持holepunch协议：0x08
 	 */
 	public static final byte PEX_HOLEPUNCH = 1 << 3;
 	/**
-	 * pex flags：{@value}
+	 * pex flags
 	 * 可以连接：0x10
 	 */
 	public static final byte PEX_OUTGO = 1 << 4;
 	/**
-	 * holepunch连接超时时间（毫秒）：{@value}
+	 * holepunch连接超时时间（毫秒）
 	 */
 	public static final long HOLEPUNCH_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	/**
-	 * PeerId名称配置：{@value}
+	 * PeerId名称配置
 	 */
 	private static final String CLIENT_NAME_CONFIG = "/config/client.name.properties";
 	/**
@@ -168,118 +162,25 @@ public final class PeerConfig extends PropertiesConfig {
 	 * Azureus-style：-名称（2）版本（4）-随机数（-SA1000-...）
 	 * Shadow's-style：名称（1）版本（4）-----随机数（S1000-----...）
 	 */
-	private static final Map<String, String> CLIENT_NAMES = new HashMap<>();
+	private static final Map<String, String> CLIENT_NAME_MAPPING = new HashMap<>();
 	/**
-	 * PeerId名称：{@value}
+	 * PeerId名称
 	 * AS=ACGIST Snail
 	 */
 	private static final String PEER_ID_NAME = "AS";
 	/**
-	 * 版本信息长度：{@value}
+	 * 版本信息长度
 	 */
 	private static final int PEER_ID_VERSION_LENGTH = 4;
 	/**
-	 * Piece最小索引：{@value}
+	 * Piece最小索引
 	 */
 	private static final int PIECE_MIN = 0;
 	/**
-	 * Piece最大索引（2^15）：{@value}
+	 * Piece最大索引（2^15）
 	 */
 	private static final int PIECE_MAX = 32768;
-
-	static {
-		// 保留位
-		RESERVED[7] |= RESERVED_DHT_PROTOCOL;
-		RESERVED[7] |= RESERVED_PEER_EXCHANGE;
-		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
-		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
-	}
 	
-	/**
-	 * PeerId
-	 */
-	private final byte[] peerId;
-	/**
-	 * PeerId（HTTP编码）
-	 */
-	private final String peerIdUrl;
-	
-	private PeerConfig() {
-		super(CLIENT_NAME_CONFIG);
-		this.peerId = this.buildPeerId();
-		this.peerIdUrl = PeerUtils.urlEncode(this.peerId);
-		LOGGER.debug("PeerId：{}", this.peerId);
-		LOGGER.debug("PeerIdUrl：{}", this.peerIdUrl);
-		this.init();
-		this.release();
-	}
-	
-	/**
-	 * @return PeerId
-	 */
-	private byte[] buildPeerId() {
-		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
-		// 名称版本：-ASXXXX-
-		final StringBuilder builder = new StringBuilder(8);
-		builder.append(SymbolConfig.Symbol.MINUS.toString()).append(PEER_ID_NAME);
-		final String version = SystemConfig.getVersion().replace(SymbolConfig.Symbol.DOT.toString(), "");
-		final int versionLength = version.length();
-		if(versionLength > PEER_ID_VERSION_LENGTH) {
-			builder.append(version.substring(0, PEER_ID_VERSION_LENGTH));
-		} else {
-			builder.append(version);
-			builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(PEER_ID_VERSION_LENGTH - versionLength));
-		}
-		builder.append(SymbolConfig.Symbol.MINUS.toString());
-		final byte[] nameVersion = builder.toString().getBytes();
-		final int nameVersionLength = nameVersion.length;
-		System.arraycopy(nameVersion, 0, peerId, 0, nameVersionLength);
-		// 随机填充
-		final int paddingLength = PeerConfig.PEER_ID_LENGTH - nameVersionLength;
-		final byte[] padding = ArrayUtils.random(paddingLength);
-		System.arraycopy(padding, 0, peerId, nameVersionLength, paddingLength);
-		return peerId;
-	}
-	
-	/**
-	 * @return PeerId
-	 */
-	public byte[] peerId() {
-		return this.peerId;
-	}
-	
-	/**
-	 * @return PeerIdUrl
-	 */
-	public String peerIdUrl() {
-		return this.peerIdUrl;
-	}
-	
-	/**
-	 * @param peerId PeerId
-	 * 
-	 * @return 客户端名称
-	 */
-	public static final String clientName(byte[] peerId) {
-		if(peerId == null || peerId.length < PeerConfig.PEER_ID_LENGTH) {
-			return UNKNOWN;
-		}
-		String key;
-		final char first = (char) peerId[0];
-		if(first == SymbolConfig.Symbol.MINUS.toChar()) {
-			key = new String(peerId, 1, 2);
-		} else {
-			key = new String(peerId, 0, 1);
-		}
-		return CLIENT_NAMES.getOrDefault(key, UNKNOWN);
-	}
-	
-	/**
-	 * 设置NAT保留位
-	 */
-	public static final void nat() {
-		RESERVED[7] |= RESERVED_NAT_TRAVERSAL;
-	}
 	
 	/**
 	 * 协议消息类型
@@ -774,10 +675,91 @@ public final class PeerConfig extends PropertiesConfig {
 		TORRENT;
 		
 	}
+
+	static {
+		// 保留位
+		RESERVED[7] |= RESERVED_DHT_PROTOCOL;
+		RESERVED[7] |= RESERVED_PEER_EXCHANGE;
+		RESERVED[7] |= RESERVED_FAST_PROTOCOL;
+		RESERVED[5] |= RESERVED_EXTENSION_PROTOCOL;
+	}
+	
+	private static final PeerConfig INSTANCE = new PeerConfig();
+	
+	public static final PeerConfig getInstance() {
+		return INSTANCE;
+	}
+	
+	/**
+	 * PeerId
+	 */
+	private final byte[] peerId;
+	/**
+	 * PeerId（HTTP编码）
+	 */
+	private final String peerIdUrl;
+	
+	private PeerConfig() {
+		super(CLIENT_NAME_CONFIG);
+		this.peerId = this.buildPeerId();
+		this.peerIdUrl = PeerUtils.urlEncode(this.peerId);
+		LOGGER.debug("PeerId：{}", this.peerId);
+		LOGGER.debug("PeerIdUrl：{}", this.peerIdUrl);
+		this.init();
+		this.release();
+	}
 	
 	@Override
 	public void init() {
-		this.properties.forEach((key, value) -> CLIENT_NAMES.put(key.toString(), value.toString()));
+		this.properties.forEach((key, value) -> CLIENT_NAME_MAPPING.put(key.toString(), value.toString()));
+	}
+	
+	/**
+	 * @return PeerId
+	 */
+	private byte[] buildPeerId() {
+		final byte[] peerId = new byte[PeerConfig.PEER_ID_LENGTH];
+		// 名称版本：-ASXXXX-
+		final StringBuilder builder = new StringBuilder(8);
+		builder.append(SymbolConfig.Symbol.MINUS.toString()).append(PEER_ID_NAME);
+		final String version = SystemConfig.getVersion().replace(SymbolConfig.Symbol.DOT.toString(), "");
+		final int versionLength = version.length();
+		if(versionLength > PEER_ID_VERSION_LENGTH) {
+			builder.append(version.substring(0, PEER_ID_VERSION_LENGTH));
+		} else {
+			builder.append(version);
+			builder.append(SymbolConfig.Symbol.ZERO.toString().repeat(PEER_ID_VERSION_LENGTH - versionLength));
+		}
+		builder.append(SymbolConfig.Symbol.MINUS.toString());
+		final byte[] nameVersion = builder.toString().getBytes();
+		final int nameVersionLength = nameVersion.length;
+		System.arraycopy(nameVersion, 0, peerId, 0, nameVersionLength);
+		// 随机填充
+		final int paddingLength = PeerConfig.PEER_ID_LENGTH - nameVersionLength;
+		final byte[] padding = ArrayUtils.random(paddingLength);
+		System.arraycopy(padding, 0, peerId, nameVersionLength, paddingLength);
+		return peerId;
+	}
+	
+	/**
+	 * @return PeerId
+	 */
+	public byte[] peerId() {
+		return this.peerId;
+	}
+	
+	/**
+	 * @return PeerIdUrl
+	 */
+	public String peerIdUrl() {
+		return this.peerIdUrl;
+	}
+	
+	/**
+	 * 设置NAT保留位
+	 */
+	public static final void nat() {
+		RESERVED[7] |= RESERVED_NAT_TRAVERSAL;
 	}
 	
 	/**
@@ -793,6 +775,25 @@ public final class PeerConfig extends PropertiesConfig {
 	 */
 	public static final boolean checkPiece(int index) {
 		return index >= PIECE_MIN && index <= PIECE_MAX;
+	}
+	
+	/**
+	 * @param peerId PeerId
+	 * 
+	 * @return 客户端名称
+	 */
+	public static final String clientName(byte[] peerId) {
+		if(peerId == null || peerId.length < PeerConfig.PEER_ID_LENGTH) {
+			return UNKNOWN;
+		}
+		String key;
+		final char first = (char) peerId[0];
+		if(first == SymbolConfig.Symbol.MINUS.toChar()) {
+			key = new String(peerId, 1, 2);
+		} else {
+			key = new String(peerId, 0, 1);
+		}
+		return CLIENT_NAME_MAPPING.getOrDefault(key, UNKNOWN);
 	}
 	
 }

@@ -20,23 +20,17 @@ public final class TrackerConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TrackerConfig.class);
 	
-	private static final TrackerConfig INSTANCE = new TrackerConfig();
-	
-	public static final TrackerConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
-	 * 配置文件：{@value}
+	 * 配置文件
 	 */
-	private static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
+	public static final String TRACKER_CONFIG = "/config/bt.tracker.properties";
 	/**
-	 * 最大请求失败次数：{@value}
+	 * 最大请求失败次数
 	 * 超过最大请求失败次数标记无效
 	 */
 	public static final int MAX_FAIL_TIMES = 3;
 	/**
-	 * Tracker服务器最大保存数量：{@value}
+	 * Tracker服务器最大保存数量
 	 */
 	public static final int MAX_TRACKER_SIZE = 512;
 	
@@ -179,6 +173,12 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	private final List<String> announces = new ArrayList<>();
 	
+	private static final TrackerConfig INSTANCE = new TrackerConfig();
+	
+	public static final TrackerConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	private TrackerConfig() {
 		super(TRACKER_CONFIG);
 		this.init();
@@ -195,13 +195,9 @@ public final class TrackerConfig extends PropertiesConfig {
 				LOGGER.warn("默认Tracker服务器注册失败：{}", announce);
 			}
 		});
-	}
-
-	/**
-	 * @return 默认Tracker服务器
-	 */
-	public List<String> announces() {
-		return this.announces;
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("加载Tracker服务器数量：{}", this.announces.size());
+		}
 	}
 	
 	/**
@@ -218,10 +214,17 @@ public final class TrackerConfig extends PropertiesConfig {
 				session -> String.format("%04d", index.incrementAndGet()),
 				TrackerSession::announceUrl
 			));
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("保存Tracker服务器配置：{}", data.size());
-		}
 		this.persistent(data, TRACKER_CONFIG);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("保存Tracker服务器数量：{}", data.size());
+		}
+	}
+	
+	/**
+	 * @return 默认Tracker服务器
+	 */
+	public List<String> announces() {
+		return this.announces;
 	}
 	
 }

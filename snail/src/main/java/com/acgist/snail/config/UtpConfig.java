@@ -82,7 +82,7 @@ public final class UtpConfig {
 		 * @return 消息类型
 		 */
 		public static final Type of(byte typeVersion) {
-			// 获取类型
+			// 计算类型
 			final byte value = (byte) (typeVersion >> 4);
 			// 使用索引
 			if(value < 0 || value >= INDEX.length) {
@@ -111,27 +111,27 @@ public final class UtpConfig {
 	}
 	
 	/**
-	 * UTP版本：{@value}
+	 * UTP版本
 	 */
 	public static final byte VERSION = 1;
 	/**
-	 * UTP消息请求头默认长度：{@value}
+	 * UTP消息请求头默认长度
 	 */
 	public static final int HEADER_LENGTH = 20;
 	/**
-	 * UTP消息请求头最小长度：{@value}
+	 * UTP消息请求头最小长度
 	 */
 	public static final int HEADER_MIN_LENGTH = 20;
 	/**
-	 * UTP扩展：{@value}
+	 * UTP扩展
 	 */
 	public static final byte EXTENSION = 0;
 	/**
-	 * UTP扩展消息最小长度：{@value}
+	 * UTP扩展消息最小长度
 	 */
 	public static final int EXTENSION_MIN_LENGTH = 2;
 	/**
-	 * UTP最大包长度：{@value}
+	 * UTP最大包长度
 	 * UDP最大包长度：1500 - 20（IP头） - 8（UDP头） = 1472
 	 * UTP最大包长度：1472 - 20（UTP扩展消息头） = 1452
 	 * 
@@ -140,15 +140,15 @@ public final class UtpConfig {
 	 */
 	public static final int PACKET_MAX_LENGTH = 1452;
 	/**
-	 * 默认窗口大小：{@value}
+	 * 默认窗口大小
 	 */
 	public static final int WND_SIZE = SystemConfig.ONE_MB;
 	/**
-	 * 最大发送次数：{@value}
+	 * 最大发送次数
 	 */
 	public static final byte MAX_PUSH_TIMES = 3;
 	/**
-	 * 快速重传发送ACK次数：{@value}
+	 * 快速重传发送ACK次数
 	 */
 	public static final byte FAST_ACK_RETRY_TIMES = 3;
 	

@@ -7,9 +7,9 @@ import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.DigestUtils;
 
 /**
- * <p>Piece下载信息</p>
- * <p>BT任务基于文件下载，当某个Piece处于两个文件交接处时会被分为两次下载。</p>
- * Piece一般大小设置为512KB、256KB、1MB，目前已知最大为4MB。
+ * Piece下载信息
+ * Piece一般大小设置为512KB、256KB、1MB，目前已知最大16MB。
+ * BT任务基于文件下载，当某个Piece处于两个文件交接处时会被分为两次下载。
  * 
  * @author acgist
  */

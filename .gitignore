@@ -2,8 +2,8 @@
 .settings
 .classpath
 
-logs/
-build/
-target/
-config/
-download/
+/logs/
+/build/
+/target/
+/config/
+/download/

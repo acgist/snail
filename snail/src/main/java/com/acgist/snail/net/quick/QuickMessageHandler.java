@@ -194,7 +194,7 @@ public class QuickMessageHandler extends UdpMessageHandler {
 		this.key = key;
 		this.sessionId = sessionId;
 		this.semaphore = new Semaphore(QuickConfig.DEFAULT_SEMAPHORE);
-		this.byteBuffer = ByteBuffer.allocateDirect(QuickConfig.PACKET_MAX_LENGTH - QuickConfig.HEADER_LENGTH - Long.BYTES);
+		this.byteBuffer = ByteBuffer.allocateDirect(QuickConfig.PACKET_MAX_LENGTH - QuickConfig.HEADER_LENGTH - Integer.BYTES);
 		this.sendMap = new LinkedHashMap<>();
 		this.recvMap = new LinkedHashMap<>();
 		this.context = QuickContext.getInstance();
@@ -363,7 +363,7 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	public ByteBuffer newReq(QuickConfig.Type type, byte[] bytes) {
 		final ByteBuffer buffer = ByteBuffer.allocate(QuickConfig.HEADER_LENGTH + bytes.length);
 		buffer.put(QuickConfig.QUICK_HEADER);
-		buffer.put(type.dt(QuickConfig.DIRECTION_RES));
+		buffer.put(type.directionType(QuickConfig.DIRECTION_RES));
 		buffer.putShort(this.sessionId);
 		buffer.putInt(this.sendSeq);
 		buffer.put(bytes);
@@ -387,7 +387,7 @@ public class QuickMessageHandler extends UdpMessageHandler {
 	public ByteBuffer newAck(QuickConfig.Type type, int seq, byte[] bytes) {
 		final ByteBuffer buffer = ByteBuffer.allocate(QuickConfig.HEADER_LENGTH + bytes.length);
 		buffer.put(QuickConfig.QUICK_HEADER);
-		buffer.put(type.dt(QuickConfig.DIRECTION_ACK));
+		buffer.put(type.directionType(QuickConfig.DIRECTION_ACK));
 		buffer.putShort(this.sessionId);
 		buffer.putInt(seq);
 		buffer.put(bytes);

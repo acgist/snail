@@ -30,91 +30,85 @@ public final class DhtConfig extends PropertiesConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DhtConfig.class);
 	
-	private static final DhtConfig INSTANCE = new DhtConfig();
-	
-	public static final DhtConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
-	 * DHT配置文件：{@value}
+	 * DHT配置文件
 	 */
 	public static final String DHT_CONFIG = "/config/bt.dht.properties";
 	/**
-	 * DHT消息字符：{@value}
+	 * DHT消息字符
 	 * 用来区分不同协议
 	 * 
 	 * @see TorrentAcceptHandler
 	 */
 	public static final byte DHT_HEADER = 'd';
 	/**
-	 * 消息ID（请求ID、响应ID）：{@value}
+	 * 消息ID（请求ID、响应ID）
 	 * 
 	 * @see DhtContext#buildRequestId()
 	 */
 	public static final String KEY_T = "t";
 	/**
-	 * 消息类型：{@value}
+	 * 消息类型
 	 * 请求消息类型：{@link #KEY_Q}
 	 * 响应消息类型：{@link #KEY_R}
 	 */
 	public static final String KEY_Y = "y";
 	/**
-	 * 请求消息类型、请求类型：{@value}
+	 * 请求消息类型、请求类型
 	 * 请求消息类型：{@link #KEY_Y}
 	 * 请求类型：{@link QType}
 	 */
 	public static final String KEY_Q = "q";
 	/**
-	 * 响应消息类型、响应参数：{@value}
+	 * 响应消息类型、响应参数
 	 * 响应消息类型：{@link #KEY_Y}
 	 * 响应参数类型：{@link Map}
 	 */
 	public static final String KEY_R = "r";
 	/**
-	 * 请求参数：{@value}
+	 * 请求参数
 	 * 请求参数类型：{@link Map}
 	 */
 	public static final String KEY_A = "a";
 	/**
-	 * 错误编码：{@value}
+	 * 错误编码
 	 * 错误编码类型：{@link Map}
 	 * 
 	 * @see ErrorCode
 	 */
 	public static final String KEY_E = "e";
 	/**
-	 * 客户端版本：{@value}
+	 * 客户端版本
 	 */
 	public static final String KEY_V = "v";
 	/**
-	 * NodeId：{@value}
+	 * NodeId
 	 * 
 	 * @see NodeContext#nodeId()
 	 */
 	public static final String KEY_ID = "id";
 	/**
-	 * 下载端口：{@value}
+	 * 下载端口
 	 * 
 	 * @see QType#ANNOUNCE_PEER
 	 * @see SystemConfig#getTorrentPortExt()
 	 */
 	public static final String KEY_PORT = "port";
 	/**
-	 * Token：{@value}
+	 * Token
 	 * 
 	 * @see QType#ANNOUNCE_PEER
 	 */
 	public static final String KEY_TOKEN = "token";
 	/**
-	 * IPv4节点列表：{@value}
+	 * IPv4节点列表
 	 * 
 	 * @see QType#FIND_NODE
 	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_NODES = "nodes";
 	/**
-	 * IPv6节点列表：{@value}
+	 * IPv6节点列表
 	 * 
 	 * @see QType#FIND_NODE
 	 * @see QType#GET_PEERS
@@ -142,26 +136,26 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final String KEY_WANT = "want";
 	/**
-	 * Peer列表：{@value}
+	 * Peer列表
 	 * 
 	 * @see QType#GET_PEERS
 	 */
 	public static final String KEY_VALUES = "values";
 	/**
-	 * 目标（NodeId、InfoHash）：{@value}
+	 * 目标（NodeId、InfoHash）
 	 * 
 	 * @see QType#FIND_NODE
 	 */
 	public static final String KEY_TARGET = "target";
 	/**
-	 * InfoHash：{@value}
+	 * InfoHash
 	 * 
 	 * @see QType#GET_PEERS
 	 * @see QType#ANNOUNCE_PEER
 	 */
 	public static final String KEY_INFO_HASH = "info_hash";
 	/**
-	 * 是否自动获取Peer端口：{@value}
+	 * 是否自动获取Peer端口
 	 * 
 	 * @see #IMPLIED_PORT_AUTO
 	 * @see #IMPLIED_PORT_CONFIG
@@ -181,21 +175,21 @@ public final class DhtConfig extends PropertiesConfig {
 	 */
 	public static final Integer IMPLIED_PORT_CONFIG = 0;
 	/**
-	 * Peer列表长度：{@value}
+	 * Peer列表长度
 	 * 
 	 * @see QType#GET_PEERS
 	 */
 	public static final int GET_PEER_SIZE = 32;
 	/**
-	 * NodeId长度：{@value}
+	 * NodeId长度
 	 */
 	public static final int NODE_ID_LENGTH = 20;
 	/**
-	 * Node最大保存数量：{@value}
+	 * Node最大保存数量
 	 */
 	public static final int MAX_NODE_SIZE = 1024;
 	/**
-	 * DHT超时请求清理执行周期（分钟）：{@value}
+	 * DHT超时请求清理执行周期（分钟）
 	 */
 	public static final int DHT_REQUEST_TIMEOUT_INTERVAL = 10;
 	
@@ -323,6 +317,12 @@ public final class DhtConfig extends PropertiesConfig {
 	 * NodeID=host:port
 	 */
 	private final Map<String, String> nodes = new LinkedHashMap<>();
+	
+	private static final DhtConfig INSTANCE = new DhtConfig();
+	
+	public static final DhtConfig getInstance() {
+		return INSTANCE;
+	}
 	
 	private DhtConfig() {
 		super(DHT_CONFIG);

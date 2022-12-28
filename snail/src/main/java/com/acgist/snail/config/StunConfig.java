@@ -8,39 +8,39 @@ package com.acgist.snail.config;
 public final class StunConfig {
 
 	/**
-	 * 默认端口：{@value}
+	 * 默认端口
 	 */
 	public static final int DEFAULT_PORT = 3478;
 	/**
-	 * STUN固定值：{@value}
+	 * STUN固定值
 	 */
 	public static final int MAGIC_COOKIE = 0x2112A442;
 	/**
-	 * 头部信息长度：{@value}
+	 * 头部信息长度
 	 */
 	public static final int HEADER_STUN_LENGTH = 20;
 	/**
-	 * 属性头部信息长度：{@value}
+	 * 属性头部信息长度
 	 */
 	public static final int HEADER_ATTRIBUTE_LENGTH = 4;
 	/**
-	 * TransactionID长度：{@value}
+	 * TransactionID长度
 	 */
 	public static final int TRANSACTION_ID_LENGTH = 12;
 	/**
-	 * IPv4：{@value}
+	 * IPv4
 	 */
 	public static final int IPV4 = 0x01;
 	/**
-	 * IPv6：{@value}
+	 * IPv6
 	 */
 	public static final int IPV6 = 0x02;
 	/**
-	 * <p>STUN消息开头字符：请求、指示</p>
+	 * STUN消息开头字符：请求、指示
 	 */
 	public static final byte STUN_HEADER_SEND = 0x00;
 	/**
-	 * <p>STUN消息开头字符：响应</p>
+	 * STUN消息开头字符：响应
 	 */
 	public static final byte STUN_HEADER_RECV = 0x01;
 	
@@ -65,7 +65,7 @@ public final class StunConfig {
 		BINDING((short) 0x01);
 		
 		/**
-		 * 消息MASK：{@value}
+		 * 消息MASK
 		 */
 		public static final short MASK = 0B0000_0000_0000_0001;
 		
@@ -115,15 +115,15 @@ public final class StunConfig {
 		RESPONSE_ERROR((byte) 0B11);
 		
 		/**
-		 * C0：{@value}
+		 * C0
 		 */
 		public static final short C0_MASK = 0B0000_0000_0001_0000;
 		/**
-		 * C1：{@value}
+		 * C1
 		 */
 		public static final short C1_MASK = 0B0000_0001_0000_0000;
 		/**
-		 * 前两位必须零：{@value}
+		 * 前两位必须零
 		 */
 		public static final short TYPE_MASK = 0B0011_1111_1111_1111;
 		

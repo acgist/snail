@@ -25,7 +25,7 @@ public final class SymbolConfig {
 		 */
 		PREFIX,
 		/**
-		 * 前缀
+		 * 后缀
 		 */
 		SUFFIX
 		

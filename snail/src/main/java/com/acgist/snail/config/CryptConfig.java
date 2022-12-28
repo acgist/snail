@@ -129,17 +129,17 @@ public final class CryptConfig {
 	 */
 	public static final BigInteger G = BigInteger.valueOf(2);
 	/**
-	 * 公钥长度：{@value}
+	 * 公钥长度
 	 */
 	public static final int PUBLIC_KEY_LENGTH = 96;
 	/**
-	 * 私钥长度：{@value}
+	 * 私钥长度
 	 * 随机长度：128~180
 	 * 推荐长度：160（超过180只能增加计算时间并不能提高安全性）
 	 */
 	public static final int PRIVATE_KEY_LENGTH = 128;
 	/**
-	 * 最大随机填充长度：{@value}
+	 * 最大随机填充长度
 	 */
 	public static final int PADDING_MAX_LENGTH = 512;
 	/**

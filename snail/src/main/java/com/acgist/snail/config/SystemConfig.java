@@ -14,147 +14,141 @@ public final class SystemConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);
 	
-	private static final SystemConfig INSTANCE = new SystemConfig();
-	
-	public static final SystemConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
-	 * 配置文件：{@value}
+	 * 配置文件
 	 */
 	private static final String SYSTEM_CONFIG = "/config/system.properties";
 	/**
-	 * 端口占用字节大小：{@value}
+	 * 端口占用字节大小
 	 */
 	public static final int PORT_LENGHT = 2;
 	/**
-	 * IPv4占用字节大小：{@value}
+	 * IPv4占用字节大小
 	 */
 	public static final int IPV4_LENGTH = 4;
 	/**
-	 * IPv6占用字节大小：{@value}
+	 * IPv6占用字节大小
 	 */
 	public static final int IPV6_LENGTH = 16;
 	/**
-	 * 强制关闭程序定时任务时间（单位：秒）：{@value}
-	 */
-	public static final int SHUTDOWN_FORCE_TIME = 30;
-	/**
-	 * IPv4端口占用字节大小：{@value}
+	 * IPv4端口占用字节大小
 	 */
 	public static final int IPV4_PORT_LENGTH = IPV4_LENGTH + PORT_LENGHT;
 	/**
-	 * IPv6端口占用字节大小：{@value}
+	 * IPv6端口占用字节大小
 	 */
 	public static final int IPV6_PORT_LENGTH = IPV6_LENGTH + PORT_LENGHT;
 	/**
-	 * 数据大小比例：{@value}
+	 * 强制关闭程序定时任务时间（单位：秒）
+	 */
+	public static final int SHUTDOWN_FORCE_TIME = 30;
+	/**
+	 * 数据大小比例
 	 */
 	public static final int DATA_SCALE = 1024;
 	/**
-	 * 1KB数据大小：{@value}
+	 * 1KB数据大小
 	 * 1KB = 1024B
 	 */
 	public static final int ONE_KB = DATA_SCALE;
 	/**
-	 * 1MB数据大小：{@value}
+	 * 1MB数据大小
 	 * 1MB = 1024KB = 1024 * 1024B
 	 */
 	public static final int ONE_MB = DATA_SCALE * ONE_KB;
 	/**
-	 * TCP消息缓冲大小：{@value}
+	 * TCP消息缓冲大小
 	 */
 	public static final int TCP_BUFFER_LENGTH = 16 * ONE_KB;
 	/**
-	 * UDP消息缓存大小：{@value}
+	 * UDP消息缓存大小
 	 */
 	public static final int UDP_BUFFER_LENGTH = 2 * ONE_KB;
 	/**
-	 * 最大的网络包大小：{@value}
+	 * 最大的网络包大小
 	 * 校验网络数据大小：防止太长导致内存泄漏
-	 * 取值最大来源已知最大Piece大小：4MB
 	 * 
 	 * @see PacketSizeException
 	 */
 	public static final int MAX_NET_BUFFER_LENGTH = 4 * ONE_MB;
 	/**
-	 * 最小下载速度：{@value}KB
+	 * 最小下载速度（KB）
 	 */
 	public static final int MIN_DOWNLOAD_BUFFER_KB = 16;
 	/**
-	 * 默认数据传输大小：{@value}
+	 * 默认数据传输大小
+	 * 用作默认缓存大小
 	 * 
 	 * @see #MIN_DOWNLOAD_BUFFER_KB
 	 */
 	public static final int DEFAULT_EXCHANGE_LENGTH = MIN_DOWNLOAD_BUFFER_KB * ONE_KB;
 	/**
-	 * 时间比例：{@value}
+	 * 时间比例
 	 */
 	public static final int DATE_SCALE = 1000;
 	/**
-	 * 一秒钟（毫秒）：{@value}
+	 * 一秒钟（毫秒）
 	 */
 	public static final int ONE_SECOND_MILLIS = DATE_SCALE;
 	/**
-	 * 没有超时时间：{@value}
+	 * 没有超时时间
 	 */
 	public static final int NONE_TIMEOUT = 0;
 	/**
-	 * 连接超时时间（秒）：{@value}
+	 * 连接超时时间（秒）
 	 */
 	public static final int CONNECT_TIMEOUT = 5;
 	/**
-	 * 连接超时时间（毫秒）：{@value}
+	 * 连接超时时间（毫秒）
 	 */
 	public static final int CONNECT_TIMEOUT_MILLIS = CONNECT_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
-	 * 接收超时时间（秒）：{@value}
+	 * 接收超时时间（秒）
 	 */
 	public static final int RECEIVE_TIMEOUT = 5;
 	/**
-	 * 接收超时时间（毫秒）：{@value}
+	 * 接收超时时间（毫秒）
 	 */
 	public static final int RECEIVE_TIMEOUT_MILLIS = RECEIVE_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
-	 * 下载超时时间（秒）：{@value}
+	 * 下载超时时间（秒）
 	 */
 	public static final int DOWNLOAD_TIMEOUT = 30;
 	/**
-	 * 下载超时时间（毫秒）：{@value}
+	 * 下载超时时间（毫秒）
 	 */
 	public static final int DOWNLOAD_TIMEOUT_MILLIS = DOWNLOAD_TIMEOUT * ONE_SECOND_MILLIS;
 	/**
-	 * 刷新时间（秒）：{@value}
+	 * 刷新时间（秒）
 	 * 任务列表、速度统计
 	 */
 	public static final int REFRESH_INTERVAL = 5;
 	/**
-	 * 刷新时间（毫秒）：{@value}
+	 * 刷新时间（毫秒）
 	 */
 	public static final int REFRESH_INTERVAL_MILLIS = REFRESH_INTERVAL * ONE_SECOND_MILLIS;
 	/**
-	 * SHA-1散列值长度：{@value}
+	 * SHA-1散列值长度
 	 */
 	public static final int SHA1_HASH_LENGTH = 20;
 	/**
-	 * 编码：{@value}
+	 * GBK编码
 	 */
 	public static final String CHARSET_GBK = "GBK";
 	/**
-	 * 编码：{@value}
+	 * UTF-8编码
 	 */
 	public static final String CHARSET_UTF8 = "UTF-8";
 	/**
-	 * 编码：{@value}
+	 * ASCII编码
 	 */
 	public static final String CHARSET_ASCII = "ASCII";
 	/**
-	 * 编码：{@value}
+	 * ISO-8859-1编码
 	 */
 	public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 	/**
-	 * 系统默认编码：{@value}
+	 * 系统默认编码
 	 * 启动参数：-D file.encoding=UTF-8
 	 */
 	public static final String DEFAULT_CHARSET = CHARSET_UTF8;
@@ -208,11 +202,11 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int servicePort;
 	/**
-	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN）
+	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）
 	 */
 	private int torrentPort;
 	/**
-	 * BT服务端口（外网端口：Peer、DHT、UTP、STUN）
+	 * BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
 	 */
 	private int torrentPortExt = 0;
 	/**
@@ -271,6 +265,12 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private boolean externalIPAddressIPv4 = true;
 	
+	private static final SystemConfig INSTANCE = new SystemConfig();
+	
+	public static final SystemConfig getInstance() {
+		return INSTANCE;
+	}
+	
 	private SystemConfig() {
 		super(SYSTEM_CONFIG);
 		this.init();
@@ -315,7 +315,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("最新稳定版本：{}", this.latestRelease);
 		LOGGER.debug("STUN服务器：{}", this.stunServer);
 		LOGGER.debug("系统服务端口（本地服务：启动检测）：{}", this.servicePort);
-		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN）：{}", this.torrentPort);
+		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）：{}", this.torrentPort);
 		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.debug("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.debug("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
@@ -407,14 +407,14 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * @return BT服务端口（本地端口：Peer、DHT、UTP、STUN）
+	 * @return BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）
 	 */
 	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
 	 * 
 	 * @see #getTorrentPort()
 	 */
@@ -426,15 +426,15 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN）
+	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.debug("设置BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
+		LOGGER.debug("设置BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
 	/**
-	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.portToShort(getTorrentPortExt());

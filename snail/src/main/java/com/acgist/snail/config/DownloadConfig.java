@@ -20,71 +20,57 @@ public final class DownloadConfig extends PropertiesConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadConfig.class);
 	
-	private static final DownloadConfig INSTANCE = new DownloadConfig();
-	
-	public static final DownloadConfig getInstance() {
-		return INSTANCE;
-	}
-	
 	/**
-	 * 下载配置文件：{@value}
+	 * 下载配置文件
 	 */
 	public static final String DOWNLOAD_CONFIG = "/config/download.properties";
 	/**
-	 * 下载速度和上传速度的比例：{@value}
+	 * 下载速度和上传速度的比例
 	 * 比例计算公式 = {@link #downloadBufferByte} / {@link #uploadBufferByte}
 	 */
 	private static final int DOWNLOAD_UPLOAD_SCALE = 4;
 	/**
-	 * 下载目录配置名称：{@value}
+	 * 下载目录配置名称
 	 * 
 	 * @see #path
 	 */
 	private static final String DOWNLOAD_PATH = "acgist.download.path";
 	/**
-	 * 下载数量配置名称：{@value}
+	 * 下载数量配置名称
 	 * 
 	 * @see #size
 	 */
 	private static final String DOWNLOAD_SIZE = "acgist.download.size";
 	/**
-	 * 消息提示配置名称：{@value}
+	 * 消息提示配置名称
 	 * 
 	 * @see #notice
 	 */
 	private static final String DOWNLOAD_NOTICE = "acgist.download.notice";
 	/**
-	 * 删除文件配置名称：{@value}
+	 * 删除文件配置名称
 	 * 
 	 * @see #delete
 	 */
 	private static final String DOWNLOAD_DELETE = "acgist.download.delete";
 	/**
-	 * 下载速度（单个）（KB）配置名称：{@value}
+	 * 下载速度（单个）（KB）配置名称
 	 * 
 	 * @see #buffer
 	 */
 	private static final String DOWNLOAD_BUFFER = "acgist.download.buffer";
 	/**
-	 * 最后一次选择目录配置名称：{@value}
+	 * 最后一次选择目录配置名称
 	 * 
 	 * @see #lastPath
 	 */
 	private static final String DOWNLOAD_LAST_PATH = "acgist.download.last.path";
 	/**
-	 * 磁盘缓存（单个）（MB）配置名称：{@value}
+	 * 磁盘缓存（单个）（MB）配置名称
 	 * 
 	 * @see #memoryBuffer
 	 */
 	private static final String DOWNLOAD_MEMORY_BUFFER = "acgist.download.memory.buffer";
-	
-	private DownloadConfig() {
-		super(DOWNLOAD_CONFIG);
-		this.init();
-		this.release();
-		this.refreshBuffer();
-		this.refreshMemoryBuffer();
-	}
 	
 	/**
 	 * 下载目录
@@ -132,6 +118,20 @@ public final class DownloadConfig extends PropertiesConfig {
 	 * @see #memoryBuffer
 	 */
 	private int memoryBufferByte;
+	
+	private static final DownloadConfig INSTANCE = new DownloadConfig();
+	
+	public static final DownloadConfig getInstance() {
+		return INSTANCE;
+	}
+	
+	private DownloadConfig() {
+		super(DOWNLOAD_CONFIG);
+		this.init();
+		this.release();
+		this.refreshBuffer();
+		this.refreshMemoryBuffer();
+	}
 	
 	@Override
 	public void init() {
