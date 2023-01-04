@@ -7,40 +7,40 @@ import com.acgist.snail.config.SystemConfig;
 import com.acgist.snail.utils.ThreadUtils;
 
 /**
- * <p>限速信息</p>
+ * 限速信息
  * 
  * @author acgist
  */
 public final class LimitSession {
 
 	/**
-	 * <p>限制类型</p>
+	 * 限制类型
 	 * 
 	 * @author acgist
 	 */
 	public enum Type {
 		
 		/**
-		 * <p>上传</p>
+		 * 上传
 		 */
 		UPLOAD,
 		/**
-		 * <p>下载</p>
+		 * 下载
 		 */
 		DOWNLOAD;
 		
 	}
 	
 	/**
-	 * <p>限制类型</p>
+	 * 限制类型
 	 */
 	private final Type type;
 	/**
-	 * <p>限速采样</p>
+	 * 限速采样
 	 */
 	private final AtomicLong limitBuffer;
 	/**
-	 * <p>最后一次采样时间</p>
+	 * 最后一次采样时间
 	 */
 	private volatile long limitBufferTime;
 	
@@ -54,7 +54,7 @@ public final class LimitSession {
 	}
 	
 	/**
-	 * <p>限制速度</p>
+	 * 限制速度
 	 * 
 	 * @param buffer 数据大小
 	 */
@@ -62,6 +62,7 @@ public final class LimitSession {
 		final long interval = System.currentTimeMillis() - this.limitBufferTime;
 		final long maxLimitBuffer = this.maxLimitBuffer();
 		final long limitBufferValue = this.limitBuffer.addAndGet(buffer);
+		// 下载数据超过限速大小或者采样时间大于一秒进入限速
 		if(limitBufferValue >= maxLimitBuffer || interval >= SystemConfig.ONE_SECOND_MILLIS) {
 			// 限速控制
 			synchronized (this.limitBuffer) {
@@ -85,8 +86,7 @@ public final class LimitSession {
 	}
 	
 	/**
-	 * <p>获取限制速度</p>
-	 * <p>不能初始化成常量：设置限速实时生效</p>
+	 * 不能初始化成常量：设置限速实时生效
 	 * 
 	 * @return 限制速度
 	 */

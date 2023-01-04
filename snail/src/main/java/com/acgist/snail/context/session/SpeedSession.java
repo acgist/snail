@@ -5,45 +5,45 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.acgist.snail.config.SystemConfig;
 
 /**
- * <p>速度信息</p>
+ * 速度信息
  * 
  * @author acgist
  */
 public final class SpeedSession {
 	
 	/**
-	 * <p>采样次数：{@value}</p>
+	 * 采样次数
 	 */
 	private static final byte SAMPLE_SIZE = 10;
 
 	/**
-	 * <p>速度</p>
+	 * 当前缓存速度
 	 */
 	private long speed = 0L;
 	/**
-	 * <p>当前采样位置</p>
+	 * 当前采样位置
 	 */
 	private byte bufferSampleIndex = 0;
 	/**
-	 * <p>速度累计采样</p>
+	 * 速度累计采样
 	 */
 	private final AtomicInteger bufferSample = new AtomicInteger(0);
 	/**
-	 * <p>最后一次采样时间</p>
+	 * 最后一次采样时间
 	 */
 	private volatile long bufferSampleTime = System.currentTimeMillis();
 	/**
-	 * <p>速度采样集合</p>
-	 * <p>每次计算速度时采样一次放入到集合</p>
+	 * 速度采样集合
+	 * 每次计算速度时采样一次放入到集合
 	 */
 	private final int[] bufferSamples = new int[SAMPLE_SIZE];
 	/**
-	 * <p>采样时间集合</p>
+	 * 采样时间集合
 	 */
 	private final long[] bufferSampleTimes = new long[SAMPLE_SIZE];
 	
 	/**
-	 * <p>速度采样</p>
+	 * 速度采样
 	 * 
 	 * @param buffer 数据大小
 	 */
@@ -52,9 +52,8 @@ public final class SpeedSession {
 	}
 
 	/**
-	 * <p>获取速度</p>
-	 * <p>超过采样时间：重新计算速度</p>
-	 * <p>小于采样时间：返回上次速度</p>
+	 * 超过采样时间：重新计算速度
+	 * 小于采样时间：返回上次速度
 	 * 
 	 * @return 速度
 	 */
@@ -73,7 +72,7 @@ public final class SpeedSession {
 	}
 
 	/**
-	 * <p>计算速度</p>
+	 * 计算速度
 	 * 
 	 * @param interval 时间间隔
 	 * 
@@ -99,9 +98,13 @@ public final class SpeedSession {
 	}
 
 	/**
-	 * <p>重置速度统计</p>
+	 * 重置速度统计
 	 */
 	public void reset() {
+		// 不要重置速度和索引：平稳降低
+//		this.speed = 0L;
+//		this.bufferSampleIndex = 0;
+		// 重置采样数据
 		for (int index = 0; index < SAMPLE_SIZE; index++) {
 			this.bufferSamples[index] = 0;
 			this.bufferSampleTimes[index] = 0;

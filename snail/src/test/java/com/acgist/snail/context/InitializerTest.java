@@ -1,4 +1,4 @@
-package com.acgist.snail.context.initializer;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.Initializer;
 import com.acgist.snail.utils.Performance;
 
 class InitializerTest extends Performance {

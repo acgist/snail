@@ -10,7 +10,7 @@ import com.acgist.snail.protocol.Protocol.Type;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Entity - 任务</p>
+ * Entity - 任务
  * 
  * @author acgist
  */
@@ -19,55 +19,55 @@ public final class TaskEntity extends Entity implements ITaskSessionEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>任务名称</p>
+	 * 任务名称
 	 */
 	private String name;
 	/**
-	 * <p>协议类型</p>
+	 * 协议类型
 	 */
 	private Type type;
 	/**
-	 * <p>文件类型</p>
+	 * 文件类型
 	 */
 	private FileType fileType;
 	/**
-	 * <p>文件路径或目录路径</p>
-	 * <p>单文件下载：文件路径</p>
-	 * <p>多文件下载：目录路径</p>
+	 * 任务下载的文件路径或目录路径
+	 * 单文件下载：文件路径
+	 * 多文件下载：目录路径
 	 */
 	private String file;
 	/**
-	 * <p>下载链接</p>
-	 * <p>种子文件：保存磁力链接</p>
-	 * <p>迅雷链接：保存实际下载链接</p>
+	 * 下载链接
+	 * 种子文件：磁力链接
+	 * 迅雷链接：原始链接
 	 */
 	private String url;
 	/**
-	 * <p>BT任务种子文件路径</p>
+	 * BT任务种子文件路径
 	 */
 	private String torrent;
 	/**
-	 * <p>任务状态</p>
+	 * 任务状态
 	 */
 	private Status status;
 	/**
-	 * <p>文件大小（B）</p>
+	 * 文件大小（B）
 	 */
 	private Long size;
 	/**
-	 * <p>完成时间</p>
+	 * 完成时间
 	 */
 	private Date completedDate;
 	/**
-	 * <p>下载描述</p>
-	 * <p>多文件下载：保持下载文件列表（B编码）</p>
-	 * <p>BT任务：下载文件路径列表</p>
-	 * <p>HLS任务：下载文件链接列表</p>
+	 * 下载描述
+	 * 保存多文件下载任务的文件列表（B编码）
+	 * BT任务：下载文件路径列表
+	 * HLS任务：下载文件链接列表
 	 */
 	private String description;
 	/**
-	 * <p>任务负载</p>
-	 * <p>BT任务：已经下载Piece位图</p>
+	 * 任务负载
+	 * BT任务：已经下载Piece位图
 	 */
 	private byte[] payload;
 	

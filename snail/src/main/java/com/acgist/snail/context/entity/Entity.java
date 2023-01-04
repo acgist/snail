@@ -3,12 +3,13 @@ package com.acgist.snail.context.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.acgist.snail.utils.BeanUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Entity - 实体</p>
+ * Entity - 实体
  * 
  * @author acgist
  */
@@ -17,21 +18,21 @@ public abstract class Entity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * <p>ID</p>
+	 * ID
+	 * 
+	 * @see UUID
 	 */
 	protected String id;
 	/**
-	 * <p>创建时间</p>
+	 * 创建时间
 	 */
 	protected Date createDate;
 	/**
-	 * <p>修改时间</p>
+	 * 修改时间
 	 */
 	protected Date modifyDate;
 	
 	/**
-	 * <p>获取ID</p>
-	 * 
 	 * @return ID
 	 */
 	public String getId() {
@@ -39,8 +40,6 @@ public abstract class Entity implements Serializable {
 	}
 
 	/**
-	 * <p>设置ID</p>
-	 * 
 	 * @param id ID
 	 */
 	public void setId(String id) {
@@ -48,8 +47,6 @@ public abstract class Entity implements Serializable {
 	}
 
 	/**
-	 * <p>获取创建时间</p>
-	 * 
 	 * @return 创建时间
 	 */
 	public Date getCreateDate() {
@@ -57,8 +54,6 @@ public abstract class Entity implements Serializable {
 	}
 
 	/**
-	 * <p>设置创建时间</p>
-	 * 
 	 * @param createDate 创建时间
 	 */
 	public void setCreateDate(Date createDate) {
@@ -66,8 +61,6 @@ public abstract class Entity implements Serializable {
 	}
 
 	/**
-	 * <p>获取修改时间</p>
-	 * 
 	 * @return 修改时间
 	 */
 	public Date getModifyDate() {
@@ -75,8 +68,6 @@ public abstract class Entity implements Serializable {
 	}
 
 	/**
-	 * <p>设置修改时间</p>
-	 * 
 	 * @param modifyDate 修改时间
 	 */
 	public void setModifyDate(Date modifyDate) {

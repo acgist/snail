@@ -1,11 +1,10 @@
-package com.acgist.snail.context.exception;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.EntityException;
 import com.acgist.snail.utils.Performance;
 
 class EntityExceptionTest extends Performance {

@@ -125,6 +125,8 @@ public final class SystemConfig extends PropertiesConfig {
 	public static final int REFRESH_INTERVAL = 5;
 	/**
 	 * 刷新时间（毫秒）
+	 * 
+	 * @see #REFRESH_INTERVAL
 	 */
 	public static final int REFRESH_INTERVAL_MILLIS = REFRESH_INTERVAL * ONE_SECOND_MILLIS;
 	/**

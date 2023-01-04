@@ -1,4 +1,4 @@
-package com.acgist.snail.context.initializer;
+package com.acgist.snail.context;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
