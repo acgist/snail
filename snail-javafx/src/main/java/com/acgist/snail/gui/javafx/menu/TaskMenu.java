@@ -140,6 +140,7 @@ public final class TaskMenu extends Menu {
 			return;
 		}
 		Platform.runLater(() -> MainWindow.getInstance().controller().selected().forEach(session -> {
+			// TODO：完成才能校验
 			if(session.verify()) {
 				Alerts.info("校验成功", session.getName());
 			} else if(session.statusCompleted()) {

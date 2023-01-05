@@ -1,7 +1,9 @@
-package com.acgist.snail.pojo.wrapper;
+package com.acgist.snail.context.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +12,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SymbolConfig;
-import com.acgist.snail.context.wrapper.HeaderWrapper;
 import com.acgist.snail.net.upnp.UpnpServer;
 import com.acgist.snail.utils.Performance;
 
@@ -48,12 +49,23 @@ class HeaderWrapperTest extends Performance {
 	
 	@Test
 	void testDecode() {
-		final var wrapper = HeaderWrapper.newInstance("acgist\na: b\n c : d\ne\nf:");
+		final var wrapper = HeaderWrapper.newInstance("acgist\na: b\n c : d\ne\nf:\n:g\nh:h\nh:");
 		this.log(wrapper.allHeaders());
 		assertEquals("b", wrapper.header("a"));
 		assertEquals("d", wrapper.header("c"));
 		assertEquals("", wrapper.header("e"));
 		assertEquals("", wrapper.header("f"));
+		assertEquals("g", wrapper.header(""));
+		assertEquals(List.of("h", ""), wrapper.headerList("h"));
+	}
+
+	@Test
+	void testCosted() {
+		final long costed = this.costed(100000, () -> {
+			assertNotNull(HeaderWrapper.newInstance("acgist\na: b\n c : d\ne\nf:").allHeaders());
+			assertNotNull(HeaderWrapper.newBuilder("M-SEARCH * HTTP/1.1").header("MX", "3").build());
+		});
+		assertTrue(costed < 1000);
 	}
 	
 }

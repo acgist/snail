@@ -10,82 +10,74 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>HTTP头部信息包装器</p>
+ * HTTP头部信息包装器
  * 
  * @author acgist
  */
 public final class HttpHeaderWrapper extends HeaderWrapper {
 	
 	/**
-	 * <p>HTTP客户端信息：{@value}</p>
+	 * 范围请求
+	 * HTTP协议断点续传设置
+	 * 
+	 * Range: bytes=0-499
+	 * 范围：0-499
+	 * 
+	 * Range: bytes=500-999
+	 * 范围：500-999
+	 * 
+	 * Range: bytes=-500
+	 * 最后500字节
+	 * 
+	 * Range: bytes=500-
+	 * 500字节开始到结束
+	 * 
+	 * Range: bytes=0-0,-1
+	 * 第一个字节和最后一个字节
+	 * 
+	 * Range: bytes=500-600,601-999
+	 * 同时指定多个范围
+	 */
+	public static final String HEADER_RANGE = "Range";
+	/**
+	 * HTTP客户端信息
 	 */
 	public static final String HEADER_USER_AGENT = "User-Agent";
 	/**
-	 * <p>MIME类型：{@value}</p>
-	 */
-	public static final String HEADER_CONTENT_TYPE = "Content-Type";
-	/**
-	 * <p>下载大小：{@value}</p>
-	 */
-	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-	/**
-	 * <p>下载描述：{@value}</p>
-	 */
-	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
-	/**
-	 * <p>请求下载范围：{@value}</p>
-	 * <p>返回数据范围：Content-Range=bytes 0-100/100</p>
-	 * 
-	 * @see #HEADER_RANGE
-	 */
-	public static final String HEADER_CONTENT_RANGE = "Content-Range";
-	/**
-	 * <p>接收范围请求：{@value}</p>
-	 * <p>返回全部数据：Accept-Ranges=bytes</p>
+	 * 接收范围请求
+	 * 返回全部数据：Accept-Ranges=bytes
 	 * 
 	 * @see #HEADER_RANGE
 	 */
 	public static final String HEADER_ACCEPT_RANGES = "Accept-Ranges";
 	/**
-	 * <p>范围请求：{@value}</p>
-	 * <table border="1">
-	 * 	<caption>HTTP协议断点续传设置</caption>
-	 * 	<tr>
-	 * 		<td>Range: bytes=0-499</td>
-	 * 		<td>范围：0-499</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Range: bytes=500-999</td>
-	 * 		<td>范围：500-999</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Range: bytes=-500</td>
-	 * 		<td>最后500字节</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Range: bytes=500-</td>
-	 * 		<td>500字节开始到结束</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Range: bytes=0-0,-1</td>
-	 * 		<td>第一个字节和最后一个字节</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Range: bytes=500-600,601-999</td>
-	 * 		<td>同时指定多个范围</td>
-	 * 	</tr>
-	 * </table>
+	 * MIME类型
 	 */
-	public static final String HEADER_RANGE = "Range";
+	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/**
-	 * <p>接收范围请求：{@value}</p>
+	 * 请求下载范围
+	 * 返回数据范围：Content-Range=bytes 0-100/100
 	 * 
-	 * @see #HEADER_CONTENT_RANGE
+	 * @see #HEADER_RANGE
+	 */
+	public static final String HEADER_CONTENT_RANGE = "Content-Range";
+	/**
+	 * 下载大小
+	 */
+	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+	/**
+	 * 下载描述
+	 */
+	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+	/**
+	 * 接收范围请求
+	 * 
 	 * @see #HEADER_ACCEPT_RANGES
+	 * @see #HEADER_CONTENT_RANGE
 	 */
 	public static final String HEADER_VALUE_BYTES = "bytes";
 	/**
-	 * <p>文件名称：{@value}</p>
+	 * 文件名称
 	 * 
 	 * @see #HEADER_CONTENT_DISPOSITION
 	 */
@@ -99,17 +91,17 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * @param httpHeaders HTTP头部信息
+	 * @param headers 头部信息
 	 * 
-	 * @return HttpHeaderWrapper
+	 * @return {@link HttpHeaderWrapper}
 	 */
-	public static final HttpHeaderWrapper newInstance(Map<String, List<String>> httpHeaders) {
-		return new HttpHeaderWrapper(httpHeaders);
+	public static final HttpHeaderWrapper newInstance(Map<String, List<String>> headers) {
+		return new HttpHeaderWrapper(headers);
 	}
 
 	/**
-	 * <p>获取文件名称</p>
-	 * <p>下载文件名称：如果不存在返回默认文件名称</p>
+	 * 下载文件名称：如果不存在返回默认文件名称
+	 * 
 	 * <pre>
 	 * Content-Disposition:attachment;filename="snail.jar"
 	 * Content-Disposition:attachment;filename=snail.jar?version=1.0.0
@@ -129,7 +121,6 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		final String fileNameLower = fileName.toLowerCase();
 		final int index = fileNameLower.indexOf(HEADER_VALUE_FILENAME);
 		if(index >= 0) {
-			// 包含文件名称
 			fileName = this.extractFileName(index, fileName);
 			fileName = this.charsetFileName(fileName);
 			if(StringUtils.isEmpty(fileName)) {
@@ -142,7 +133,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 
 	/**
-	 * <p>文件名称提取</p>
+	 * 提取文件名称
 	 * 
 	 * @param index 开始位置
 	 * @param fileName 文件名称
@@ -156,12 +147,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		fileName = UrlUtils.decode(fileName);
 		// 删除：等号前面内容
 		index = fileName.indexOf(SymbolConfig.Symbol.EQUALS.toChar());
-		if(index != -1) {
+		if(index >= 0) {
 			fileName = fileName.substring(index + 1);
 		}
 		// 删除：分号后面内容
 		index = fileName.indexOf(SymbolConfig.Symbol.SEMICOLON.toChar());
-		if(index != -1) {
+		if(index >= 0) {
 			fileName = fileName.substring(0, index);
 		}
 		// 删除：空格
@@ -178,7 +169,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		}
 		// 删除：参数
 		index = fileName.indexOf(SymbolConfig.Symbol.QUESTION.toChar());
-		if(index != -1) {
+		if(index >= 0) {
 			fileName = fileName.substring(0, index);
 		}
 		// 删除：空格
@@ -186,7 +177,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <p>文件名称解码</p>
+	 * 文件名称解码
 	 * 
 	 * @param fileName 文件名称
 	 * 
@@ -223,8 +214,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <p>获取文件大小</p>
-	 * <p>Content-Length：102400</p>
+	 * Content-Length：102400
 	 * 
 	 * @return 文件大小
 	 */
@@ -238,12 +228,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	}
 	
 	/**
-	 * <p>判断是否支持断点续传</p>
+	 * 判断是否支持断点续传
 	 * 
 	 * @return 是否支持断点续传
 	 * 
-	 * @see #HEADER_CONTENT_RANGE
 	 * @see #HEADER_ACCEPT_RANGES
+	 * @see #HEADER_CONTENT_RANGE
 	 */
 	public boolean range() {
 		if(HEADER_VALUE_BYTES.equalsIgnoreCase(this.header(HEADER_ACCEPT_RANGES))) {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.acgist.snail.context.ITaskSession.FileType;
 import com.acgist.snail.context.ITaskSessionStatus.Status;
+import com.acgist.snail.context.wrapper.DescriptionWrapper;
 import com.acgist.snail.protocol.Protocol.Type;
 
 /**
@@ -157,6 +158,8 @@ public interface ITaskSessionEntity {
 	 * <p>获取下载描述</p>
 	 * 
 	 * @return 下载描述
+	 * 
+	 * @see DescriptionWrapper
 	 */
 	String getDescription();
 	

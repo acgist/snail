@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.format.BEncodeDecoder;
 import com.acgist.snail.format.BEncodeEncoder;
 import com.acgist.snail.logger.Logger;
@@ -13,7 +14,9 @@ import com.acgist.snail.utils.CollectionUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载描述包装器</p>
+ * 下载描述包装器
+ * 
+ * @see ITaskSession#getDescription()
  * 
  * @author acgist
  */
@@ -22,11 +25,11 @@ public final class DescriptionWrapper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionWrapper.class);
 
 	/**
-	 * <p>编码器</p>
+	 * 编码器
 	 */
 	private final BEncodeEncoder encoder;
 	/**
-	 * <p>解码器</p>
+	 * 解码器
 	 */
 	private final BEncodeDecoder decoder;
 
@@ -40,14 +43,12 @@ public final class DescriptionWrapper {
 	}
 
 	/**
-	 * <p>新建下载描述包装器</p>
-	 * 
 	 * @param list 选择文件列表
 	 * 
 	 * @return {@link DescriptionWrapper}
 	 */
 	public static final DescriptionWrapper newEncoder(List<String> list) {
-		BEncodeEncoder encoder;
+		final BEncodeEncoder encoder;
 		if(CollectionUtils.isNotEmpty(list)) {
 			encoder = BEncodeEncoder.newInstance()
 				.newList()
@@ -59,14 +60,12 @@ public final class DescriptionWrapper {
 	}
 	
 	/**
-	 * <p>新建下载描述包装器</p>
-	 * 
 	 * @param value 选择文件列表（B编码）
 	 * 
 	 * @return {@link DescriptionWrapper}
 	 */
 	public static final DescriptionWrapper newDecoder(String value) {
-		BEncodeDecoder decoder;
+		final BEncodeDecoder decoder;
 		if(StringUtils.isNotEmpty(value)) {
 			decoder = BEncodeDecoder.newInstance(value);
 		} else {
@@ -76,7 +75,7 @@ public final class DescriptionWrapper {
 	}
 	
 	/**
-	 * <p>编码选择文件</p>
+	 * 编码选择文件
 	 * 
 	 * @return 选择文件列表（B编码）
 	 */
@@ -84,11 +83,11 @@ public final class DescriptionWrapper {
 		if(this.encoder == null) {
 			return null;
 		}
-		return encoder.flush().toString();
+		return this.encoder.flush().toString();
 	}
 
 	/**
-	 * <p>解析选择文件</p>
+	 * 解析选择文件
 	 * 
 	 * @return 选择文件列表
 	 */

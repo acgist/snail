@@ -29,7 +29,7 @@ import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>任务信息</p>
+ * 任务信息
  * 
  * @author acgist
  */
@@ -38,28 +38,29 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskSession.class);
 	
 	/**
-	 * <p>时间格式：{@value}</p>
+	 * 时间格式
 	 */
 	private static final String PATTERN = "yyyy-MM-dd HH:mm";
 	/**
-	 * <p>任务状态：{@value}</p>
+	 * 任务状态
 	 */
 	private static final String TASK_STATUS_VALUE = "statusValue";
 	/**
-	 * <p>删除等待时间（毫秒）：{@value}</p>
+	 * 删除等待时间（毫秒）
+	 * 删除任务时等待资源释放时间
 	 */
 	private static final long DELETE_TIMEOUT = 2L * SystemConfig.ONE_SECOND_MILLIS;
 
 	/**
-	 * <p>下载器</p>
+	 * 下载器
 	 */
 	private IDownloader downloader;
 	/**
-	 * <p>任务</p>
+	 * 任务
 	 */
 	private final TaskEntity entity;
 	/**
-	 * <p>删除锁</p>
+	 * 删除锁
 	 */
 	private final AtomicBoolean deleteLock;
 	
@@ -73,7 +74,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	/**
-	 * <p>新建任务信息</p>
+	 * 新建任务信息
 	 * 
 	 * @param entity 任务
 	 * 
@@ -83,7 +84,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	 */
 	public static final ITaskSession newInstance(TaskEntity entity) throws DownloadException {
 		if(entity == null) {
-			throw new DownloadException("新建TaskSession失败（entity）");
+			throw new DownloadException("新建TaskSession失败：缺少任务实体");
 		}
 		return new TaskSession(entity);
 	}
@@ -260,6 +261,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		}
 		// 提交下载队列
 		TaskContext.getInstance().submit(this);
+		// 修改任务状态
 		this.updateStatus(Status.AWAIT);
 	}
 	
@@ -274,6 +276,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 			this.setStatus(Status.AWAIT);
 			this.setCompletedDate(null);
 		}
+		// 调用开始下载
 		this.start();
 	}
 	
@@ -287,14 +290,17 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 			// 任务已经完成不修改状态
 			return;
 		}
+		// 修改任务状态
 		this.updateStatus(Status.PAUSE);
 	}
 	
 	@Override
 	public void repause() {
 		if(this.statusCompleted()) {
+			// 任务必须已经完成才能重新进入暂停状态：修改状态、清空完成时间
 			this.setStatus(Status.PAUSE);
 			this.setCompletedDate(null);
+			// 更新任务信息
 			this.update();
 		}
 	}
@@ -323,8 +329,8 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	/**
-	 * <p>添加删除锁</p>
-	 * <p>下载中任务删除时需要等待文件释放：防止删除文件失败</p>
+	 * 添加删除锁
+	 * 下载中任务删除时需要等待文件释放：防止删除文件失败
 	 */
 	private void lockDelete() {
 		if(this.deleteLock.get()) {
@@ -360,6 +366,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	public boolean verify() {
 		// 任务状态
 		if(this.entity.getStatus() != Status.COMPLETED) {
+			// 没有完成默认校验失败
 			return false;
 		}
 		// 下载文件
@@ -491,9 +498,12 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	
 	@Override
 	public void setStatus(Status status) {
-		// 刷新状态
-		GuiContext.getInstance().refreshTaskStatus();
-		this.entity.setStatus(status);
+		try {
+			this.entity.setStatus(status);
+		} finally {
+			// 刷新状态
+			GuiContext.getInstance().refreshTaskStatus();
+		}
 	}
 	
 	@Override
