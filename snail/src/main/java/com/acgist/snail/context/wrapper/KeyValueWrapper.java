@@ -9,39 +9,39 @@ import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>Key-Value包装器</p>
+ * Key-Value包装器
  * 
  * @author acgist
  */
 public final class KeyValueWrapper {
 
 	/**
-	 * <p>默认separator</p>
+	 * 默认separator
 	 * 
 	 * @see #separator
 	 */
 	private static final char DEFAULT_SEPARATOR = SymbolConfig.Symbol.AND.toChar();
 	/**
-	 * <p>默认kvSeparator</p>
+	 * 默认kvSeparator
 	 * 
 	 * @see #kvSeparator
 	 */
 	private static final char DEFAULT_KV_SEPARATOR = SymbolConfig.Symbol.EQUALS.toChar();
 
 	/**
-	 * <p>连接符</p>
+	 * 连接符
 	 */
 	private final char separator;
 	/**
-	 * <p>Key-Value连接符</p>
+	 * Key-Value连接符
 	 */
 	private final char kvSeparator;
 	/**
-	 * <p>编码数据</p>
+	 * 编码数据
 	 */
 	private final String content;
 	/**
-	 * <p>解码数据</p>
+	 * 解码数据
 	 */
 	private final Map<String, String> data;
 
@@ -63,8 +63,6 @@ public final class KeyValueWrapper {
 	}
 
 	/**
-	 * <p>新建工具</p>
-	 * 
 	 * @return {@link KeyValueWrapper}
 	 */
 	public static final KeyValueWrapper newInstance() {
@@ -72,9 +70,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>新建工具</p>
-	 * 
-	 * @param content 解码数据
+	 * @param content 编码数据
 	 * 
 	 * @return {@link KeyValueWrapper}
 	 */
@@ -83,9 +79,7 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>新建工具</p>
-	 * 
-	 * @param data 编码数据
+	 * @param data 解码数据
 	 * 
 	 * @return {@link KeyValueWrapper}
 	 */
@@ -94,8 +88,6 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>新建工具</p>
-	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
 	 * 
@@ -106,8 +98,6 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>新建工具</p>
-	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
 	 * @param content 编码数据
@@ -119,8 +109,6 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>新建工具</p>
-	 * 
 	 * @param separator 连接符
 	 * @param kvSeparator Key-Value连接符
 	 * @param data 解码数据
@@ -132,13 +120,21 @@ public final class KeyValueWrapper {
 	}
 	
 	/**
-	 * <p>数据编码</p>
+	 * 数据编码
 	 * 
 	 * @return 编码数据
 	 */
 	public String encode() {
 		final StringBuilder builder = new StringBuilder();
-		this.data.forEach((key, value) -> builder.append(key).append(this.kvSeparator).append(value).append(this.separator));
+		this.data.forEach(
+			(key, value)
+			->
+			builder
+			.append(key)
+			.append(this.kvSeparator)
+			.append(value)
+			.append(this.separator)
+		);
 		final int length = builder.length();
 		if(length > 0) {
 			builder.setLength(length - 1);
@@ -147,62 +143,88 @@ public final class KeyValueWrapper {
 	}
 
 	/**
-	 * <p>数据解码</p>
+	 * 数据解码
 	 * 
-	 * @return {@link KeyValueWrapper}
+	 * @return this
 	 */
 	public KeyValueWrapper decode() {
 		if(StringUtils.isEmpty(this.content)) {
 			return this;
 		}
+		int left = 0;
+		int pos = -1;
 		int index;
 		String key;
 		String value;
-		final String[] keyValues = this.content.split(String.valueOf(this.separator));
-		for (String keyValue : keyValues) {
-			keyValue = keyValue.strip();
+		String keyValue;
+		final int length = this.content.length();
+		do {
+			left = pos + 1;
+//			left = pos + Character.toString(this.separator).length();
+			pos = this.content.indexOf(this.separator, left);
+			if(pos < 0) {
+				keyValue = this.content.substring(left).strip();
+			} else {
+				keyValue = this.content.substring(left, pos).strip();
+			}
 			if(keyValue.isEmpty()) {
 				continue;
 			}
 			index = keyValue.indexOf(this.kvSeparator);
 			if(index < 0) {
 				key = keyValue.strip();
-				value = null;
+				value = "";
 			} else {
 				key = keyValue.substring(0, index).strip();
 				value = keyValue.substring(index + 1).strip();
 			}
 			this.data.put(key, value);
-		}
+		} while(0 <= pos && pos < length);
 		return this;
 	}
 	
 	/**
-	 * <p>获取数据</p>
-	 * 
 	 * @param key Key
 	 * 
 	 * @return Value
 	 */
 	public String get(String key) {
-		return this.data.get(key);
+		return this.get(key, null);
 	}
-
+	
 	/**
-	 * <p>获取数据</p>
+	 * @param key Key
+	 * @param defaultValue 默认值
 	 * 
+	 * @return Value
+	 */
+	public String get(String key, String defaultValue) {
+		return this.data.getOrDefault(key, defaultValue);
+	}
+	
+	/**
 	 * @param key Key（忽略大小写）
 	 * 
 	 * @return Value
 	 */
 	public String getIgnoreCase(String key) {
+		return this.getIgnoreCase(key, null);
+	}
+
+	/**
+	 * @param key Key（忽略大小写）
+	 * @param defaultValue 默认值
+	 * 
+	 * @return Value
+	 */
+	public String getIgnoreCase(String key, String defaultValue) {
 		return this.data.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), key))
 			.map(Entry::getValue)
 			// 需要判断是否为空：空值转换异常
 			.filter(Objects::nonNull)
 			.findFirst()
-			.orElse(null);
+			.orElse(defaultValue);
 	}
 	
 	@Override

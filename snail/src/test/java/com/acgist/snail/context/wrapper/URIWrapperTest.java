@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.wrapper;
+package com.acgist.snail.context.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.context.wrapper.URIWrapper;
 import com.acgist.snail.utils.Performance;
 
 class URIWrapperTest extends Performance {
@@ -55,6 +54,10 @@ class URIWrapperTest extends Performance {
 		assertArrayEquals(new String[] {"query=query", "name=name", "password=的"}, wrapper.querys());
 		wrapper = URIWrapper.newInstance("magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel%20%e6%b5%8b%e8%af%95&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent").decode();
 		assertNull(wrapper.query());
+		wrapper = URIWrapper.newInstance("a=b&c=d").decode();
+		assertNull(wrapper.query());
+		assertEquals("a=b&c=d", wrapper.schemeSpecificPart());
+		assertArrayEquals(new String[] {"a=b", "c=d"}, wrapper.querys());
 		for (String value : wrapper.querys()) {
 			this.log(value);
 		}

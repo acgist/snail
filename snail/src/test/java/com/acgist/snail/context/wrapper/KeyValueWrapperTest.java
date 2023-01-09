@@ -1,8 +1,7 @@
-package com.acgist.snail.pojo.wrapper;
+package com.acgist.snail.context.wrapper;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SymbolConfig;
-import com.acgist.snail.context.wrapper.KeyValueWrapper;
 import com.acgist.snail.utils.Performance;
 
 class KeyValueWrapperTest extends Performance {
@@ -33,7 +31,7 @@ class KeyValueWrapperTest extends Performance {
 		assertEquals("2", wrapper.get("1"));
 		wrapper = KeyValueWrapper.newInstance("1=2&3").decode();
 		assertEquals("2", wrapper.get("1"));
-		assertNull(wrapper.get("3"));
+		assertEquals("", wrapper.get("3"));
 		wrapper = KeyValueWrapper.newInstance("1=2&3=").decode();
 		assertEquals("2", wrapper.get("1"));
 		assertEquals("", wrapper.get("3"));
@@ -46,6 +44,7 @@ class KeyValueWrapperTest extends Performance {
 		wrapper = KeyValueWrapper.newInstance("a=a&B=B&c=C").decode();
 		assertEquals("a", wrapper.get("a"));
 		assertEquals(null, wrapper.get("b"));
+		assertEquals("b", wrapper.get("b", "b"));
 		assertEquals("C", wrapper.get("c"));
 		assertEquals(null, wrapper.get("A"));
 		assertEquals("B", wrapper.get("B"));

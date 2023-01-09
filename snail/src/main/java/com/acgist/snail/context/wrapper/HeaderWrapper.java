@@ -224,12 +224,9 @@ public class HeaderWrapper {
 			if(index < 0) {
 				key = line.strip();
 				value = "";
-			} else if(index < line.length()) {
-				key = line.substring(0, index).strip();
-				value = line.substring(index + 1).strip();
 			} else {
 				key = line.substring(0, index).strip();
-				value = "";
+				value = line.substring(index + 1).strip();
 			}
 			this.header(key, value);
 		}
@@ -272,7 +269,7 @@ public class HeaderWrapper {
 		return this.headers.entrySet().stream()
 			.filter(entry -> StringUtils.equalsIgnoreCase(key, entry.getKey()))
 			.map(Entry::getValue)
-			// 需要判断是否为空
+			// 需要判断是否为空：空值转换异常
 			.filter(Objects::nonNull)
 			.findFirst()
 			.orElse(List.of());

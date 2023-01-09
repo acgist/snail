@@ -204,7 +204,7 @@ public final class SymbolConfig {
 		 * @return 字符串数组
 		 */
 		public final String[] split(String source) {
-			return split(source, FullType.FILTER);
+			return this.split(source, FullType.FILTER);
 		}
 		
 		/**
@@ -222,10 +222,13 @@ public final class SymbolConfig {
 			int size = 0;
 			int left = 0;
 			int index = 0;
-			final int length = this.stringValue.length();
+			// 字符长度全部为一
+			final int length = 1;
+//			final int length = this.stringValue.length();
 			String[] array = new String[Byte.SIZE];
 			do {
-				index = source.indexOf(this.stringValue, left);
+				index = source.indexOf(this.charValue, left);
+//				index = source.indexOf(this.stringValue, left);
 				if (index < 0) {
 					if (FullType.FILTER == type) {
 						array[size] = source.substring(left);
