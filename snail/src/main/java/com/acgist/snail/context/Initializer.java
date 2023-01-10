@@ -8,7 +8,7 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.NetException;
 
 /**
- * 初始化适配器
+ * 初始化器超类
  * 
  * @author acgist
  */
@@ -43,28 +43,24 @@ public abstract class Initializer implements IInitializer {
 		this.delay = delay;
 	}
 
-	/**
-	 * 同步执行初始方法
-	 */
+	@Override
 	public final void sync() {
 		try {
 			LOGGER.debug("同步执行初始方法：{}", this.name);
 			this.init();
-		} catch (NetException | DownloadException e) {
+		} catch (Exception e) {
 			LOGGER.error("同步执行初始方法异常：{}", this.name, e);
 		}
 	}
 	
-	/**
-	 * 异步执行初始方法
-	 */
+	@Override
 	public final void asyn() {
 		final Runnable runnable = () -> {
 			try {
-				LOGGER.debug("异步执行初始方法：{}", this.name);
+				LOGGER.debug("异步执行初始方法：{}-{}", this.name, this.delay);
 				this.init();
-			} catch (NetException | DownloadException e) {
-				LOGGER.error("异步执行初始方法异常：{}", this.name, e);
+			} catch (Exception e) {
+				LOGGER.error("异步执行初始方法异常：{}-{}", this.name, this.delay, e);
 			}
 		};
 		if(this.delay <= 0) {
@@ -78,6 +74,16 @@ public abstract class Initializer implements IInitializer {
 		}
 	}
 	
+	@Override
+	public void destroy() {
+		try {
+			LOGGER.debug("执行销毁方法：{}", this.name);
+			this.destroyProxy();
+		} catch (Exception e) {
+			LOGGER.error("执行销毁方法异常：{}", this.name, e);
+		}
+	}
+	
 	/**
 	 * 初始方法
 	 * 
@@ -85,5 +91,10 @@ public abstract class Initializer implements IInitializer {
 	 * @throws DownloadException 下载异常
 	 */
 	protected abstract void init() throws NetException, DownloadException;
+
+	/**
+	 * 销毁方法
+	 */
+	protected abstract void destroyProxy();
 	
 }

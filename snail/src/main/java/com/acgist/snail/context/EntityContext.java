@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.acgist.snail.config.DownloadConfig;
@@ -37,50 +38,48 @@ public final class EntityContext implements IContext {
 	}
 	
 	/**
-	 * 实体文件：{@value}
+	 * 实体文件
 	 */
 	private static final String ENTITY_FILE_PATH = "./config/snail.entities";
 
 	/**
-	 * 任务列表
+	 * 实体列表
 	 */
-	private final List<TaskEntity> taskEntities;
+	private final List<Entity> allEntities;
 	
 	private EntityContext() {
-		this.taskEntities = new ArrayList<>();
+		this.allEntities = new ArrayList<>();
 	}
 	
 	/**
-	 * @return 所有任务列表
-	 */
-	public List<TaskEntity> allTask() {
-		return new ArrayList<>(this.taskEntities);
-	}
-	
-	/**
-	 * 设置保存实体信息
+	 * 保存实体
 	 * 
 	 * @param entity 实体
 	 */
-	private void preSave(Entity entity) {
+	public void save(Entity entity) {
 		EntityException.requireNotNull(entity);
 		EntityException.requireNull(entity.getId());
 		entity.setId(UUID.randomUUID().toString());
 		entity.setCreateDate(new Date());
 		entity.setModifyDate(new Date());
 		LOGGER.debug("保存实体：{}", entity);
+		synchronized (this) {
+			this.allEntities.add(entity);
+		}
+		this.persistent();
 	}
-	
+
 	/**
-	 * 设置更新实体信息
+	 * 更新实体
 	 * 
 	 * @param entity 实体
 	 */
-	private void preUpdate(Entity entity) {
+	public void update(Entity entity) {
 		EntityException.requireNotNull(entity);
 		EntityException.requireNotNull(entity.getId());
 		entity.setModifyDate(new Date());
 		LOGGER.debug("更新实体：{}", entity);
+		this.persistent();
 	}
 	
 	/**
@@ -90,40 +89,37 @@ public final class EntityContext implements IContext {
 	 * 
 	 * @return 是否删除成功
 	 */
-	private boolean delete(String id) {
+	public boolean delete(String id) {
 		LOGGER.debug("删除实体：{}", id);
 		boolean success = false;
 		synchronized (this) {
-			success = this.taskEntities.removeIf(entity -> entity.getId().equals(id));
+			success = this.allEntities.removeIf(entity -> entity.getId().equals(id));
 		}
 		if(success) {
 			// 删除成功保存实体
 			this.persistent();
+		} else {
+			LOGGER.warn("删除实体无效：{}", id);
 		}
 		return success;
 	}
 	
 	/**
-	 * 保存任务
-	 * 
-	 * @param entity 任务
+	 * @return 所有任务实体列表
 	 */
-	public void save(TaskEntity entity) {
-		this.preSave(entity);
+	public List<TaskEntity> allTask() {
 		synchronized (this) {
-			this.taskEntities.add(entity);
+			return this.allEntities.stream()
+				.map(v -> {
+					if(v instanceof TaskEntity entity) {
+						return entity;
+					} else {
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.toList();
 		}
-		this.persistent();
-	}
-
-	/**
-	 * 更新任务
-	 * 
-	 * @param entity 任务
-	 */
-	public void update(TaskEntity entity) {
-		this.preUpdate(entity);
-		this.persistent();
 	}
 	
 	/**
@@ -135,13 +131,13 @@ public final class EntityContext implements IContext {
 	 */
 	public boolean delete(TaskEntity entity) {
 		EntityException.requireNotNull(entity);
+		EntityException.requireNotNull(entity.getId());
 		LOGGER.debug("删除任务：{}", entity);
 		if(DownloadConfig.getDelete()) {
+			// 是否删除文件
 			final var file = entity.getFile();
-			if(RecycleContext.recycle(file)) {
-				// 回收文件
-				LOGGER.debug("删除任务回收文件成功：{}", file);
-			} else {
+			// 回收文件
+			if(!RecycleContext.recycle(file)) {
 				// 删除文件
 				FileUtils.delete(file);
 			}
@@ -158,19 +154,21 @@ public final class EntityContext implements IContext {
 			LOGGER.debug("加载实体文件无效：{}", file);
 			return;
 		}
-		try (final ObjectInput input = new ObjectInputStream(new FileInputStream(file))) {
+		try (
+			final ObjectInput input = new ObjectInputStream(new FileInputStream(file));
+		) {
 			final List<?> list = (List<?>) input.readObject();
 			synchronized (this) {
-				this.taskEntities.clear();
+				this.allEntities.clear();
 				list.forEach(object -> {
-					if(object instanceof TaskEntity entity) {
-						this.taskEntities.add(entity);
+					if(object instanceof Entity entity) {
+						this.allEntities.add(entity);
 					} else {
 						LOGGER.warn("未知实体类型：{}", object);
 					}
 				});
 				if(LOGGER.isDebugEnabled()) {
-					LOGGER.debug("加载任务实体数量：{}", this.taskEntities.size());
+					LOGGER.debug("加载实体数量：{}", this.allEntities.size());
 				}
 			}
 		} catch (IOException | ClassNotFoundException e) {
@@ -184,14 +182,16 @@ public final class EntityContext implements IContext {
 	public void persistent() {
 		final List<Entity> list = new ArrayList<>();
 		synchronized (this) {
-			list.addAll(this.taskEntities);
+			list.addAll(this.allEntities);
 		}
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("保存实体：{}", list.size());
+			LOGGER.debug("保存实体数量：{}", list.size());
 		}
 		final File file = new File(ENTITY_FILE_PATH);
 		FileUtils.buildParentFolder(file);
-		try (final ObjectOutput output = new ObjectOutputStream(new FileOutputStream(file))) {
+		try (
+			final ObjectOutput output = new ObjectOutputStream(new FileOutputStream(file));
+		) {
 			output.writeObject(list);
 		} catch (IOException e) {
 			LOGGER.error("保存实体异常", e);

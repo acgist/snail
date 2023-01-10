@@ -20,4 +20,9 @@ public final class EntityInitializer extends Initializer {
 		EntityContext.getInstance().load();
 	}
 	
+	@Override
+	protected void destroyProxy() {
+		EntityContext.getInstance().persistent();
+	}
+	
 }

@@ -1,5 +1,6 @@
 package com.acgist.snail.context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,6 +28,7 @@ class EntityContextTest extends Performance {
 	}
 	
 	@Test
+	@Order(3)
 	void testCosted() {
 		this.costed(10000, () -> EntityContext.getInstance().load());
 		this.costed(10000, () -> EntityContext.getInstance().persistent());
@@ -34,6 +36,7 @@ class EntityContextTest extends Performance {
 	}
 
 	@Test
+	@Order(4)
 	void testAll() {
 		EntityContext.getInstance().allTask().forEach(this::log);
 		assertNotNull(EntityContext.getInstance());
@@ -74,6 +77,8 @@ class EntityContextTest extends Performance {
 		final var context = EntityContext.getInstance();
 		final var list = new ArrayList<>(context.allTask());
 		list.forEach(entity -> assertTrue(context.delete(entity)));
+		assertTrue(!list.isEmpty());
+		assertEquals(0, context.allTask().size());
 	}
 	
 }

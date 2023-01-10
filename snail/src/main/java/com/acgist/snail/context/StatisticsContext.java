@@ -30,6 +30,11 @@ public final class StatisticsContext extends StatisticsGetter implements IContex
 	public long downloadSpeed() {
 		return this.statistics.downloadSpeed();
 	}
+	
+	@Override
+	public void reset() {
+		this.statistics.reset();
+	}
 
 	@Override
 	public void resetUploadSpeed() {

@@ -159,4 +159,11 @@ public final class UtpContext implements IContext, IChannelHandler<DatagramChann
 		}
 	}
 
+	/**
+	 * 关闭UTP上下文
+	 */
+	public void close() {
+		UtpRequestQueue.getInstance().shutdown();
+	}
+
 }

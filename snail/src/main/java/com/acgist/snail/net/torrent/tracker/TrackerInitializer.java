@@ -25,5 +25,11 @@ public final class TrackerInitializer extends Initializer {
 		TrackerServer.getInstance();
 		TrackerContext.getInstance();
 	}
+	
+	@Override
+	protected void destroyProxy() {
+		TrackerServer.getInstance().close();
+		TrackerConfig.getInstance().persistent();
+	}
 
 }

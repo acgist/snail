@@ -28,6 +28,13 @@ class SnailTest extends Performance {
 		final var exception = assertThrows(DownloadException.class, () -> SnailBuilder.newBuilder().buildSync().download("https://www.acgist.com"));
 		this.log(exception);
 	}
+
+	@Test
+	void testInitShutdown() {
+		final Snail snail = SnailBuilder.newBuilder().buildSync();
+		Snail.shutdown();
+		assertNotNull(snail);
+	}
 	
 	@Test
 	void testTorrent() throws DownloadException {

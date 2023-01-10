@@ -24,5 +24,10 @@ public final class DhtInitializer extends Initializer {
 		DhtContext.getInstance();
 		NodeContext.getInstance();
 	}
+	
+	@Override
+	protected void destroyProxy() {
+		DhtConfig.getInstance().persistent();
+	}
 
 }

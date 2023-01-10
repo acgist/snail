@@ -24,4 +24,8 @@ public final class ConfigInitializer extends Initializer {
 		DownloadConfig.getInstance();
 	}
 
+	@Override
+	protected void destroyProxy() {
+	}
+
 }

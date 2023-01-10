@@ -20,4 +20,9 @@ public final class TaskInitializer extends Initializer {
 		TaskContext.getInstance().load();
 	}
 
+	@Override
+	protected void destroyProxy() {
+		TaskContext.getInstance().shutdown();
+	}
+	
 }

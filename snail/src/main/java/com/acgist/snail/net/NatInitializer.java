@@ -22,4 +22,9 @@ public final class NatInitializer extends Initializer {
 		NatContext.getInstance().register();
 	}
 
+	@Override
+	protected void destroyProxy() {
+		NatContext.getInstance().shutdown();
+	}
+	
 }

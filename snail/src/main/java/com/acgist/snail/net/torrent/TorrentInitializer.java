@@ -27,5 +27,12 @@ public final class TorrentInitializer extends Initializer {
 		PeerServer.getInstance();
 		TorrentServer.getInstance();
 	}
+	
+	@Override
+	protected void destroyProxy() {
+		UtpContext.getInstance().close();
+		PeerServer.getInstance().close();
+		TorrentServer.getInstance().close();
+	}
 
 }

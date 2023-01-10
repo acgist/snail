@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acgist.snail.config.ConfigInitializer;
-import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.config.TrackerConfig;
-import com.acgist.snail.context.EntityContext;
 import com.acgist.snail.context.EntityInitializer;
 import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.Initializer;
@@ -15,19 +12,13 @@ import com.acgist.snail.context.TaskInitializer;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.NatContext;
 import com.acgist.snail.net.NatInitializer;
 import com.acgist.snail.net.application.ApplicationClient;
 import com.acgist.snail.net.application.ApplicationServer;
 import com.acgist.snail.net.torrent.TorrentInitializer;
-import com.acgist.snail.net.torrent.TorrentServer;
 import com.acgist.snail.net.torrent.dht.DhtInitializer;
 import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryInitializer;
-import com.acgist.snail.net.torrent.lsd.LocalServiceDiscoveryServer;
-import com.acgist.snail.net.torrent.peer.PeerServer;
 import com.acgist.snail.net.torrent.tracker.TrackerInitializer;
-import com.acgist.snail.net.torrent.tracker.TrackerServer;
-import com.acgist.snail.net.torrent.utp.UtpRequestQueue;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.protocol.ftp.FtpProtocol;
@@ -145,20 +136,18 @@ public final class Snail {
 			if(INSTANCE.buildApplication) {
 				ApplicationServer.getInstance().close();
 			}
-			// 优先关闭任务
-			TaskContext.getInstance().shutdown();
+			// 优先销毁任务
+			TaskInitializer.newInstance().destroy();
 			// 释放Torrent协议
 			if(INSTANCE.buildTorrent) {
-				PeerServer.getInstance().close();
-				TorrentServer.getInstance().close();
-				TrackerServer.getInstance().close();
-				LocalServiceDiscoveryServer.getInstance().close();
-				NatContext.getInstance().shutdown();
-				UtpRequestQueue.getInstance().shutdown();
-				DhtConfig.getInstance().persistent();
-				TrackerConfig.getInstance().persistent();
+				NatInitializer.newInstance().destroy();
+				DhtInitializer.newInstance().destroy();
+				TorrentInitializer.newInstance().destroy();
+				TrackerInitializer.newInstance().destroy();
+				LocalServiceDiscoveryInitializer.newInstance().destroy();
 			}
-			EntityContext.getInstance().persistent();
+			// 最后销毁实体
+			EntityInitializer.newInstance().destroy();
 		}
 	}
 	
@@ -219,7 +208,7 @@ public final class Snail {
 			}
 			if(INSTANCE.available) {
 				ProtocolContext.getInstance().available(INSTANCE.available);
-				this.buildInitializers().forEach(initializer -> {
+				this.buildInitializerList().forEach(initializer -> {
 					if(sync) {
 						initializer.sync();
 					} else {
@@ -234,11 +223,11 @@ public final class Snail {
 		}
 
 		/**
-		 * <p>加载初始化列表</p>
+		 * <p>加载初始化器列表</p>
 		 * 
-		 * @return 初始化列表
+		 * @return 初始化器列表
 		 */
-		private List<Initializer> buildInitializers() {
+		private List<Initializer> buildInitializerList() {
 			final List<Initializer> list = new ArrayList<>();
 			if(INSTANCE.buildTorrent) {
 				list.add(NatInitializer.newInstance());

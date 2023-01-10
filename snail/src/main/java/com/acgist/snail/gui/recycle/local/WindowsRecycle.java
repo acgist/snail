@@ -205,7 +205,7 @@ public final class WindowsRecycle extends Recycle {
 	
 	@Override
 	public boolean delete() {
-		LOGGER.info("删除文件：{}", this.path);
+		LOGGER.info("回收文件：{}", this.path);
 		if(this.buildFile()) {
 			this.buildDeleteInfoFile();
 			return true;

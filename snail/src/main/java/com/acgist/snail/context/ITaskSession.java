@@ -8,58 +8,58 @@ import com.acgist.snail.downloader.IDownloader;
 import com.acgist.snail.net.DownloadException;
 
 /**
- * <p>任务信息接口</p>
+ * 任务信息接口
  * 
  * @author acgist
  */
 public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, ITaskSessionHandler, ITaskSessionTable, IStatisticsGetter {
 
 	/**
-	 * <p>文件类型</p>
+	 * 文件类型
 	 * 
 	 * @author acgist
 	 */
 	public enum FileType {
 		
 		/**
-		 * <p>图片</p>
-		 */
-		IMAGE("图片"),
-		/**
-		 * <p>视频</p>
-		 */
-		VIDEO("视频"),
-		/**
-		 * <p>音频</p>
+		 * 音频
 		 */
 		AUDIO("音频"),
 		/**
-		 * <p>脚本</p>
+		 * 图片
+		 */
+		IMAGE("图片"),
+		/**
+		 * 视频
+		 */
+		VIDEO("视频"),
+		/**
+		 * 脚本
 		 */
 		SCRIPT("脚本"),
 		/**
-		 * <p>BT</p>
-		 */
-		TORRENT("BT"),
-		/**
-		 * <p>压缩</p>
-		 */
-		COMPRESS("压缩"),
-		/**
-		 * <p>文档</p>
-		 */
-		DOCUMENT("文档"),
-		/**
-		 * <p>安装</p>
+		 * 安装
 		 */
 		INSTALL("安装"),
 		/**
-		 * <p>未知</p>
+		 * BT
+		 */
+		TORRENT("BT"),
+		/**
+		 * 压缩
+		 */
+		COMPRESS("压缩"),
+		/**
+		 * 文档
+		 */
+		DOCUMENT("文档"),
+		/**
+		 * 未知
 		 */
 		UNKNOWN("未知");
 		
 		/**
-		 * <p>类型名称</p>
+		 * 类型名称
 		 */
 		private final String value;
 
@@ -71,8 +71,6 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 		}
 
 		/**
-		 * <p>获取类型名称</p>
-		 * 
 		 * @return 类型名称
 		 */
 		public String getValue() {
@@ -82,14 +80,12 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	}
 	
 	/**
-	 * <p>获取下载器</p>
-	 * 
 	 * @return 下载器
 	 */
 	IDownloader downloader();
 	
 	/**
-	 * <p>新建下载器</p>
+	 * 新建下载器
 	 * 
 	 * @return 下载器
 	 * 
@@ -98,42 +94,35 @@ public interface ITaskSession extends ITaskSessionStatus, ITaskSessionEntity, IT
 	IDownloader buildDownloader() throws DownloadException;
 	
 	/**
-	 * <p>获取下载文件</p>
-	 * 
 	 * @return 下载文件
 	 */
 	File downloadFile();
 	
 	/**
-	 * <p>获取下载目录</p>
-	 * 
 	 * @return 下载目录
 	 */
 	File downloadFolder();
 	
 	/**
-	 * <p>获取选择下载文件列表</p>
-	 * <p>注意：多文件下载任务</p>
+	 * 注意：多文件下载任务配置选择下载文件
 	 * 
 	 * @return 选择下载文件列表
 	 */
 	List<String> multifileSelected();
 
 	/**
-	 * <p>设置已经下载大小</p>
+	 * 设置已经下载大小
 	 * 
 	 * @param size 已经下载大小
 	 */
 	void downloadSize(long size);
 	
 	/**
-	 * <p>更新任务大小</p>
+	 * 更新任务大小
 	 */
 	void buildDownloadSize();
 
 	/**
-	 * <p>获取任务信息</p>
-	 * 
 	 * @return 任务信息
 	 */
 	Map<String, Object> taskMessage();

@@ -36,7 +36,7 @@ public class MacRecycle extends Recycle {
 	public boolean delete() {
 		final File source = this.file;
 		final File target = Paths.get(TRASH_PATH, source.getName()).toFile();
-		LOGGER.info("删除文件：{}-{}", source, target);
+		LOGGER.info("回收文件：{}-{}", source, target);
 		return source.renameTo(target);
 	}
 

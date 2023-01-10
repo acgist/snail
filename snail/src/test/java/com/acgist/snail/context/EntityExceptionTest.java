@@ -26,6 +26,8 @@ class EntityExceptionTest extends Performance {
 		this.log(exception.getMessage());
 		assertDoesNotThrow(() -> {EntityException.requireNull(null);});
 		assertDoesNotThrow(() -> {EntityException.requireNotNull(new Object());});
+//		this.log("测试：{}", "测试", new EntityException());
+//		this.log("测试：{}", "测试", new EntityException(nullPointerException));
 	}
 	
 }

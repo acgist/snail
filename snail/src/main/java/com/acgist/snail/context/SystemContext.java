@@ -165,18 +165,18 @@ public final class SystemContext implements IContext {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中");
 				GuiContext.getInstance().hide();
+				GuiContext.getInstance().exit();
 				Snail.shutdown();
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
-				GuiContext.getInstance().exit();
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
 				LoggerFactory.shutdown();
 			});
 			// 设置强制关闭程序定时任务
 			SystemThreadContext.scheduled(SystemConfig.SHUTDOWN_FORCE_TIME, TimeUnit.SECONDS, () -> {
-				LOGGER.warn("强制关闭程序");
+				LOGGER.warn("系统强制关闭");
 				LoggerFactory.shutdown();
 				Runtime.getRuntime().halt(0);
 			});

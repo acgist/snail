@@ -175,6 +175,12 @@ public final class StatisticsSession implements IStatisticsSession {
 	public void downloadSize(long size) {
 		this.downloadSize.set(size);
 	}
+	
+	@Override
+	public void reset() {
+		this.resetUploadSpeed();
+		this.resetDownloadSpeed();
+	}
 
 	@Override
 	public void resetUploadSpeed() {
