@@ -37,6 +37,9 @@ public abstract class Protocol implements IProtocol {
 	/**
 	 * <p>协议类型</p>
 	 * 
+	 * 旋风：qqdl
+	 * 快车：flashget
+	 * 
 	 * @author acgist
 	 */
 	public enum Type {

@@ -10,14 +10,14 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * <p>FTP任务下载器</p>
+ * FTP任务下载器
  * 
  * @author acgist
  */
 public final class FtpDownloader extends MonofileDownloader {
 	
 	/**
-	 * <p>FTP客户端</p>
+	 * FTP客户端
 	 */
 	private FtpClient client;
 	
@@ -29,7 +29,7 @@ public final class FtpDownloader extends MonofileDownloader {
 	}
 
 	/**
-	 * <p>新建FTP任务下载器</p>
+	 * 新建FTP任务下载器
 	 * 
 	 * @param taskSession 任务信息
 	 * 

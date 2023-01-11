@@ -91,10 +91,10 @@ public final class Snail {
 	 */
 	public void lockDownload() {
 		final TaskContext context = TaskContext.getInstance();
-		if(context.downloading()) {
+		if(context.running()) {
 			synchronized (this) {
 				this.lock = true;
-				while(context.downloading()) {
+				while(context.running()) {
 					try {
 						this.wait();
 					} catch (InterruptedException e) {

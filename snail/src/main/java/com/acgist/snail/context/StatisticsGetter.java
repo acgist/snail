@@ -1,14 +1,14 @@
 package com.acgist.snail.context;
 
 /**
- * <p>获取统计信息</p>
+ * 获取统计信息超类
  * 
  * @author acgist
  */
 public abstract class StatisticsGetter implements IStatisticsGetter {
 
 	/**
-	 * <p>统计信息</p>
+	 * 统计信息
 	 */
 	protected final IStatisticsSession statistics;
 

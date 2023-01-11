@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -18,7 +17,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
 /**
- * <p>系统线程上下文</p>
+ * 系统线程上下文
  * 
  * @author acgist
  */
@@ -27,83 +26,78 @@ public final class SystemThreadContext implements IContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemThreadContext.class);
 	
 	/**
-	 * <p>系统线程名称：{@value}</p>
+	 * 系统线程名称
+	 * Snail-Thread
 	 */
-	public static final String SNAIL_THREAD = "Snail-Thread";
+	public static final String SNAIL_THREAD = "ST";
 	/**
-	 * <p>Costed线程名称：{@value}</p>
-	 */
-	public static final String SNAIL_THREAD_COSTED = SNAIL_THREAD + "-Costed";
-	/**
-	 * <p>BT线程名称：{@value}</p>
+	 * BT线程名称
 	 */
 	public static final String SNAIL_THREAD_BT = SNAIL_THREAD + "-BT";
 	/**
-	 * <p>HLS线程名称：{@value}</p>
+	 * HLS线程名称
 	 */
 	public static final String SNAIL_THREAD_HLS = SNAIL_THREAD + "-HLS";
 	/**
-	 * <p>定时线程名称：{@value}</p>
+	 * Costed线程名称
+	 */
+	public static final String SNAIL_THREAD_COSTED = SNAIL_THREAD + "-Costed";
+	/**
+	 * 定时线程名称
 	 */
 	public static final String SNAIL_THREAD_SCHEDULED = SNAIL_THREAD + "-Scheduled";
 	/**
-	 * <p>BT定时线程名称：{@value}</p>
+	 * BT定时线程名称
 	 */
 	public static final String SNAIL_THREAD_BT_SCHEDULED = SNAIL_THREAD_BT + "-Scheduled";
 	/**
-	 * <p>UTP队列线程名称：{@value}</p>
+	 * UTP队列线程名称
 	 */
 	public static final String SNAIL_THREAD_UTP_QUEUE = SNAIL_THREAD + "-UTP-Queue";
 	/**
-	 * <p>UDP服务端线程名称：{@value}</p>
+	 * UDP服务端线程名称
 	 */
 	public static final String SNAIL_THREAD_UDP_SERVER = SNAIL_THREAD + "-UDP-Server";
 	/**
-	 * <p>TCP客户端线程名称：{@value}</p>
+	 * TCP客户端线程名称
 	 */
 	public static final String SNAIL_THREAD_TCP_CLIENT = SNAIL_THREAD + "-TCP-Client";
 	/**
-	 * <p>TCP服务端线程名称：{@value}</p>
+	 * TCP服务端线程名称
 	 */
 	public static final String SNAIL_THREAD_TCP_SERVER = SNAIL_THREAD + "-TCP-Server";
 	/**
-	 * <p>下载器线程名称：{@value}</p>
+	 * 下载器线程名称
 	 */
 	public static final String SNAIL_THREAD_DOWNLOADER = SNAIL_THREAD + "-Downloader";
 	/**
-	 * <p>获取CPU核心数量</p>
-	 */
-	public static final int DEFAULT_THREAD_SIZE = Runtime.getRuntime().availableProcessors();
-	
-	/**
-	 * <p>系统线程池：异步执行、防止卡顿</p>
+	 * 系统线程池：异步执行、防止卡顿
 	 */
 	private static final ExecutorService EXECUTOR;
 	/**
-	 * <p>系统定时线程池：定时任务</p>
+	 * 系统定时线程池：定时任务
 	 */
 	private static final ScheduledExecutorService EXECUTOR_SCHEDULED;
 	/**
-	 * <p>任务拒绝执行处理</p>
+	 * 最大线程数量
 	 */
-	public static final RejectedExecutionHandler REJECTED_HANDLER;
+	private static final int MAX_THREAD_INDEX = 99;
 	/**
-	 * <p>最大线程数量</p>
-	 */
-	private static final int MAX_THREAD_INDEX = 100;
-	/**
-	 * <p>线程名称</p>
+	 * 线程名称
 	 */
 	private static final String THREAD_NAME = "%s-%02d";
 	/**
-	 * <p>线程编号</p>
+	 * 线程编号
 	 */
 	private static final Map<String, Integer> THREAD_INDEX = new HashMap<>();
+	/**
+	 * CPU核心数量
+	 */
+	public static final int DEFAULT_THREAD_SIZE = Runtime.getRuntime().availableProcessors();
 	
 	static {
-		EXECUTOR = newExecutor(threadSize(4, 8), threadSize(16, 32), 1000, 60L, SNAIL_THREAD);
+		EXECUTOR = newExecutor(threadSize(4, 8), threadSize(16, 32), Short.MAX_VALUE, 60L, SNAIL_THREAD);
 		EXECUTOR_SCHEDULED = newScheduledExecutor(threadSize(2, 4), SNAIL_THREAD_SCHEDULED);
-		REJECTED_HANDLER = (runnable, executor) -> LOGGER.warn("任务拒绝执行：{}-{}", runnable, executor);
 		LOGGER.info("系统默认线程数量：{}", DEFAULT_THREAD_SIZE);
 	}
 	
@@ -111,7 +105,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取线程数量</p>
+	 * 计算线程数量
 	 * 
 	 * @param minSize 最小线程数量
 	 * @param maxSize 最大线程数量
@@ -126,7 +120,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>异步任务</p>
+	 * 异步执行任务
 	 * 
 	 * @param runnable 任务
 	 */
@@ -135,7 +129,7 @@ public final class SystemThreadContext implements IContext {
 	}
 
 	/**
-	 * <p>定时任务（单次执行）</p>
+	 * 定时执行任务（单次执行）
 	 * 
 	 * @param delay 延迟时间
 	 * @param unit 时间单位
@@ -149,8 +143,8 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>定时任务（重复执行）</p>
-	 * <p>固定时间（周期不受执行时间影响）</p>
+	 * 定时执行任务（重复执行）
+	 * 固定时间：周期不受执行时间影响
 	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
@@ -166,8 +160,8 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>定时任务（重复执行）</p>
-	 * <p>固定周期（周期受到执行时间影响）</p>
+	 * 定时执行任务（重复执行）
+	 * 固定周期：周期受到执行时间影响
 	 * 
 	 * @param delay 延迟时间
 	 * @param period 周期时间
@@ -183,7 +177,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>新建固定线程池</p>
+	 * 新建固定线程池
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param maxPoolSize 最大线程数量
@@ -200,12 +194,13 @@ public final class SystemThreadContext implements IContext {
 			keepAliveTime,
 			TimeUnit.SECONDS,
 			new LinkedBlockingQueue<>(queueSize),
-			newThreadFactory(name)
+			newThreadFactory(name),
+			(runnable, executor) -> LOGGER.warn("拒绝执行任务：{}-{}", runnable, executor)
 		);
 	}
 	
 	/**
-	 * <p>新建缓存线程池</p>
+	 * 新建缓存线程池
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param keepAliveTime 线程空闲时间（秒）
@@ -221,12 +216,13 @@ public final class SystemThreadContext implements IContext {
 			TimeUnit.SECONDS,
 			// 禁止添加队列
 			new SynchronousQueue<>(),
-			newThreadFactory(name)
+			newThreadFactory(name),
+			(runnable, executor) -> LOGGER.warn("拒绝执行任务：{}-{}", runnable, executor)
 		);
 	}
 	
 	/**
-	 * <p>新建定时线程池</p>
+	 * 新建定时线程池
 	 * 
 	 * @param minPoolSize 初始线程数量
 	 * @param name 线程池名称
@@ -236,12 +232,13 @@ public final class SystemThreadContext implements IContext {
 	public static final ScheduledExecutorService newScheduledExecutor(int minPoolSize, String name) {
 		return new ScheduledThreadPoolExecutor(
 			minPoolSize,
-			newThreadFactory(name)
+			newThreadFactory(name),
+			(runnable, executor) -> LOGGER.warn("拒绝执行定时任务：{}-{}", runnable, executor)
 		);
 	}
 	
 	/**
-	 * <p>新建线程池工厂</p>
+	 * 新建线程池工厂
 	 * 
 	 * @param poolName 线程池名称
 	 * 
@@ -250,11 +247,9 @@ public final class SystemThreadContext implements IContext {
 	private static final ThreadFactory newThreadFactory(String poolName) {
 		return runnable -> {
 			final Thread thread = new Thread(runnable);
+			// 线程名称
 			synchronized(THREAD_INDEX) {
-				int index = THREAD_INDEX.getOrDefault(poolName, 0);
-				if(++index >= MAX_THREAD_INDEX) {
-					index = 0;
-				}
+				final int index = THREAD_INDEX.compute(poolName, (k, v) -> v == null || v >= MAX_THREAD_INDEX ? 1 : v + 1);
 				thread.setName(String.format(THREAD_NAME, poolName, index));
 			}
 			// 守护线程
@@ -264,7 +259,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭系统线程池</p>
+	 * 关闭系统线程池
 	 */
 	public static final void shutdown() {
 		LOGGER.debug("关闭系统线程池");
@@ -273,7 +268,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭线程池</p>
+	 * 关闭线程池
 	 * 
 	 * @param executor 线程池
 	 */
@@ -282,7 +277,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭线程池（立即关闭）</p>
+	 * 关闭线程池（立即关闭）
 	 * 
 	 * @param executor 线程池
 	 */
@@ -291,9 +286,9 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭线程池</p>
-	 * <p>正常关闭：不能继续添加任务，已经添加和正在执行的任务都会执行。</p>
-	 * <p>立即关闭：调用正在运行任务线程interrupt方法，队列任务不会执行，不能继续添加任务。</p>
+	 * 关闭线程池
+	 * 正常关闭：不能继续添加任务，已经添加和正在执行的任务都会执行。
+	 * 立即关闭：不能继续添加任务，不会执行排队任务，正在运行任务调用线程interrupt方法。
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param executor 线程池
@@ -314,7 +309,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭定时任务</p>
+	 * 关闭定时任务
 	 * 
 	 * @param scheduledFuture 定时任务
 	 */
@@ -323,7 +318,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭定时任务（立即关闭）</p>
+	 * 关闭定时任务（立即关闭）
 	 * 
 	 * @param scheduledFuture 定时任务
 	 */
@@ -332,9 +327,9 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭定时任务</p>
-	 * <p>正常关闭：正在运行的任务不会取消执行</p>
-	 * <p>立即关闭：正在运行的任务将被取消执行</p>
+	 * 关闭定时任务
+	 * 正常关闭：正在运行的任务不会取消执行
+	 * 立即关闭：正在运行的任务将被取消执行
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param scheduledFuture 定时任务
@@ -351,7 +346,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭异步通道线程池</p>
+	 * 关闭异步通道线程池
 	 * 
 	 * @param group 异步通道线程池
 	 */
@@ -360,7 +355,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭异步通道线程池（立即关闭）</p>
+	 * 关闭异步通道线程池（立即关闭）
 	 * 
 	 * @param group 异步通道线程池
 	 */
@@ -369,7 +364,7 @@ public final class SystemThreadContext implements IContext {
 	}
 	
 	/**
-	 * <p>关闭异步通道线程池</p>
+	 * 关闭异步通道线程池
 	 * 
 	 * @param closeNow 是否立即关闭
 	 * @param group 异步通道线程池

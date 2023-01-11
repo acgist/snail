@@ -1,14 +1,19 @@
 package com.acgist.snail.context;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.utils.Performance;
+import com.acgist.snail.utils.ThreadUtils;
 
 class SystemThreadContextTest extends Performance {
 
@@ -26,7 +31,32 @@ class SystemThreadContextTest extends Performance {
 	
 	@Test
 	void testThreadSize() {
+		final Map<String, Integer> map = new HashMap<>();
+		for (int i = 0; i < 1000; i++) {
+			this.log(map.compute("k", (k, v) -> v == null || v >= 99 ? 1 : v + 1));
+		}
 		assertTrue(SystemThreadContext.DEFAULT_THREAD_SIZE > 0);
+		this.log(SystemThreadContext.threadSize(4, 8));
+		this.log(SystemThreadContext.threadSize(2, 256));
+		this.log(SystemThreadContext.threadSize(128, 256));
+	}
+
+	@Test
+	void testRejected() throws InterruptedException {
+		final int size = 8;
+		final AtomicInteger count = new AtomicInteger(0);
+		final CountDownLatch down = new CountDownLatch(size - 1);
+		final var pool = SystemThreadContext.newExecutor(1, size - 2, 1, 60, "ACGIST");
+		for (int index = 0; index < size; index++) {
+			assertDoesNotThrow(() -> pool.submit(() -> {
+				down.countDown();
+				count.incrementAndGet();
+				this.log(Thread.currentThread().getName());
+				ThreadUtils.sleep(1000);
+			}));
+		}
+		down.await();
+		assertEquals(size - 1, count.get());
 	}
 	
 }

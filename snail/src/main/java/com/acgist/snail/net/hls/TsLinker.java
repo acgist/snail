@@ -91,6 +91,7 @@ public final class TsLinker {
 		// TODO：NIO优化
 		try(final var output = new FileOutputStream(target)) {
 			for (File file : files) {
+				LOGGER.debug("连接文件：{}-{}", file, target);
 				this.link(file, output);
 			}
 		} catch (IOException e) {

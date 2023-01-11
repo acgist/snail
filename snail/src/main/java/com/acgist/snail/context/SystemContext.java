@@ -17,7 +17,7 @@ import com.acgist.snail.net.http.HttpClient;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>系统上下文</p>
+ * 系统上下文
  * 
  * @author acgist
  */
@@ -32,37 +32,35 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>系统类型</p>
+	 * 系统类型
 	 * 
 	 * @author acgist
 	 */
 	public enum SystemType {
 		
 		/**
-		 * <p>Mac</p>
+		 * Mac
 		 */
 		MAC("Mac OS", "Mac OS X"),
 		/**
-		 * <p>Linux</p>
+		 * Linux
 		 */
 		LINUX("Linux"),
 		/**
-		 * <p>Windows</p>
+		 * Windows
 		 */
 		WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10"),
 		/**
-		 * <p>Android</p>
+		 * Android
 		 */
 		ANDROID("Android");
 		
 		/**
-		 * <p>系统名称</p>
+		 * 系统名称
 		 */
 		private final String[] osNames;
 
 		/**
-		 * <p>系统类型</p>
-		 * 
 		 * @param osNames 系统名称
 		 */
 		private SystemType(String ... osNames) {
@@ -70,8 +68,6 @@ public final class SystemContext implements IContext {
 		}
 
 		/**
-		 * <p>获取系统类型</p>
-		 * 
 		 * @return 系统类型
 		 */
 		public static final SystemType local() {
@@ -90,7 +86,7 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>系统名称</p>
+	 * 系统名称
 	 */
 	private final String osName;
 	
@@ -99,7 +95,7 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>整理系统内存</p>
+	 * 整理系统内存
 	 */
 	public static final void gc() {
 		LOGGER.info("整理系统内存");
@@ -107,7 +103,7 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>系统信息</p>
+	 * 系统信息
 	 */
 	public static final void info() {
 		LOGGER.info(
@@ -122,9 +118,6 @@ public final class SystemContext implements IContext {
 			"""
 		);
 		final var runtime = Runtime.getRuntime();
-		final String freeMemory = FileUtils.formatSize(runtime.freeMemory());
-		final String totalMemory = FileUtils.formatSize(runtime.totalMemory());
-		final String maxMemory = FileUtils.formatSize(runtime.maxMemory());
 		LOGGER.info("操作系统名称：{}", System.getProperty("os.name"));
 		LOGGER.info("操作系统架构：{}", System.getProperty("os.arch"));
 		LOGGER.info("操作系统版本：{}", System.getProperty("os.version"));
@@ -132,19 +125,31 @@ public final class SystemContext implements IContext {
 		LOGGER.info("Java版本：{}", System.getProperty("java.version"));
 		LOGGER.info("Java主目录：{}", System.getProperty("java.home"));
 		LOGGER.info("Java库目录：{}", System.getProperty("java.library.path"));
+		LOGGER.info("Java临时文件目录：{}", System.getProperty("java.io.tmpdir"));
+		LOGGER.info("Java Class目录：{}", System.getProperty("java.class.path"));
 		LOGGER.info("虚拟机名称：{}", System.getProperty("java.vm.name"));
-		LOGGER.info("虚拟机空闲内存：{}", freeMemory);
-		LOGGER.info("虚拟机已用内存：{}", totalMemory);
-		LOGGER.info("虚拟机最大内存：{}", maxMemory);
+		LOGGER.info("虚拟机版本：{}", System.getProperty("java.vm.version"));
+		LOGGER.info("虚拟机空闲内存：{}", FileUtils.formatSize(runtime.freeMemory()));
+		LOGGER.info("虚拟机已用内存：{}", FileUtils.formatSize(runtime.totalMemory()));
+		LOGGER.info("虚拟机最大内存：{}", FileUtils.formatSize(runtime.maxMemory()));
+		LOGGER.info("虚拟机运行时名称：{}", System.getProperty("java.runtime.name"));
+		LOGGER.info("虚拟机运行时版本：{}", System.getProperty("java.runtime.version"));
 		LOGGER.info("用户目录：{}", System.getProperty("user.home"));
-		LOGGER.info("工作目录：{}", System.getProperty("user.dir"));
+		LOGGER.info("用户名称：{}", System.getProperty("user.name"));
+		LOGGER.info("用户国家：{}", System.getProperty("user.country"));
+		LOGGER.info("用户语言：{}", System.getProperty("user.language"));
+		LOGGER.info("用户时区：{}", System.getProperty("user.timezone"));
+		LOGGER.info("用户工作目录：{}", System.getProperty("user.dir"));
 		LOGGER.info("文件编码：{}", System.getProperty("file.encoding"));
+		LOGGER.info("本地编码：{}", System.getProperty("native.encoding"));
+		LOGGER.info("CPU大小端：{}", System.getProperty("sun.cpu.endian"));
+		LOGGER.info("CPU指令集：{}", System.getProperty("sun.cpu.isalist"));
 	}
 	
 	/**
-	 * <p>系统初始化</p>
+	 * 系统初始化
 	 * 
-	 * @return Snail
+	 * @return {@link Snail}
 	 */
 	public static final Snail build() {
 		return SnailBuilder.newBuilder()
@@ -155,21 +160,23 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>系统关闭</p>
-	 * <p>所有线程都是守护线程，所以可以不用手动关闭。</p>
-	 * 
-	 * @see SystemThreadContext
+	 * 系统关闭
+	 * 所有线程都是守护线程，所以可以不用手动关闭。
 	 */
 	public static final void shutdown() {
 		if(Snail.available()) {
 			SystemThreadContext.submit(() -> {
 				LOGGER.info("系统关闭中");
+				// 关闭GUI
 				GuiContext.getInstance().hide();
 				GuiContext.getInstance().exit();
+				// 关闭Snail
 				Snail.shutdown();
+				// 关闭TCP/UDP
 				TcpClient.shutdown();
 				TcpServer.shutdown();
 				UdpServer.shutdown();
+				// 关闭线程池
 				SystemThreadContext.shutdown();
 				LOGGER.info("系统已关闭");
 				LoggerFactory.shutdown();
@@ -186,8 +193,6 @@ public final class SystemContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取系统名称</p>
-	 * 
 	 * @return 系统名称
 	 */
 	public static final String osName() {
@@ -195,8 +200,6 @@ public final class SystemContext implements IContext {
 	}
 
 	/**
-	 * <p>判断是不是最新版本</p>
-	 * 
 	 * @return 是不是最新版本
 	 */
 	public static final boolean latestRelease() {
@@ -213,7 +216,8 @@ public final class SystemContext implements IContext {
 			LOGGER.debug("版本信息：{}-{}", version, latestVersion);
 			return latestVersion.equals(version);
 		} catch (NetException e) {
-			LOGGER.error("获取版本信息异常", e);
+			LOGGER.error("版本检查异常", e);
+			GuiContext.getInstance().alert("版本检查失败", e.getMessage());
 		}
 		return true;
 	}

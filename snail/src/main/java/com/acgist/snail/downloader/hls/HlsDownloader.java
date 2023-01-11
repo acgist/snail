@@ -2,8 +2,6 @@ package com.acgist.snail.downloader.hls;
 
 import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.downloader.MultifileDownloader;
-import com.acgist.snail.logger.Logger;
-import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.hls.HlsContext;
@@ -11,16 +9,14 @@ import com.acgist.snail.net.hls.HlsSession;
 import com.acgist.snail.net.hls.TsLinker;
 
 /**
- * <p>HLS任务下载器</p>
+ * HLS任务下载器
  * 
  * @author acgist
  */
 public final class HlsDownloader extends MultifileDownloader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HlsDownloader.class);
-	
 	/**
-	 * <p>HLS任务信息</p>
+	 * HLS任务信息
 	 */
 	private HlsSession hlsSession;
 	
@@ -32,7 +28,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 
 	/**
-	 * <p>新建HLS任务下载器</p>
+	 * 新建HLS任务下载器
 	 * 
 	 * @param taskSession 任务信息
 	 * 
@@ -53,7 +49,9 @@ public final class HlsDownloader extends MultifileDownloader {
 		if(this.hlsSession != null) {
 			this.hlsSession.release();
 			if(this.completed) {
+				// 连接文件
 				this.tsLink();
+				// 下载完成没有存在分享所以直接删除资源
 				this.delete();
 			}
 		}
@@ -79,7 +77,7 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 
 	/**
-	 * <p>加载HLS任务信息</p>
+	 * 加载HLS任务信息
 	 * 
 	 * @return HLS任务信息
 	 */
@@ -88,10 +86,10 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 	
 	/**
-	 * <p>连接文件</p>
+	 * 连接文件
+	 * 下载完成连接文件碎片
 	 */
 	private void tsLink() {
-		LOGGER.debug("HLS任务连接文件：{}", this.taskSession);
 		final TsLinker linker = TsLinker.newInstance(
 			this.taskSession.getName(),
 			this.taskSession.getFile(),

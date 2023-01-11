@@ -36,6 +36,10 @@ public final class FileUtils {
 	 */
 	private static final String USER_DIR = System.getProperty("user.dir");
 	/**
+	 * 临时文件目录
+	 */
+	private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+	/**
 	 * <p>文件大小单位</p>
 	 */
 	private static final String[] FILE_SCALE_UNIT = {"B", "KB", "M", "G", "T"};
@@ -86,6 +90,7 @@ public final class FileUtils {
 		// 未知文件
 		FILE_TYPE_EXT.put(FileType.UNKNOWN, List.of());
 		LOGGER.debug("用户工作目录：{}", FileUtils.userDir());
+		LOGGER.debug("临时文件目录：{}", FileUtils.tempDir());
 	}
 	
 	private FileUtils() {
@@ -509,6 +514,13 @@ public final class FileUtils {
 	 */
 	public static final File userDirFile(String path) {
 		return new File(userDir(path));
+	}
+	
+	/**
+	 * @return 临时文件目录
+	 */
+	public static final String tempDir() {
+		return TEMP_DIR;
 	}
 	
 }

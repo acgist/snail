@@ -215,7 +215,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 * 		<td>403</td><td>文件大小</td>
 	 * 	</tr>
 	 * 	<tr>
-	 * 		<td>readme.txt</td><td>文件名称</td>
+	 * 		<td>SnailLauncher.exe</td><td>文件名称</td>
 	 * 	</tr>
 	 * </table>
 	 * 

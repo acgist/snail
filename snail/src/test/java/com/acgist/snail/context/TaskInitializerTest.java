@@ -10,7 +10,10 @@ class TaskInitializerTest extends Performance {
 
 	@Test
 	void testTaskInitializer() {
-		assertDoesNotThrow(() -> TaskInitializer.newInstance().sync());
+		assertDoesNotThrow(() -> {
+			TaskInitializer.newInstance().sync();
+			TaskInitializer.newInstance().destroy();
+		});
 	}
 	
 }

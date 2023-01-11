@@ -3,9 +3,9 @@ package com.acgist.snail.context;
 import com.acgist.snail.context.session.StatisticsSession;
 
 /**
- * <p>系统统计上下文</p>
- * <p>系统统计：累计下载、累计上传、速度采样</p>
- * <p>系统只限制单个任务的速度，如果需要限制整个系统的速度可以打开{@linkplain #statistics 系统统计上下文}限速。</p>
+ * 系统统计上下文
+ * 系统统计：累计下载、累计上传、速度采样
+ * 系统默认只限制单个任务的速度，如果需要限制整个系统的速度可以打开{@link #statistics}限速开关。
  * 
  * @author acgist
  */

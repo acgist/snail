@@ -16,7 +16,7 @@ import com.acgist.snail.protocol.ProtocolContext;
 import com.acgist.snail.utils.CollectionUtils;
 
 /**
- * <p>任务上下文</p>
+ * 任务上下文
  * 
  * @author acgist
  */
@@ -31,11 +31,11 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>任务队列</p>
+	 * 任务队列
 	 */
 	private final List<ITaskSession> tasks;
 	/**
-	 * <p>下载器线程池</p>
+	 * 下载器线程池
 	 */
 	private final ExecutorService executor;
 	
@@ -45,7 +45,8 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>新建下载任务</p>
+	 * 新建下载任务
+	 * 添加下载任务同时开始下载
 	 * 
 	 * @param url 下载链接
 	 * 
@@ -60,8 +61,8 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>添加下载任务</p>
-	 * <p>只添加下载任务不修改任务状态</p>
+	 * 添加下载任务
+	 * 只添加下载任务不修改任务状态
 	 * 
 	 * @param taskSession 任务信息
 	 * 
@@ -88,7 +89,7 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>删除下载任务</p>
+	 * 删除下载任务
 	 * 
 	 * @param taskSession 下载任务
 	 */
@@ -101,8 +102,6 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>获取所有下载任务列表</p>
-	 * 
 	 * @return 所有下载任务列表
 	 */
 	public List<ITaskSession> allTask() {
@@ -112,21 +111,19 @@ public final class TaskContext implements IContext {
 	}
 	
 	/**
-	 * <p>判定是否还有任务下载</p>
-	 * 
-	 * @return 是否还有任务下载
+	 * @return 是否含有下载任务
 	 */
-	public boolean downloading() {
+	public boolean running() {
 		return this.allTask().stream()
 			.anyMatch(ITaskSession::statusRunning);
 	}
 	
 	/**
-	 * <p>刷新下载任务</p>
+	 * 刷新下载任务
 	 */
 	public void refresh() {
 		synchronized (this.tasks) {
-			// 当前任务正在下载数量
+			// 当前正在下载任务数量
 			final long downloadCount = this.tasks.stream()
 				.filter(ITaskSession::statusDownload)
 				.count();
@@ -151,28 +148,35 @@ public final class TaskContext implements IContext {
 	}
 
 	/**
-	 * <p>加载实体任务</p>
+	 * 加载任务实体列表
 	 */
 	public void load() {
-		final EntityContext entityContext = EntityContext.getInstance();
-		final List<TaskEntity> list = entityContext.allTask();
+		final List<TaskEntity> list = EntityContext.getInstance().allTask();
 		if(CollectionUtils.isNotEmpty(list)) {
-			list.forEach(entity -> {
-				try {
-					final var taskSession = TaskSession.newInstance(entity);
-					taskSession.reset();
-					this.submit(taskSession);
-				} catch (Exception e) {
-					LOGGER.error("添加下载任务异常：{}", entity, e);
-					entityContext.delete(entity);
-				}
-			});
+			list.forEach(this::load);
 			this.refresh();
 		}
 	}
 	
 	/**
-	 * <p>关闭任务上下文</p>
+	 * 加载任务实体
+	 * 
+	 * @param entity 任务实体
+	 */
+	private void load(TaskEntity entity) {
+		try {
+			final var taskSession = TaskSession.newInstance(entity);
+			// 重置状态
+			taskSession.reset();
+			this.submit(taskSession);
+		} catch (Exception e) {
+			LOGGER.error("添加下载任务异常：{}", entity, e);
+			EntityContext.getInstance().delete(entity);
+		}
+	}
+	
+	/**
+	 * 关闭任务上下文
 	 */
 	public void shutdown() {
 		LOGGER.debug("关闭任务上下文");
