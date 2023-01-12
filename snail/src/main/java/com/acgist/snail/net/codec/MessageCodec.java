@@ -5,25 +5,12 @@ import java.net.InetSocketAddress;
 import com.acgist.snail.net.NetException;
 
 /**
- * <p>消息处理器</p>
- * <table border="1">
- * 	<caption>消息处理器</caption>
- * 	<tr>
- * 		<th>功能</th><th>实现</th>
- * 	</tr>
- * 	<tr>
- * 		<td>消息解码</td>
- * 		<td>继承{@link MessageCodec}</td>
- * 	</tr>
- * 	<tr>
- * 		<td>消息处理</td>
- * 		<td>实现{@link IMessageDecoder}</td>
- * 	</tr>
- * 	<tr>
- * 		<td>消息编码</td>
- * 		<td>实现{@link IMessageEncoder}</td>
- * 	</tr>
- * </table>
+ * 消息处理器
+ * 
+ * 功能      实现
+ * 消息解码   继承{@link MessageCodec}
+ * 消息处理   实现{@link IMessageDecoder}
+ * 消息编码   实现{@link IMessageEncoder}
  * 
  * 消息解码一般都是从头到尾全部执行，但是消息编码却不一定，所以编码需要自己指定编码器和编码顺序。
  * 

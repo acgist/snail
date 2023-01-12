@@ -235,37 +235,15 @@ public final class HttpTrackerSession extends TrackerSession {
 	}
 	
 	/**
-	 * <p>声明地址转为刮擦地址</p>
-	 * <table border="1">
-	 * 	<tr>
-	 * 		<td>~http://example.com/announce</td>
-	 * 		<td>~http://example.com/scrape</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/x/announce</td>
-	 * 		<td>~http://example.com/x/scrape</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/announce.php</td>
-	 * 		<td>~http://example.com/scrape.php</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/a</td>
-	 * 		<td>(scrape not supported)</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/announce?x2%0644</td>
-	 * 		<td>~http://example.com/scrape?x2%0644</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/announce?x=2/4</td>
-	 * 		<td>(scrape not supported)</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>~http://example.com/x%064announce</td>
-	 * 		<td>(scrape not supported)</td>
-	 * 	</tr>
-	 * </table>
+	 * 声明地址转为刮擦地址
+	 * 
+	 * ~http://example.com/announce            ~http://example.com/scrape
+	 * ~http://example.com/x/announce          ~http://example.com/x/scrape
+	 * ~http://example.com/announce.php        ~http://example.com/scrape.php
+	 * ~http://example.com/announce?x2%0644    ~http://example.com/scrape?x2%0644
+	 * ~http://example.com/a                   (scrape not supported)
+	 * ~http://example.com/x%064announce       (scrape not supported)
+	 * ~http://example.com/announce?x=2/4      (scrape not supported)
 	 * 
 	 * @param url 声明地址
 	 * 

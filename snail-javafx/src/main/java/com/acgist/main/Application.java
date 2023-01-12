@@ -17,7 +17,7 @@ import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 
 /**
- * <p>Snail启动类</p>
+ * Snail启动类
  * 
  * @author acgist
  */
@@ -26,21 +26,10 @@ public final class Application {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	
 	/**
-	 * <p>启动方法</p>
+	 * 启动方法
 	 * 
-	 * <table border="1">
-	 * 	<caption>启动参数</caption>
-	 * 	<tr>
-	 * 		<th>参数</th>
-	 * 		<th>默认</th>
-	 * 		<th>描述</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code mode}</td>
-	 * 		<td>{@code native}</td>
-	 * 		<td>{@code native}-本地GUI；{@code extend}-扩展GUI；</td>
-	 * 	</tr>
-	 * </table>
+	 * 参数             默认               描述
+	 * {@code mode}    {@code native}    {@code native}-本地GUI；{@code extend}-扩展GUI；
 	 * 
 	 * @param args 启动参数
 	 */
@@ -58,7 +47,7 @@ public final class Application {
 	}
 	
 	/**
-	 * <p>注册GUI事件</p>
+	 * 注册GUI事件
 	 */
 	private static final void registerGuiEvent() {
 		GuiContext.register(ShowEvent.getInstance());

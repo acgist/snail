@@ -19,35 +19,12 @@ public abstract class UdpMessageHandler extends MessageHandler<DatagramChannel> 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UdpMessageHandler.class);
 
 	/**
-	 * <p>远程地址</p>
-	 * <table border="1">
-	 * 	<caption>远程地址管理</caption>
-	 * 	<tr>
-	 * 		<th>类型</th>
-	 * 		<th>描述</th>
-	 * 		<th>参考</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>客户端</td>
-	 * 		<td>初始化固定地址</td>
-	 * 		<td>UdpClient子类</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>服务端（只要接收）</td>
-	 * 		<td>不用管理地址</td>
-	 * 		<td>LSD/Stun/UPNP/Tracker</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>服务端（需要发送）</td>
-	 * 		<td>单独管理消息代理</td>
-	 * 		<td>UTP</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>服务端（需要发送）</td>
-	 * 		<td>没有管理消息代理：直接使用消息地址</td>
-	 * 		<td>DHT</td>
-	 * 	</tr>
-	 * </table>
+	 * 远程地址
+	 * 
+	 * UdpClient                所有客户端固定地址
+	 * LSD/Stun/UPNP/Tracker    只要接收的服务端不用管理地址
+	 * UTP/Quick                主动发送的服务端单独管理消息代理
+	 * DHT                      被动发送的服务端直接使用消息地址
 	 */
 	protected final InetSocketAddress socketAddress;
 	

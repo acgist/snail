@@ -45,23 +45,11 @@ public final class BeanUtils {
 	}
 
 	/**
-	 * <p>属性类型转换</p>
+	 * 属性类型转换
 	 * 
-	 * <table border="1">
-	 * 	<caption>属性类型转换</caption>
-	 * 	<tr>
-	 * 		<td>{@code Enum}</td>
-	 * 		<td>{@code String}</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code Date}</td>
-	 * 		<td>{@code String(yyyy-MM-dd HH:mm:ss)}</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>{@code byte[]}</td>
-	 * 		<td>{@code String}</td>
-	 * 	</tr>
-	 * </table>
+	 * {@code Enum}    {@code String}
+	 * {@code Date}    {@code String(yyyy-MM-dd HH:mm:ss)}
+	 * {@code byte[]}  {@code String}
 	 * 
 	 * @param object 原始对象
 	 * 

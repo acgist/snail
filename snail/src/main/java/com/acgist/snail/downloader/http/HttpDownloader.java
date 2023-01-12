@@ -10,7 +10,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * <p>HTTP任务下载器</p>
+ * HTTP任务下载器
  * 
  * @author acgist
  */
@@ -24,7 +24,7 @@ public final class HttpDownloader extends MonofileDownloader {
 	}
 
 	/**
-	 * <p>新建HTTP任务下载器</p>
+	 * 新建HTTP任务下载器
 	 * 
 	 * @param taskSession 任务信息
 	 * 
@@ -58,9 +58,9 @@ public final class HttpDownloader extends MonofileDownloader {
 			}
 		} else if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
 			// 优先验证下载文件大小
-			// 416：超出请求范围
 			this.completed = true;
 		} else {
+			// 416：超出请求范围
 			this.fail("HTTP请求失败：" + client.code());
 		}
 	}

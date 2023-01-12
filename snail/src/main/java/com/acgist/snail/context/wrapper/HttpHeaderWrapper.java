@@ -20,23 +20,12 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * 范围请求
 	 * HTTP协议断点续传设置
 	 * 
-	 * Range: bytes=0-499
-	 * 范围：0-499
-	 * 
-	 * Range: bytes=500-999
-	 * 范围：500-999
-	 * 
-	 * Range: bytes=-500
-	 * 最后500字节
-	 * 
-	 * Range: bytes=500-
-	 * 500字节开始到结束
-	 * 
-	 * Range: bytes=0-0,-1
-	 * 第一个字节和最后一个字节
-	 * 
-	 * Range: bytes=500-600,601-999
-	 * 同时指定多个范围
+	 * Range: bytes=0-499              范围：0-499
+	 * Range: bytes=500-999            范围：500-999
+	 * Range: bytes=-500               最后500字节
+	 * Range: bytes=500-               500字节开始到结束
+	 * Range: bytes=0-0,-1             第一个字节和最后一个字节
+	 * Range: bytes=500-600,601-999    同时指定多个范围
 	 */
 	public static final String HEADER_RANGE = "Range";
 	/**

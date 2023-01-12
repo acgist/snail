@@ -162,62 +162,22 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	}
 	
 	/**
-	 * <p>获取文件大小</p>
-	 * <table border="1">
-	 * 	<caption>FTP文件信息格式（UNIX）</caption>
-	 * 	<tr>
-	 * 		<th>内容</th><th>释义</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td colspan="2">-rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>-rwx------</td>
-	 * 		<td>
-	 * 			首个字符：d-表示目录、--表示文件；<br>
-	 * 			其他字符：r-表示可读、w-表示可写、x-表示可执行（参考Linux文件权限）；
-	 * 		</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>1</td><td>位置</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>user</td><td>所属用户</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>group</td><td>所属分组</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>102400</td><td>文件大小</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>Jan 01 2020</td><td>创建时间</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>SnailLauncher.exe</td><td>文件名称</td>
-	 * 	</tr>
-	 * </table>
-	 * <table border="1">
-	 * 	<caption>FTP文件信息格式（MS-DOS）</caption>
-	 * 	<tr>
-	 * 		<th>内容</th><th>释义</th>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td colspan="2">04-08-14 03:09PM 403 SnailLauncher.exe</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>04-08-14</td><td>创建日期</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>03:09PM</td><td>创建时间</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>403</td><td>文件大小</td>
-	 * 	</tr>
-	 * 	<tr>
-	 * 		<td>SnailLauncher.exe</td><td>文件名称</td>
-	 * 	</tr>
-	 * </table>
+	 * FTP文件信息格式（UNIX）
+	 * -rwx------ 1 user group 102400 Jan 01 2020 SnailLauncher.exe
+	 * -rwx------         首个字符：d-目录、--文件；其他字符：r-可读、w-可写、x-可执行（参考Linux文件权限）；
+	 * 1                  位置
+	 * user               所属用户
+	 * group              所属分组
+	 * 102400             文件大小
+	 * Jan 01 2020        创建日期
+	 * SnailLauncher.exe  文件名称
+	 * 
+	 * FTP文件信息格式（MS-DOS）
+	 * 04-08-14 03:09PM 403 SnailLauncher.exe
+	 * 04-08-14           创建日期
+	 * 03:09PM            创建时间
+	 * 403                文件大小
+	 * SnailLauncher.exe  文件名称
 	 * 
 	 * @return 文件大小
 	 * 
