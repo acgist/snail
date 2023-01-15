@@ -11,7 +11,7 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>下载器</p>
+ * 下载器超类
  * 
  * @author acgist
  */
@@ -20,19 +20,19 @@ public abstract class Downloader implements IDownloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
 	
 	/**
-	 * <p>任务失败状态</p>
+	 * 任务失败状态
 	 */
 	protected volatile boolean fail;
 	/**
-	 * <p>任务完成状态</p>
+	 * 任务完成状态
 	 */
 	protected volatile boolean completed;
 	/**
-	 * <p>任务信息</p>
+	 * 任务信息
 	 */
 	protected final ITaskSession taskSession;
 	/**
-	 * <p>统计信息</p>
+	 * 统计信息
 	 */
 	protected final IStatisticsSession statistics;
 	
@@ -40,7 +40,9 @@ public abstract class Downloader implements IDownloader {
 	 * @param taskSession 任务信息
 	 */
 	protected Downloader(ITaskSession taskSession) {
+		// 重置任务下载大小
 		taskSession.buildDownloadSize();
+		// 初始配置
 		this.fail = false;
 		this.completed = false;
 		this.taskSession = taskSession;
@@ -48,7 +50,7 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	/**
-	 * <p>验证文件是否完成</p>
+	 * 验证文件是否完成
 	 * 
 	 * @param length 下载数据大小
 	 * @param downloadSize 累计下载大小
@@ -101,12 +103,12 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	@Override
-	public boolean statusFail() {
+	public final boolean statusFail() {
 		return this.taskSession.statusFail();
 	}
 	
 	@Override
-	public boolean statusDelete() {
+	public final boolean statusDelete() {
 		return this.taskSession.statusDelete();
 	}
 	
@@ -123,7 +125,7 @@ public abstract class Downloader implements IDownloader {
 	public boolean verify() throws DownloadException {
 		final boolean verify = this.taskSession.downloadFile().exists();
 		if(!verify) {
-			// 如果文件已被删除修改已经下载大小
+			// 如果文件已被删除重置已经下载大小
 			this.taskSession.downloadSize(0L);
 		}
 		return verify;
@@ -131,7 +133,9 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public final void fail(String message) {
+		// 修改任务状态
 		this.taskSession.updateStatus(Status.FAIL);
+		// 设置失败信息
 		this.fail = true;
 		final StringBuilder noticeMessage = new StringBuilder();
 		noticeMessage
@@ -151,6 +155,7 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public void release() {
+		// GC释放内存
 		SystemContext.gc();
 		// 注意：任务释放完成解锁（防止提前退出程序导致数据没有保存）
 		Snail.getInstance().unlockDownload();
@@ -169,6 +174,7 @@ public abstract class Downloader implements IDownloader {
 				// 加锁：保证资源加载和释放原子性
 				if(this.statusAwait()) {
 					LOGGER.debug("开始下载任务：{}", name);
+					// 重置状态
 					this.fail = false;
 					this.completed = false;
 					this.taskSession.setStatus(Status.DOWNLOAD);
@@ -179,8 +185,9 @@ public abstract class Downloader implements IDownloader {
 						LOGGER.error("任务下载异常", e);
 						this.fail(e.getMessage());
 					}
-					this.checkAndMarkCompleted();
+					this.checkCompletedAndMark();
 					this.release();
+					// 解除删除锁
 					this.taskSession.unlockDelete();
 					LOGGER.debug("任务下载结束：{}", name);
 				} else {
@@ -193,12 +200,10 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	/**
-	 * <dl>
-	 * 	<dt>判断任务是否可以下载</dt>
-	 * 	<dd>未被标记{@linkplain #fail 失败}</dd>
-	 * 	<dd>未被标记{@linkplain #completed 完成}</dd>
-	 * 	<dd>任务处于{@linkplain #statusDownload() 下载状态}</dd>
-	 * </dl>
+	 * 判断任务是否可以下载
+	 * 1.未被标记{@linkplain #fail 失败}
+	 * 2.未被标记{@linkplain #completed 完成}
+	 * 3.任务处于{@linkplain #statusDownload() 下载状态}
 	 * 
 	 * @return 是否可以下载
 	 */
@@ -210,9 +215,9 @@ public abstract class Downloader implements IDownloader {
 	}
 	
 	/**
-	 * <p>检测并且标记任务完成</p>
+	 * 检测任务是否完成并且标记
 	 */
-	private final void checkAndMarkCompleted() {
+	private final void checkCompletedAndMark() {
 		if(this.completed) {
 			this.taskSession.updateStatus(Status.COMPLETED);
 			GuiContext.getInstance().notice("下载完成", "任务下载完成：" + this.name());

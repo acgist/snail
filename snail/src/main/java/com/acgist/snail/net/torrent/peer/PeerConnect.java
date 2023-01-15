@@ -315,7 +315,7 @@ public abstract class PeerConnect implements IPeerConnect {
 		}
 		this.completedLock.set(true);
 		this.releaseDownload();
-		this.torrentSession.checkCompletedAndDone();
+		this.torrentSession.checkCompletedAndUnlock();
 		// 验证最后选择Piece是否下载完成
 		if(this.downloadPiece != null && !this.downloadPiece.completedAndVerify()) {
 			LOGGER.debug("Piece最后失败：{}", this.downloadPiece);

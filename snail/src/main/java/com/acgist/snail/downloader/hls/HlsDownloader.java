@@ -28,8 +28,6 @@ public final class HlsDownloader extends MultifileDownloader {
 	}
 
 	/**
-	 * 新建HLS任务下载器
-	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return {@link HlsDownloader}

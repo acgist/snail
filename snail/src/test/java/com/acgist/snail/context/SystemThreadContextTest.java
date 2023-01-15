@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -17,6 +18,19 @@ import com.acgist.snail.utils.ThreadUtils;
 
 class SystemThreadContextTest extends Performance {
 
+	@Test
+	void testName() throws IllegalArgumentException, IllegalAccessException {
+		final Field[] fields = SystemThreadContext.class.getDeclaredFields();
+		for (Field field : fields) {
+			if(!field.getName().startsWith("SNAIL")) {
+				continue;
+			}
+//			this.log("字段：{}", field.getName());
+			field.setAccessible(true);
+			this.log("字段：{}", field.get(SystemThreadContext.class));
+		}
+	}
+	
 	@Test
 	void testSystemThreadContext() throws InterruptedException {
 		final CountDownLatch latch = new CountDownLatch(1);

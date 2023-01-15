@@ -9,8 +9,8 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.torrent.TorrentSession;
 
 /**
- * <p>BT任务下载器</p>
- * <p>下载完成不要删除任务信息：做种</p>
+ * BT任务下载器
+ * 下载完成不要删除任务信息：做种
  * 
  * @author acgist
  */
@@ -26,8 +26,6 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	}
 
 	/**
-	 * <p>新建BT任务下载器</p>
-	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return {@link TorrentDownloader}
@@ -39,6 +37,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	public void refresh() throws DownloadException {
 		super.refresh();
+		/*
+		 * 注意后面两个判断：任务没有加载同时没有完成时，任务开始下载自动加载任务，所以不用进行状态检查。
+		 */
 		// 下载文件是否更改
 		boolean unchange = true;
 		// 加载任务下载文件
@@ -48,9 +49,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		} else if(this.statusCompleted()) {
 			// 任务信息没有加载：任务完成加载任务信息
 			unchange = false;
+			// 加载任务
 			this.torrentSession = this.loadTorrentSession();
 		}
-		// 任务没有加载：开始下载自动加载任务
 		if(this.statusCompleted()) {
 			// 完成任务校验数据
 			if(unchange) {
@@ -66,9 +67,8 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 			}
 		} else if(this.torrentSession != null) {
 			// 没有完成：校验下载状态
-			this.torrentSession.checkCompletedAndDone();
+			this.torrentSession.checkCompletedAndUnlock();
 		}
-		// 任务没有加载：开始下载自动加载任务
 	}
 	
 	@Override
@@ -96,9 +96,9 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	public void release() {
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseDownload();
-			this.statistics.resetDownloadSpeed();
 			this.torrentSession.updatePieces(true);
 		}
+//		this.statistics.resetDownloadSpeed();
 		super.release();
 	}
 	
@@ -107,19 +107,15 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 		super.delete();
 		if(this.torrentSession != null) {
 			this.torrentSession.releaseUpload();
-			this.statistics.resetUploadSpeed();
 			this.torrentSession.delete();
 		}
+//		this.statistics.resetUploadSpeed();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>加载完成立即开启上传服务，直到任务删除或者软件关闭。</p>
-	 */
 	@Override
 	protected TorrentSession loadTorrentSession() throws DownloadException {
 		final var torrentSession = super.loadTorrentSession();
+		// 加载完成立即开启上传服务，直到任务删除或者软件关闭，任务暂停不会关闭上传。
 		torrentSession.upload(this.taskSession);
 		return torrentSession;
 	}

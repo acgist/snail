@@ -44,7 +44,7 @@ public abstract class MonofileDownloader extends Downloader {
 	private volatile long fastCheckTime;
 	
 	/**
-	 * @param taskSession 下载任务
+	 * @param taskSession 任务信息
 	 */
 	protected MonofileDownloader(ITaskSession taskSession) {
 		super(taskSession);
@@ -86,7 +86,7 @@ public abstract class MonofileDownloader extends Downloader {
 	@Override
 	public void unlockDownload() {
 		super.unlockDownload();
-		// 快速失败检测
+		// 快速失败检测：防止长时间阻塞
 		if(System.currentTimeMillis() - this.fastCheckTime > FAST_CHECK_TIME) {
 			IoUtils.close(this.input);
 		}

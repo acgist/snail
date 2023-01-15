@@ -17,6 +17,7 @@ import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.DownloadException;
+import com.acgist.snail.net.IMultifileCompletedChecker;
 import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.net.torrent.dht.DhtLauncher;
@@ -41,7 +42,7 @@ import com.acgist.snail.utils.MapUtils;
  * 
  * @author acgist
  */
-public final class TorrentSession {
+public final class TorrentSession implements IMultifileCompletedChecker {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TorrentSession.class);
 	
@@ -484,11 +485,7 @@ public final class TorrentSession {
 		return torrentFiles;
 	}
 
-	/**
-	 * <p>检测任务是否下载完成</p>
-	 * 
-	 * @return 是否下载完成
-	 */
+	@Override
 	public boolean checkCompleted() {
 		if(this.completed()) {
 			// 判断任务是否完成
@@ -501,11 +498,8 @@ public final class TorrentSession {
 		}
 	}
 	
-	/**
-	 * <p>检测任务是否下载完成</p>
-	 * <p>注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）</p>
-	 */
-	public void checkCompletedAndDone() {
+	@Override
+	public void checkCompletedAndUnlock() {
 		if(this.checkCompleted()) {
 			this.taskSession.unlockDownload();
 		}
@@ -597,7 +591,7 @@ public final class TorrentSession {
 		this.taskSession.setSize(torrentFileSize);
 		this.taskSession.downloadSize(torrentFileSize);
 		this.taskSession.update();
-		this.checkCompletedAndDone();
+		this.checkCompletedAndUnlock();
 	}
 	
 	/**

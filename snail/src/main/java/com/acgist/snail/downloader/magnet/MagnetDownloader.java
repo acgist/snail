@@ -6,9 +6,9 @@ import com.acgist.snail.downloader.torrent.TorrentDownloader;
 import com.acgist.snail.net.DownloadException;
 
 /**
- * <p>磁力链接任务下载器</p>
- * <p>下载原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。</p>
- * <p>下载完成不要删除任务信息：转为BT任务继续使用</p>
+ * 磁力链接任务下载器
+ * 原理：先将磁力链接转为种子文件，然后转为{@link TorrentDownloader}进行下载。
+ * 注意：下载完成不要删除任务信息转为BT任务继续使用
  * 
  * @author acgist
  */
@@ -22,8 +22,6 @@ public final class MagnetDownloader extends TorrentSessionDownloader {
 	}
 	
 	/**
-	 * <p>新建磁力链接任务下载器</p>
-	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return {@link MagnetDownloader}

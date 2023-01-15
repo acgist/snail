@@ -14,6 +14,7 @@ import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.SystemThreadContext;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
+import com.acgist.snail.net.IMultifileCompletedChecker;
 import com.acgist.snail.utils.BeanUtils;
 
 /**
@@ -21,7 +22,7 @@ import com.acgist.snail.utils.BeanUtils;
  * 
  * @author acgist
  */
-public final class HlsSession {
+public final class HlsSession implements IMultifileCompletedChecker {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HlsSession.class);
 
@@ -191,22 +192,15 @@ public final class HlsSession {
 		return this.downloadable;
 	}
 
-	/**
-	 * <p>校验是否完成</p>
-	 * 
-	 * @return 是否完成
-	 */
+	@Override
 	public boolean checkCompleted() {
 		synchronized (this.clients) {
 			return this.clients.isEmpty();
 		}
 	}
 	
-	/**
-	 * <p>校验是否完成</p>
-	 * <p>注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）</p>
-	 */
-	public void checkCompletedAndDone() {
+	@Override
+	public void checkCompletedAndUnlock() {
 		if(this.checkCompleted()) {
 			this.taskSession.unlockDownload();
 		}

@@ -4,6 +4,8 @@ import java.nio.channels.Channels;
 
 import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.downloader.MonofileDownloader;
+import com.acgist.snail.logger.Logger;
+import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.NetException;
 import com.acgist.snail.net.ftp.FtpClient;
 import com.acgist.snail.utils.FileUtils;
@@ -15,6 +17,8 @@ import com.acgist.snail.utils.IoUtils;
  * @author acgist
  */
 public final class FtpDownloader extends MonofileDownloader {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(FtpDownloader.class);
 	
 	/**
 	 * FTP客户端
@@ -29,8 +33,6 @@ public final class FtpDownloader extends MonofileDownloader {
 	}
 
 	/**
-	 * 新建FTP任务下载器
-	 * 
 	 * @param taskSession 任务信息
 	 * 
 	 * @return {@link FtpDownloader}
@@ -51,14 +53,18 @@ public final class FtpDownloader extends MonofileDownloader {
 	
 	@Override
 	protected void buildInput() throws NetException {
+		// 连接
 		this.client = FtpClient.newInstance(this.taskSession.getUrl());
-		final boolean success = this.client.connect();
-		if(success) {
+		if(this.client.connect()) {
+			// 打开流
 			final long downloadSize = FileUtils.fileSize(this.taskSession.getFile());
 			this.input = Channels.newChannel(this.client.download(downloadSize));
+			// 断点续传
 			if(this.client.range()) {
+				LOGGER.debug("FTP断点下载：{}", downloadSize);
 				this.taskSession.downloadSize(downloadSize);
 			} else {
+				LOGGER.debug("FTP重新下载：{}", downloadSize);
 				this.taskSession.downloadSize(0L);
 			}
 		} else {
