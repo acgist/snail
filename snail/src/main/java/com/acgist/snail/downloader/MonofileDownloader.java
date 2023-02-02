@@ -18,28 +18,28 @@ import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.IoUtils;
 
 /**
- * <p>单文件任务下载器</p>
+ * 单文件任务下载器
  * 
  * @author acgist
  */
 public abstract class MonofileDownloader extends Downloader {
 	
 	/**
-	 * <p>快速失败时间（毫秒）：{@value}</p>
-	 * <p>注意：建议不要超过任务删除等待时间</p>
+	 * 快速失败时间（毫秒）
+	 * 注意：建议不要超过任务删除等待时间
 	 */
 	private static final long FAST_CHECK_TIME = 2L * SystemConfig.ONE_SECOND_MILLIS;
 	
 	/**
-	 * <p>输入流</p>
+	 * 输入流
 	 */
 	protected ReadableByteChannel input;
 	/**
-	 * <p>输出流</p>
+	 * 输出流
 	 */
 	protected WritableByteChannel output;
 	/**
-	 * <p>快速失败检测时间</p>
+	 * 快速失败检测时间
 	 */
 	private volatile long fastCheckTime;
 	
@@ -93,10 +93,12 @@ public abstract class MonofileDownloader extends Downloader {
 	}
 
 	/**
-	 * <p>新建{@linkplain #output 输出流}</p>
-	 * <p>通过判断任务已经下载大小验证是否支持断点续传</p>
+	 * 创建输出流
+	 * 先创建输入流：通过判断任务已经下载大小验证是否支持断点续传
 	 * 
 	 * @throws DownloadException 下载异常
+	 * 
+	 * @see #buildInput()
 	 */
 	protected void buildOutput() throws DownloadException {
 		try {
@@ -118,8 +120,8 @@ public abstract class MonofileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>新建{@linkplain #input 输入流}</p>
-	 * <p>验证是否支持断点续传：如果支持重新设置任务已经下载大小</p>
+	 * 新建输入流
+	 * 验证是否支持断点续传：如果支持重新设置任务已经下载大小
 	 * 
 	 * @throws NetException 网络异常
 	 * @throws DownloadException 下载异常

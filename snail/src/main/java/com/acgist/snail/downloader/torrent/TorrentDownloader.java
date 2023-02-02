@@ -37,9 +37,7 @@ public final class TorrentDownloader extends TorrentSessionDownloader {
 	@Override
 	public void refresh() throws DownloadException {
 		super.refresh();
-		/*
-		 * 注意后面两个判断：任务没有加载同时没有完成时，任务开始下载自动加载任务，所以不用进行状态检查。
-		 */
+		// 注意后面两个判断：任务没有加载同时没有完成时，任务开始下载自动加载任务，所以不用进行状态检查。
 		// 下载文件是否更改
 		boolean unchange = true;
 		// 加载任务下载文件

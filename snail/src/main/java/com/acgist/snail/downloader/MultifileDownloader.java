@@ -8,7 +8,7 @@ import com.acgist.snail.net.NetException;
 import com.acgist.snail.utils.FileUtils;
 
 /**
- * <p>多文件任务下载器</p>
+ * 多文件任务下载器
  * 
  * @author acgist
  */
@@ -17,8 +17,8 @@ public abstract class MultifileDownloader extends Downloader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MultifileDownloader.class);
 
 	/**
-	 * <p>下载锁</p>
-	 * <p>下载时阻塞下载任务线程</p>
+	 * 下载锁
+	 * 下载时阻塞下载任务线程
 	 */
 	protected final Object downloadLock = new Object();
 	
@@ -33,6 +33,7 @@ public abstract class MultifileDownloader extends Downloader {
 	public void open() throws NetException, DownloadException {
 		// 新建文件目录：防止删除目录导致任务下载失败
 		FileUtils.buildFolder(this.taskSession.getFile());
+		// 加载下载
 		this.loadDownload();
 	}
 
@@ -42,7 +43,7 @@ public abstract class MultifileDownloader extends Downloader {
 			synchronized (this.downloadLock) {
 				while(this.downloadable()) {
 					try {
-						// 防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
+						// 修改等待时间防止过长时间下载（失败时间等待）：验证下载数据是否变化判断任务是否失败
 						this.downloadLock.wait(Long.MAX_VALUE);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
@@ -63,14 +64,15 @@ public abstract class MultifileDownloader extends Downloader {
 	}
 	
 	/**
-	 * <p>加载下载</p>
+	 * 加载下载
+	 * 加载下载所需资源同时开始下载
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
 	protected abstract void loadDownload() throws DownloadException;
 
 	/**
-	 * <p>判断是否下载完成</p>
+	 * 判断是否下载完成
 	 * 
 	 * @return 是否下载完成
 	 */

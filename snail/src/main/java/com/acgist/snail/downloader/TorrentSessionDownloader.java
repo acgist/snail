@@ -8,14 +8,14 @@ import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.protocol.magnet.MagnetBuilder;
 
 /**
- * <p>BT任务下载器</p>
+ * BT任务下载器
  * 
  * @author acgist
  */
 public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	
 	/**
-	 * <p>BT任务信息</p>
+	 * BT任务信息
 	 */
 	protected TorrentSession torrentSession;
 	
@@ -34,7 +34,7 @@ public abstract class TorrentSessionDownloader extends MultifileDownloader {
 	}
 	
 	/**
-	 * <p>加载BT任务信息</p>
+	 * 加载BT任务信息
 	 * 
 	 * @return BT任务信息
 	 * 

@@ -81,7 +81,7 @@ public interface IDownloader extends Runnable, ITaskSessionStatus {
 	 * 释放资源
 	 * 释放连接、线程等等在下载时打开的资源，不会删除任务整个周期都会用到的资源。
 	 * 例如：
-	 * 1.BT任务：Peer、Tracker等等
+	 * 1.BT任务：Peer等等
 	 * 2.HLS任务：M3U8等等
 	 */
 	void release();
