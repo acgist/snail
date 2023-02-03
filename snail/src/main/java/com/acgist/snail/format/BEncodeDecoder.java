@@ -14,13 +14,13 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.ByteUtils;
 import com.acgist.snail.utils.CollectionUtils;
+import com.acgist.snail.utils.ListUtils;
 import com.acgist.snail.utils.MapUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * <p>B编码解码器</p>
- * 
- * <p>除了Long其他类型均为byte[]</p>
+ * B编码解码器
+ * 除了Long其他类型均为byte[]
  * 
  * @author acgist
  */
@@ -29,66 +29,66 @@ public final class BEncodeDecoder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEncodeDecoder.class);
 	
 	/**
-	 * <p>B编码数据类型</p>
+	 * B编码数据类型
 	 * 
 	 * @author acgist
 	 */
 	public enum Type {
 		
 		/**
-		 * <p>Map</p>
+		 * Map
 		 */
 		MAP,
 		/**
-		 * <p>List</p>
+		 * List
 		 */
 		LIST,
 		/**
-		 * <p>未知</p>
+		 * 未知
 		 */
 		NONE;
 		
 	}
 	
 	/**
-	 * <p>结尾：{@value}</p>
+	 * 结束
 	 */
 	public static final char TYPE_E = 'e';
 	/**
-	 * <p>数值：{@value}</p>
+	 * 数值
 	 */
 	public static final char TYPE_I = 'i';
 	/**
-	 * <p>List：{@value}</p>
+	 * List
 	 */
 	public static final char TYPE_L = 'l';
 	/**
-	 * <p>Map：{@value}</p>
+	 * Map
 	 */
 	public static final char TYPE_D = 'd';
 	/**
-	 * <p>分隔符：{@value}</p>
+	 * 分隔符
 	 */
 	public static final char SEPARATOR = ':';
 	/**
-	 * <p>B编码最短数据长度</p>
+	 * B编码最短数据长度：开始结束符号
 	 */
 	private static final int MIN_CONTENT_LENGTH = 2;
 	
 	/**
-	 * <p>数据类型</p>
+	 * 数据类型
 	 */
 	private Type type;
 	/**
-	 * <p>List</p>
+	 * List
 	 */
 	private List<Object> list;
 	/**
-	 * <p>Map</p>
+	 * Map
 	 */
 	private Map<String, Object> map;
 	/**
-	 * <p>原始数据</p>
+	 * 原始数据
 	 */
 	private final ByteArrayInputStream inputStream;
 	
@@ -104,7 +104,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>新建B编码解码器</p>
+	 * 新建B编码解码器
 	 * 
 	 * @param bytes 数据
 	 * 
@@ -115,7 +115,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>新建B编码解码器</p>
+	 * 新建B编码解码器
 	 * 
 	 * @param content 数据
 	 * 
@@ -127,7 +127,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>新建B编码解码器</p>
+	 * 新建B编码解码器
 	 * 
 	 * @param buffer 数据
 	 * 
@@ -135,12 +135,11 @@ public final class BEncodeDecoder {
 	 */
 	public static final BEncodeDecoder newInstance(ByteBuffer buffer) {
 		Objects.requireNonNull(buffer, "B编码内容错误");
-		final byte[] bytes = ByteUtils.remainingToBytes(buffer);
-		return new BEncodeDecoder(bytes);
+		return new BEncodeDecoder(ByteUtils.remainingToBytes(buffer));
 	}
 	
 	/**
-	 * <p>判断是否没有数据</p>
+	 * 判断是否没有数据
 	 * 
 	 * @return 是否没有数据
 	 */
@@ -156,7 +155,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>判断是否含有数据</p>
+	 * 判断是否含有数据
 	 * 
 	 * @return 是否含有数据
 	 */
@@ -165,9 +164,9 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>解析数据</p>
+	 * 解析数据
 	 * 
-	 * @return {@link BEncodeDecoder}
+	 * @return this
 	 * 
 	 * @throws PacketSizeException 网络包大小异常
 	 * 
@@ -179,7 +178,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>解析数据并获取数据类型</p>
+	 * 解析数据返回数据类型
 	 * 
 	 * @return 数据类型
 	 * 
@@ -187,8 +186,8 @@ public final class BEncodeDecoder {
 	 */
 	public Type nextType() throws PacketSizeException {
 		// 是否含有数据
-		final boolean noneData = this.inputStream == null || this.inputStream.available() <= 0;
-		if(noneData) {
+		final boolean none = this.inputStream == null || this.inputStream.available() <= 0;
+		if(none) {
 			this.type = Type.NONE;
 			return this.type;
 		}
@@ -211,7 +210,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>解析数据并获取List</p>
+	 * 解析数据List
 	 * 
 	 * @return List
 	 * 
@@ -223,12 +222,14 @@ public final class BEncodeDecoder {
 		final var nextType = this.nextType();
 		if(nextType == Type.LIST) {
 			return this.list;
+		} else {
+			LOGGER.warn("B编码解析List类型错误：{}", nextType);
 		}
 		return List.of();
 	}
 	
 	/**
-	 * <p>解析数据并获取Map</p>
+	 * 解析数据Map
 	 * 
 	 * @return Map
 	 * 
@@ -240,12 +241,14 @@ public final class BEncodeDecoder {
 		final var nextType = this.nextType();
 		if(nextType == Type.MAP) {
 			return this.map;
+		} else {
+			LOGGER.warn("B编码解析Map类型错误：{}", nextType);
 		}
 		return Map.of();
 	}
 	
 	/**
-	 * <p>读取剩余所有字节数组</p>
+	 * 读取剩余所有字节数组
 	 * 
 	 * @return 剩余所有字节数组
 	 */
@@ -257,7 +260,7 @@ public final class BEncodeDecoder {
 	}
 
 	/**
-	 * <p>读取数值</p>
+	 * 读取数值
 	 * 
 	 * @param inputStream 数据
 	 * 
@@ -285,7 +288,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取List</p>
+	 * 读取List
 	 * 
 	 * @param inputStream 数据
 	 * 
@@ -324,7 +327,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取Map</p>
+	 * 读取Map
 	 * 
 	 * @param inputStream 数据
 	 * 
@@ -392,7 +395,7 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>读取符合长度的字节数组</p>
+	 * 读取符合长度的字节数组
 	 * 
 	 * @param lengthBuilder 字节数组长度
 	 * @param inputStream 数据
@@ -408,6 +411,7 @@ public final class BEncodeDecoder {
 		}
 		final int length = Integer.parseInt(number);
 		PacketSizeException.verify(length);
+		// 循环使用设置归零
 		lengthBuilder.setLength(0);
 		final byte[] bytes = new byte[length];
 		try {
@@ -422,8 +426,88 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取对象</p>
+	 * @param index 索引
 	 * 
+	 * @return 对象
+	 */
+	public Object get(int index) {
+		return ListUtils.get(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return 字节
+	 */
+	public Byte getByte(int index) {
+		return ListUtils.getByte(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return 数值
+	 */
+	public Integer getInteger(int index) {
+		return ListUtils.getInteger(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return 数值
+	 */
+	public Long getLong(int index) {
+		return ListUtils.getLong(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return 字符串
+	 */
+	public String getString(int index) {
+		return ListUtils.getString(this.list, index);
+	}
+
+	/**
+	 * @param index 索引
+	 * @param encoding 编码
+	 * 
+	 * @return 字符串
+	 */
+	public String getString(int index, String encoding) {
+		return ListUtils.getString(this.list, index, encoding);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return 字节数组
+	 */
+	public byte[] getBytes(int index) {
+		return ListUtils.getBytes(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return List
+	 */
+	public List<Object> getList(int index) {
+		return ListUtils.getList(this.list, index);
+	}
+	
+	/**
+	 * @param index 索引
+	 * 
+	 * @return Map
+	 */
+	public Map<String, Object> getMap(int index) {
+		return ListUtils.getMap(this.list, index);
+	}
+	
+	/**
 	 * @param key 键
 	 * 
 	 * @return 对象
@@ -433,8 +517,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取字节</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return 字节
@@ -444,8 +526,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取数值</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return 数值
@@ -455,8 +535,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取数值</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return 数值
@@ -466,8 +544,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取字符串</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return 字符串
@@ -475,10 +551,8 @@ public final class BEncodeDecoder {
 	public String getString(String key) {
 		return MapUtils.getString(this.map, key);
 	}
-
+	
 	/**
-	 * <p>获取字符串</p>
-	 * 
 	 * @param key 键
 	 * @param encoding 编码
 	 * 
@@ -489,8 +563,6 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取字节数组</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return 字节数组
@@ -500,19 +572,15 @@ public final class BEncodeDecoder {
 	}
 	
 	/**
-	 * <p>获取集合</p>
-	 * 
 	 * @param key 键
 	 * 
-	 * @return 集合
+	 * @return List
 	 */
 	public List<Object> getList(String key) {
 		return MapUtils.getList(this.map, key);
 	}
 	
 	/**
-	 * <p>获取Map</p>
-	 * 
 	 * @param key 键
 	 * 
 	 * @return Map

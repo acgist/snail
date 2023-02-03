@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
-class BEncodeTest extends Performance {
+class BEncodeEncoderTest extends Performance {
 
 	@Test
 	void testBEncode() throws PacketSizeException {

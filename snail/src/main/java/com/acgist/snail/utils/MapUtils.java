@@ -200,7 +200,8 @@ public class MapUtils {
 		// 使用LinkedHashMap防止乱序
 		return result.entrySet().stream()
 			.collect(Collectors.toMap(
-				entry -> entry.getKey() == null ? null : entry.getKey().toString(),
+				entry -> (String) entry.getKey(),
+//				entry -> entry.getKey() == null ? null : entry.getKey().toString(),
 				Map.Entry::getValue,
 				(a, b) -> b,
 				LinkedHashMap::new
