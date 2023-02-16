@@ -181,10 +181,10 @@ public final class StunConfig {
 	 * @author acgist
 	 */
 	public enum AttributeType {
-		
+	    
 		MAPPED_ADDRESS((short) 0x0001),
 		RESPONSE_ADDRESS((short) 0x0002),
-		CHANGE_ADDRESS((short) 0x0003),
+		CHANGE_REQUEST((short) 0x0003),
 		SOURCE_ADDRESS((short) 0x0004),
 		CHANGED_ADDRESS((short) 0x0005),
 		USERNAME((short) 0x0006),

@@ -69,7 +69,7 @@ public final class StunContext implements IContext {
 			LOGGER.warn("STUN端口映射地址无效");
 			return;
 		}
-		StunClient.newInstance(address).mappedAddress();
+		StunClient.newInstance(address).mapping();
 	}
 	
 	/**

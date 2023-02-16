@@ -121,8 +121,10 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * @throws PacketSizeException 网络包异常
 	 */
 	private void loopResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
-		while(buffer.hasRemaining()) {
-			this.onResponseAttribute(buffer);
+	    // 是否还有更多属性
+	    boolean more = true;
+		while(more && buffer.hasRemaining()) {
+			more = this.onResponseAttribute(buffer);
 		}
 	}
 	
@@ -131,45 +133,62 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @param buffer 属性消息
 	 * 
+	 * @return 是否继续
+	 * 
 	 * @throws PacketSizeException 网络包异常
 	 */
-	private void onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
+	private boolean onResponseAttribute(ByteBuffer buffer) throws PacketSizeException {
 		if(buffer.remaining() < 4) {
-			LOGGER.error("处理STUN消息-属性错误（长度）：{}", buffer);
-			return;
+			LOGGER.warn("处理STUN消息-属性错误（长度）：{}", buffer);
+			return false;
 		}
 		final short typeId = buffer.getShort();
 		final var attributeType = StunConfig.AttributeType.of(typeId);
 		if(attributeType == null) {
 			LOGGER.warn("处理STUN消息-属性错误（未知类型）：{}-{}", typeId, buffer);
-			return;
+			return false;
 		}
 		// 对齐
 		final short length = (short) (NumberUtils.ceilMult(buffer.getShort(), STUN_ATTRIBUTE_PADDING_LENGTH));
 		PacketSizeException.verify(length);
 		if(buffer.remaining() < length) {
-			LOGGER.error("处理STUN消息-属性错误（剩余长度）：{}-{}", length, buffer);
-			return;
+			LOGGER.warn("处理STUN消息-属性错误（剩余长度）：{}-{}", length, buffer);
+			return false;
 		}
 		LOGGER.debug("处理STUN消息-属性：{}-{}", attributeType, length);
 		final byte[] bytes = new byte[length];
 		buffer.get(bytes);
 		final ByteBuffer message = ByteBuffer.wrap(bytes);
-		switch (attributeType) {
+		return switch (attributeType) {
 			case MAPPED_ADDRESS -> this.mappedAddress(message);
 			case XOR_MAPPED_ADDRESS -> this.xorMappedAddress(message);
 			case ERROR_CODE -> this.errorCode(message);
-			default -> LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}", attributeType);
-		}
+			default -> {
+			    LOGGER.warn("处理STUN消息-属性错误（类型未适配）：{}", attributeType);
+			    yield true;
+			}
+		};
 	}
 	
 	/**
 	 * <p>发送映射消息</p>
 	 * 
-	 * @see AttributeType#MAPPED_ADDRESS
+	 * <pre>
+     *  0                   1                   2                   3
+     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * |0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 A B 0|
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * </pre>
+     * 
+     * A：IP改变
+     * B：Port改变
+     * 
+	 * @see AttributeType#CHANGE_REQUEST
 	 */
-	public void mappedAddress() {
-		this.pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.MAPPED_ADDRESS, null);
+	public void changeRequest() {
+	    final byte[] data = {0, 0, 0, 0};
+		this.pushBindingMessage(StunConfig.MessageType.REQUEST, StunConfig.AttributeType.CHANGE_REQUEST, data);
 	}
 	
 	/**
@@ -187,12 +206,14 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @param buffer 属性消息
 	 * 
+	 * @return 是否继续
+	 * 
 	 * @see AttributeType#MAPPED_ADDRESS
 	 */
-	private void mappedAddress(ByteBuffer buffer) {
+	private boolean mappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
 			LOGGER.warn("处理STUN消息-MAPPED_ADDRESS错误（长度）：{}", buffer);
-			return;
+			return false;
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
@@ -208,6 +229,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		LOGGER.debug("处理STUN消息-MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 		StunContext.getInstance().mapping(ipExt, portExt);
+		return true;
 	}
 	
 	/**
@@ -225,12 +247,14 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @param buffer 属性消息
 	 * 
+	 * @return 是否继续
+	 * 
 	 * @see AttributeType#XOR_MAPPED_ADDRESS
 	 */
-	private void xorMappedAddress(ByteBuffer buffer) {
+	private boolean xorMappedAddress(ByteBuffer buffer) {
 		if(buffer.remaining() < 8) {
 			LOGGER.warn("处理STUN消息-XOR_MAPPED_ADDRESS错误（长度）：{}", buffer);
-			return;
+			return false;
 		}
 		final byte header = buffer.get();
 		final byte family = buffer.get();
@@ -254,6 +278,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		}
 		LOGGER.debug("处理STUN消息-XOR_MAPPED_ADDRESS：{}-{}-{}-{}", header, family, portExt, ipExt);
 		StunContext.getInstance().mapping(ipExt, portExt);
+		return true;
 	}
 	
 	/**
@@ -271,12 +296,14 @@ public final class StunMessageHandler extends UdpMessageHandler {
 	 * 
 	 * @param buffer 属性消息
 	 * 
+	 * @return 是否继续
+	 * 
 	 * @see AttributeType#ERROR_CODE
 	 */
-	private void errorCode(ByteBuffer buffer) {
+	private boolean errorCode(ByteBuffer buffer) {
 		if(buffer.remaining() < 4) {
 			LOGGER.warn("处理STUN消息-ERROR_CODE错误（长度）：{}", buffer);
-			return;
+			return false;
 		}
 		// 去掉保留位
 		buffer.getShort();
@@ -284,6 +311,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		final byte number = buffer.get();
 		final String message = ByteUtils.remainingToString(buffer);
 		LOGGER.warn("处理STUN消息-ERROR_CODE：{}-{}-{}", clazz, number, message);
+		return true;
 	}
 	
 	/**

@@ -64,8 +64,8 @@ public final class StunClient extends UdpClient<StunMessageHandler> {
 	/**
 	 * <p>发送映射消息</p>
 	 */
-	public void mappedAddress() {
-		this.handler.mappedAddress();
+	public void mapping() {
+		this.handler.changeRequest();
 	}
 	
 }
