@@ -315,20 +315,19 @@ public final class FileUtils {
 	 * @return 文件大小
 	 */
 	public static final String formatSize(Long size) {
-		if(size == null || size == 0L) {
+		if(size == null || size <= 0L) {
 			return "0B";
 		}
 		int index = 0;
-		BigDecimal decimal = BigDecimal.valueOf(size);
-		final BigDecimal dataScale = BigDecimal.valueOf(SystemConfig.DATA_SCALE);
-		while(decimal.compareTo(dataScale) >= 0) {
+		double value = size;
+		while(value >= SystemConfig.DATA_SCALE) {
 			if(++index >= FILE_SCALE_UNIT.length) {
 				index = FILE_SCALE_UNIT.length - 1;
 				break;
 			}
-			decimal = decimal.divide(dataScale);
+			value /= SystemConfig.DATA_SCALE;
 		}
-		return decimal.setScale(2, RoundingMode.HALF_UP) + FILE_SCALE_UNIT[index];
+		return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP) + FILE_SCALE_UNIT[index];
 	}
 	
 	/**
@@ -339,7 +338,7 @@ public final class FileUtils {
 	 * @return 文件大小（MB）
 	 */
 	public static final double formatSizeMB(Long size) {
-		if(size == null || size == 0L) {
+		if(size == null || size <= 0L) {
 			return 0D;
 		}
 		return BigDecimal.valueOf(size)
