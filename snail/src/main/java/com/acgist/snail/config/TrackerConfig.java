@@ -2,6 +2,7 @@ package com.acgist.snail.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public final class TrackerConfig extends PropertiesConfig {
 		 * @return 动作
 		 */
 		public static final Action of(int id) {
-			final var values = Action.values();
+			final Action[] values = Action.values();
 			for (Action action : values) {
 				if(id == action.id) {
 					return action;
@@ -206,7 +207,7 @@ public final class TrackerConfig extends PropertiesConfig {
 	 */
 	public void persistent() {
 		final AtomicInteger index = new AtomicInteger(0);
-		final var data = TrackerContext.getInstance().sessions().stream()
+		final Map<String, String> data = TrackerContext.getInstance().sessions().stream()
 			.filter(TrackerSession::available)
 			.sorted()
 			.limit(MAX_TRACKER_SIZE)

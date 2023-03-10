@@ -282,22 +282,6 @@
 	-fx-background-color:transparent;
 }
 /**
- * <p>快传窗口：quick.fxml</p>
- */
-.quick .button-box {
-	-fx-spacing:10px;
-	-fx-padding:10px 0;
-	-fx-alignment:center;
-}
-.quick .stun {
-}
-.quick .file {
-	-fx-alignment:center;
-}
-.quick .progress {
-	-fx-alignment:center;
-}
-/**
  * <p>设置窗口：setting.fxml</p>
  */
 .setting .scroll-pane {

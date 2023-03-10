@@ -204,11 +204,11 @@ public final class SystemConfig extends PropertiesConfig {
 	 */
 	private int servicePort;
 	/**
-	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）
+	 * BT服务端口（本地端口：Peer、DHT、UTP、STUN）
 	 */
 	private int torrentPort;
 	/**
-	 * BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
+	 * BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	private int torrentPortExt = 0;
 	/**
@@ -317,7 +317,7 @@ public final class SystemConfig extends PropertiesConfig {
 		LOGGER.debug("最新稳定版本：{}", this.latestRelease);
 		LOGGER.debug("STUN服务器：{}", this.stunServer);
 		LOGGER.debug("系统服务端口（本地服务：启动检测）：{}", this.servicePort);
-		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）：{}", this.torrentPort);
+		LOGGER.debug("BT服务端口（本地端口：Peer、DHT、UTP、STUN）：{}", this.torrentPort);
 		LOGGER.debug("单个任务Peer数量（同时下载）：{}", this.peerSize);
 		LOGGER.debug("单个任务Tracker数量：{}", this.trackerSize);
 		LOGGER.debug("任务即将完成时可以重复下载的Piece数量：{}", this.pieceRepeatSize);
@@ -409,14 +409,14 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 
 	/**
-	 * @return BT服务端口（本地端口：Peer、DHT、UTP、STUN、Quick）
+	 * @return BT服务端口（本地端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final int getTorrentPort() {
 		return INSTANCE.torrentPort;
 	}
 	
 	/**
-	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 * 
 	 * @see #getTorrentPort()
 	 */
@@ -428,15 +428,15 @@ public final class SystemConfig extends PropertiesConfig {
 	}
 	
 	/**
-	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
+	 * @param torrentPortExt BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final void setTorrentPortExt(int torrentPortExt) {
-		LOGGER.debug("设置BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）：{}", torrentPortExt);
+		LOGGER.debug("设置BT服务端口（外网端口：Peer、DHT、UTP、STUN）：{}", torrentPortExt);
 		INSTANCE.torrentPortExt = torrentPortExt;
 	}
 	
 	/**
-	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN、Quick）
+	 * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
 	 */
 	public static final short getTorrentPortExtShort() {
 		return NetUtils.portToShort(getTorrentPortExt());

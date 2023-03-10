@@ -5,11 +5,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 import com.acgist.snail.config.DhtConfig;
-import com.acgist.snail.config.QuickConfig;
 import com.acgist.snail.config.StunConfig;
 import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
-import com.acgist.snail.net.quick.QuickContext;
 import com.acgist.snail.net.stun.StunMessageHandler;
 import com.acgist.snail.net.torrent.dht.DhtMessageHandler;
 import com.acgist.snail.net.torrent.utp.UtpContext;
@@ -32,10 +30,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	 */
 	private final UtpContext utpContext = UtpContext.getInstance();
 	/**
-	 * 快传上下文
-	 */
-	private final QuickContext quickContext = QuickContext.getInstance();
-	/**
 	 * <p>DHT消息代理</p>
 	 */
 	private final DhtMessageHandler dhtMessageHandler = new DhtMessageHandler();
@@ -50,7 +44,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 	@Override
 	public void handle(DatagramChannel channel) {
 		this.utpContext.handle(channel);
-		this.quickContext.handle(channel);
 		this.dhtMessageHandler.handle(channel);
 		this.stunMessageHandler.handle(channel);
 	}
@@ -61,11 +54,6 @@ public final class TorrentAcceptHandler extends UdpAcceptHandler {
 		if(DhtConfig.DHT_HEADER == header) {
 			// DHT消息
 			return this.dhtMessageHandler;
-		}
-		if(QuickConfig.QUICK_HEADER == header) {
-			// 快传消息
-			final short sessionId = buffer.getShort(2);
-			return this.quickContext.get(sessionId, socketAddress);
 		}
 		if(StunConfig.STUN_HEADER_SEND == header || StunConfig.STUN_HEADER_RECV == header) {
 			// STUN消息

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
@@ -73,9 +75,9 @@ public abstract class PropertiesConfig {
 			return null;
 		}
 		Properties properties = null;
-		try(final var input = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
+		try(final Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 			properties = new Properties();
-			properties.load(input);
+			properties.load(reader);
 		} catch (IOException e) {
 			LOGGER.error("读取配置文件异常：{}", path, e);
 		}
@@ -94,9 +96,9 @@ public abstract class PropertiesConfig {
 			return null;
 		}
 		Properties properties = null;
-		try(final var input = new InputStreamReader(PropertiesConfig.class.getResourceAsStream(path), StandardCharsets.UTF_8)) {
+		try(final Reader reader = new InputStreamReader(PropertiesConfig.class.getResourceAsStream(path), StandardCharsets.UTF_8)) {
 			properties = new Properties();
-			properties.load(input);
+			properties.load(reader);
 		} catch (IOException e) {
 			LOGGER.error("读取配置文件异常：{}", path, e);
 		}
@@ -123,10 +125,10 @@ public abstract class PropertiesConfig {
 		}
 		final File file = FileUtils.userDirFile(path);
 		FileUtils.buildParentFolder(file);
-		try(final var output = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+		try(final Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
 			final Properties persistentProperties = new Properties();
 			persistentProperties.putAll(data);
-			persistentProperties.store(output, SystemConfig.getName());
+			persistentProperties.store(writer, SystemConfig.getName());
 		} catch (IOException e) {
 			LOGGER.error("保存配置文件异常：{}", file, e);
 		}

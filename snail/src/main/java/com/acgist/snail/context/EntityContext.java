@@ -135,7 +135,7 @@ public final class EntityContext implements IContext {
 		LOGGER.debug("删除任务：{}", entity);
 		if(DownloadConfig.getDelete()) {
 			// 是否删除文件
-			final var file = entity.getFile();
+			final String file = entity.getFile();
 			// 回收文件
 			if(!RecycleContext.recycle(file)) {
 				// 删除文件

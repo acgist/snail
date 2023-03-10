@@ -161,7 +161,7 @@ public final class StunConfig {
 		public static final MessageType of(short value) {
 			final short type = (short) (value & MessageType.TYPE_MASK);
 			final byte id = (byte) (((type & C1_MASK) >> 7) | ((type & C0_MASK) >> 4));
-			final var types = MessageType.values();
+			final MessageType[] types = MessageType.values();
 			for (MessageType messageType : types) {
 				if(messageType.id == id) {
 					return messageType;
@@ -225,7 +225,7 @@ public final class StunConfig {
 		 * @return 属性类型
 		 */
 		public static final AttributeType of(short id) {
-			final var types = AttributeType.values();
+			final AttributeType[] types = AttributeType.values();
 			for (AttributeType attributeType : types) {
 				if(attributeType.id == id) {
 					return attributeType;

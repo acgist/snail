@@ -55,7 +55,7 @@ public final class TaskContext implements IContext {
 	 * @throws DownloadException 下载异常
 	 */
 	public ITaskSession download(String url) throws DownloadException {
-		final var session = ProtocolContext.getInstance().buildTaskSession(url);
+		final ITaskSession session = ProtocolContext.getInstance().buildTaskSession(url);
 		session.start();
 		return session;
 	}
@@ -165,7 +165,7 @@ public final class TaskContext implements IContext {
 	 */
 	private void load(TaskEntity entity) {
 		try {
-			final var taskSession = TaskSession.newInstance(entity);
+			final ITaskSession taskSession = TaskSession.newInstance(entity);
 			// 重置状态
 			taskSession.reset();
 			this.submit(taskSession);

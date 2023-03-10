@@ -17,7 +17,6 @@ import com.acgist.snail.gui.javafx.menu.TaskMenu;
 import com.acgist.snail.gui.javafx.window.Controller;
 import com.acgist.snail.gui.javafx.window.about.AboutWindow;
 import com.acgist.snail.gui.javafx.window.build.BuildWindow;
-import com.acgist.snail.gui.javafx.window.quick.QuickWindow;
 import com.acgist.snail.gui.javafx.window.setting.SettingWindow;
 import com.acgist.snail.gui.javafx.window.torrent.TorrentWindow;
 import com.acgist.snail.logger.Logger;
@@ -205,16 +204,6 @@ public final class MainController extends Controller {
 		AboutWindow.getInstance().show();
 	}
 
-	/**
-	 * 快传按钮
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleQuickAction(ActionEvent event) {
-		QuickWindow.getInstance().show();
-	}
-	
 	/**
 	 * <p>设置按钮</p>
 	 * 

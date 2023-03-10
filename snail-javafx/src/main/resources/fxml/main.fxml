@@ -20,9 +20,6 @@
 			<Button fx:id="pause" text="暂停" onAction="#handlePauseAction" />
 			<Button fx:id="delete" text="删除" onAction="#handleDeleteAction" />
 			<Button fx:id="about" text="关于" onAction="#handleAboutAction" />
-			<!--
-			<Button fx:id="quick" text="快传" onAction="#handleQuickAction" />
-			-->
 			<Button fx:id="setting" text="设置" onAction="#handleSettingAction" />
 		</HBox>
 	</top>

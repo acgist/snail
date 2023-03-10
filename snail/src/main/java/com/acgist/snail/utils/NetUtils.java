@@ -381,9 +381,9 @@ public final class NetUtils {
 			return true;
 		}
 		return
-			// 通配地址
+			// 通配地址：0.0.0.0
 			inetAddress.isAnyLocalAddress() ||
-			// 环回地址
+			// 环回地址：127.0.0.1
 			inetAddress.isLoopbackAddress() ||
 			// 链接地址：虚拟网卡
 			inetAddress.isLinkLocalAddress() ||

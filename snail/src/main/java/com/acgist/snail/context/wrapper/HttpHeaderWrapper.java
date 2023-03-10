@@ -1,6 +1,7 @@
 package com.acgist.snail.context.wrapper;
 
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -176,7 +177,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 		if(StringUtils.isEmpty(fileName)) {
 			return fileName;
 		}
-		final var gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
+		final CharsetEncoder gbkEncoder = Charset.forName(SystemConfig.CHARSET_GBK).newEncoder();
 		// 只是进行URL编码
 		if(gbkEncoder.canEncode(fileName)) {
 			return fileName;

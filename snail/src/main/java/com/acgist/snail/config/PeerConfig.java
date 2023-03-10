@@ -466,7 +466,7 @@ public final class PeerConfig extends PropertiesConfig {
 		 * @return 扩展协议消息类型
 		 */
 		public static final ExtensionType of(byte id) {
-			final var types = ExtensionType.values();
+			final ExtensionType[] types = ExtensionType.values();
 			for (ExtensionType type : types) {
 				if(type.id == id) {
 					return type;
@@ -481,7 +481,7 @@ public final class PeerConfig extends PropertiesConfig {
 		 * @return 扩展协议消息类型
 		 */
 		public static final ExtensionType of(String value) {
-			final var types = ExtensionType.values();
+			final ExtensionType[] types = ExtensionType.values();
 			for (ExtensionType type : types) {
 				if(type.value.equalsIgnoreCase(value)) {
 					return type;
@@ -542,7 +542,7 @@ public final class PeerConfig extends PropertiesConfig {
 		 * @return Metadata协议消息类型
 		 */
 		public static final MetadataType of(byte id) {
-			final var types = MetadataType.values();
+			final MetadataType[] types = MetadataType.values();
 			for (MetadataType type : types) {
 				if(type.id == id) {
 					return type;
@@ -598,7 +598,7 @@ public final class PeerConfig extends PropertiesConfig {
 		 * @return Holepunch协议消息类型
 		 */
 		public static final HolepunchType of(byte id) {
-			final var types = HolepunchType.values();
+			final HolepunchType[] types = HolepunchType.values();
 			for (HolepunchType type : types) {
 				if(type.id == id) {
 					return type;

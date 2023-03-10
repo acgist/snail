@@ -254,7 +254,7 @@ public final class DhtConfig extends PropertiesConfig {
 		 * @return 请求类型
 		 */
 		public static final QType of(String value) {
-			final var types = QType.values();
+			final QType[] types = QType.values();
 			for (QType type : types) {
 				if(type.value.equals(value)) {
 					return type;
@@ -348,7 +348,7 @@ public final class DhtConfig extends PropertiesConfig {
 
 	@Override
 	public void persistent() {
-		final var data = NodeContext.getInstance().resize().stream()
+		final Map<String, String> data = NodeContext.getInstance().resize().stream()
 			.filter(NodeSession::useable)
 			.collect(Collectors.toMap(
 				node -> StringUtils.hex(node.getId()),

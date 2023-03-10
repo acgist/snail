@@ -247,7 +247,7 @@ public class HeaderWrapper {
 	 * @return 首个头部信息
 	 */
 	public String header(String key) {
-		final var list = this.headerList(key);
+		final List<String> list = this.headerList(key);
 		if(CollectionUtils.isEmpty(list)) {
 			return null;
 		}

@@ -117,7 +117,7 @@ public final class SystemContext implements IContext {
 			姑苏城外寒山寺，夜半钟声到客船。
 			"""
 		);
-		final var runtime = Runtime.getRuntime();
+		final Runtime runtime = Runtime.getRuntime();
 		LOGGER.info("操作系统名称：{}", System.getProperty("os.name"));
 		LOGGER.info("操作系统架构：{}", System.getProperty("os.arch"));
 		LOGGER.info("操作系统版本：{}", System.getProperty("os.version"));
@@ -206,7 +206,7 @@ public final class SystemContext implements IContext {
 		try {
 			// 本地版本：1.0.0
 			final String version = SystemConfig.getVersion();
-			final var body = HttpClient
+			final String body = HttpClient
 				.newInstance(SystemConfig.getLatestRelease())
 				.get()
 				.responseToString();

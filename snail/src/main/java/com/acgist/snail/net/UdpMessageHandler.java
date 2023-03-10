@@ -23,7 +23,7 @@ public abstract class UdpMessageHandler extends MessageHandler<DatagramChannel> 
 	 * 
 	 * UdpClient                所有客户端固定地址
 	 * LSD/Stun/UPNP/Tracker    只要接收的服务端不用管理地址
-	 * UTP/Quick                主动发送的服务端单独管理消息代理
+     * UTP                      主动发送的服务端单独管理消息代理
 	 * DHT                      被动发送的服务端直接使用消息地址
 	 */
 	protected final InetSocketAddress socketAddress;
