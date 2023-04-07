@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 
 import com.acgist.snail.context.TaskContext;
 import com.acgist.snail.logger.Logger;
@@ -132,7 +133,12 @@ public final class DownloadConfig extends PropertiesConfig {
 		this.refreshBuffer();
 		this.refreshMemoryBuffer();
 	}
-	
+
+//	@Override
+//	protected Properties loadProperties(String path) {
+//		return null;
+//	}
+
 	@Override
 	public void init() {
 		// 加载配置

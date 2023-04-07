@@ -3,6 +3,7 @@ package com.acgist.snail.config;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.logger.Logger;
@@ -329,7 +330,12 @@ public final class DhtConfig extends PropertiesConfig {
 		this.init();
 		this.release();
 	}
-	
+
+//	@Override
+//	protected Properties loadProperties(String path) {
+//		return null;
+//	}
+
 	@Override
 	public void init() {
 		this.properties.entrySet().forEach(entry -> {
@@ -346,14 +352,19 @@ public final class DhtConfig extends PropertiesConfig {
 		}
 	}
 
+	//extract method refactoring
+	private Map<String, String> createNodeDataMap() {
+		return NodeContext.getInstance().resize().stream()
+				.filter(NodeSession::useable)
+				.collect(Collectors.toMap(
+						node -> StringUtils.hex(node.getId()),
+						node -> SymbolConfig.Symbol.COLON.join(node.getHost(), node.getPort())
+				));
+	}
 	@Override
 	public void persistent() {
-		final Map<String, String> data = NodeContext.getInstance().resize().stream()
-			.filter(NodeSession::useable)
-			.collect(Collectors.toMap(
-				node -> StringUtils.hex(node.getId()),
-				node -> SymbolConfig.Symbol.COLON.join(node.getHost(), node.getPort())
-			));
+		final Map<String, String> data = createNodeDataMap();
+
 		this.persistent(data, DHT_CONFIG);
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("保存DHT节点数量：{}", data.size());

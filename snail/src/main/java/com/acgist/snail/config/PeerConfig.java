@@ -2,6 +2,7 @@ package com.acgist.snail.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
@@ -293,46 +294,25 @@ public final class PeerConfig extends PropertiesConfig {
 		
 	}
 	
-	/**
-	 * 来源
-	 * 
-	 * @author acgist
-	 */
+
 	public enum Source {
-		
-		/**
-		 * PEX
-		 */
+
 		PEX((byte) (1 << 0)),
-		/**
-		 * DHT
-		 */
+
 		DHT((byte) (1 << 1)),
-		/**
-		 * 本地发现
-		 */
+
 		LSD((byte) (1 << 2)),
-		/**
-		 * Tracker
-		 */
+
 		TRACKER((byte) (1 << 3)),
-		/**
-		 * 主动接入
-		 */
+
 		CONNECT((byte) (1 << 4)),
-		/**
-		 * holepunch
-		 */
+
 		HOLEPUNCH((byte) (1 << 5));
 		
-		/**
-		 * 来源标识
-		 */
+
 		private final byte value;
 		
-		/**
-		 * @param value 来源标识
-		 */
+
 		private Source(byte value) {
 			this.value = value;
 		}
@@ -708,7 +688,12 @@ public final class PeerConfig extends PropertiesConfig {
 		this.init();
 		this.release();
 	}
-	
+
+//	@Override
+//	protected Properties loadProperties(String path) {
+//		return null;
+//	}
+
 	@Override
 	public void init() {
 		this.properties.forEach((key, value) -> CLIENT_NAME_MAPPING.put(key.toString(), value.toString()));

@@ -5,6 +5,8 @@ import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.NetUtils;
 
+import java.util.Properties;
+
 /**
  * 系统配置
  * 
@@ -278,7 +280,12 @@ public final class SystemConfig extends PropertiesConfig {
 		this.init();
 		this.release();
 	}
-	
+
+//	@Override
+//	protected Properties loadProperties(String path) {
+//		return null;
+//	}
+
 	@Override
 	public void init() {
 		// 加载配置

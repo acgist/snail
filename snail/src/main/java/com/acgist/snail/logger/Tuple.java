@@ -81,33 +81,79 @@ public final class Tuple {
 	 * 
 	 * @return 日志信息
 	 */
-	public final StringBuilder format(StringBuilder builder, Object ... objects) {
+//	public final StringBuilder format(StringBuilder builder, Object ... objects) {
+//		Objects.requireNonNull(builder, "没有日志Builder");
+//		final int formatLength = this.format.length;
+//		if(objects == null || objects.length == 0 || formatLength == 0) {
+//			builder.append(this.message);
+//			return builder;
+//		}
+//		final int objectLength = objects.length;
+//		for (int index = 0; index < formatLength; index++) {
+//			builder.append(this.format[index]);
+//			if(index < objectLength) {
+//				if(objects[index] != null && objects[index].getClass().isArray()) {
+//					builder.append(this.array(objects[index]));
+//				} else {
+//					builder.append(objects[index]);
+//				}
+//			} else {
+//				builder.append(FORMAT_CODE);
+//			}
+//		}
+//		if(this.suffix != null) {
+//			builder.append(this.suffix);
+//		}
+//		// 注意：直接忽略后面多余参数
+//		return builder;
+//	}
+//new code
+	public final StringBuilder format(StringBuilder builder, Object... objects) {
 		Objects.requireNonNull(builder, "没有日志Builder");
-		final int formatLength = this.format.length;
-		if(objects == null || objects.length == 0 || formatLength == 0) {
+
+		if (!hasObjectsToFormat(objects) || !hasFormatCode()) {
 			builder.append(this.message);
 			return builder;
 		}
+
+		return formatObjects(builder, objects);
+	}
+
+	private boolean hasObjectsToFormat(Object[] objects) {
+		return objects != null && objects.length > 0;
+	}
+
+	private boolean hasFormatCode() {
+		return this.format.length > 0;
+	}
+
+	private StringBuilder formatObjects(StringBuilder builder, Object[] objects) {
 		final int objectLength = objects.length;
-		for (int index = 0; index < formatLength; index++) {
+		for (int index = 0; index < this.format.length; index++) {
 			builder.append(this.format[index]);
-			if(index < objectLength) {
-				if(objects[index] != null && objects[index].getClass().isArray()) {
-					builder.append(this.array(objects[index]));
-				} else {
-					builder.append(objects[index]);
-				}
+			if (index < objectLength) {
+				appendObject(builder, objects[index]);
 			} else {
 				builder.append(FORMAT_CODE);
 			}
 		}
-		if(this.suffix != null) {
+
+		if (this.suffix != null) {
 			builder.append(this.suffix);
 		}
-		// 注意：直接忽略后面多余参数
+
 		return builder;
 	}
-	
+
+	private void appendObject(StringBuilder builder, Object object) {
+		if (object != null && object.getClass().isArray()) {
+			builder.append(this.array(object));
+		} else {
+			builder.append(object);
+		}
+	}
+
+
 	/**
 	 * <p>获取异常参数</p>
 	 * 

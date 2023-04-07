@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
@@ -19,13 +20,13 @@ import com.acgist.snail.utils.StringUtils;
 
 /**
  * 配置文件
- * 
+ *
  * @author acgist
  */
 public abstract class PropertiesConfig {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfig.class);
-	
+
 	/**
 	 * 配置信息
 	 */
@@ -33,21 +34,21 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * 加载配置文件
-	 * 
+	 *
 	 * @param path 配置文件相对路径
 	 */
 	protected PropertiesConfig(String path) {
 		LOGGER.debug("加载配置文件：{}", path);
 		this.properties = load(path);
 	}
-	
+
 	/**
 	 * 加载配置文件
-	 * 
+	 *
 	 * @param path 配置文件相对路径
-	 * 
+	 *
 	 * @return 配置信息
-	 * 
+	 *
 	 * @see #loadFromUserDir(String)
 	 * @see #loadFromResource(String)
 	 */
@@ -61,12 +62,12 @@ public abstract class PropertiesConfig {
 		}
 		return properties;
 	}
-	
+
 	/**
 	 * 加载用户工作目录配置（UserDir）
-	 * 
+	 *
 	 * @param path 配置文件相对路径
-	 * 
+	 *
 	 * @return 配置信息
 	 */
 	private static final Properties loadFromUserDir(String path) {
@@ -83,12 +84,12 @@ public abstract class PropertiesConfig {
 		}
 		return properties;
 	}
-	
+
 	/**
 	 * 加载默认配置（Resource）
-	 * 
+	 *
 	 * @param path 配置文件相对路径
-	 * 
+	 *
 	 * @return 配置信息
 	 */
 	private static final Properties loadFromResource(String path) {
@@ -114,7 +115,7 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * 保存配置文件
-	 * 
+	 *
 	 * @param data 数据
 	 * @param path 路径
 	 */
@@ -133,10 +134,10 @@ public abstract class PropertiesConfig {
 			LOGGER.error("保存配置文件异常：{}", file, e);
 		}
 	}
-	
+
 	/**
 	 * @param name 配置名称
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final String getString(String name) {
@@ -146,21 +147,21 @@ public abstract class PropertiesConfig {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final String getString(String name, String defaultValue) {
 		final String value = this.getString(name);
 		return value == null ? defaultValue : value;
 	}
-	
+
 	/**
 	 * @param name 配置名称
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final Boolean getBoolean(String name) {
@@ -173,11 +174,11 @@ public abstract class PropertiesConfig {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final boolean getBoolean(String name, boolean defaultValue) {
@@ -187,7 +188,7 @@ public abstract class PropertiesConfig {
 
 	/**
 	 * @param name 配置名称
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final Integer getInteger(String name) {
@@ -197,11 +198,11 @@ public abstract class PropertiesConfig {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param name 配置名称
 	 * @param defaultValue 默认值
-	 * 
+	 *
 	 * @return 配置值
 	 */
 	protected final int getInteger(String name, int defaultValue) {
@@ -209,23 +210,28 @@ public abstract class PropertiesConfig {
 		return value == null ? defaultValue : value;
 	}
 
+	//protected abstract Properties loadProperties(String path);
+	protected Properties loadProperties(String path) {
+		return null;
+	}
+
 	/**
 	 * 初始配置
 	 */
 	public void init() {
 	}
-	
+
 	/**
 	 * 保存配置
 	 */
 	public void persistent() {
 	}
-	
+
 	/**
 	 * 释放配置
 	 */
 	protected final void release() {
 		this.properties.clear();
 	}
-	
+
 }

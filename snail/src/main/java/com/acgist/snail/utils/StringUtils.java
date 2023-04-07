@@ -128,13 +128,22 @@ public final class StringUtils {
 			}
 		}
 		// 判断符号
-		if(!(
-			Character.isDigit(chars[0]) ||
-			chars[0] == SymbolConfig.Symbol.PLUS.toChar() ||
-			chars[0] == SymbolConfig.Symbol.MINUS.toChar()
-		)) {
+		//old code
+//		if(!(
+//			Character.isDigit(chars[0]) ||
+//			chars[0] == SymbolConfig.Symbol.PLUS.toChar() ||
+//			chars[0] == SymbolConfig.Symbol.MINUS.toChar()
+//		)) {
+//			return false;
+//		}
+		//new code below is the explaining variable.
+		boolean startsWithDigitOrSign = Character.isDigit(chars[0]) ||
+				chars[0] == SymbolConfig.Symbol.PLUS.toChar() ||
+				chars[0] == SymbolConfig.Symbol.MINUS.toChar();
+		if (!startsWithDigitOrSign) {
 			return false;
 		}
+
 		// 判断字符
 		for (int index = 1; index < chars.length; index++) {
 			if(Character.isDigit(chars[index])) {
