@@ -1,9 +1,10 @@
 .project
 .settings
 .classpath
+.factorypath
 
-/logs/
-/build/
-/target/
-/config/
-/download/
+logs
+build
+target
+snail/config
+snail-javafx/download

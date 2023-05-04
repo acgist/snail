@@ -8,7 +8,7 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.NetException;
 
 /**
- * 初始化器超类
+ * 初始化超类
  * 
  * @author acgist
  */
@@ -35,7 +35,7 @@ public abstract class Initializer implements IInitializer {
 	}
 	
 	/**
-	 * @param name 名称
+	 * @param name  名称
 	 * @param delay 延迟时间（秒）
 	 */
 	protected Initializer(String name, int delay) {
@@ -46,10 +46,10 @@ public abstract class Initializer implements IInitializer {
 	@Override
 	public final void sync() {
 		try {
-			LOGGER.debug("同步执行初始方法：{}", this.name);
+			LOGGER.debug("同步执行初始化：{}", this.name);
 			this.init();
 		} catch (Exception e) {
-			LOGGER.error("同步执行初始方法异常：{}", this.name, e);
+			LOGGER.error("同步执行初始化异常：{}", this.name, e);
 		}
 	}
 	
@@ -57,10 +57,10 @@ public abstract class Initializer implements IInitializer {
 	public final void asyn() {
 		final Runnable runnable = () -> {
 			try {
-				LOGGER.debug("异步执行初始方法：{}-{}", this.name, this.delay);
+				LOGGER.debug("异步执行初始化：{}-{}", this.name, this.delay);
 				this.init();
 			} catch (Exception e) {
-				LOGGER.error("异步执行初始方法异常：{}-{}", this.name, this.delay, e);
+				LOGGER.error("异步执行初始化异常：{}-{}", this.name, this.delay, e);
 			}
 		};
 		if(this.delay <= 0) {
@@ -85,9 +85,9 @@ public abstract class Initializer implements IInitializer {
 	}
 	
 	/**
-	 * 初始方法
+	 * 初始化
 	 * 
-	 * @throws NetException 网络异常
+	 * @throws NetException      网络异常
 	 * @throws DownloadException 下载异常
 	 */
 	protected abstract void init() throws NetException, DownloadException;

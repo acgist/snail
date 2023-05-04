@@ -256,7 +256,7 @@ public final class GuiContext implements IContext {
 	/**
 	 * 窗口消息
 	 * 
-	 * @param title 标题
+	 * @param title   标题
 	 * @param message 内容
 	 * 
 	 * @return GuiContext
@@ -272,9 +272,9 @@ public final class GuiContext implements IContext {
 	/**
 	 * 窗口消息
 	 * 
-	 * @param title 标题
+	 * @param title   标题
 	 * @param message 内容
-	 * @param type 类型
+	 * @param type    类型
 	 * 
 	 * @return GuiContext
 	 * 
@@ -288,7 +288,7 @@ public final class GuiContext implements IContext {
 	/**
 	 * 提示消息
 	 * 
-	 * @param title 标题
+	 * @param title   标题
 	 * @param message 内容
 	 * 
 	 * @return GuiContext
@@ -304,9 +304,9 @@ public final class GuiContext implements IContext {
 	/**
 	 * 提示消息
 	 * 
-	 * @param title 标题
+	 * @param title   标题
 	 * @param message 内容
-	 * @param type 类型
+	 * @param type    类型
 	 * 
 	 * @return GuiContext
 	 * 

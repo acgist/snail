@@ -123,9 +123,9 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	}
 
 	/**
-	 * <p>客户端</p>
+	 * 客户端
 	 * 
-	 * @param peerSession Peer信息
+	 * @param peerSession    Peer信息
 	 * @param torrentSession BT任务信息
 	 * 
 	 * @return PeerSubMessageHandler
@@ -135,9 +135,9 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	}
 
 	/**
-	 * <p>初始消息代理</p>
+	 * 初始消息代理
 	 * 
-	 * @param peerSession Peer信息
+	 * @param peerSession    Peer信息
 	 * @param torrentSession BT任务信息
 	 */
 	private void init(PeerSession peerSession, TorrentSession torrentSession) {
@@ -151,7 +151,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 	 * <p>初始化服务端</p>
 	 * 
 	 * @param infoHashHex InfoHashHex
-	 * @param peerId PeerId
+	 * @param peerId      PeerId
 	 * 
 	 * @return 是否成功
 	 */
