@@ -11,7 +11,7 @@ import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 下载器超类
+ * 下载器适配器
  * 
  * @author acgist
  */
