@@ -78,7 +78,7 @@ d4:type4:TEXT4:body7:messagee
 
 > 通过`socket`连接系统端口`16888`发送系统消息和接收系统通知
 
-### 系统消息
+### 系统消息（ApplicationMessage#Type）
 
 通过系统消息可以实现系统管理和任务管理
 
@@ -128,7 +128,7 @@ d4:type4:TEXT4:body7:messagee
 
 *√=必要、○-可选*
 
-### 系统通知
+### 系统通知（ApplicationMessage#Type）
 
 系统事件通知
 
@@ -184,7 +184,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 
 后台模式运行不使用本地GUI，可以通过[系统消息](#系统消息)和[系统通知](#系统通知)来完成系统管理和任务管理，方便扩展第三方非`Java`语言GUI。
 
-## GUI事件
+## GUI事件（GuiEvent#Type）
 
 |名称|类型|系统通知|详细描述|适配器|
 |:--|:--|:--|:--|:--|
