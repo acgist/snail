@@ -3,7 +3,9 @@
 info() {
   echo ""
   echo "--------------------------------"
+  echo ""
   echo "$1"
+  echo ""
   echo "--------------------------------"
   echo ""
 }
@@ -11,17 +13,21 @@ info() {
 fail() {
   echo ""
   echo "--------------------------------"
+  echo ""
   echo -e "\033[31m$1\033[0m"
+  echo ""
   echo "--------------------------------"
   echo ""
 }
 
 success() {
+  echo ""
   echo "--------------------------------"
   echo ""
   echo -e "\033[32m$1\033[0m"
   echo ""
   echo "--------------------------------"
+  echo ""
 }
 
 # 配置参数
@@ -31,7 +37,7 @@ version=$1
 
 # 判断参数
 if [[ $version == "" || $system == "" || $action == "" ]]; then
-  fail "Usage: build.sh 1.0.0 [win|mac|linux] [all|build|pack]"
+  fail "Usage: build.sh 1.0.0 [win|mac|linux] [all|pack|build]"
   exit
 fi
 
@@ -52,15 +58,15 @@ elif [[ $system == "linux" ]]; then
   icon="./docs/logo/logo.png"
   args="--linux-shortcut"
 else
-  fail "setting version and system：build.sh 1.0.0 [win|mac|linux] [all|build|pack]"
+  fail "unknown system：$system"
   exit
 fi
 
 # 开始构建
-info "Snail building $version $system"
+info "Snail building $version $system $action"
 
 # 编译项目
-if [[ $action == "all" || $action == "build" ]]; then
+if [[ $action == "all" || $action == "pack" || $action == "build" ]]; then
   info "Snail run maven";
   # 删除文件
   mvn clean
@@ -79,7 +85,7 @@ if [[ $action == "all" || $action == "pack" ]]; then
   info "Snail run jpackage";
   jpackage \
     --name snail \
-    --icon "${icon}" \
+    --icon ${icon} \
     --type ${suffix} \
     --input ./build/snail/ \
     --vendor acgist \
