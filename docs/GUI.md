@@ -31,7 +31,7 @@
 
 ## 统计
 
-主界面按`F12`进入统计页面
+主界面按`F12`进入统计页面，统计页面提供监控信息帮助了解任务下载详情。
 
 ### 系统信息
 
@@ -47,15 +47,17 @@
 
 ### Tracker统计
 
+* 可用：可以使用
+* 禁用：多次重试没有响应（会被自动清理）
+
 ![Tracker统计](./gui/statistics-tracker.png "Tracker统计")
 
-### Peer类型统计
+### Peer客户端统计
 
-* 点击饼图可以隐藏未知类型Peer统计
+* 点击饼图可以隐藏未知客户端Peer统计
+* 未知客户端Peer标识没有连接或者连接失败
 
-> 未知类型Peer：没有连接或连接失败的Peer
-
-![Peer类型统计](./gui/statistics-client.png "Peer类型统计")
+![Peer客户端统计](./gui/statistics-client.png "Peer客户端统计")
 
 ### Peer来源统计
 

@@ -1,8 +1,8 @@
-name: CodeQL
+name: codeql
 
 on:
   push:
-    branches: [ release ]
+    branches: [ master ]
 
 jobs:
   analyze:

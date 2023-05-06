@@ -13,7 +13,7 @@
 
 |编号|协议|进度|
 |:--:|:--|:--:|
-|最终|-|-|
+|最终|Final and Active Process BEPs|-|
 |0000|[Index of BitTorrent Enhancement Proporsals](http://www.bittorrent.org/beps/bep_0000.html)|√|
 |0001|[The BEP Process](http://www.bittorrent.org/beps/bep_0001.html)|√|
 |0002|[Sample reStructured Text BEP Template](http://www.bittorrent.org/beps/bep_0002.html)|√|
@@ -21,7 +21,7 @@
 |0004|[Known Number Allocations](http://www.bittorrent.org/beps/bep_0004.html)|√|
 |0020|[Peer ID Conventions](http://www.bittorrent.org/beps/bep_0020.html)|√|
 |1000|[Pending Standards Track Documents](http://www.bittorrent.org/beps/bep_1000.html)|√|
-|接受|-|-|
+|接受|Accepted BEPs|-|
 |0005|[DHT Protocol](http://www.bittorrent.org/beps/bep_0005.html)|√|
 |0006|[Fast Extension](http://www.bittorrent.org/beps/bep_0006.html)|√|
 |0009|[Extension for Peers to Send Metadata Files](http://www.bittorrent.org/beps/bep_0009.html)|√|
@@ -35,7 +35,7 @@
 |0027|[Private Torrents](http://www.bittorrent.org/beps/bep_0027.html)|√|
 |0029|[uTorrent Transport Protocol](http://www.bittorrent.org/beps/bep_0029.html)|√|
 |0055|[Holepunch Extension](http://www.bittorrent.org/beps/bep_0055.html)|√|
-|草案|-|-|
+|草案|Draft BEPs|-|
 |0007|[IPv6 Tracker Extension](http://www.bittorrent.org/beps/bep_0007.html)|×|
 |0016|[Superseeding](http://www.bittorrent.org/beps/bep_0016.html)|?|
 |0017|[HTTP Seeding (Hoffman-style)](http://www.bittorrent.org/beps/bep_0017.html)|?|
@@ -65,7 +65,7 @@
 |0052|[The BitTorrent Protocol Specification v2](http://www.bittorrent.org/beps/bep_0052.html)|?|
 |0053|[Magnet URI extension - Select specific file indices for download](http://www.bittorrent.org/beps/bep_0053.html)|?|
 |0054|[The lt_donthave extension](http://www.bittorrent.org/beps/bep_0054.html)|√|
-|延期|-|-|
+|延期|Deferred BEPs|-|
 |0008|[Tracker Peer Obfuscation](http://www.bittorrent.org/beps/bep_0008.html)|?|
 |0018|[Search Engine Specification](http://www.bittorrent.org/beps/bep_0018.html)|?|
 |0022|[BitTorrent Local Tracker Discovery Protocol](http://www.bittorrent.org/beps/bep_0022.html)|?|
