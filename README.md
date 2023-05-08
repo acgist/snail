@@ -84,8 +84,6 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 final Snail snail = SnailBuilder.newBuilder()
 	.enableAllProtocol()
 	.buildSync();
-// BT任务需要注册文件选择事件
-// GuiContext.register(new MultifileEventAdapter());
 snail.download("https://www.acgist.com");
 snail.lockDownload();
 ```
@@ -102,8 +100,8 @@ snail.lockDownload();
 
 ### 仓库
 
-GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)<br />
-GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
+* GITEE：[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)
+* GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 
 ### 协议
 
@@ -123,4 +121,3 @@ GITHUB：[https://github.com/acgist/snail](https://github.com/acgist/snail)
 ### 白嫖
 
 [阿里云服务器](https://www.acgist.com/collect/server)
-

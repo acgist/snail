@@ -19,17 +19,17 @@
 		<!-- Java版本 -->
 		<java.version>17</java.version>
 		<!-- JavaFX版本 -->
-		<javafx.version>17.0.2</javafx.version>
+		<javafx.version>17.0.7</javafx.version>
 		<!-- JUnit版本 -->
-		<junit.version>5.9.1</junit.version>
+		<junit.version>5.9.3</junit.version>
 		<!-- Maven插件版本 -->
-		<maven.gpg.version>3.0.1</maven.gpg.version>
+		<maven.gpg.version>3.1.0</maven.gpg.version>
 		<maven.jar.version>3.3.0</maven.jar.version>
 		<maven.source.version>3.2.1</maven.source.version>
-		<maven.javadoc.version>3.4.1</maven.javadoc.version>
-		<maven.compiler.version>3.10.1</maven.compiler.version>
-		<maven.resources.version>3.3.0</maven.resources.version>
-		<maven.dependency.version>3.4.0</maven.dependency.version>
+		<maven.javadoc.version>3.5.0</maven.javadoc.version>
+		<maven.compiler.version>3.11.0</maven.compiler.version>
+		<maven.resources.version>3.3.1</maven.resources.version>
+		<maven.dependency.version>3.5.0</maven.dependency.version>
 		<!-- 文件编码 -->
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 	</properties>
@@ -82,11 +82,7 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
+				<artifactId>maven-gpg-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -102,17 +98,137 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
 	
 		<!-- 插件管理 -->
 		<pluginManagement>
 			<plugins>
+                <!--
+                生成签名：mvn verify
+                跳过签名：-D gpg.skip=true
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven.gpg.version}</version>
+                    <executions>
+                        <!-- 自动生成签名 -->
+                        <execution>
+                            <id>auto-build-sign</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--
+                打包项目：mvn package
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.version}</version>
+                    <configuration>
+                        <!-- MANIFEST.MF -->
+                        <archive>
+                            <manifestEntries>
+                                <Built-By>${snail.vendor}</Built-By>
+                                <Home-Page>${project.url}</Home-Page>
+                                <Automatic-Module-Name>${snail.module}</Automatic-Module-Name>
+                                <Specification-Title>${project.artifactId}</Specification-Title>
+                                <Specification-Vendor>${snail.vendor}</Specification-Vendor>
+                                <Specification-Version>${snail.version}</Specification-Version>
+                                <Implementation-Title>${project.artifactId}</Implementation-Title>
+                                <Implementation-Vendor>${snail.vendor}</Implementation-Vendor>
+                                <Implementation-Version>${snail.version}</Implementation-Version>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <!--
+                打包源码：
+                    mvn source:jar
+                    mvn source:test-jar
+                跳过源码：-D maven.source.skip=true
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven.source.version}</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                    <executions>
+                        <!-- 自动打包源码 -->
+                        <execution>
+                            <id>auto-build-source</id>
+                            <!--
+                            打包源码：mvn install|deploy
+                            生命周期：
+                                package不用打包源码
+                                install|deploy不能正常签名
+                            -->
+                            <phase>verify</phase>
+                            <goals>
+                                <!-- 和jar一样：不会分叉构建 -->
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--
+                打包文档：
+                    mvn site
+                    mvn javadoc:jar
+                    mvn javadoc:javadoc
+                跳过文档：-D maven.javadoc.skip=true
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven.javadoc.version}</version>
+                    <configuration>
+                        <!-- 忽略警告：注解、标签等等 -->
+                        <doclint>none</doclint>
+                        <charset>${encoding}</charset>
+                        <encoding>${encoding}</encoding>
+                        <docencoding>${encoding}</docencoding>
+                        <description>${project.description}</description>
+                        <!-- 忽略模块描述 -->
+                        <!--
+                        <sourceFileExcludes>
+                            <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                        </sourceFileExcludes>
+                        -->
+                    </configuration>
+                    <executions>
+                        <!-- 自动打包文档 -->
+                        <execution>
+                            <id>auto-build-javadoc</id>
+                            <!--
+                            打包文档：mvn install|deploy
+                            生命周期：
+                                package不用打包文档
+                                install|deploy不能正常签名
+                            -->
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 				<!--
 				编译代码：
 					mvn compile
@@ -189,101 +305,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 打包项目：mvn package -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.version}</version>
-					<configuration>
-						<!-- MANIFEST.MF -->
-						<archive>
-							<manifestEntries>
-								<Built-By>${snail.vendor}</Built-By>
-								<Home-Page>${project.url}</Home-Page>
-								<Automatic-Module-Name>${snail.module}</Automatic-Module-Name>
-								<Specification-Title>${project.artifactId}</Specification-Title>
-								<Specification-Vendor>${snail.vendor}</Specification-Vendor>
-								<Specification-Version>${snail.version}</Specification-Version>
-								<Implementation-Title>${project.artifactId}</Implementation-Title>
-								<Implementation-Vendor>${snail.vendor}</Implementation-Vendor>
-								<Implementation-Version>${snail.version}</Implementation-Version>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<!--
-				打包源码：
-					mvn source:jar
-					mvn source:test-jar
-				跳过源码：-D maven.source.skip=true
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>${maven.source.version}</version>
-					<configuration>
-						<attach>true</attach>
-					</configuration>
-					<executions>
-						<!-- 自动打包源码 -->
-						<execution>
-							<id>auto-build-source</id>
-							<!--
-							打包源码：mvn install|deploy
-							生命周期：
-								package不用打包源码
-								install|deploy不能正常签名
-							-->
-							<phase>verify</phase>
-							<goals>
-								<!-- 和jar一样：不会分叉构建 -->
-								<goal>jar-no-fork</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<!--
-				打包文档：
-					mvn site
-					mvn javadoc:jar
-					mvn javadoc:javadoc
-				跳过文档：-D maven.javadoc.skip=true
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>${maven.javadoc.version}</version>
-					<configuration>
-						<!-- 忽略警告：注解、标签等等 -->
-						<doclint>none</doclint>
-						<charset>${encoding}</charset>
-						<encoding>${encoding}</encoding>
-						<docencoding>${encoding}</docencoding>
-						<description>${project.description}</description>
-						<!-- 忽略模块描述 -->
-						<!--
-						<sourceFileExcludes>
-							<sourceFileExclude>**/module-info.java</sourceFileExclude>
-						</sourceFileExcludes>
-						-->
-					</configuration>
-					<executions>
-						<!-- 自动打包文档 -->
-						<execution>
-							<id>auto-build-javadoc</id>
-							<!--
-							打包文档：mvn install|deploy
-							生命周期：
-								package不用打包文档
-								install|deploy不能正常签名
-							-->
-							<phase>verify</phase>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 				<!--
 				复制依赖：
 					mvn dependency:copy
@@ -306,25 +327,6 @@
 							<phase>package</phase>
 							<goals>
 								<goal>copy-dependencies</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<!--
-				生成签名：mvn verify
-				跳过签名：-D gpg.skip=true
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>${maven.gpg.version}</version>
-					<executions>
-						<!-- 自动生成签名 -->
-						<execution>
-							<id>auto-build-sign</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>sign</goal>
 							</goals>
 						</execution>
 					</executions>
