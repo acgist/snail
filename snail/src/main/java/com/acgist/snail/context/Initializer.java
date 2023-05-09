@@ -75,17 +75,17 @@ public abstract class Initializer implements IInitializer {
 	}
 	
 	@Override
-	public void destroy() {
+	public final void destroy() {
 		try {
 			LOGGER.debug("执行销毁方法：{}", this.name);
-			this.destroyProxy();
+			this.release();
 		} catch (Exception e) {
 			LOGGER.error("执行销毁方法异常：{}", this.name, e);
 		}
 	}
 	
 	/**
-	 * 初始化
+	 * 初始化方法
 	 * 
 	 * @throws NetException      网络异常
 	 * @throws DownloadException 下载异常
@@ -93,8 +93,8 @@ public abstract class Initializer implements IInitializer {
 	protected abstract void init() throws NetException, DownloadException;
 
 	/**
-	 * 销毁方法
+	 * 释放资源方法
 	 */
-	protected abstract void destroyProxy();
+	protected abstract void release();
 	
 }

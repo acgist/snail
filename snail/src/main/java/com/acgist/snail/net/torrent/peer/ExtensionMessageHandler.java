@@ -225,7 +225,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 客户端信息（名称、版本）
 		message.put(EX_V, SystemConfig.getNameEnAndVersion());
 		// 偏爱加密
-		message.put(EX_E, CryptConfig.STRATEGY.crypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT);
+		message.put(EX_E, CryptConfig.STRATEGY.getCrypt() ? PREFER_ENCRYPT : PREFER_PLAINTEXT);
 		// 外网IP地址
 		final String yourip = SystemConfig.getExternalIPAddress();
 		if(StringUtils.isNotEmpty(yourip)) {

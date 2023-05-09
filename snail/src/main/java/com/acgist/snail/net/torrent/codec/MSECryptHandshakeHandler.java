@@ -446,7 +446,7 @@ public final class MSECryptHandshakeHandler {
 		final int paddingLength = padding.length;
 		message = ByteBuffer.allocate(16 + paddingLength);
 		message.put(CryptConfig.VC);
-		message.putInt(CryptConfig.STRATEGY.provide());
+		message.putInt(CryptConfig.STRATEGY.getProvide());
 		message.putShort((short) paddingLength);
 		message.put(padding);
 		message.putShort((short) 0);
@@ -558,12 +558,12 @@ public final class MSECryptHandshakeHandler {
 		final int paddingLength = padding.length;
 		final ByteBuffer message = ByteBuffer.allocate(14 + paddingLength);
 		message.put(CryptConfig.VC);
-		message.putInt(this.strategy.provide());
+		message.putInt(this.strategy.getProvide());
 		message.putShort((short) paddingLength);
 		message.put(padding);
 		this.cipher.encrypt(message);
 		this.peerSubMessageHandler.send(message);
-		this.completed(this.strategy.crypt());
+		this.completed(this.strategy.getCrypt());
 	}
 	
 	/**
@@ -616,7 +616,7 @@ public final class MSECryptHandshakeHandler {
 		final boolean success = this.msePaddingSync.sync(this.buffer);
 		if(success) {
 			LOGGER.debug("加密握手（接收确认加密协议Padding）：{}", this.msePaddingSync);
-			this.completed(this.strategy.crypt());
+			this.completed(this.strategy.getCrypt());
 		}
 	}
 	
@@ -630,18 +630,18 @@ public final class MSECryptHandshakeHandler {
 	 */
 	private CryptConfig.Strategy selectStrategy(int provide) throws NetException {
 		// 客户端是否支持明文
-		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.provide()) == CryptAlgo.PLAINTEXT.provide();
+		final boolean plaintext = (provide & CryptAlgo.PLAINTEXT.getProvide()) == CryptAlgo.PLAINTEXT.getProvide();
 		// 客户端是否支持加密
-		final boolean crypt = (provide & CryptAlgo.ARC4.provide()) == CryptAlgo.ARC4.provide();
+		final boolean crypt     = (provide & CryptAlgo.ARC4.getProvide())      == CryptAlgo.ARC4.getProvide();
 		Strategy selected = null;
 		if (plaintext || crypt) {
 			// 本地策略
 			selected = switch (CryptConfig.STRATEGY) {
-				case PLAINTEXT -> plaintext ? Strategy.PLAINTEXT : null;
+				case PLAINTEXT        -> plaintext ? Strategy.PLAINTEXT : null;
 				case PREFER_PLAINTEXT -> plaintext ? Strategy.PLAINTEXT : Strategy.ENCRYPT;
-				case PREFER_ENCRYPT -> crypt ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
-				case ENCRYPT -> crypt ? Strategy.ENCRYPT : null;
-				default -> CryptConfig.STRATEGY.crypt() ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
+				case PREFER_ENCRYPT   -> crypt ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
+				case ENCRYPT          -> crypt ? Strategy.ENCRYPT : null;
+				default               -> CryptConfig.STRATEGY.getCrypt() ? Strategy.ENCRYPT : Strategy.PLAINTEXT;
 			};
 		}
 		if (selected == null) {

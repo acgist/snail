@@ -7,4 +7,6 @@ logs
 build
 target
 snail/config
+snail/download
+snail-javafx/config
 snail-javafx/download

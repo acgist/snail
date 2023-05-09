@@ -45,7 +45,7 @@ public final class CryptConfig {
         /**
          * @return 加密算法provide
          */
-        public final int provide() {
+        public final int getProvide() {
             return this.provide;
         }
         
@@ -63,13 +63,11 @@ public final class CryptConfig {
          */
         PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide),
         /**
-         * 偏爱明文
-         * 对方客户端支持明文和加密时优先使用明文传输
+         * 偏爱明文（优先使用明文传输）
          */
         PREFER_PLAINTEXT(false, CryptAlgo.PLAINTEXT.provide | CryptAlgo.ARC4.provide),
         /**
-         * 偏爱加密
-         * 对方客户端支持明文和加密时优先使用加密传输
+         * 偏爱加密（优先使用加密传输）
          */
         PREFER_ENCRYPT(true, CryptAlgo.ARC4.provide | CryptAlgo.PLAINTEXT.provide),
         /**
@@ -79,12 +77,12 @@ public final class CryptConfig {
         
         /**
          * 是否加密
-         * 对方客户端询问本端客户端是否使用加密
+         * 对端询问本端是否使用加密
          */
         private final boolean crypt;
         /**
          * 加密算法provide
-         * 客户端支持多种加密算法时双方协商最优算法
+         * 双端协商明文还是加密
          * 
          * @see CryptAlgo#provide
          */
@@ -95,21 +93,21 @@ public final class CryptConfig {
          * @param provide 加密算法provide
          */
         private Strategy(boolean crypt, int provide) {
-            this.crypt = crypt;
+            this.crypt   = crypt;
             this.provide = provide;
         }
         
         /**
          * @return 是否加密
          */
-        public final boolean crypt() {
+        public final boolean getCrypt() {
             return this.crypt;
         }
         
         /**
          * @return 加密算法provide
          */
-        public final int provide() {
+        public final int getProvide() {
             return this.provide;
         }
         
@@ -145,7 +143,7 @@ public final class CryptConfig {
     /**
      * VC数据（默认填充：0x00）
      */
-    public static final byte[] VC = {0, 0, 0, 0, 0, 0, 0, 0};
+    public static final byte[] VC = { 0, 0, 0, 0, 0, 0, 0, 0 };
     /**
      * VC长度
      * 

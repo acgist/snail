@@ -28,7 +28,7 @@ public final class LocalServiceDiscoveryInitializer extends Initializer {
 	}
 	
 	@Override
-	protected void destroyProxy() {
+	protected void release() {
 		LocalServiceDiscoveryServer.getInstance().close();
 	}
 

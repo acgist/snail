@@ -22,7 +22,7 @@ class InitializerTest extends Performance {
 			protected void init() {
 				init.set(true);
 			}
-			protected void destroyProxy() {};
+			protected void release() {};
 		}.sync();
 		assertTrue(init.get());
 		final CountDownLatch countDownLatch = new CountDownLatch(3);
@@ -31,14 +31,14 @@ class InitializerTest extends Performance {
 			protected void init() {
 				countDownLatch.countDown();
 			}
-			protected void destroyProxy() {};
+			protected void release() {};
 		}.asyn();
 		new Initializer("异步零秒延迟", 0) {
 			@Override
 			protected void init() {
 				countDownLatch.countDown();
 			}
-			protected void destroyProxy() {};
+			protected void release() {};
 		}.asyn();
 		new Initializer("异步两秒延迟", 2) {
 			@Override
@@ -46,7 +46,7 @@ class InitializerTest extends Performance {
 				assertEquals(1L, countDownLatch.getCount());
 				countDownLatch.countDown();
 			}
-			protected void destroyProxy() {};
+			protected void release() {};
 		}.asyn();
 		assertDoesNotThrow(() -> countDownLatch.await(5, TimeUnit.SECONDS));
 		assertEquals(0L, countDownLatch.getCount());

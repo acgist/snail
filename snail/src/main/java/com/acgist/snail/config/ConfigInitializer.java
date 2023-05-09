@@ -3,15 +3,15 @@ package com.acgist.snail.config;
 import com.acgist.snail.context.Initializer;
 
 /**
- * 初始化配置
- * 初始化下载必须的配置，可选下载功能的配置不在这里初始化。
+ * 初始化系统配置
+ * 初始化下载必须的系统配置，可选的功能配置不在这里初始化。
  * 
  * @author acgist
  */
 public final class ConfigInitializer extends Initializer {
 
     private ConfigInitializer() {
-        super("配置");
+        super("系统配置");
     }
 
     public static final ConfigInitializer newInstance() {
@@ -25,7 +25,7 @@ public final class ConfigInitializer extends Initializer {
     }
 
     @Override
-    protected void destroyProxy() {
+    protected void release() {
     }
 
 }

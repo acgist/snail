@@ -21,7 +21,7 @@ public final class TaskInitializer extends Initializer {
 	}
 
 	@Override
-	protected void destroyProxy() {
+	protected void release() {
 		TaskContext.getInstance().shutdown();
 	}
 	

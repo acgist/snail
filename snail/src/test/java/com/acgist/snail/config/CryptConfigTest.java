@@ -10,7 +10,7 @@ class CryptConfigTest extends Performance {
 
 	@Test
 	void testCryptConfig() {
-		assertEquals(false, CryptConfig.STRATEGY.crypt());
+		assertEquals(false, CryptConfig.STRATEGY.getCrypt());
 	}
 	
 }

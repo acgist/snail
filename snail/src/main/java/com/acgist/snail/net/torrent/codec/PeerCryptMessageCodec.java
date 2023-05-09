@@ -39,7 +39,7 @@ public final class PeerCryptMessageCodec extends MessageCodec<ByteBuffer, ByteBu
 			this.mseCryptHandshakeHandler.encrypt(buffer);
 		} else {
 			// TODO：判断是否或者还是并且
-			final boolean encrypt = this.mseCryptHandshakeHandler.needEncrypt() && CryptConfig.STRATEGY.crypt();
+			final boolean encrypt = this.mseCryptHandshakeHandler.needEncrypt() && CryptConfig.STRATEGY.getCrypt();
 			if(encrypt) {
 				// 需要加密
 				this.mseCryptHandshakeHandler.handshake();

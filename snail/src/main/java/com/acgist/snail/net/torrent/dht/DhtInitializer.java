@@ -26,7 +26,7 @@ public final class DhtInitializer extends Initializer {
 	}
 	
 	@Override
-	protected void destroyProxy() {
+	protected void release() {
 		DhtConfig.getInstance().persistent();
 	}
 

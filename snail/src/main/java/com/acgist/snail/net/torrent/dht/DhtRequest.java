@@ -157,7 +157,7 @@ public class DhtRequest extends DhtMessage {
 		final Map<String, Object> request = new LinkedHashMap<>();
 		request.put(DhtConfig.KEY_T, this.t);
 		request.put(DhtConfig.KEY_Y, this.y);
-		request.put(DhtConfig.KEY_Q, this.q.value());
+		request.put(DhtConfig.KEY_Q, this.q.getValue());
 		request.put(DhtConfig.KEY_A, this.a);
 		return BEncodeEncoder.encodeMap(request);
 	}

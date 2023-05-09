@@ -198,7 +198,7 @@ public class DhtResponse extends DhtMessage {
 		} else {
 			LOGGER.warn("DHT不支持的错误编码类型：{}", value);
 		}
-		return ErrorCode.CODE_201.code();
+		return ErrorCode.CODE_201.getCode();
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class DhtResponse extends DhtMessage {
 	 * @return 错误响应
 	 */
 	public static final DhtResponse buildErrorResponse(byte[] id, DhtConfig.ErrorCode code, String message) {
-		return buildErrorResponse(id, code.code(), message);
+		return buildErrorResponse(id, code.getCode(), message);
 	}
 	
 	/**
