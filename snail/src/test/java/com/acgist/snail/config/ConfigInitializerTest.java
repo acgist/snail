@@ -8,10 +8,10 @@ import com.acgist.snail.utils.Performance;
 
 class ConfigInitializerTest extends Performance {
 
-	@Test
-	void testConfigInitializer() {
-		assertDoesNotThrow(ConfigInitializer.newInstance()::sync);
-		assertDoesNotThrow(ConfigInitializer.newInstance()::asyn);
-	}
-	
+    @Test
+    void testConfigInitializer() {
+        assertDoesNotThrow(ConfigInitializer.newInstance()::sync);
+        assertDoesNotThrow(ConfigInitializer.newInstance()::asyn);
+    }
+    
 }

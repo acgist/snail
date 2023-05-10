@@ -11,14 +11,14 @@ import com.acgist.snail.utils.Performance;
 
 class DhtConfigTest extends Performance {
 
-	@Test
-	void testPersistent() {
-		FileUtils.userDirFile(DhtConfig.DHT_CONFIG).delete();
-		final DhtConfig config = DhtConfig.getInstance();
-		assertTrue(MapUtils.isNotEmpty(config.nodes()));
-		NodeContext.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 18888);
-		config.persistent();
-		assertTrue(FileUtils.userDirFile(DhtConfig.DHT_CONFIG).exists());
-	}
-	
+    @Test
+    void testPersistent() {
+        FileUtils.userDirFile(DhtConfig.DHT_CONFIG).delete();
+        final DhtConfig config = DhtConfig.getInstance();
+        assertTrue(MapUtils.isNotEmpty(config.nodes()));
+        NodeContext.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 18888);
+        config.persistent();
+        assertTrue(FileUtils.userDirFile(DhtConfig.DHT_CONFIG).exists());
+    }
+    
 }
