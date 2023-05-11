@@ -72,7 +72,7 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 		final List<String> list = headers.headerList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(list)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
-			if(Arrays.equals(peerId, PeerConfig.getInstance().peerId())) {
+			if(Arrays.equals(peerId, PeerConfig.getInstance().getPeerId())) {
 				LOGGER.debug("本地发现消息处理失败：忽略本机");
 			} else {
 				list.forEach(infoHashHex -> this.doInfoHash(host, port, infoHashHex));

@@ -501,7 +501,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 	 */
 	public void source(PeerConfig.Source source) {
 		synchronized (this) {
-			this.source |= source.value();
+			this.source |= source.getValue();
 		}
 	}
 
@@ -514,7 +514,7 @@ public final class PeerSession extends StatisticsGetter implements IPeerConnect 
 		final PeerConfig.Source[] sources = PeerConfig.Source.values();
 		final List<PeerConfig.Source> list = new ArrayList<>();
 		for (Source value : sources) {
-			if((this.source & value.value()) == value.value()) {
+			if((this.source & value.getValue()) == value.getValue()) {
 				list.add(value);
 			}
 		}

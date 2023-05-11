@@ -224,7 +224,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private Map<String, Object> buildMessage(PeerConfig.MetadataType type, int piece) {
 		final Map<String, Object> message = new LinkedHashMap<>();
-		message.put(ARG_MSG_TYPE, type.id());
+		message.put(ARG_MSG_TYPE, type.getId());
 		message.put(ARG_PIECE, piece);
 		return message;
 	}

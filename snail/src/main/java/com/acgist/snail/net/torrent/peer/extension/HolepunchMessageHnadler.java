@@ -268,18 +268,18 @@ public final class HolepunchMessageHnadler extends ExtensionTypeMessageHandler {
 		final ByteBuffer buffer;
 		if(ipv4) {
 			buffer = ByteBuffer.allocate(12);
-			buffer.put(type.id());
+			buffer.put(type.getId());
 			buffer.put(IPV4);
 			buffer.putInt(NetUtils.ipToInt(host));
 		} else {
 			buffer = ByteBuffer.allocate(24);
-			buffer.put(type.id());
+			buffer.put(type.getId());
 			buffer.put(IPV6);
 			buffer.put(NetUtils.ipToBytes(host));
 		}
 		buffer.putShort(NetUtils.portToShort(port));
 		if(type == HolepunchType.ERROR && errorCode != null) {
-			buffer.putInt(errorCode.code());
+			buffer.putInt(errorCode.getCode());
 		} else {
 			// 非错误消息填充零
 			buffer.putInt(0);

@@ -213,8 +213,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		// 支持的扩展协议
 		final Map<String, Object> supportTypes = new LinkedHashMap<>();
 		for (var type : PeerConfig.ExtensionType.values()) {
-			if(type.support() && type.notice()) {
-				supportTypes.put(type.value(), type.id());
+			if(type.getSupport() && type.getNotice()) {
+				supportTypes.put(type.getValue(), type.getId());
 			}
 		}
 		message.put(EX_M, supportTypes);
@@ -233,7 +233,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 支持未完成请求数量
 		message.put(EX_REQQ, DEFAULT_REQQ);
-		if(PeerConfig.ExtensionType.UT_METADATA.notice()) {
+		if(PeerConfig.ExtensionType.UT_METADATA.getNotice()) {
 			// 种子InfoHash数据长度
 			final int metadataSize = this.infoHash.size();
 			if(metadataSize > 0) {
@@ -244,7 +244,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		if(this.torrentSession.completed()) {
 			message.put(EX_UPLOAD_ONLY, UPLOAD_ONLY);
 		}
-		this.pushMessage(ExtensionType.HANDSHAKE.id(), BEncodeEncoder.encodeMap(message));
+		this.pushMessage(ExtensionType.HANDSHAKE.getId(), BEncodeEncoder.encodeMap(message));
 	}
 
 	/**
@@ -312,7 +312,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 				if(extensionType == PeerConfig.ExtensionType.UT_HOLEPUNCH) {
 					this.peerSession.flags(PeerConfig.PEX_HOLEPUNCH);
 				}
-				if(extensionType != null && extensionType.support()) {
+				if(extensionType != null && extensionType.getSupport()) {
 					LOGGER.debug("处理扩展协议-握手（添加）：{}-{}", extensionType, typeId);
 					this.peerSession.supportExtensionType(extensionType, typeId.byteValue());
 				} else {

@@ -141,7 +141,7 @@ public final class HttpTrackerSession extends TrackerSession {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
 			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&")
-			.append("peer_id").append("=").append(PeerConfig.getInstance().peerIdUrl()).append("&")
+			.append("peer_id").append("=").append(PeerConfig.getInstance().getPeerIdUrl()).append("&")
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&")
 			.append("uploaded").append("=").append(upload).append("&")
 			.append("downloaded").append("=").append(download).append("&")

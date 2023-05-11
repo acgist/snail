@@ -86,7 +86,7 @@ public final class StunContext implements IContext {
 		) {
 			LOGGER.debug("STUN端口映射：{}-{}", externalIPAddress, port);
 			this.available = true;
-			PeerConfig.nat();
+			PeerConfig.enableNat();
 			SystemConfig.setTorrentPortExt(port);
 			SystemConfig.setExternalIPAddress(externalIPAddress);
 			NodeContext.getInstance().buildNodeId(externalIPAddress);

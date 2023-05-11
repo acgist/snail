@@ -12,8 +12,8 @@
 单例变量
 单例静态函数
 构造函数
-静态成员函数
 成员函数（public/protected/private）
+静态成员函数
 getter/setter
 
 ## 日常任务

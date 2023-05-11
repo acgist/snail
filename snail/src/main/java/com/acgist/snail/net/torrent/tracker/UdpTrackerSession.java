@@ -171,7 +171,7 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id());
 		buffer.putInt(sid);
 		buffer.put(torrentSession.infoHash().infoHash());
-		buffer.put(PeerConfig.getInstance().peerId());
+		buffer.put(PeerConfig.getInstance().getPeerId());
 		buffer.putLong(download);
 		buffer.putLong(left);
 		buffer.putLong(upload);

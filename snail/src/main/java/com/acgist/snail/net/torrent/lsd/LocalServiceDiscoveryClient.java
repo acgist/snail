@@ -74,7 +74,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 	 * @return 本地发现消息
 	 */
 	private String buildMessage(String ... infoHashs) {
-		final String peerId = StringUtils.hex(PeerConfig.getInstance().peerId());
+		final String peerId = StringUtils.hex(PeerConfig.getInstance().getPeerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
 			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT))
