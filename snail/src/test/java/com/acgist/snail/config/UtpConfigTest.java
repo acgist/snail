@@ -12,7 +12,7 @@ class UtpConfigTest extends Performance {
 	void testType() {
 		final UtpConfig.Type[] types = UtpConfig.Type.values();
 		for (UtpConfig.Type type : types) {
-			this.log("{}-{}-{}-{}", type, type.type(), type.typeVersion(), Integer.toHexString(type.typeVersion()));
+			this.log("{} - {} - {} - {}", type, type.type(), type.typeVersion(), Integer.toHexString(type.typeVersion()));
 			assertEquals(UtpConfig.Type.of(type.typeVersion()), type);
 		}
 		assertEquals(0x00, UtpConfig.Type.DATA.type());

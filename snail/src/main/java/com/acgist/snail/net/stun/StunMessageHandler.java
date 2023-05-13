@@ -374,7 +374,7 @@ public final class StunMessageHandler extends UdpMessageHandler {
 		// 对齐
 		final int length = NumberUtils.ceilMult(StunConfig.HEADER_ATTRIBUTE_LENGTH + valueLength, STUN_ATTRIBUTE_PADDING_LENGTH);
 		final ByteBuffer buffer = ByteBuffer.allocate(length);
-		buffer.putShort(attributeType.id());
+		buffer.putShort(attributeType.getId());
 		buffer.putShort(valueLength);
 		if(valueLength > 0) {
 			buffer.put(value);

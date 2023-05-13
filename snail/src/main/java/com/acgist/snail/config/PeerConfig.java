@@ -656,7 +656,7 @@ public final class PeerConfig extends PropertiesConfig {
     /**
      * PeerId名称配置
      */
-    private static final String CLIENT_NAME_CONFIG = "/config/client.name.properties";
+    public static final String CLIENT_NAME_CONFIG = "/config/client.name.properties";
     /**
      * PeerId和客户端名称配置
      * PeerId名称=ClientName
