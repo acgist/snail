@@ -158,7 +158,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	private ByteBuffer buildConnectionMessage() {
 		final ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putLong(PROTOCOL_ID);
-		buffer.putInt(TrackerConfig.Action.CONNECT.id());
+		buffer.putInt(TrackerConfig.Action.CONNECT.getId());
 		// 客户端ID：收到响应回写连接ID
 		buffer.putInt(this.id);
 		return buffer;
@@ -168,14 +168,14 @@ public final class UdpTrackerSession extends TrackerSession {
 	protected ByteBuffer buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left) {
 		final ByteBuffer buffer = ByteBuffer.allocate(98);
 		buffer.putLong(this.connectionId);
-		buffer.putInt(TrackerConfig.Action.ANNOUNCE.id());
+		buffer.putInt(TrackerConfig.Action.ANNOUNCE.getId());
 		buffer.putInt(sid);
 		buffer.put(torrentSession.infoHash().infoHash());
 		buffer.put(PeerConfig.getInstance().getPeerId());
 		buffer.putLong(download);
 		buffer.putLong(left);
 		buffer.putLong(upload);
-		buffer.putInt(event.id());
+		buffer.putInt(event.getId());
 		// 本机IP：0（服务器自动获取）
 		buffer.putInt(0);
 		// 唯一数值
@@ -197,7 +197,7 @@ public final class UdpTrackerSession extends TrackerSession {
 	private ByteBuffer buildScrapeMessage(Integer sid, TorrentSession torrentSession) {
 		final ByteBuffer buffer = ByteBuffer.allocate(36);
 		buffer.putLong(this.connectionId);
-		buffer.putInt(TrackerConfig.Action.SCRAPE.id());
+		buffer.putInt(TrackerConfig.Action.SCRAPE.getId());
 		buffer.putInt(sid);
 		buffer.put(torrentSession.infoHash().infoHash());
 		return buffer;

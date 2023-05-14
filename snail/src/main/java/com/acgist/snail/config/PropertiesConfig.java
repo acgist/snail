@@ -18,7 +18,7 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.StringUtils;
 
 /**
- * 配置文件
+ * 文件配置
  * 
  * @author acgist
  */

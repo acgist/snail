@@ -511,7 +511,7 @@ public final class UtpMessageHandler extends UdpMessageHandler implements IEncry
 	 */
 	private ByteBuffer buildMessage(UtpConfig.Type type, int size) {
 		final ByteBuffer buffer = ByteBuffer.allocate(size);
-		buffer.put(type.typeVersion());
+		buffer.put(type.getTypeVersion());
 		buffer.put(UtpConfig.EXTENSION);
 		return buffer;
 	}

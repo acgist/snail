@@ -147,7 +147,7 @@ public final class HttpTrackerSession extends TrackerSession {
 			.append("downloaded").append("=").append(download).append("&")
 			.append("left").append("=").append(left).append("&")
 			.append("compact").append("=").append(IP_COMPACT).append("&")
-			.append("event").append("=").append(event.value()).append("&")
+			.append("event").append("=").append(event.getValue()).append("&")
 			.append("numwant").append("=").append(WANT_PEER_SIZE);
 		if(StringUtils.isNotEmpty(this.trackerId)) {
 			// 跟踪器ID

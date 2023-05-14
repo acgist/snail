@@ -124,7 +124,7 @@ public final class NodeContext implements IContext {
 	 */
 	private void register() {
 		final char colon = SymbolConfig.Symbol.COLON.toChar();
-		DhtConfig.getInstance().nodes().forEach((nodeId, address) -> {
+		DhtConfig.getInstance().getNodes().forEach((nodeId, address) -> {
 			final int index = address.lastIndexOf(colon);
 			if(index > 0) {
 				final String host = address.substring(0, index);

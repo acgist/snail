@@ -250,7 +250,7 @@ public final class TrackerContext implements IContext {
 	 * <p>注册默认Tracker服务器</p>
 	 */
 	private void register() {
-		this.buildTrackerSession(TrackerConfig.getInstance().announces());
+		this.buildTrackerSession(TrackerConfig.getInstance().getAnnounces());
 	}
 	
 	/**

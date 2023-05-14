@@ -539,6 +539,7 @@ public final class PeerConfig extends PropertiesConfig {
     public static final String UNKNOWN = "unknown";
     /**
      * Peer最大连接失败次数
+     * 超过以后不会再次连接
      */
     public static final int MAX_FAIL_TIMES = 3;
     /**

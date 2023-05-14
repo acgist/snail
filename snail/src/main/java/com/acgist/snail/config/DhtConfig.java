@@ -362,7 +362,7 @@ public final class DhtConfig extends PropertiesConfig {
     /**
      * @return 默认DHT节点
      */
-    public Map<String, String> nodes() {
+    public Map<String, String> getNodes() {
         return this.nodes;
     }
     

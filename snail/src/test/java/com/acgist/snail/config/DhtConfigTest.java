@@ -15,7 +15,7 @@ class DhtConfigTest extends Performance {
     void testPersistent() {
         FileUtils.userDirFile(DhtConfig.DHT_CONFIG).delete();
         final DhtConfig config = DhtConfig.getInstance();
-        assertTrue(MapUtils.isNotEmpty(config.nodes()));
+        assertTrue(MapUtils.isNotEmpty(config.getNodes()));
         NodeContext.getInstance().newNodeSession("1".repeat(20).getBytes(), "192.168.1.1", 18888);
         config.persistent();
         assertTrue(FileUtils.userDirFile(DhtConfig.DHT_CONFIG).exists());

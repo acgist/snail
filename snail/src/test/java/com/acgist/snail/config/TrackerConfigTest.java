@@ -14,18 +14,18 @@ import com.acgist.snail.utils.Performance;
 
 class TrackerConfigTest extends Performance {
 
-	@Test
-	void testAnnounces() {
-		assertNotNull(TrackerConfig.getInstance().announces());
-	}
-	
-	@Test
-	void testPersistent() throws DownloadException {
-		FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).delete();
-		final TrackerConfig config = TrackerConfig.getInstance();
-		TrackerContext.getInstance().sessions("https://www.acgist.com", Arrays.asList("https://www.baidu.com"));
-		config.persistent();
-		assertTrue(FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).exists());
-	}
-	
+    @Test
+    void testAnnounces() {
+        assertNotNull(TrackerConfig.getInstance().getAnnounces());
+    }
+    
+    @Test
+    void testPersistent() throws DownloadException {
+        FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).delete();
+        final TrackerConfig config = TrackerConfig.getInstance();
+        TrackerContext.getInstance().sessions("https://www.acgist.com", Arrays.asList("https://www.baidu.com"));
+        config.persistent();
+        assertTrue(FileUtils.userDirFile(TrackerConfig.TRACKER_CONFIG).exists());
+    }
+    
 }
