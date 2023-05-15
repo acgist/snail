@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 class TaskEntityTest {
 
-	@Test
-	void testTaskEntity() {
-		final TaskEntity source = new TaskEntity();
-		final TaskEntity target = new TaskEntity();
-		assertEquals(source, target);
-	}
-	
+    @Test
+    void testTaskEntity() {
+        final TaskEntity source = new TaskEntity();
+        final TaskEntity target = new TaskEntity();
+        assertEquals(source, target);
+    }
+    
 }

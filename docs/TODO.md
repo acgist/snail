@@ -12,9 +12,9 @@
 单例变量
 单例静态函数
 构造函数
-成员函数（public/protected/private）
+成员函数（`public/protected/private`）
 静态成员函数
-getter/setter
+`getter/setter`
 
 ## 日常任务
 
@@ -31,7 +31,6 @@ getter/setter
 ## 计划任务
 
 * 稀有块选择
-* P2P文件快传
 * Peer阻塞算法
 * 更多功能支持：NIO
 * 更多功能支持：IPv6
