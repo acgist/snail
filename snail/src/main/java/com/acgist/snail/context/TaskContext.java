@@ -171,7 +171,7 @@ public final class TaskContext implements IContext {
 			this.submit(taskSession);
 		} catch (Exception e) {
 			LOGGER.error("添加下载任务异常：{}", entity, e);
-			EntityContext.getInstance().delete(entity);
+			EntityContext.getInstance().deleteTask(entity);
 		}
 	}
 	

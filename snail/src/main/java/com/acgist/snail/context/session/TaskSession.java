@@ -325,7 +325,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		// 删除任务
 		TaskContext.getInstance().remove(this);
 		// 删除实体
-		EntityContext.getInstance().delete(this.entity);
+		EntityContext.getInstance().deleteTask(this.entity);
 	}
 	
 	/**
