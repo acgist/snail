@@ -13,11 +13,11 @@ class StatisticsSessionTest extends Performance {
 		final StatisticsSession parent = new StatisticsSession();
 		final StatisticsSession session = new StatisticsSession(true, parent);
 		session.upload(1024);
-		assertEquals(1024, parent.uploadSize());
-		assertEquals(1024, session.uploadSize());
+		assertEquals(1024, parent.getUploadSize());
+		assertEquals(1024, session.getUploadSize());
 		session.download(1024);
-		assertEquals(1024, parent.downloadSize());
-		assertEquals(1024, session.downloadSize());
+		assertEquals(1024, parent.getDownloadSize());
+		assertEquals(1024, session.getDownloadSize());
 	}
 	
 }

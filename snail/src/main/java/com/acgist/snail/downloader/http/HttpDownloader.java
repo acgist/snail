@@ -58,12 +58,12 @@ public final class HttpDownloader extends MonofileDownloader {
 			// 断点续传
 			if(headers.range()) {
 				LOGGER.debug("HTTP断点下载：{}", downloadSize);
-				this.taskSession.downloadSize(downloadSize);
+				this.taskSession.setDownloadSize(downloadSize);
 			} else {
 				LOGGER.debug("HTTP重新下载：{}", downloadSize);
-				this.taskSession.downloadSize(0L);
+				this.taskSession.setDownloadSize(0L);
 			}
-		} else if(this.taskSession.downloadSize() == this.taskSession.getSize()) {
+		} else if(this.taskSession.getDownloadSize() == this.taskSession.getSize()) {
 			// 优先验证下载文件大小：416=超出请求范围
 			this.completed = true;
 		} else {

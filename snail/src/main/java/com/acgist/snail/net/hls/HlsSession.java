@@ -76,7 +76,7 @@ public final class HlsSession implements IMultifileCompletedChecker {
 		this.downloadSize = new AtomicLong();
 		this.taskSession = taskSession;
 		this.clients = new ArrayList<>(this.fileSize);
-		this.statistics = taskSession.statistics();
+		this.statistics = taskSession.getStatistics();
 		this.threadLocal = new ThreadLocal<>() {
 			protected ByteBuffer initialValue() {
 				return ByteBuffer.allocateDirect(SystemConfig.DEFAULT_EXCHANGE_LENGTH);
@@ -172,7 +172,7 @@ public final class HlsSession implements IMultifileCompletedChecker {
 	public void downloadSize(long size) {
 		// 设置已经下载大小
 		final long newDownloadSize = this.downloadSize.addAndGet(size);
-		this.taskSession.downloadSize(newDownloadSize);
+		this.taskSession.setDownloadSize(newDownloadSize);
 		// 已经下载文件数量
 		int downloadFileSize;
 		synchronized (this.clients) {

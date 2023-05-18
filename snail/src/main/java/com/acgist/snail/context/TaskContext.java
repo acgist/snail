@@ -141,7 +141,7 @@ public final class TaskContext implements IContext {
 				this.tasks.stream()
 					.filter(ITaskSession::statusAwait)
 					.limit(downloadSize - downloadCount)
-					.map(ITaskSession::downloader)
+					.map(ITaskSession::getDownloader)
 					.forEach(this.executor::submit);
 			}
 		}

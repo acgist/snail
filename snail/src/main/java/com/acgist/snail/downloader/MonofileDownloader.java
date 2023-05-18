@@ -72,7 +72,7 @@ public abstract class MonofileDownloader extends Downloader {
 					this.statistics.downloadLimit(length);
 					this.fastCheckTime = System.currentTimeMillis();
 				}
-				if(Downloader.checkFinish(length, this.taskSession.downloadSize(), fileSize)) {
+				if(Downloader.checkFinish(length, this.taskSession.getDownloadSize(), fileSize)) {
 					this.completed = true;
 					break;
 				}
@@ -102,7 +102,7 @@ public abstract class MonofileDownloader extends Downloader {
 	 */
 	protected void buildOutput() throws DownloadException {
 		try {
-			final long size = this.taskSession.downloadSize();
+			final long size = this.taskSession.getDownloadSize();
 			final int bufferSize = DownloadConfig.getMemoryBufferByte(this.taskSession.getSize());
 			OutputStream outputStream;
 			if(size > 0L) {

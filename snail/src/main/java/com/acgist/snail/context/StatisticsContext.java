@@ -22,13 +22,13 @@ public final class StatisticsContext extends StatisticsGetter implements IContex
 	}
 	
 	@Override
-	public long uploadSpeed() {
-		return this.statistics.uploadSpeed();
+	public long getUploadSpeed() {
+		return this.statistics.getUploadSpeed();
 	}
 	
 	@Override
-	public long downloadSpeed() {
-		return this.statistics.downloadSpeed();
+	public long getDownloadSpeed() {
+		return this.statistics.getDownloadSpeed();
 	}
 	
 	@Override

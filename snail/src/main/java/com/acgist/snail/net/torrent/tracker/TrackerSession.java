@@ -171,9 +171,9 @@ public abstract class TrackerSession implements Comparable<TrackerSession> {
 		long download = 0L;
 		final var taskSession = torrentSession.taskSession();
 		if(taskSession != null) {
-			final var statistics = taskSession.statistics();
-			upload = statistics.uploadSize();
-			download = statistics.downloadSize();
+			final var statistics = taskSession.getStatistics();
+			upload = statistics.getUploadSize();
+			download = statistics.getDownloadSize();
 			left = taskSession.getSize() - download;
 		}
 		return this.buildAnnounceMessageEx(sid, torrentSession, event, upload, download, left);

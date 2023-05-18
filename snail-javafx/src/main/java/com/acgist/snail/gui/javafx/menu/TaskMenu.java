@@ -159,7 +159,7 @@ public final class TaskMenu extends Menu {
 	 * <p>打开目录</p>
 	 */
 	private EventHandler<ActionEvent> openFolderEvent = event -> MainWindow.getInstance().controller().selected().forEach(session -> {
-		final File folder = session.downloadFolder();
+		final File folder = session.getDownloadFolder();
 		if(folder.exists()) {
 			Desktops.open(folder);
 		} else {

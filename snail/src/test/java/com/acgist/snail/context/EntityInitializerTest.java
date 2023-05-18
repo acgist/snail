@@ -8,9 +8,9 @@ import com.acgist.snail.utils.Performance;
 
 class EntityInitializerTest extends Performance {
 
-	@Test
-	void testEntityInitializer() {
-		assertDoesNotThrow(() -> EntityInitializer.newInstance().sync());
-	}
-	
+    @Test
+    void testEntityInitializer() {
+        assertDoesNotThrow(() -> EntityInitializer.newInstance().sync());
+    }
+    
 }

@@ -82,7 +82,7 @@ class PeerServerTest extends Performance {
 		launcher.handshake();
 		new Thread(() -> {
 			while(true) {
-				LOGGER.debug("下载速度：{}", statisticsSession.downloadSpeed());
+				LOGGER.debug("下载速度：{}", statisticsSession.getDownloadSpeed());
 				ThreadUtils.sleep(1000);
 				torrentSession.torrentStreamGroup().flush();
 			}

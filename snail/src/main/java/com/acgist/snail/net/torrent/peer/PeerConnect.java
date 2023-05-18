@@ -108,7 +108,7 @@ public abstract class PeerConnect implements IPeerConnect {
 		this.completedLock = new AtomicBoolean(false);
 		this.releaseLock = new AtomicBoolean(false);
 		this.peerSession = peerSession;
-		this.statisticsSession = peerSession.statistics();
+		this.statisticsSession = peerSession.getStatistics();
 		this.torrentSession = torrentSession;
 		this.peerConnectSession = new PeerConnectSession();
 		this.peerSubMessageHandler = peerSubMessageHandler;

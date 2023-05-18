@@ -94,7 +94,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	@Override
-	public IStatisticsSession statistics() {
+	public IStatisticsSession getStatistics() {
 		return this;
 	}
 
@@ -141,7 +141,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	@Override
-	public long uploadSpeed() {
+	public long getUploadSpeed() {
 		if(this.speed) {
 			return this.uploadSpeed.speed();
 		}
@@ -149,7 +149,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 
 	@Override
-	public long downloadSpeed() {
+	public long getDownloadSpeed() {
 		if(this.speed) {
 			return this.downloadSpeed.speed();
 		}
@@ -157,7 +157,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	@Override
-	public long uploadSize() {
+	public long getUploadSize() {
 		return this.uploadSize.get();
 	}
 	
@@ -167,7 +167,7 @@ public final class StatisticsSession implements IStatisticsSession {
 	}
 	
 	@Override
-	public long downloadSize() {
+	public long getDownloadSize() {
 		return this.downloadSize.get();
 	}
 	

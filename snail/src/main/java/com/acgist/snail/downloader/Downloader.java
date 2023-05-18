@@ -46,7 +46,7 @@ public abstract class Downloader implements IDownloader {
 		this.fail = false;
 		this.completed = false;
 		this.taskSession = taskSession;
-		this.statistics = taskSession.statistics();
+		this.statistics = taskSession.getStatistics();
 	}
 	
 	/**
@@ -123,10 +123,10 @@ public abstract class Downloader implements IDownloader {
 	
 	@Override
 	public boolean verify() throws DownloadException {
-		final boolean verify = this.taskSession.downloadFile().exists();
+		final boolean verify = this.taskSession.getDownloadFile().exists();
 		if(!verify) {
 			// 如果文件已被删除重置已经下载大小
-			this.taskSession.downloadSize(0L);
+			this.taskSession.setDownloadSize(0L);
 		}
 		return verify;
 	}

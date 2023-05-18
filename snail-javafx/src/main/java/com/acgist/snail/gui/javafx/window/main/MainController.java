@@ -277,7 +277,7 @@ public final class MainController extends Controller {
 		// 刷新Table
 		this.taskTable.refresh();
 		// 上传速度
-		Platform.runLater(() -> this.uploadBuffer.setText(FileUtils.formatSpeed(StatisticsContext.getInstance().uploadSpeed())));
+		Platform.runLater(() -> this.uploadBuffer.setText(FileUtils.formatSpeed(StatisticsContext.getInstance().getUploadSpeed())));
 	}
 	
 	/**
@@ -392,7 +392,7 @@ public final class MainController extends Controller {
 					TorrentWindow.getInstance().show(session);
 				} else {
 					// 其他：打开下载文件
-					Desktops.open(session.downloadFile());
+					Desktops.open(session.getDownloadFile());
 				}
 			} else if(session.statusRunning()) {
 				// 处于下载线程：暂停下载

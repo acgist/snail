@@ -20,18 +20,18 @@ public abstract class StatisticsGetter implements IStatisticsGetter {
 	}
 	
 	@Override
-	public IStatisticsSession statistics() {
+	public IStatisticsSession getStatistics() {
 		return this.statistics;
 	}
 	
 	@Override
-	public long uploadSize() {
-		return this.statistics.uploadSize();
+	public long getUploadSize() {
+		return this.statistics.getUploadSize();
 	}
 	
 	@Override
-	public long downloadSize() {
-		return this.statistics.downloadSize();
+	public long getDownloadSize() {
+		return this.statistics.getDownloadSize();
 	}
 	
 }

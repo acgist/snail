@@ -68,7 +68,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	 * @param entity 任务
 	 */
 	private TaskSession(TaskEntity entity) {
-		super(new StatisticsSession(true, StatisticsContext.getInstance().statistics()));
+		super(new StatisticsSession(true, StatisticsContext.getInstance().getStatistics()));
 		this.entity = entity;
 		this.deleteLock = new AtomicBoolean(false);
 	}
@@ -90,7 +90,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	@Override
-	public IDownloader downloader() {
+	public IDownloader getDownloader() {
 		return this.downloader;
 	}
 	
@@ -104,13 +104,13 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 	
 	@Override
-	public File downloadFile() {
+	public File getDownloadFile() {
 		return new File(this.getFile());
 	}
 	
 	@Override
-	public File downloadFolder() {
-		final File file = this.downloadFile();
+	public File getDownloadFolder() {
+		final File file = this.getDownloadFile();
 		if(file.isFile()) {
 			return file.getParentFile();
 		} else {
@@ -124,17 +124,17 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	}
 
 	@Override
-	public void downloadSize(long size) {
+	public void setDownloadSize(long size) {
 		this.statistics.downloadSize(size);
 	}
 
 	@Override
 	public void buildDownloadSize() {
-		this.downloadSize(FileUtils.fileSize(this.getFile()));
+		this.setDownloadSize(FileUtils.fileSize(this.getFile()));
 	}
 	
 	@Override
-	public Map<String, Object> taskMessage() {
+	public Map<String, Object> toMap() {
 		final Map<String, Object> data = BeanUtils.toMap(this.entity).entrySet().stream()
 			.filter(entry -> entry.getKey() != null && entry.getValue() != null)
 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
@@ -185,7 +185,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	@Override
 	public String getStatusValue() {
 		if(this.statusDownload()) {
-			return FileUtils.formatSpeed(this.statistics.downloadSpeed());
+			return FileUtils.formatSpeed(this.statistics.getDownloadSpeed());
 		} else {
 			return this.getStatus().getValue();
 		}
@@ -196,7 +196,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		if(this.statusCompleted()) {
 			return FileUtils.formatSize(this.getSize());
 		} else {
-			return SymbolConfig.Symbol.SLASH.join(FileUtils.formatSize(this.downloadSize()), FileUtils.formatSize(this.getSize()));
+			return SymbolConfig.Symbol.SLASH.join(FileUtils.formatSize(this.getDownloadSize()), FileUtils.formatSize(this.getSize()));
 		}
 	}
 
@@ -213,12 +213,12 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 	public String getCompletedDateValue() {
 		if(this.getCompletedDate() == null) {
 			if(this.statusDownload()) {
-				final long downloadSpeed = this.statistics.downloadSpeed();
+				final long downloadSpeed = this.statistics.getDownloadSpeed();
 				if(downloadSpeed == 0L) {
 					return SymbolConfig.Symbol.MINUS.toString();
 				} else {
 					// 剩余下载时间
-					long second = (this.getSize() - this.downloadSize()) / downloadSpeed;
+					long second = (this.getSize() - this.getDownloadSize()) / downloadSpeed;
 					if(second <= 0) {
 						second = 0;
 					}
@@ -371,7 +371,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 		}
 		// 下载文件
 		if(this.downloader == null) {
-			return this.downloadFile().exists();
+			return this.getDownloadFile().exists();
 		}
 		// 下载任务
 		try {
@@ -417,7 +417,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
 			// 修改任务下载类型
 			this.setType(Type.TORRENT);
 			// 修改已经下载大小
-			this.downloadSize(0L);
+			this.setDownloadSize(0L);
 		}
 	}
 	

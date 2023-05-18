@@ -14,42 +14,42 @@ import com.acgist.snail.utils.Performance;
 
 class InitializerTest extends Performance {
 
-	@Test
-	void testInitializer() {
-		final AtomicBoolean init = new AtomicBoolean(false);
-		new Initializer("ACGIST") {
-			@Override
-			protected void init() {
-				init.set(true);
-			}
-			protected void release() {};
-		}.sync();
-		assertTrue(init.get());
-		final CountDownLatch countDownLatch = new CountDownLatch(3);
-		new Initializer("异步没有延迟") {
-			@Override
-			protected void init() {
-				countDownLatch.countDown();
-			}
-			protected void release() {};
-		}.asyn();
-		new Initializer("异步零秒延迟", 0) {
-			@Override
-			protected void init() {
-				countDownLatch.countDown();
-			}
-			protected void release() {};
-		}.asyn();
-		new Initializer("异步两秒延迟", 2) {
-			@Override
-			protected void init() {
-				assertEquals(1L, countDownLatch.getCount());
-				countDownLatch.countDown();
-			}
-			protected void release() {};
-		}.asyn();
-		assertDoesNotThrow(() -> countDownLatch.await(5, TimeUnit.SECONDS));
-		assertEquals(0L, countDownLatch.getCount());
-	}
-	
+    @Test
+    void testInitializer() {
+        final AtomicBoolean init = new AtomicBoolean(false);
+        new Initializer("ACGIST") {
+            @Override
+            protected void init() {
+                init.set(true);
+            }
+            protected void release() {};
+        }.sync();
+        assertTrue(init.get());
+        final CountDownLatch countDownLatch = new CountDownLatch(3);
+        new Initializer("异步没有延迟") {
+            @Override
+            protected void init() {
+                countDownLatch.countDown();
+            }
+            protected void release() {};
+        }.asyn();
+        new Initializer("异步零秒延迟", 0) {
+            @Override
+            protected void init() {
+                countDownLatch.countDown();
+            }
+            protected void release() {};
+        }.asyn();
+        new Initializer("异步两秒延迟", 2) {
+            @Override
+            protected void init() {
+                assertEquals(1L, countDownLatch.getCount());
+                countDownLatch.countDown();
+            }
+            protected void release() {};
+        }.asyn();
+        assertDoesNotThrow(() -> countDownLatch.await(5, TimeUnit.SECONDS));
+        assertEquals(0L, countDownLatch.getCount());
+    }
+    
 }

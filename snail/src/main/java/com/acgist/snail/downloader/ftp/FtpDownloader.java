@@ -62,10 +62,10 @@ public final class FtpDownloader extends MonofileDownloader {
 			// 断点续传
 			if(this.client.range()) {
 				LOGGER.debug("FTP断点下载：{}", downloadSize);
-				this.taskSession.downloadSize(downloadSize);
+				this.taskSession.setDownloadSize(downloadSize);
 			} else {
 				LOGGER.debug("FTP重新下载：{}", downloadSize);
-				this.taskSession.downloadSize(0L);
+				this.taskSession.setDownloadSize(0L);
 			}
 		} else {
 			this.fail("FTP服务器连接失败");

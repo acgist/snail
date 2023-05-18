@@ -24,19 +24,19 @@
 ```java
 final Snail snail = SnailBuilder.newBuilder()
 // 启用指定下载协议
-//	.enableFtp()
-//	.enableHls()
-//	.enableHttp()
-//	.enableMagnet()
-//	.enableTorrent()
+//    .enableFtp()
+//    .enableHls()
+//    .enableHttp()
+//    .enableMagnet()
+//    .enableTorrent()
 // 启用所有下载协议
-	.enableAllProtocol()
+    .enableAllProtocol()
 // 加载已有下载任务
-	.loadTask()
+    .loadTask()
 // 启动系统服务监听
-	.application()
+    .application()
 // 同步创建
-	.buildSync();
+    .buildSync();
 // 添加下载
 snail.download("下载链接");
 // 等待下载完成
@@ -48,18 +48,18 @@ snail.lockDownload();
 ```java
 final String torrentPath = "种子文件";
 final Snail snail = SnailBuilder.newBuilder()
-	.enableTorrent()
-	.buildSync();
+    .enableTorrent()
+    .buildSync();
 // 注册文件选择事件
 GuiContext.register(new MultifileEventAdapter());
 // 解析种子文件
 final Torrent torrent = TorrentContext.loadTorrent(torrentPath);
 // 过滤下载文件
 final List<String> list = torrent.getInfo().files().stream()
-	.filter(TorrentFile::notPaddingFile)
-	.map(TorrentFile::path)
-	.filter(path -> path.endsWith(".mkv"))
-	.collect(Collectors.toList());
+    .filter(TorrentFile::notPaddingFile)
+    .map(TorrentFile::path)
+    .filter(path -> path.endsWith(".mkv"))
+    .collect(Collectors.toList());
 // 设置下载文件
 MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
 // 添加下载

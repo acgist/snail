@@ -344,11 +344,11 @@ public final class StatisticsController extends Controller {
 	 * <p>系统流量统计</p>
 	 */
 	private void buildSystemTrafficStatistics() {
-		final var statistics = StatisticsContext.getInstance().statistics();
+		final var statistics = StatisticsContext.getInstance().getStatistics();
 		// 累计上传
-		this.upload.setText(FileUtils.formatSize(statistics.uploadSize()));
+		this.upload.setText(FileUtils.formatSize(statistics.getUploadSize()));
 		// 累计下载
-		this.download.setText(FileUtils.formatSize(statistics.downloadSize()));
+		this.download.setText(FileUtils.formatSize(statistics.getDownloadSize()));
 	}
 	
 	/**
@@ -543,8 +543,8 @@ public final class StatisticsController extends Controller {
 					name = String.format("%s-%d", name, index);
 				}
 				categoriesPeer.add(name);
-				final double uploadSize = FileUtils.formatSizeMB(peer.statistics().uploadSize());
-				final double downloadSize = FileUtils.formatSizeMB(peer.statistics().downloadSize());
+				final double uploadSize = FileUtils.formatSizeMB(peer.getStatistics().getUploadSize());
+				final double downloadSize = FileUtils.formatSizeMB(peer.getStatistics().getDownloadSize());
 				final XYChart.Data<String, Number> uploadData = new XYChart.Data<>(name, uploadSize);
 				final XYChart.Data<String, Number> downloadData = new XYChart.Data<>(name, downloadSize);
 				uploadPeer.add(uploadData);
@@ -610,8 +610,8 @@ public final class StatisticsController extends Controller {
 		final BitSet indifferencePeers = new BitSet();
 		for (int index = 0; index < peerSize; index++) {
 			peer = peers.get(index);
-			final long uploadSize = peer.uploadSize();
-			final long downloadSize = peer.downloadSize();
+			final long uploadSize = peer.getUploadSize();
+			final long downloadSize = peer.getDownloadSize();
 			if(uploadSize != 0L && downloadSize != 0L) {
 				exchangePeers.set(index);
 			} else if(uploadSize > 0L) {
@@ -632,8 +632,8 @@ public final class StatisticsController extends Controller {
 			.draw();
 		final String message = String.format(
 			"累计上传：%s 累计下载：%s",
-			FileUtils.formatSize(torrentSession.statistics().uploadSize()),
-			FileUtils.formatSize(torrentSession.statistics().downloadSize())
+			FileUtils.formatSize(torrentSession.statistics().getUploadSize()),
+			FileUtils.formatSize(torrentSession.statistics().getDownloadSize())
 		);
 		final HBox trafficBox = this.buildStatisticsInfo(message);
 		final String[] tabs = new String[] { "交战", "上传", "下载", "无情" };

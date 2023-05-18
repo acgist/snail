@@ -898,7 +898,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 			this.rejectRequest(index, begin, length);
 			return;
 		}
-		if(this.peerSession.uploadSize() > this.torrentSession.size()) {
+		if(this.peerSession.getUploadSize() > this.torrentSession.size()) {
 			LOGGER.debug("处理request消息：累计上传大小超过任务大小");
 			this.choke();
 			this.rejectRequest(index, begin, length);

@@ -203,7 +203,7 @@ public final class ApplicationMessageHandler extends TcpMessageHandler implement
 	 */
 	private void onTaskList() {
 		final List<Map<String, Object>> list = TaskContext.getInstance().allTask().stream()
-			.map(ITaskSession::taskMessage)
+			.map(ITaskSession::toMap)
 			.collect(Collectors.toList());
 		final String body = BEncodeEncoder.encodeListString(list);
 		this.send(ApplicationMessage.Type.RESPONSE.build(body));

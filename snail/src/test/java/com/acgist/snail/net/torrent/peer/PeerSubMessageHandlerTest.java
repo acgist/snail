@@ -19,7 +19,7 @@ class PeerSubMessageHandlerTest extends Performance {
 	void testHave() throws DownloadException {
 		final var path = "e:/snail/07E1B909D8D193D80E440A8593FB57A658223A0E.torrent"; // 没有编码：GBK
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
-		final var peerSession = PeerSession.newInstance(StatisticsContext.getInstance().statistics(), "192.168.1.1", 18888);
+		final var peerSession = PeerSession.newInstance(StatisticsContext.getInstance().getStatistics(), "192.168.1.1", 18888);
 		final var handler = PeerSubMessageHandler.newInstance(peerSession, session);
 		final var entity = new TaskEntity();
 		entity.setFile("E:/tmp/verify/");

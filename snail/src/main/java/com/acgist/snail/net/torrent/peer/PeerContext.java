@@ -252,7 +252,7 @@ public final class PeerContext implements IContext {
 		final var sessions = this.listConnectPeerSession(infoHashHex);
 		// 优质Peer：下载数据
 		final var optimize = sessions.stream()
-			.filter(session -> session.statistics().downloadSize() > 0)
+			.filter(session -> session.getStatistics().getDownloadSize() > 0)
 			.collect(Collectors.toList());
 		final byte[] message = PeerExchangeMessageHandler.buildMessage(optimize);
 		if(ArrayUtils.isEmpty(message)) {

@@ -5,18 +5,18 @@
 </p>
 
 <p align="center">
-	<img alt="Java" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600" />
-	<img alt="JavaFX" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=JavaFX&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='javafx.version']&cacheSeconds=3600" />
-	<a target="_blank" href="https://starchart.cc/acgist/snail">
-		<img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?style=flat-square&label=Github%20stars&color=crimson" />
-	</a>
-	<img alt="Gitee stars" src="https://img.shields.io/badge/dynamic/json?style=flat-square&label=Gitee%20stars&color=crimson&url=https://gitee.com/api/v5/repos/acgist/snail&query=$.stargazers_count&cacheSeconds=3600" />
-	<br />
-	<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/acgist/snail/build.yml?style=flat-square&branch=master" />
-	<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square&color=orange" />
-	<img alt="Maven Central" src="https://img.shields.io/maven-central/v/com.acgist/snail?style=flat-square&color=orange" />
-	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?style=flat-square&color=blue" />
-	<img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square&color=blue" />
+    <img alt="Java" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=Java&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='java.version']&cacheSeconds=3600" />
+    <img alt="JavaFX" src="https://img.shields.io/badge/dynamic/xml?style=flat-square&label=JavaFX&color=blueviolet&url=https://raw.githubusercontent.com/acgist/snail/master/pom.xml&query=//*[local-name()='javafx.version']&cacheSeconds=3600" />
+    <a target="_blank" href="https://starchart.cc/acgist/snail">
+        <img alt="GitHub stars" src="https://img.shields.io/github/stars/acgist/snail?style=flat-square&label=Github%20stars&color=crimson" />
+    </a>
+    <img alt="Gitee stars" src="https://img.shields.io/badge/dynamic/json?style=flat-square&label=Gitee%20stars&color=crimson&url=https://gitee.com/api/v5/repos/acgist/snail&query=$.stargazers_count&cacheSeconds=3600" />
+    <br />
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/acgist/snail/build.yml?style=flat-square&branch=master" />
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/acgist/snail?style=flat-square&color=orange" />
+    <img alt="Maven Central" src="https://img.shields.io/maven-central/v/com.acgist/snail?style=flat-square&color=orange" />
+    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/acgist/snail?style=flat-square&color=blue" />
+    <img alt="GitHub" src="https://img.shields.io/github/license/acgist/snail?style=flat-square&color=blue" />
 </p>
 
 ----
@@ -74,16 +74,16 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar
 
 ```xml
 <dependency>
-	<groupId>com.acgist</groupId>
-	<artifactId>snail</artifactId>
-	<version>{release.version}</version>
+    <groupId>com.acgist</groupId>
+    <artifactId>snail</artifactId>
+    <version>{release.version}</version>
 </dependency>
 ```
 
 ```java
 final Snail snail = SnailBuilder.newBuilder()
-	.enableAllProtocol()
-	.buildSync();
+    .enableAllProtocol()
+    .buildSync();
 snail.download("https://www.acgist.com");
 snail.lockDownload();
 ```

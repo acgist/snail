@@ -14,7 +14,7 @@ class PeerContextTest extends Performance {
 	void testNewPeerSession() {
 		final String hash = "1".repeat(20);
 		this.costed(100000, 100, () -> {
-			PeerContext.getInstance().newPeerSession(hash, StatisticsContext.getInstance().statistics(), "192.168.1.100", 1000, Source.CONNECT);
+			PeerContext.getInstance().newPeerSession(hash, StatisticsContext.getInstance().getStatistics(), "192.168.1.100", 1000, Source.CONNECT);
 		});
 		this.log(PeerContext.getInstance().listPeerSession(hash).size());
 		assertEquals(1, PeerContext.getInstance().listPeerSession(hash).size());

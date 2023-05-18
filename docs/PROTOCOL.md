@@ -50,7 +50,7 @@
 |0036|[Torrent RSS feeds](http://www.bittorrent.org/beps/bep_0036.html)|?|
 |0038|[Finding Local Data Via Torrent File Hints](http://www.bittorrent.org/beps/bep_0038.html)|?|
 |0039|[Updating Torrents Via Feed URL](http://www.bittorrent.org/beps/bep_0039.html)|?|
-|0040|[	Canonical Peer Priority](http://www.bittorrent.org/beps/bep_0040.html)|?|
+|0040|[Canonical Peer Priority](http://www.bittorrent.org/beps/bep_0040.html)|?|
 |0041|[UDP Tracker Protocol Extensions](http://www.bittorrent.org/beps/bep_0041.html)|?|
 |0042|[DHT Security Extension](http://www.bittorrent.org/beps/bep_0042.html)|√|
 |0043|[Read-only DHT Nodes](http://www.bittorrent.org/beps/bep_0043.html)|?|

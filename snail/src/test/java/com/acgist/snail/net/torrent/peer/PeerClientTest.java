@@ -60,7 +60,7 @@ class PeerClientTest extends Performance {
 		downloader.handshake();
 		new Thread(() -> {
 			while(true) {
-				this.log("下载速度：" + statisticsSession.downloadSpeed());
+				this.log("下载速度：" + statisticsSession.getDownloadSpeed());
 				ThreadUtils.sleep(1000);
 			}
 		}).start();

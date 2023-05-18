@@ -313,7 +313,7 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	 */
 	private void loadTorrentStreamGroup() {
 		this.torrentStreamGroup = TorrentStreamGroup.newInstance(
-			this.taskSession.downloadFolder().getAbsolutePath(),
+			this.taskSession.getDownloadFolder().getAbsolutePath(),
 			this.buildSelectedFiles(),
 			this
 		);
@@ -577,7 +577,7 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 		String torrentFilePath = null;
 		final TorrentBuilder builder = TorrentBuilder.newInstance(this.infoHash, this.trackerLauncherGroup.trackers());
 		try {
-			torrentFilePath = builder.buildFile(this.taskSession.downloadFolder().getAbsolutePath());
+			torrentFilePath = builder.buildFile(this.taskSession.getDownloadFolder().getAbsolutePath());
 			this.torrent = TorrentContext.loadTorrent(torrentFilePath);
 			this.infoHash = this.torrent.infoHash();
 		} catch (DownloadException | PacketSizeException e) {
@@ -589,7 +589,7 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 		final long torrentFileSize = FileUtils.fileSize(torrentFilePath);
 		this.taskSession.setTorrent(torrentFilePath);
 		this.taskSession.setSize(torrentFileSize);
-		this.taskSession.downloadSize(torrentFileSize);
+		this.taskSession.setDownloadSize(torrentFileSize);
 		this.taskSession.update();
 		this.checkCompletedAndUnlock();
 	}
@@ -770,10 +770,10 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	 * 
 	 * @param size 已经下载大小
 	 * 
-	 * @see ITaskSession#downloadSize(long)
+	 * @see ITaskSession#setDownloadSize(long)
 	 */
 	public void downloadSize(long size) {
-		this.taskSession.downloadSize(size);
+		this.taskSession.setDownloadSize(size);
 	}
 	
 	/**
@@ -792,10 +792,10 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	 * 
 	 * @return 统计信息
 	 * 
-	 * @see ITaskSession#statistics()
+	 * @see ITaskSession#getStatistics()
 	 */
 	public IStatisticsSession statistics() {
-		return this.taskSession.statistics();
+		return this.taskSession.getStatistics();
 	}
 	
 	/**
@@ -807,7 +807,7 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	 */
 	public int reload() {
 		return this.torrentStreamGroup.reload(
-			this.taskSession.downloadFolder().getAbsolutePath(),
+			this.taskSession.getDownloadFolder().getAbsolutePath(),
 			this.buildSelectedFiles()
 		);
 	}
