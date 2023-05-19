@@ -14,7 +14,7 @@ class SymbolConfigTest extends Performance {
 
     @Test
     void testSymbolConfig() {
-        final var values = SymbolConfig.Symbol.values();
+        final SymbolConfig.Symbol[] values = SymbolConfig.Symbol.values();
         for (SymbolConfig.Symbol symbol : values) {
             assertEquals(symbol + "", symbol.toString());
             this.log(symbol);

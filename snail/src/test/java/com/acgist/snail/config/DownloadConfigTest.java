@@ -14,7 +14,7 @@ class DownloadConfigTest extends Performance {
 
     @Test
     void testDownloadConfig() {
-        final var config = DownloadConfig.getInstance();
+        final DownloadConfig config = DownloadConfig.getInstance();
         assertNotNull(config);
         assertNotEquals(0, DownloadConfig.getUploadBufferByte());
         assertNotEquals(0, DownloadConfig.getDownloadBufferByte());

@@ -11,11 +11,11 @@ class EntityTest extends Performance {
 
     @Test
     void testEntity() {
-        final var task = new TaskEntity();
+        final TaskEntity task = new TaskEntity();
         task.setId("1234");
-        final var eq = new TaskEntity();
+        final TaskEntity eq = new TaskEntity();
         eq.setId("1234");
-        final var df = new TaskEntity();
+        final TaskEntity df = new TaskEntity();
         df.setId("4321");
         final Object ob = task;
         assertEquals(task, eq);

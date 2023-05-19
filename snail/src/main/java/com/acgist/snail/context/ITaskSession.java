@@ -74,7 +74,7 @@ public interface ITaskSession extends IStatisticsGetter, ITaskSessionEntity, ITa
          * @return 类型名称
          */
         public String getValue() {
-            return value;
+            return this.value;
         }
 
     }

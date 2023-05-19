@@ -499,7 +499,7 @@ public final class M3u8Builder {
 		 * @return 标签名称
 		 */
 		public String getName() {
-			return name;
+			return this.name;
 		}
 
 		/**
@@ -517,7 +517,7 @@ public final class M3u8Builder {
 		 * @return 标签值
 		 */
 		public String getValue() {
-			return value;
+			return this.value;
 		}
 
 		/**
@@ -535,7 +535,7 @@ public final class M3u8Builder {
 		 * @return 标签链接
 		 */
 		public String getUrl() {
-			return url;
+			return this.url;
 		}
 
 		/**
