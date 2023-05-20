@@ -41,13 +41,13 @@ public interface IStatisticsSession extends ISpeedGetter, IStatisticsGetter {
      * 
      * @param size 累计上传大小
      */
-    void uploadSize(long size);
+    void setUploadSize(long size);
     
     /**
      * 设置累计下载大小
      * 
      * @param size 累计下载大小
      */
-    void downloadSize(long size);
+    void setDownloadSize(long size);
     
 }

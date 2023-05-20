@@ -41,7 +41,7 @@ public abstract class Downloader implements IDownloader {
 	 */
 	protected Downloader(ITaskSession taskSession) {
 		// 重置任务下载大小
-		taskSession.buildDownloadSize();
+		taskSession.updateDownloadSize();
 		// 初始配置
 		this.fail = false;
 		this.completed = false;

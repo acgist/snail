@@ -118,7 +118,7 @@ public interface ITaskSession extends IStatisticsGetter, ITaskSessionEntity, ITa
     /**
      * 更新任务大小
      */
-    void buildDownloadSize();
+    void updateDownloadSize();
 
     /**
      * @return 任务信息
