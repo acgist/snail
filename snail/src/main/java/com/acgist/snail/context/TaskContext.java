@@ -129,15 +129,15 @@ public final class TaskContext implements IContext {
 				.count();
 			final int downloadSize = DownloadConfig.getSize();
 			if(downloadCount == downloadSize) {
-				LOGGER.debug("下载任务数量正常：{}-{}", downloadSize, downloadCount);
+				LOGGER.debug("下载任务数量正常：{} - {}", downloadSize, downloadCount);
 			} else if(downloadCount > downloadSize) {
-				LOGGER.debug("暂停部分下载任务：{}-{}", downloadSize, downloadCount);
+				LOGGER.debug("暂停部分下载任务：{} - {}", downloadSize, downloadCount);
 				this.tasks.stream()
 					.filter(ITaskSession::statusDownload)
 					.skip(downloadSize)
 					.forEach(ITaskSession::await);
 			} else {
-				LOGGER.debug("开始部分下载任务：{}-{}", downloadSize, downloadCount);
+				LOGGER.debug("开始部分下载任务：{} - {}", downloadSize, downloadCount);
 				this.tasks.stream()
 					.filter(ITaskSession::statusAwait)
 					.limit(downloadSize - downloadCount)

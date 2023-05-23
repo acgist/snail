@@ -80,17 +80,17 @@ class VerifyTest extends Performance {
 		if (file.isFile()) {
 			final String name = file.getName();
 			if (
-				name.endsWith(".properties") ||
-				name.endsWith(".java") ||
-				name.endsWith(".xml") ||
-				name.endsWith(".md")
+			    name.endsWith(".md")         ||
+			    name.endsWith(".xml")        ||
+				name.endsWith(".java")       ||
+				name.endsWith(".properties")
 			) {
 				Files.readAllLines(file.toPath()).forEach(line -> {
-					if(line.endsWith(" ") && !line.endsWith("* ")) {
-						this.log("文件格式错误（空格）：{}-{}", file.getAbsolutePath(), line);
+					if(line.endsWith(" ") && !line.endsWith("* ") && !line.strip().isEmpty()) {
+						this.log("文件格式错误（空格）：{} - {}", file.getAbsolutePath(), line);
 					}
 					if(line.endsWith("	") && !line.strip().isEmpty()) {
-						this.log("文件格式错误（制表）：{}-{}", file.getAbsolutePath(), line);
+						this.log("文件格式错误（制表）：{} - {}", file.getAbsolutePath(), line);
 					}
 				});
 			}

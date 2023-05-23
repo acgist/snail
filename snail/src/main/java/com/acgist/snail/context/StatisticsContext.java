@@ -10,40 +10,40 @@ import com.acgist.snail.context.session.StatisticsSession;
  * @author acgist
  */
 public final class StatisticsContext extends StatisticsGetter implements IContext, ISpeedGetter {
-	
-	private static final StatisticsContext INSTANCE = new StatisticsContext();
-	
-	public static final StatisticsContext getInstance() {
-		return INSTANCE;
-	}
-	
-	private StatisticsContext() {
-		super(new StatisticsSession());
-	}
-	
-	@Override
-	public long getUploadSpeed() {
-		return this.statistics.getUploadSpeed();
-	}
-	
-	@Override
-	public long getDownloadSpeed() {
-		return this.statistics.getDownloadSpeed();
-	}
-	
-	@Override
-	public void reset() {
-		this.statistics.reset();
-	}
+    
+    private static final StatisticsContext INSTANCE = new StatisticsContext();
+    
+    public static final StatisticsContext getInstance() {
+        return INSTANCE;
+    }
+    
+    private StatisticsContext() {
+        super(new StatisticsSession());
+    }
+    
+    @Override
+    public long getUploadSpeed() {
+        return this.statistics.getUploadSpeed();
+    }
+    
+    @Override
+    public long getDownloadSpeed() {
+        return this.statistics.getDownloadSpeed();
+    }
+    
+    @Override
+    public void reset() {
+        this.statistics.reset();
+    }
 
-	@Override
-	public void resetUploadSpeed() {
-		this.statistics.resetUploadSpeed();
-	}
+    @Override
+    public void resetUploadSpeed() {
+        this.statistics.resetUploadSpeed();
+    }
 
-	@Override
-	public void resetDownloadSpeed() {
-		this.statistics.resetDownloadSpeed();
-	}
+    @Override
+    public void resetDownloadSpeed() {
+        this.statistics.resetDownloadSpeed();
+    }
 
 }
