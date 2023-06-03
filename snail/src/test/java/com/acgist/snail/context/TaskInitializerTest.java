@@ -8,12 +8,12 @@ import com.acgist.snail.utils.Performance;
 
 class TaskInitializerTest extends Performance {
 
-	@Test
-	void testTaskInitializer() {
-		assertDoesNotThrow(() -> {
-			TaskInitializer.newInstance().sync();
-			TaskInitializer.newInstance().destroy();
-		});
-	}
-	
+    @Test
+    void testTaskInitializer() {
+        assertDoesNotThrow(() -> {
+            TaskInitializer.newInstance().sync();
+            TaskInitializer.newInstance().destroy();
+        });
+    }
+    
 }
