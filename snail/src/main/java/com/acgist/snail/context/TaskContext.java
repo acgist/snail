@@ -3,7 +3,6 @@ package com.acgist.snail.context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.entity.TaskEntity;
@@ -106,7 +105,8 @@ public final class TaskContext implements IContext {
      */
     public List<ITaskSession> allTask() {
         synchronized (this.tasks) {
-            return this.tasks.stream().collect(Collectors.toList());
+            return this.tasks.stream()
+                .toList();
         }
     }
     
@@ -114,8 +114,10 @@ public final class TaskContext implements IContext {
      * @return 是否含有下载任务
      */
     public boolean running() {
-        return this.allTask().stream()
-            .anyMatch(ITaskSession::statusRunning);
+        synchronized (this.tasks) {
+            return this.tasks.stream()
+                .anyMatch(ITaskSession::statusRunning);
+        }
     }
     
     /**
