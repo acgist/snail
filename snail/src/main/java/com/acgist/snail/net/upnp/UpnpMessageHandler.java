@@ -50,7 +50,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 	public void onMessage(String message, InetSocketAddress address) {
 		final HeaderWrapper headers = HeaderWrapper.newInstance(message);
 		// 判断是否支持UPNP设置
-		final boolean support = headers.allHeaders().values().stream()
+		final boolean support = headers.getHeaders().values().stream()
 			.anyMatch(list -> list.stream()
 				.anyMatch(value -> StringUtils.startsWith(value, UpnpServer.UPNP_ROOT_DEVICE))
 			);
@@ -58,7 +58,7 @@ public final class UpnpMessageHandler extends UdpMessageHandler implements IMess
 			LOGGER.warn("UPNP设置失败（不支持的驱动）：{}", message);
 			return;
 		}
-		final String location = headers.header(HEADER_LOCATION);
+		final String location = headers.getHeader(HEADER_LOCATION);
 		if(StringUtils.isEmpty(location)) {
 			LOGGER.warn("UPNP设置失败（没有描述文件地址）：{}", message);
 			return;

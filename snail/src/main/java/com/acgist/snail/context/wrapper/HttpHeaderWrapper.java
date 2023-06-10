@@ -103,7 +103,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * @return 文件名称
 	 */
 	public String fileName(final String defaultName) {
-		String fileName = this.header(HEADER_CONTENT_DISPOSITION);
+		String fileName = this.getHeader(HEADER_CONTENT_DISPOSITION);
 		if(StringUtils.isEmpty(fileName)) {
 			return defaultName;
 		}
@@ -210,7 +210,7 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 */
 	public long fileSize() {
 		long size = 0L;
-		final String value = this.header(HEADER_CONTENT_LENGTH);
+		final String value = this.getHeader(HEADER_CONTENT_LENGTH);
 		if(StringUtils.isNumeric(value)) {
 			size = Long.parseLong(value);
 		}
@@ -226,10 +226,10 @@ public final class HttpHeaderWrapper extends HeaderWrapper {
 	 * @see #HEADER_CONTENT_RANGE
 	 */
 	public boolean range() {
-		if(HEADER_VALUE_BYTES.equalsIgnoreCase(this.header(HEADER_ACCEPT_RANGES))) {
+		if(HEADER_VALUE_BYTES.equalsIgnoreCase(this.getHeader(HEADER_ACCEPT_RANGES))) {
 			return true;
 		}
-		return this.header(HEADER_CONTENT_RANGE) != null;
+		return this.getHeader(HEADER_CONTENT_RANGE) != null;
 	}
 
 }

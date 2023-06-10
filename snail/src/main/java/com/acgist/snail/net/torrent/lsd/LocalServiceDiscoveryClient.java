@@ -77,11 +77,11 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 		final String peerId = StringUtils.hex(PeerConfig.getInstance().getPeerId());
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header(LocalServiceDiscoveryMessageHandler.HEADER_HOST, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT))
-			.header(LocalServiceDiscoveryMessageHandler.HEADER_PORT, String.valueOf(SystemConfig.getTorrentPort()))
-			.header(LocalServiceDiscoveryMessageHandler.HEADER_COOKIE, peerId);
+			.setHeader(LocalServiceDiscoveryMessageHandler.HEADER_HOST, SymbolConfig.Symbol.COLON.join(LocalServiceDiscoveryServer.lsdHost(), LocalServiceDiscoveryServer.LSD_PORT))
+			.setHeader(LocalServiceDiscoveryMessageHandler.HEADER_PORT, String.valueOf(SystemConfig.getTorrentPort()))
+			.setHeader(LocalServiceDiscoveryMessageHandler.HEADER_COOKIE, peerId);
 		for (String infoHash : infoHashs) {
-			builder.header(LocalServiceDiscoveryMessageHandler.HEADER_INFOHASH, infoHash);
+			builder.setHeader(LocalServiceDiscoveryMessageHandler.HEADER_INFOHASH, infoHash);
 		}
 		return builder.build();
 	}

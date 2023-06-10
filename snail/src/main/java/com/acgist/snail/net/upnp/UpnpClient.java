@@ -60,10 +60,10 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	private String buildMSearch() {
 		final HeaderWrapper builder = HeaderWrapper.newBuilder(PROTOCOL);
 		builder
-			.header("HOST", SymbolConfig.Symbol.COLON.join(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT))
-			.header("ST", UpnpServer.UPNP_ROOT_DEVICE)
-			.header("MAN", "\"ssdp:discover\"")
-			.header("MX", "3");
+			.setHeader("HOST", SymbolConfig.Symbol.COLON.join(UpnpServer.upnpHost(), UpnpServer.UPNP_PORT))
+			.setHeader("ST", UpnpServer.UPNP_ROOT_DEVICE)
+			.setHeader("MAN", "\"ssdp:discover\"")
+			.setHeader("MX", "3");
 		return builder.build();
 	}
 

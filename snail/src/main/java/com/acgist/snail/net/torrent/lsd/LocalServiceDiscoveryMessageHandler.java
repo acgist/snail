@@ -67,9 +67,9 @@ public final class LocalServiceDiscoveryMessageHandler extends UdpMessageHandler
 	public void onMessage(String message, InetSocketAddress address) {
 		final HeaderWrapper headers = HeaderWrapper.newInstance(message);
 		final String host = address.getHostString();
-		final String port = headers.header(HEADER_PORT);
-		final String cookie = headers.header(HEADER_COOKIE);
-		final List<String> list = headers.headerList(HEADER_INFOHASH);
+		final String port = headers.getHeader(HEADER_PORT);
+		final String cookie = headers.getHeader(HEADER_COOKIE);
+		final List<String> list = headers.getHeaderList(HEADER_INFOHASH);
 		if(StringUtils.isNumeric(port) && CollectionUtils.isNotEmpty(list)) {
 			final byte[] peerId = StringUtils.unhex(cookie);
 			if(Arrays.equals(peerId, PeerConfig.getInstance().getPeerId())) {
