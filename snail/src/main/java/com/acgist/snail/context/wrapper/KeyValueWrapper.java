@@ -22,20 +22,20 @@ public final class KeyValueWrapper {
      */
     private static final char DEFAULT_SEPARATOR = SymbolConfig.Symbol.AND.toChar();
     /**
-     * 默认kvSeparator
+     * 默认connector
      * 
-     * @see #kvSeparator
+     * @see #connector
      */
-    private static final char DEFAULT_KV_SEPARATOR = SymbolConfig.Symbol.EQUALS.toChar();
+    private static final char DEFAULT_CONNECTOR = SymbolConfig.Symbol.EQUALS.toChar();
 
     /**
-     * 连接符
+     * Kev-Value分隔符
      */
     private final char separator;
     /**
      * Key-Value连接符
      */
-    private final char kvSeparator;
+    private final char connector;
     /**
      * 编码数据
      */
@@ -46,15 +46,15 @@ public final class KeyValueWrapper {
     private final Map<String, String> data;
 
     /**
-     * @param separator   连接符
-     * @param kvSeparator Key-Value连接符
-     * @param content     编码数据
-     * @param data        解码数据
+     * @param separator Key-Value分隔符
+     * @param connector Key-Value连接符
+     * @param content   编码数据
+     * @param data      解码数据
      */
-    private KeyValueWrapper(char separator, char kvSeparator, String content, Map<String, String> data) {
-        this.separator   = separator;
-        this.kvSeparator = kvSeparator;
-        this.content     = content;
+    private KeyValueWrapper(char separator, char connector, String content, Map<String, String> data) {
+        this.separator = separator;
+        this.connector = connector;
+        this.content   = content;
         if(data == null) {
             this.data = new HashMap<>();
         } else {
@@ -66,7 +66,7 @@ public final class KeyValueWrapper {
      * @return {@link KeyValueWrapper}
      */
     public static final KeyValueWrapper newInstance() {
-        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, null);
+        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_CONNECTOR, null, null);
     }
     
     /**
@@ -75,7 +75,7 @@ public final class KeyValueWrapper {
      * @return {@link KeyValueWrapper}
      */
     public static final KeyValueWrapper newInstance(String content) {
-        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, content, null);
+        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_CONNECTOR, content, null);
     }
     
     /**
@@ -84,39 +84,39 @@ public final class KeyValueWrapper {
      * @return {@link KeyValueWrapper}
      */
     public static final KeyValueWrapper newInstance(Map<String, String> data) {
-        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_KV_SEPARATOR, null, data);
+        return new KeyValueWrapper(DEFAULT_SEPARATOR, DEFAULT_CONNECTOR, null, data);
     }
     
     /**
-     * @param separator   连接符
-     * @param kvSeparator Key-Value连接符
+     * @param separator Key-Value分隔符
+     * @param connector Key-Value连接符
      * 
      * @return {@link KeyValueWrapper}
      */
-    public static final KeyValueWrapper newInstance(char separator, char kvSeparator) {
-        return new KeyValueWrapper(separator, kvSeparator, null, null);
+    public static final KeyValueWrapper newInstance(char separator, char connector) {
+        return new KeyValueWrapper(separator, connector, null, null);
     }
     
     /**
-     * @param separator   连接符
-     * @param kvSeparator Key-Value连接符
-     * @param content     编码数据
+     * @param separator Key-Value分隔符
+     * @param connector Key-Value连接符
+     * @param content   编码数据
      * 
      * @return {@link KeyValueWrapper}
      */
-    public static final KeyValueWrapper newInstance(char separator, char kvSeparator, String content) {
-        return new KeyValueWrapper(separator, kvSeparator, content, null);
+    public static final KeyValueWrapper newInstance(char separator, char connector, String content) {
+        return new KeyValueWrapper(separator, connector, content, null);
     }
     
     /**
-     * @param separator   连接符
-     * @param kvSeparator Key-Value连接符
-     * @param data        解码数据
+     * @param separator Key-Value分隔符
+     * @param connector Key-Value连接符
+     * @param data      解码数据
      * 
      * @return {@link KeyValueWrapper}
      */
-    public static final KeyValueWrapper newInstance(char separator, char kvSeparator, Map<String, String> data) {
-        return new KeyValueWrapper(separator, kvSeparator, null, data);
+    public static final KeyValueWrapper newInstance(char separator, char connector, Map<String, String> data) {
+        return new KeyValueWrapper(separator, connector, null, data);
     }
     
     /**
@@ -131,7 +131,7 @@ public final class KeyValueWrapper {
             ->
             builder
             .append(key)
-            .append(this.kvSeparator)
+            .append(this.connector)
             .append(value)
             .append(this.separator)
         );
@@ -157,10 +157,10 @@ public final class KeyValueWrapper {
         String key;
         String value;
         String keyValue;
-        final int length = this.content.length();
+        final int length          = this.content.length();
+        final int separatorLength = Character.toString(this.separator).length();
         do {
-            left = pos + 1;
-//          left = pos + Character.toString(this.separator).length();
+            left = pos + separatorLength;
             pos = this.content.indexOf(this.separator, left);
             if(pos < 0) {
                 keyValue = this.content.substring(left).strip();
@@ -170,12 +170,12 @@ public final class KeyValueWrapper {
             if(keyValue.isEmpty()) {
                 continue;
             }
-            index = keyValue.indexOf(this.kvSeparator);
+            index = keyValue.indexOf(this.connector);
             if(index < 0) {
-                key = keyValue.strip();
+                key   = keyValue.strip();
                 value = "";
             } else {
-                key = keyValue.substring(0, index).strip();
+                key   = keyValue.substring(0, index).strip();
                 value = keyValue.substring(index + 1).strip();
             }
             this.data.put(key, value);
