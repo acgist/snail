@@ -50,7 +50,7 @@ public final class HttpProtocol extends Protocol {
 	protected String buildFileName() throws DownloadException {
 		// 优先使用头部信息中的文件名称
 		final String defaultName = super.buildFileName();
-		return this.httpHeaderWrapper.fileName(defaultName);
+		return this.httpHeaderWrapper.getFileName(defaultName);
 	}
 
 	@Override

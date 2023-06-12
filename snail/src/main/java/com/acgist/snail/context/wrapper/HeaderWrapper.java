@@ -224,7 +224,7 @@ public class HeaderWrapper {
                 key = line.strip();
                 value = "";
             } else {
-                key = line.substring(0, index).strip();
+                key   = line.substring(0, index).strip();
                 value = line.substring(index + 1).strip();
             }
             this.setHeader(key, value);
