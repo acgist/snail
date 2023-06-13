@@ -62,8 +62,8 @@ public final class UdpTrackerSession extends TrackerSession {
 	private UdpTrackerSession(String scrapeUrl, String announceUrl) throws NetException {
 		super(scrapeUrl, announceUrl, Protocol.Type.UDP);
 		final URIWrapper wrapper = URIWrapper.newInstance(announceUrl, DEFAULT_PORT).decode();
-		this.host = wrapper.host();
-		this.port = wrapper.port();
+		this.host = wrapper.getHost();
+		this.port = wrapper.getPort();
 		this.trackerClient = TrackerClient.newInstance(NetUtils.buildSocketAddress(this.host, this.port));
 	}
 

@@ -99,7 +99,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
 	 */
 	public static final FtpClient newInstance(String url) {
 		final URIWrapper wrapper = URIWrapper.newInstance(url, DEFAULT_PORT, SystemConfig.getFtpUser(), SystemConfig.getFtpPassword()).decode();
-		return newInstance(wrapper.host(), wrapper.port(), wrapper.user(), wrapper.password(), wrapper.path());
+		return newInstance(wrapper.getHost(), wrapper.getPort(), wrapper.getUser(), wrapper.password(), wrapper.getPath());
 	}
 	
 	@Override

@@ -105,7 +105,7 @@ public final class MagnetBuilder {
 		int index;
 		String key;
 		String value;
-		final String[] querys = URIWrapper.newInstance(this.url).decode().querys();
+		final String[] querys = URIWrapper.newInstance(this.url).decode().getQuerys();
 		for (String query : querys) {
 			index = query.indexOf(SymbolConfig.Symbol.EQUALS.toChar());
 			if(index >= 0 && query.length() > index) {

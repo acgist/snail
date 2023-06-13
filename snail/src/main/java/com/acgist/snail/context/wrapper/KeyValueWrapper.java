@@ -161,7 +161,7 @@ public final class KeyValueWrapper {
         final int separatorLength = Character.toString(this.separator).length();
         do {
             left = pos + separatorLength;
-            pos = this.content.indexOf(this.separator, left);
+            pos  = this.content.indexOf(this.separator, left);
             if(pos < 0) {
                 keyValue = this.content.substring(left).strip();
             } else {

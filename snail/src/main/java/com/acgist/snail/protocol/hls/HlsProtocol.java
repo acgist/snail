@@ -64,7 +64,7 @@ public final class HlsProtocol extends Protocol {
 	
 	@Override
 	protected String buildFileName() throws DownloadException {
-		final String path = URIWrapper.newInstance(this.url).decode().path();
+		final String path = URIWrapper.newInstance(this.url).decode().getPath();
 		if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
 			// 去掉斜杠和结尾
 			return path.substring(1, path.length() - INDEX_M3U8.length())

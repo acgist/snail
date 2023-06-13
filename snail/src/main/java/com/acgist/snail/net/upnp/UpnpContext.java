@@ -106,7 +106,7 @@ public final class UpnpContext implements IContext {
 	 */
 	public UpnpContext load(String location) throws NetException {
 		final URIWrapper wrapper = URIWrapper.newInstance(location).decode();
-		if(!NetUtils.lan(wrapper.host())) {
+		if(!NetUtils.lan(wrapper.getHost())) {
 			// 判断处于同一内网
 			LOGGER.info("UPNP描述文件错误：{}", location);
 			return this;
