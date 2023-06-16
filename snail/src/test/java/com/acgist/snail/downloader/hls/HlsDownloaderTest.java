@@ -16,36 +16,39 @@ import com.acgist.snail.utils.Performance;
 
 class HlsDownloaderTest extends Performance {
 
-	@Test
-	void testHlsDownloaderBuild() throws DownloadException {
-//		final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"; // 流媒体
-		final String url = "https://iqiyi.cdn9-okzy.com/20201004/16201_5314e9ac/index.m3u8";
-//		final String url = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8";
-		ProtocolContext.getInstance().register(HlsProtocol.getInstance()).available(true);
-		final var taskSession = HlsProtocol.getInstance().buildTaskSession(url);
-		final var downloader = taskSession.buildDownloader();
-//		downloader.run(); // 不下载
-		assertNotNull(downloader);
-		final var file = new File(taskSession.getFile());
-		assertTrue(file.exists());
-//		FileUtils.delete(taskSession.getFile());
-		taskSession.delete();
-	}
-	
-	@Test
-	void testHlsDownloader() throws DownloadException {
-//		final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"; // 流媒体
-		final String url = "https://iqiyi.cdn9-okzy.com/20201004/16201_5314e9ac/index.m3u8";
-//		final String url = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8";
-		ProtocolContext.getInstance().register(HlsProtocol.getInstance()).available(true);
-		final var taskSession = HlsProtocol.getInstance().buildTaskSession(url);
-		final var downloader = taskSession.buildDownloader();
-		downloader.run();
-		final var file = new File(taskSession.getFile());
-		assertTrue(file.exists());
-		assertTrue(ArrayUtils.isNotEmpty(file.list()));
-		FileUtils.delete(taskSession.getFile());
-		taskSession.delete();
-	}
-	
+    @Test
+    void testHlsDownloaderBuild() throws DownloadException {
+        // 流媒体
+//      final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+        final String url = "https://iqiyi.cdn9-okzy.com/20201004/16201_5314e9ac/index.m3u8";
+//      final String url = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8";
+        ProtocolContext.getInstance().register(HlsProtocol.getInstance()).available(true);
+        final var taskSession = HlsProtocol.getInstance().buildTaskSession(url);
+        final var downloader = taskSession.buildDownloader();
+        // 不下载
+//      downloader.run();
+        assertNotNull(downloader);
+        final var file = new File(taskSession.getFile());
+        assertTrue(file.exists());
+//      FileUtils.delete(taskSession.getFile());
+        taskSession.delete();
+    }
+    
+    @Test
+    void testHlsDownloader() throws DownloadException {
+        // 流媒体
+//      final String url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+        final String url = "https://iqiyi.cdn9-okzy.com/20201004/16201_5314e9ac/index.m3u8";
+//      final String url = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8";
+        ProtocolContext.getInstance().register(HlsProtocol.getInstance()).available(true);
+        final var taskSession = HlsProtocol.getInstance().buildTaskSession(url);
+        final var downloader = taskSession.buildDownloader();
+        downloader.run();
+        final var file = new File(taskSession.getFile());
+        assertTrue(file.exists());
+        assertTrue(ArrayUtils.isNotEmpty(file.list()));
+        FileUtils.delete(taskSession.getFile());
+        taskSession.delete();
+    }
+    
 }
