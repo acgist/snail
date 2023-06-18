@@ -1,11 +1,11 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.torrent.peer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.PeerConfig.Source;
-import com.acgist.snail.net.torrent.peer.PeerContext;
+import com.acgist.snail.context.StatisticsContext;
 import com.acgist.snail.utils.Performance;
 
 class PeerContextTest extends Performance {

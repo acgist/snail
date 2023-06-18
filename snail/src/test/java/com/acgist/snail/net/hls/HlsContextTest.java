@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.hls;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -7,11 +7,10 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
+import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.entity.TaskEntity;
 import com.acgist.snail.context.session.TaskSession;
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.hls.HlsContext;
-import com.acgist.snail.net.hls.M3u8;
 import com.acgist.snail.net.hls.M3u8.Type;
 import com.acgist.snail.utils.Performance;
 

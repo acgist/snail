@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.stun;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.stun.StunContext;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

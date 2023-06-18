@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.gui;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.Snail;
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.format.BEncodeEncoder;
-import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.GuiContext.MessageType;
 import com.acgist.snail.gui.event.GuiEventMessage;
 import com.acgist.snail.net.application.ApplicationClient;

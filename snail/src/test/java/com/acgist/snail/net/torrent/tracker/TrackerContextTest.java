@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.torrent.tracker;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import com.acgist.snail.net.DownloadException;
 import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.net.torrent.TorrentSession;
-import com.acgist.snail.net.torrent.tracker.TrackerContext;
-import com.acgist.snail.net.torrent.tracker.TrackerSession;
 import com.acgist.snail.utils.Performance;
 
 class TrackerContextTest extends Performance {

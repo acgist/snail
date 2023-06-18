@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.upnp;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.NetException;
-import com.acgist.snail.net.upnp.UpnpContext;
 import com.acgist.snail.net.upnp.UpnpContext.Status;
 import com.acgist.snail.protocol.Protocol;
 import com.acgist.snail.utils.Performance;

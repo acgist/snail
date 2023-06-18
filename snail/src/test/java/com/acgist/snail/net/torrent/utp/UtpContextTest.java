@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.torrent.utp;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,7 +7,6 @@ import java.net.InetSocketAddress;
 
 import org.junit.jupiter.api.Test;
 
-import com.acgist.snail.net.torrent.utp.UtpContext;
 import com.acgist.snail.utils.Performance;
 
 class UtpContextTest extends Performance {

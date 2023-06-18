@@ -1,13 +1,11 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.NatContext;
 import com.acgist.snail.net.NatContext.Type;
-import com.acgist.snail.net.NatInitializer;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

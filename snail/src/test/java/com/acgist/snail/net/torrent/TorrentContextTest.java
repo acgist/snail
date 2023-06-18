@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net.torrent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.torrent.TorrentContext;
 import com.acgist.snail.utils.Performance;
 
 class TorrentContextTest extends Performance {

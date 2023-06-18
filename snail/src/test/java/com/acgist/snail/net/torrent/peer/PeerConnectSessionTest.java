@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.session;
+package com.acgist.snail.net.torrent.peer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.DownloadConfig;
-import com.acgist.snail.net.torrent.peer.PeerConnectSession;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.ThreadUtils;
 

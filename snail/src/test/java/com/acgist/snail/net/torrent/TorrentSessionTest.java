@@ -1,12 +1,10 @@
-package com.acgist.snail.pojo.session;
+package com.acgist.snail.net.torrent;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.torrent.InfoHash;
-import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.Performance;
 
 class TorrentSessionTest extends Performance {

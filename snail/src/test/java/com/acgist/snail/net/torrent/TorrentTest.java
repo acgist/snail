@@ -1,4 +1,4 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.net.torrent;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,11 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.torrent.Torrent;
-import com.acgist.snail.net.torrent.TorrentContext;
-import com.acgist.snail.net.torrent.TorrentFile;
-import com.acgist.snail.net.torrent.TorrentInfo;
-import com.acgist.snail.net.torrent.TorrentSession;
 import com.acgist.snail.utils.DateUtils;
 import com.acgist.snail.utils.Performance;
 import com.acgist.snail.utils.StringUtils;

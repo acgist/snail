@@ -1,11 +1,10 @@
-package com.acgist.snail.pojo.bean;
+package com.acgist.snail.net.torrent;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.net.DownloadException;
-import com.acgist.snail.net.torrent.InfoHash;
 import com.acgist.snail.utils.Performance;
 
 class InfoHashTest extends Performance {

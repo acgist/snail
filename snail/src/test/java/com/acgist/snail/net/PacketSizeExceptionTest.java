@@ -1,4 +1,4 @@
-package com.acgist.snail.context;
+package com.acgist.snail.net;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.acgist.snail.config.SystemConfig;
-import com.acgist.snail.net.PacketSizeException;
 import com.acgist.snail.utils.Performance;
 
 class PacketSizeExceptionTest extends Performance {
