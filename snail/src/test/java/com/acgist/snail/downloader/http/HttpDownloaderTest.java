@@ -14,29 +14,30 @@ import com.acgist.snail.utils.FileUtils;
 import com.acgist.snail.utils.Performance;
 
 class HttpDownloaderTest extends Performance {
-	
-	@Test
-	void testHttpDownloaderBuild() throws DownloadException {
-		final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
-		ProtocolContext.getInstance().register(HttpProtocol.getInstance()).available(true);
-		final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
-		final var downloader = taskSession.buildDownloader();
-//		downloader.run(); // 不下载
-		assertNotNull(downloader);
-//		taskSession.delete();
-	}
+    
+    @Test
+    void testHttpDownloaderBuild() throws DownloadException {
+        final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
+        ProtocolContext.getInstance().register(HttpProtocol.getInstance()).available(true);
+        final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
+        final var downloader = taskSession.buildDownloader();
+       // 不下载
+//      downloader.run();
+        assertNotNull(downloader);
+//      taskSession.delete();
+    }
 
-	@Test
-	void testHttpDownloader() throws DownloadException {
-		final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
-		ProtocolContext.getInstance().register(HttpProtocol.getInstance()).available(true);
-		final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
-		final var downloader = taskSession.buildDownloader();
-		downloader.run();
-		final var file = new File(taskSession.getFile());
-		assertTrue(file.exists());
-		FileUtils.delete(taskSession.getFile());
-		taskSession.delete();
-	}
-	
+    @Test
+    void testHttpDownloader() throws DownloadException {
+        final String url = "https://mirrors.bfsu.edu.cn/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.zip";
+        ProtocolContext.getInstance().register(HttpProtocol.getInstance()).available(true);
+        final var taskSession = HttpProtocol.getInstance().buildTaskSession(url);
+        final var downloader = taskSession.buildDownloader();
+        downloader.run();
+        final var file = new File(taskSession.getFile());
+        assertTrue(file.exists());
+        FileUtils.delete(taskSession.getFile());
+        taskSession.delete();
+    }
+    
 }
