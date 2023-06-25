@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.format.BEncodeDecoder.Type;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
@@ -184,9 +185,9 @@ public final class BEncodeEncoder {
         if(list == null) {
             return this;
         }
-        this.write(BEncodeDecoder.TYPE_L);
+        this.write(SymbolConfig.BEncode.TYPE_L);
         list.forEach(this::writeObject);
-        this.write(BEncodeDecoder.TYPE_E);
+        this.write(SymbolConfig.BEncode.TYPE_E);
         return this;
     }
     
@@ -201,12 +202,12 @@ public final class BEncodeEncoder {
         if(map == null) {
             return this;
         }
-        this.write(BEncodeDecoder.TYPE_D);
+        this.write(SymbolConfig.BEncode.TYPE_D);
         map.forEach((key, value) -> {
             this.writeObject(key);
             this.writeObject(value);
         });
-        this.write(BEncodeDecoder.TYPE_E);
+        this.write(SymbolConfig.BEncode.TYPE_E);
         return this;
     }
     
@@ -239,9 +240,9 @@ public final class BEncodeEncoder {
      * @param number 数据
      */
     private void writeNumber(Number number) {
-        this.write(BEncodeDecoder.TYPE_I);
+        this.write(SymbolConfig.BEncode.TYPE_I);
         this.write(number.toString().getBytes());
-        this.write(BEncodeDecoder.TYPE_E);
+        this.write(SymbolConfig.BEncode.TYPE_E);
     }
     
     /**
@@ -251,7 +252,7 @@ public final class BEncodeEncoder {
      */
     private void writeBytes(byte[] bytes) {
         this.write(String.valueOf(bytes.length).getBytes());
-        this.write(BEncodeDecoder.SEPARATOR);
+        this.write(SymbolConfig.BEncode.SEPARATOR);
         this.write(bytes);
     }
     

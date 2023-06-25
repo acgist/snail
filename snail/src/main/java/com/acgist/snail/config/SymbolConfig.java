@@ -270,6 +270,90 @@ public final class SymbolConfig {
         }
         
     }
+
+    /**
+     * JSON符号
+     * 
+     * @author acgist
+     *
+     */
+    public interface JSON {
+        
+        /**
+         * 转义字符串
+         */
+        char JSON_ESCAPE = '\\';
+        /**
+         * Map前缀
+         */
+        char JSON_MAP_PREFIX = '{';
+        /**
+         * Map后缀
+         */
+        char JSON_MAP_SUFFIX = '}';
+        /**
+         * List前缀
+         */
+        char JSON_LIST_PREFIX = '[';
+        /**
+         * List后缀
+         */
+        char JSON_LIST_SUFFIX = ']';
+        /**
+         * 键值分隔符
+         */
+        char JSON_KV_SEPARATOR = ':';
+        /**
+         * 属性分隔符
+         */
+        char JSON_ATTR_SEPARATOR = ',';
+        /**
+         * 字符串
+         */
+        char JSON_STRING = '"';
+        /**
+         * 空值
+         */
+        String JSON_NULL = "null";
+        /**
+         * boolean类型
+         */
+        String JSON_BOOLEAN_TRUE = "true";
+        /**
+         * boolean类型
+         */
+        String JSON_BOOLEAN_FALSE = "false";
+        
+    }
+    
+    /**
+     * B编码符号
+     * 
+     * @author acgist
+     *
+     */
+    public interface BEncode {
+        /**
+         * 结束
+         */
+        public static final char TYPE_E = 'e';
+        /**
+         * 数值
+         */
+        public static final char TYPE_I = 'i';
+        /**
+         * List
+         */
+        public static final char TYPE_L = 'l';
+        /**
+         * Map
+         */
+        public static final char TYPE_D = 'd';
+        /**
+         * 分隔符
+         */
+        public static final char SEPARATOR = ':';
+    }
     
     /**
      * 回车换行符（兼容）

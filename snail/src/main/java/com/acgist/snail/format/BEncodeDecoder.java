@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.acgist.snail.config.SymbolConfig;
 import com.acgist.snail.logger.Logger;
 import com.acgist.snail.logger.LoggerFactory;
 import com.acgist.snail.net.PacketSizeException;
@@ -49,27 +50,7 @@ public final class BEncodeDecoder {
         NONE;
         
     }
-    
-    /**
-     * 结束
-     */
-    public static final char TYPE_E = 'e';
-    /**
-     * 数值
-     */
-    public static final char TYPE_I = 'i';
-    /**
-     * List
-     */
-    public static final char TYPE_L = 'l';
-    /**
-     * Map
-     */
-    public static final char TYPE_D = 'd';
-    /**
-     * 分隔符
-     */
-    public static final char SEPARATOR = ':';
+
     /**
      * B编码最短数据长度：开始结束符号
      */
@@ -194,11 +175,11 @@ public final class BEncodeDecoder {
         }
         final char charType = (char) this.inputStream.read();
         switch (charType) {
-        case TYPE_D:
+        case SymbolConfig.BEncode.TYPE_D:
             this.map  = BEncodeDecoder.readMap(this.inputStream);
             this.type = Type.MAP;
             break;
-        case TYPE_L:
+        case SymbolConfig.BEncode.TYPE_L:
             this.list = BEncodeDecoder.readList(this.inputStream);
             this.type = Type.LIST;
             break;
@@ -275,7 +256,7 @@ public final class BEncodeDecoder {
         final StringBuilder valueBuilder = new StringBuilder();
         while((index = inputStream.read()) >= 0) {
             indexChar = (char) index;
-            if(indexChar == TYPE_E) {
+            if(indexChar == SymbolConfig.BEncode.TYPE_E) {
                 final String number = valueBuilder.toString();
                 if(!StringUtils.isNumeric(number)) {
                     throw new IllegalArgumentException("B编码错误（数值）：" + number);
@@ -307,14 +288,14 @@ public final class BEncodeDecoder {
         while ((index = inputStream.read()) >= 0) {
             indexChar = (char) index;
             switch (indexChar) {
-                case TYPE_E -> {
+                case SymbolConfig.BEncode.TYPE_E -> {
                     return list;
                 }
-                case TYPE_I -> list.add(BEncodeDecoder.readLong(inputStream));
-                case TYPE_L -> list.add(BEncodeDecoder.readList(inputStream));
-                case TYPE_D -> list.add(BEncodeDecoder.readMap(inputStream));
+                case SymbolConfig.BEncode.TYPE_I -> list.add(BEncodeDecoder.readLong(inputStream));
+                case SymbolConfig.BEncode.TYPE_L -> list.add(BEncodeDecoder.readList(inputStream));
+                case SymbolConfig.BEncode.TYPE_D -> list.add(BEncodeDecoder.readMap(inputStream));
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lengthBuilder.append(indexChar);
-                case SEPARATOR -> {
+                case SymbolConfig.BEncode.SEPARATOR -> {
                     if(lengthBuilder.length() > 0) {
                         list.add(BEncodeDecoder.readBytes(lengthBuilder, inputStream));
                     } else {
@@ -348,10 +329,10 @@ public final class BEncodeDecoder {
         while ((index = inputStream.read()) >= 0) {
             indexChar = (char) index;
             switch (indexChar) {
-                case TYPE_E -> {
+                case SymbolConfig.BEncode.TYPE_E -> {
                     return map;
                 }
-                case TYPE_I -> {
+                case SymbolConfig.BEncode.TYPE_I -> {
                     if(key != null) {
                         map.put(key, BEncodeDecoder.readLong(inputStream));
                         key = null;
@@ -359,7 +340,7 @@ public final class BEncodeDecoder {
                         LOGGER.warn("B编码key为空跳过（I）");
                     }
                 }
-                case TYPE_L -> {
+                case SymbolConfig.BEncode.TYPE_L -> {
                     if(key != null) {
                         map.put(key, BEncodeDecoder.readList(inputStream));
                         key = null;
@@ -367,7 +348,7 @@ public final class BEncodeDecoder {
                         LOGGER.warn("B编码key为空跳过（L）");
                     }
                 }
-                case TYPE_D -> {
+                case SymbolConfig.BEncode.TYPE_D -> {
                     if(key != null) {
                         map.put(key, BEncodeDecoder.readMap(inputStream));
                         key = null;
@@ -376,7 +357,7 @@ public final class BEncodeDecoder {
                     }
                 }
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lengthBuilder.append(indexChar);
-                case SEPARATOR -> {
+                case SymbolConfig.BEncode.SEPARATOR -> {
                     if(lengthBuilder.length() > 0) {
                         final byte[] bytes = BEncodeDecoder.readBytes(lengthBuilder, inputStream);
                         if (key == null) {
