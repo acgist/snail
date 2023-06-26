@@ -14,7 +14,7 @@ import com.acgist.snail.logger.LoggerFactory;
 
 /**
  * B编码编码器
- * 支持数据类型：Number、String、byte[]、List、Map
+ * 支持数据类型：Number、String、byte[]、Map、List
  * 
  * @author acgist
  */

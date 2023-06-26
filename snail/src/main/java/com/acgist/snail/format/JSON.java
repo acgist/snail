@@ -14,6 +14,9 @@ import com.acgist.snail.utils.StringUtils;
 /**
  * JSON工具
  * 
+ * 数字默认类型：Long
+ * 支持数据类型：JSON、Number、String、Boolean、Map、List
+ * 
  * @author acgist
  */
 public final class JSON {

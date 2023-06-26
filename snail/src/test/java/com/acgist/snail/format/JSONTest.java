@@ -77,6 +77,7 @@ class JSONTest extends Performance {
         this.log(json.getJSON("json-a"));
         this.log(json.getJSON("json-a").get("like"));
         this.log(json.getJSON("json-a").getJSON("like"));
+        assertEquals(2L, json.getJSON("list").get(1));
         assertEquals(String.class, json.getJSON("json-a").get("like").getClass());
         assertEquals(JSON.class, json.getJSON("json-a").getJSON("like").getClass());
         this.log(json.getJSON("json-b"));
