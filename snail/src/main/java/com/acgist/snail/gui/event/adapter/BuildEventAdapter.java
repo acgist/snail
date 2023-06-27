@@ -4,24 +4,24 @@ import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
 
 /**
- * <p>GUI新建窗口事件</p>
+ * GUI新建窗口事件
  * 
  * @author acgist
  */
 public class BuildEventAdapter extends GuiEvent {
-	
-	public BuildEventAdapter() {
-		super(Type.BUILD, "新建窗口事件");
-	}
-	
-	@Override
-	protected void executeNative(Object ... args) {
-		this.executeExtend(args);
-	}
+    
+    public BuildEventAdapter() {
+        super(Type.BUILD, "新建窗口事件");
+    }
+    
+    @Override
+    protected void executeNative(Object ... args) {
+        this.executeExtend(args);
+    }
 
-	@Override
-	protected void executeExtend(Object ... args) {
-		GuiContext.getInstance().lock();
-	}
-	
+    @Override
+    protected void executeExtend(Object ... args) {
+        GuiContext.getInstance().lock();
+    }
+    
 }

@@ -81,6 +81,15 @@ public final class LoggerConfig {
 	}
 	
 	/**
+	 * 设置日志级别
+	 * 
+	 * @param level 日志级别
+	 */
+	public static final void setLevel(Level level) {
+	    INSTANCE.level = level.value();
+	}
+	
+	/**
 	 * <p>获取日志级别</p>
 	 * 
 	 * @return 日志级别
