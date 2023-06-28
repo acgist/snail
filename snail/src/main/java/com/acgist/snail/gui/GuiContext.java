@@ -157,9 +157,9 @@ public final class GuiContext implements IContext {
 	 */
 	public static final void register(GuiEvent event) {
 		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("注册GUI事件：{}-{}", event.type(), event.name());
+			LOGGER.debug("注册GUI事件：{}-{}", event.getType(), event.getName());
 		}
-		INSTANCE.eventMapping.put(event.type(), event);
+		INSTANCE.eventMapping.put(event.getType(), event);
 	}
 
 	/**

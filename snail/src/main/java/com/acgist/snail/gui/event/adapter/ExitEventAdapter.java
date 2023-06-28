@@ -4,24 +4,24 @@ import com.acgist.snail.gui.GuiContext;
 import com.acgist.snail.gui.event.GuiEvent;
 
 /**
- * <p>GUI退出窗口事件</p>
+ * GUI退出窗口事件
  * 
  * @author acgist
  */
 public class ExitEventAdapter extends GuiEvent {
 
-	public ExitEventAdapter() {
-		super(Type.EXIT, "退出窗口事件");
-	}
+    public ExitEventAdapter() {
+        super(Type.EXIT, "退出窗口事件");
+    }
 
-	@Override
-	protected void executeNative(Object ... args) {
-		this.executeExtend(args);
-	}
-	
-	@Override
-	protected void executeExtend(Object ... args) {
-		GuiContext.getInstance().unlock();
-	}
-	
+    @Override
+    protected void executeNative(Object ... args) {
+        this.executeExtend(args);
+    }
+    
+    @Override
+    protected void executeExtend(Object ... args) {
+        GuiContext.getInstance().unlock();
+    }
+    
 }
