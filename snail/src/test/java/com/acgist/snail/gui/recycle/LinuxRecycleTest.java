@@ -12,12 +12,12 @@ import com.acgist.snail.utils.Performance;
 
 public class LinuxRecycleTest extends Performance {
 
-	@Test
-	public void testDelete() throws IOException {
-		final String path = "D:/tmp/linux";
-		assertTrue(Paths.get(path).toFile().createNewFile());
-		final LinuxRecycle linuxRecycle = new LinuxRecycle(path);
-		assertTrue(linuxRecycle.delete());
-	}
-	
+    @Test
+    public void testDelete() throws IOException {
+        final String path = "D:/tmp/linux";
+        assertTrue(Paths.get(path).toFile().createNewFile());
+        final LinuxRecycle linuxRecycle = new LinuxRecycle(path);
+        assertTrue(linuxRecycle.delete());
+    }
+    
 }

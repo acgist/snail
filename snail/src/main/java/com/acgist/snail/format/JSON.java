@@ -25,8 +25,8 @@ public final class JSON {
      * 特殊字符需要转义
      * Chrome浏览器控制台执行以下代码获取特殊字符：
      * <pre>
-     * var array = {};
-     * for (var i = 0, value = '', array = []; i < 0xFFFF; i++) {
+     * let array = {};
+     * for (let i = 0, value = '', array = []; i < 0xFFFF; i++) {
      *     // 其他特殊字符跳过：D800~DFFF
      *     if(i >= 0xD800 && i <= 0xDFFF) {
      *         continue;

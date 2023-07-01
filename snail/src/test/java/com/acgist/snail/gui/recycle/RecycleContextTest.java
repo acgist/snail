@@ -13,19 +13,19 @@ import com.acgist.snail.utils.Performance;
 
 class RecycleContextTest extends Performance {
 
-	@Test
-	void testRecycleContext() {
-		assertNotNull(RecycleContext.newInstance("E://snail/tmp/tmp.txt"));
-	}
-	
-	@Test
-	void testRecycle() throws IOException {
-		final String path = "E://snail/tmp/" + System.currentTimeMillis() + ".txt";
-		final File file = new File(path);
-		file.createNewFile();
-		assertTrue(file.exists());
-		RecycleContext.recycle(path);
-		assertFalse(file.exists());
-	}
-	
+    @Test
+    void testRecycleContext() {
+        assertNotNull(RecycleContext.newInstance("D://tmp/tmp.txt"));
+    }
+    
+    @Test
+    void testRecycle() throws IOException {
+        final String path = "D://tmp/" + System.currentTimeMillis() + ".txt";
+        final File file = new File(path);
+        file.createNewFile();
+        assertTrue(file.exists());
+        RecycleContext.recycle(path);
+        assertFalse(file.exists());
+    }
+    
 }

@@ -18,31 +18,31 @@ import com.acgist.snail.utils.StringUtils;
 
 class WindowsRecycleTest extends Performance {
 
-	@Test
-	void testDelete() throws IOException {
-		final String path = "E:/snail/tmp/" + System.currentTimeMillis() + ".acgist";
-		FileUtils.write(path, "acgist".repeat(1024).getBytes());
-		final File file = new File(path);
-		file.createNewFile();
-		assertTrue(file.exists());
-		new WindowsRecycle(path).delete();
-		assertFalse(file.exists());
-	}
-	
-	@Test
-	void testDeleteRelative() {
-		String path = "/test";
-		FileUtils.write(path, "".getBytes());
-		assertTrue(Paths.get(path).toFile().exists());
-		new WindowsRecycle(path).delete();
-		assertFalse(Paths.get(path).toFile().exists());
-	}
-	
-	@Test
-	void testFileInfo() throws IOException {
-		final var bytes = Files.readAllBytes(Paths.get("E:/$RECYCLE.BIN/S-1-5-21-1082702080-4186364021-1016170526-1001/$I80331708.zip"));
-		this.log(StringUtils.hex(bytes));
-		assertNotNull(bytes);
-	}
-	
+    @Test
+    void testDelete() throws IOException {
+        final String path = "D:/tmp/" + System.currentTimeMillis() + ".acgist";
+        FileUtils.write(path, "acgist".repeat(1024).getBytes());
+        final File file = new File(path);
+        file.createNewFile();
+        assertTrue(file.exists());
+        new WindowsRecycle(path).delete();
+        assertFalse(file.exists());
+    }
+    
+    @Test
+    void testDeleteRelative() {
+        String path = "/test";
+        FileUtils.write(path, "".getBytes());
+        assertTrue(Paths.get(path).toFile().exists());
+        new WindowsRecycle(path).delete();
+        assertFalse(Paths.get(path).toFile().exists());
+    }
+    
+    @Test
+    void testFileInfo() throws IOException {
+        final var bytes = Files.readAllBytes(Paths.get("D:/$RECYCLE.BIN/S-1-5-21-3564299411-3826043463-933790329-1001/$R12000836.acgist"));
+        this.log(StringUtils.hex(bytes));
+        assertNotNull(bytes);
+    }
+    
 }
