@@ -8,11 +8,11 @@ import com.acgist.snail.utils.Performance;
 
 class LoggerConfigTest extends Performance {
 
-	@Test
-	void testLoggerConfig() {
-		assertDoesNotThrow(() -> this.log("测试"));
-		LoggerConfig.off();
-		assertDoesNotThrow(() -> this.log("测试"));
-	}
-	
+    @Test
+    void testLoggerConfig() {
+        assertDoesNotThrow(() -> this.log("测试"));
+        LoggerConfig.off();
+        assertDoesNotThrow(() -> this.log("测试"));
+    }
+    
 }
