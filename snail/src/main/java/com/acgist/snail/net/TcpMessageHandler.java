@@ -70,6 +70,9 @@ public abstract class TcpMessageHandler extends MessageHandler<AsynchronousSocke
 	
 	@Override
 	public void close() {
+	    if(this.close) {
+	        return;
+	    }
 		LOGGER.debug("TCP连接关闭：{}", this.channel);
 		this.close = true;
 		IoUtils.close(this.channel);
