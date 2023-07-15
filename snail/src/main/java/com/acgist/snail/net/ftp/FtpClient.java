@@ -106,7 +106,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
         this.handler.lock();
         if(this.connect) {
             this.login();
-            if(this.handler.login()) {
+            if(this.handler.getLogin()) {
                 this.charset();
             } else {
                 this.connect = false;
@@ -149,7 +149,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
             }
             // 下载文件
             this.command("RETR " + this.filePath);
-            final InputStream input = this.handler.inputStream();
+            final InputStream input = this.handler.getInputStream();
             if(input == null) {
                 throw new NetException(this.failMessage("打开FTP文件流失败"));
             }
@@ -188,8 +188,8 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
             this.command("TYPE A");
             // 列出文件信息
             this.command("LIST " + this.filePath);
-            final InputStream inputStream = this.handler.inputStream();
-            final String message = StringUtils.ofInputStream(inputStream, this.handler.charset());
+            final InputStream inputStream = this.handler.getInputStream();
+            final String message = StringUtils.ofInputStream(inputStream, this.handler.getCharset());
             if(message == null) {
                 throw new NetException(this.failMessage("未知错误"));
             }
@@ -215,7 +215,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
      */
     public boolean range() throws NetException {
         this.checkConnect();
-        return this.handler.range();
+        return this.handler.getRange();
     }
     
     @Override
@@ -242,7 +242,7 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
     private void charset() {
         // 列出扩展命令
         this.command("FEAT");
-        if(SystemConfig.CHARSET_UTF8.equals(this.handler.charset())) {
+        if(SystemConfig.CHARSET_UTF8.equals(this.handler.getCharset())) {
             // 设置UTF8
             this.command("OPTS UTF8 ON");
         }
@@ -295,10 +295,10 @@ public final class FtpClient extends TcpClient<FtpMessageHandler> {
      * 
      * @return 错误信息
      * 
-     * @see FtpMessageHandler#failMessage(String)
+     * @see FtpMessageHandler#getFailMessage(String)
      */
     private String failMessage(String defaultMessage) {
-        return this.handler.failMessage(defaultMessage);
+        return this.handler.getFailMessage(defaultMessage);
     }
 
 }
