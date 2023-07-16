@@ -16,18 +16,18 @@ import com.acgist.snail.utils.Performance;
 
 class HlsContextTest extends Performance {
 
-	@Test
-	void testHlsContext() throws DownloadException {
-		final String id = UUID.randomUUID().toString();
-		final TaskEntity task = new TaskEntity();
-		task.setId(id);
-		task.setName("acgist");
-		final ITaskSession session = TaskSession.newInstance(task);
-		assertDoesNotThrow(() -> {
-			HlsContext.getInstance().m3u8(id, new M3u8(Type.FILE, null, List.of()));
-			HlsContext.getInstance().hlsSession(session);
-			HlsContext.getInstance().remove(session);
-		});
-	}
-	
+    @Test
+    void testHlsContext() throws DownloadException {
+        final String id = UUID.randomUUID().toString();
+        final TaskEntity task = new TaskEntity();
+        task.setId(id);
+        task.setName("acgist");
+        final ITaskSession session = TaskSession.newInstance(task);
+        assertDoesNotThrow(() -> {
+            HlsContext.getInstance().m3u8(id, new M3u8(Type.FILE, null, List.of()));
+            HlsContext.getInstance().hlsSession(session);
+            HlsContext.getInstance().remove(session);
+        });
+    }
+    
 }

@@ -99,7 +99,7 @@ public final class HlsProtocol extends Protocol {
 			.responseToString();
 		final var m3u8Check = M3u8Builder.newInstance(response, this.url).build();
 		if(m3u8Check.getType() == M3u8.Type.M3U8) {
-			this.url = m3u8Check.maxRateLink();
+			this.url = m3u8Check.getMaxRateLink();
 			this.buildM3u8();
 		} else if(m3u8Check.getType() == M3u8.Type.STREAM) {
 			throw new DownloadException("不支持直播流媒体下载");

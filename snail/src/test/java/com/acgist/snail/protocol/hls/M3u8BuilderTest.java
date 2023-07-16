@@ -26,7 +26,7 @@ class M3u8BuilderTest extends Performance {
 	void testM3U8() throws NetException, DownloadException {
 		final var m3u8 = M3u8Builder.newInstance(new File("E://snail/m3u8/m3u8.m3u8"), "https://www.acgist.com/m3u8/acgist").build();
 		assertEquals(Type.M3U8, m3u8.getType());
-		this.log(m3u8.maxRateLink());
+		this.log(m3u8.getMaxRateLink());
 		m3u8.getLinks().forEach(this::log);
 	}
 	
