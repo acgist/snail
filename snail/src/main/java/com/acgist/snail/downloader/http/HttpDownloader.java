@@ -68,7 +68,7 @@ public final class HttpDownloader extends MonofileDownloader {
             // 优先验证下载文件大小：416=超出请求范围
             this.completed = true;
         } else {
-            this.fail("HTTP请求失败：" + client.code());
+            this.fail("HTTP请求失败：" + client.getCode());
         }
     }
 
