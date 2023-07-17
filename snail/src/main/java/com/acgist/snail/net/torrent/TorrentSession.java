@@ -499,10 +499,12 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	}
 	
 	@Override
-	public void checkCompletedAndUnlock() {
+	public boolean checkCompletedAndUnlock() {
 		if(this.checkCompleted()) {
 			this.taskSession.unlockDownload();
+			return true;
 		}
+		return false;
 	}
 	
 	/**

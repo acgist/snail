@@ -7,18 +7,17 @@ package com.acgist.snail.net;
  */
 public interface IMultifileCompletedChecker {
 
-	/**
-	 * 检测任务是否下载完成
-	 * 
-	 * @return 是否下载完成
-	 */
-	boolean checkCompleted();
-	
-	/**
-	 * 检测任务是否下载完成并且解锁
-	 * 
-	 * 注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）
-	 */
-	void checkCompletedAndUnlock();
-	
+    /**
+     * @return 是否下载完成
+     */
+    boolean checkCompleted();
+    
+    /**
+     * 检测任务是否下载完成并且解锁
+     * 注意：不要在该方法中实现释放资源等非幂等操作（可能会被多次调用）
+     * 
+     * @return 是否下载完成
+     */
+    boolean checkCompletedAndUnlock();
+    
 }
