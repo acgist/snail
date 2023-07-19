@@ -14,7 +14,7 @@ class NatInitializerTest extends Performance {
 	@Test
 	void testNatInitializer() {
 		NatInitializer.newInstance().sync();
-		if(NatContext.getInstance().type() != Type.UPNP) {
+		if(NatContext.getInstance().getType() != Type.UPNP) {
 			ThreadUtils.sleep(2000);
 		}
 		assertNotNull(SystemConfig.getExternalIPAddress());

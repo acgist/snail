@@ -16,36 +16,36 @@ import com.acgist.snail.utils.ThreadUtils;
 
 class NatContextTest extends Performance {
 
-	@Test
-	void testRegister() {
-		NatContext.getInstance().register();
-		if(NatContext.getInstance().type() != Type.UPNP) {
-			ThreadUtils.sleep(2000);
-		}
-		assertNotNull(SystemConfig.getExternalIPAddress());
-		NatContext.getInstance().shutdown();
-	}
-	
-	@Test
-	void testRegisterRetry() {
-		assertDoesNotThrow(() -> {
-			NatContext.getInstance().register();
-			NatContext.getInstance().register();
-			NatContext.getInstance().register();
-			NatContext.getInstance().register();
-			NatContext.getInstance().register();
-		});
-		assertNotNull(SystemConfig.getExternalIPAddress());
-		NatContext.getInstance().shutdown();
-	}
-	
-	@Test
-	void testUpnp() throws NetException {
-		UpnpClient.newInstance().mSearch();
-		NatContext.getInstance().lock();
-		if(UpnpContext.getInstance().available()) {
-			assertTrue(UpnpContext.getInstance().addPortMapping(8080, 8080, Protocol.Type.TCP));
-		}
-	}
-	
+    @Test
+    void testRegister() {
+        NatContext.getInstance().register();
+        if(NatContext.getInstance().getType() != Type.UPNP) {
+            ThreadUtils.sleep(2000);
+        }
+        assertNotNull(SystemConfig.getExternalIPAddress());
+        NatContext.getInstance().shutdown();
+    }
+    
+    @Test
+    void testRegisterRetry() {
+        assertDoesNotThrow(() -> {
+            NatContext.getInstance().register();
+            NatContext.getInstance().register();
+            NatContext.getInstance().register();
+            NatContext.getInstance().register();
+            NatContext.getInstance().register();
+        });
+        assertNotNull(SystemConfig.getExternalIPAddress());
+        NatContext.getInstance().shutdown();
+    }
+    
+    @Test
+    void testUpnp() throws NetException {
+        UpnpClient.newInstance().mSearch();
+        NatContext.getInstance().lock();
+        if(UpnpContext.getInstance().available()) {
+            assertTrue(UpnpContext.getInstance().addPortMapping(8080, 8080, Protocol.Type.TCP));
+        }
+    }
+    
 }
