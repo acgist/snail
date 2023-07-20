@@ -8,23 +8,23 @@ import com.acgist.snail.context.Initializer;
  * @author acgist
  */
 public final class NatInitializer extends Initializer {
-	
-	private NatInitializer() {
-		super("NAT");
-	}
-	
-	public static final NatInitializer newInstance() {
-		return new NatInitializer();
-	}
-	
-	@Override
-	protected void init() {
-		NatContext.getInstance().register();
-	}
+    
+    private NatInitializer() {
+        super("NAT");
+    }
+    
+    public static final NatInitializer newInstance() {
+        return new NatInitializer();
+    }
+    
+    @Override
+    protected void init() {
+        NatContext.getInstance().register();
+    }
 
-	@Override
-	protected void release() {
-		NatContext.getInstance().shutdown();
-	}
-	
+    @Override
+    protected void release() {
+        NatContext.getInstance().shutdown();
+    }
+    
 }

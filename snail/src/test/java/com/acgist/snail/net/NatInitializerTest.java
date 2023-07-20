@@ -11,14 +11,14 @@ import com.acgist.snail.utils.ThreadUtils;
 
 class NatInitializerTest extends Performance {
 
-	@Test
-	void testNatInitializer() {
-		NatInitializer.newInstance().sync();
-		if(NatContext.getInstance().getType() != Type.UPNP) {
-			ThreadUtils.sleep(2000);
-		}
-		assertNotNull(SystemConfig.getExternalIPAddress());
-		NatContext.getInstance().shutdown();
-	}
-	
+    @Test
+    void testNatInitializer() {
+        NatInitializer.newInstance().sync();
+        if(NatContext.getInstance().getType() != Type.UPNP) {
+            ThreadUtils.sleep(2000);
+        }
+        assertNotNull(SystemConfig.getExternalIPAddress());
+        NatContext.getInstance().shutdown();
+    }
+    
 }
