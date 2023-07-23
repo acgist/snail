@@ -58,7 +58,7 @@ public final class StunClient extends UdpClient<StunMessageHandler> {
 
 	@Override
 	public boolean open() {
-		return this.open(TorrentServer.getInstance().channel());
+		return this.open(TorrentServer.getInstance().getChannel());
 	}
 	
 	/**

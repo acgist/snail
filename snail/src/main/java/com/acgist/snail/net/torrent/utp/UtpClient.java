@@ -45,7 +45,7 @@ public final class UtpClient extends UdpClient<UtpMessageHandler> {
 	
 	@Override
 	public boolean open() {
-		return open(TorrentServer.getInstance().channel());
+		return open(TorrentServer.getInstance().getChannel());
 	}
 	
 	/**

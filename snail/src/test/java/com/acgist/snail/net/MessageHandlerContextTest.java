@@ -20,7 +20,7 @@ class MessageHandlerContextTest extends Performance {
                 return true;
             }
         };
-        handler.handle(TorrentServer.getInstance().channel());
+        handler.handle(TorrentServer.getInstance().getChannel());
         assertTrue(handler.available());
         context.newInstance(handler);
         ThreadUtils.sleep(62000);

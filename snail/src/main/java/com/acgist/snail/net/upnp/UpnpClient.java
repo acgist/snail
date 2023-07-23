@@ -37,7 +37,7 @@ public final class UpnpClient extends UdpClient<UpnpMessageHandler> {
 	
 	@Override
 	public boolean open() {
-		return this.open(UpnpServer.getInstance().channel());
+		return this.open(UpnpServer.getInstance().getChannel());
 	}
 
 	/**

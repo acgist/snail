@@ -33,7 +33,7 @@ public abstract class UdpClient<T extends UdpMessageHandler> extends Client<T> {
 	 * 
 	 * @return 打开状态
 	 * 
-	 * @see UdpServer#channel()
+	 * @see UdpServer#getChannel()
 	 * @see #open(DatagramChannel)
 	 */
 	public abstract boolean open();

@@ -27,7 +27,7 @@ class UtpMessageHandlerTest extends Performance {
 	void testConnect() {
 		final var socketAddress = NetUtils.buildSocketAddress("127.0.0.1", 18888);
 		final var handler = new UtpMessageHandler(PeerSubMessageHandler.newInstance(), socketAddress);
-		handler.handle(TorrentServer.getInstance().channel());
+		handler.handle(TorrentServer.getInstance().getChannel());
 		var connect = handler.connect();
 		this.log("连接：{}", connect);
 		assertTrue(connect);

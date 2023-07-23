@@ -44,7 +44,7 @@ public final class LocalServiceDiscoveryClient extends UdpClient<LocalServiceDis
 
 	@Override
 	public boolean open() {
-		return this.open(LocalServiceDiscoveryServer.getInstance().channel());
+		return this.open(LocalServiceDiscoveryServer.getInstance().getChannel());
 	}
 	
 	/**

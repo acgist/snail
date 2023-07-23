@@ -31,7 +31,7 @@ public final class TrackerClient extends UdpClient<TrackerMessageHandler> {
 
 	@Override
 	public boolean open() {
-		return this.open(TrackerServer.getInstance().channel());
+		return this.open(TrackerServer.getInstance().getChannel());
 	}
 	
 }
