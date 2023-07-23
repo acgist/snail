@@ -16,22 +16,22 @@ import com.acgist.snail.utils.ThreadUtils;
  */
 class StunClientTest extends Performance {
 
-	@Test
-	void testMapping() {
-//	    final StunClient client = StunClient.newInstance("localhost", 3478);
-//		final StunClient client = StunClient.newInstance("192.168.8.202", 3478);
-//		final StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
-		final StunClient client = StunClient.newInstance("stun1.l.google.com", 19302);
-//		final StunClient client = StunClient.newInstance("stun2.l.google.com", 19302);
-//		final StunClient client = StunClient.newInstance("stun3.l.google.com", 19302);
-//		final StunClient client = StunClient.newInstance("stun4.l.google.com", 19302);
-		assertNull(SystemConfig.getExternalIPAddress());
-		int index = 0;
-		client.mapping();
-		while(index++ < 5 && SystemConfig.getExternalIPAddress() == null) {
-			ThreadUtils.sleep(1000);
-		}
-		assertNotNull(SystemConfig.getExternalIPAddress());
-	}
-	
+    @Test
+    void testMapping() {
+//      final StunClient client = StunClient.newInstance("localhost", 3478);
+//      final StunClient client = StunClient.newInstance("192.168.8.202", 3478);
+//      final StunClient client = StunClient.newInstance("stun.l.google.com", 19302);
+        final StunClient client = StunClient.newInstance("stun1.l.google.com", 19302);
+//      final StunClient client = StunClient.newInstance("stun2.l.google.com", 19302);
+//      final StunClient client = StunClient.newInstance("stun3.l.google.com", 19302);
+//      final StunClient client = StunClient.newInstance("stun4.l.google.com", 19302);
+        assertNull(SystemConfig.getExternalIPAddress());
+        int index = 0;
+        client.mapping();
+        while(index++ < 5 && SystemConfig.getExternalIPAddress() == null) {
+            ThreadUtils.sleep(1000);
+        }
+        assertNotNull(SystemConfig.getExternalIPAddress());
+    }
+    
 }
