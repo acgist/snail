@@ -96,7 +96,9 @@ public abstract class TcpClient<T extends TcpMessageHandler> extends Client<T> {
             LOGGER.error("TCP客户端连接异常：{} - {}", host, port, e);
             success = false;
         } finally {
-            if(!success) {
+            if(success) {
+                LOGGER.debug("TCP连接成功：{} - {}", host, port);
+            } else {
                 IoUtils.close(channel);
                 this.close();
             }
