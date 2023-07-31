@@ -8,10 +8,10 @@ import com.acgist.snail.utils.Performance;
 
 class DhtInitializerTest extends Performance {
 
-	@Test
-	void testDhtInitializer() {
-		DhtInitializer.newInstance().sync();
-		assertTrue(NodeContext.getInstance().nodes().size() > 0);
-	}
-	
+    @Test
+    void testDhtInitializer() {
+        DhtInitializer.newInstance().sync();
+        assertTrue(NodeContext.getInstance().nodes().size() > 0);
+    }
+    
 }

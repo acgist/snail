@@ -10,24 +10,24 @@ import com.acgist.snail.context.Initializer;
  */
 public final class DhtInitializer extends Initializer {
 
-	private DhtInitializer() {
-		super("DHT");
-	}
+    private DhtInitializer() {
+        super("DHT");
+    }
 
-	public static final DhtInitializer newInstance() {
-		return new DhtInitializer();
-	}
+    public static final DhtInitializer newInstance() {
+        return new DhtInitializer();
+    }
 
-	@Override
-	protected void init() {
-		DhtConfig.getInstance();
-		DhtContext.getInstance();
-		NodeContext.getInstance();
-	}
-	
-	@Override
-	protected void release() {
-		DhtConfig.getInstance().persistent();
-	}
+    @Override
+    protected void init() {
+        DhtConfig.getInstance();
+        DhtContext.getInstance();
+        NodeContext.getInstance();
+    }
+    
+    @Override
+    protected void release() {
+        DhtConfig.getInstance().persistent();
+    }
 
 }
