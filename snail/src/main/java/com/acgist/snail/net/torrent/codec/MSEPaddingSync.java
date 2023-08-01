@@ -110,7 +110,7 @@ public final class MSEPaddingSync {
     
     @Override
     public String toString() {
-        final var padding = this.list.stream()
+        final List<String> padding = this.list.stream()
             .map(StringUtils::hex)
             .collect(Collectors.toList());
         return BeanUtils.toString(this, this.count, this.length, padding);

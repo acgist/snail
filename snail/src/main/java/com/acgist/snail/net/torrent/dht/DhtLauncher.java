@@ -59,7 +59,7 @@ public final class DhtLauncher implements Runnable {
             this.peerNodes.clear();
         }
         try {
-            final var list = this.pick();
+            final List<InetSocketAddress> list = this.pick();
             if(CollectionUtils.isNotEmpty(nodes)) {
                 this.joinNodes(nodes);
                 list.addAll(nodes);

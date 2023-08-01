@@ -1,6 +1,7 @@
 package com.acgist.snail.net.torrent.dht;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -152,7 +153,7 @@ public final class DhtContext implements IContext {
         synchronized (this.requests) {
             final int oldSize = this.requests.size();
             DhtRequest request;
-            final var iterator = this.requests.iterator();
+            final Iterator<DhtRequest> iterator = this.requests.iterator();
             while(iterator.hasNext()) {
                 request = iterator.next();
                 if(timestamp - request.getTimestamp() > timeout) {
@@ -178,7 +179,7 @@ public final class DhtContext implements IContext {
      */
     private DhtRequest remove(byte[] id) {
         DhtRequest request;
-        final var iterator = this.requests.iterator();
+        final Iterator<DhtRequest> iterator = this.requests.iterator();
         while(iterator.hasNext()) {
             request = iterator.next();
             if(Arrays.equals(id, request.getT())) {
