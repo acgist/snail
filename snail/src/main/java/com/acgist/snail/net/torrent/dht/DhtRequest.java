@@ -55,7 +55,7 @@ public class DhtRequest extends DhtMessage {
      */
     protected DhtRequest(DhtConfig.QType q) {
         this(DhtContext.getInstance().buildRequestId(), DhtConfig.KEY_Q, q, new LinkedHashMap<>());
-        this.put(DhtConfig.KEY_ID, NodeContext.getInstance().nodeId());
+        this.put(DhtConfig.KEY_ID, NodeContext.getInstance().getNodeId());
     }
     
     /**

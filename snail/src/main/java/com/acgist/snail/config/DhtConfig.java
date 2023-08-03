@@ -202,7 +202,7 @@ public final class DhtConfig extends PropertiesConfig {
     /**
      * NodeId
      * 
-     * @see NodeContext#nodeId()
+     * @see NodeContext#getNodeId()
      */
     public static final String KEY_ID = "id";
     /**

@@ -46,7 +46,7 @@ public class DhtResponse extends DhtMessage {
      */
     protected DhtResponse(byte[] t) {
         this(t, DhtConfig.KEY_R, new LinkedHashMap<>(), null);
-        this.put(DhtConfig.KEY_ID, NodeContext.getInstance().nodeId());
+        this.put(DhtConfig.KEY_ID, NodeContext.getInstance().getNodeId());
     }
     
     /**
