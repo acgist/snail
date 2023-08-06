@@ -92,7 +92,7 @@ public final class MagnetBuilder {
 		// 32位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(this.url)) {
 			this.magnet.setType(Type.BTIH);
-			this.magnet.setHash(InfoHash.newInstance(this.url).infoHashHex());
+			this.magnet.setHash(InfoHash.newInstance(this.url).getInfoHashHex());
 			return this.magnet;
 		}
 		// 40位磁力链接
@@ -172,7 +172,7 @@ public final class MagnetBuilder {
 		String hash = value.substring(prefix.length());
 		// 32位磁力链接转为40位磁力链接
 		if(Protocol.Type.verifyMagnetHash32(hash)) {
-			hash = InfoHash.newInstance(hash).infoHashHex();
+			hash = InfoHash.newInstance(hash).getInfoHashHex();
 		}
 		this.magnet.setXt(value);
 		this.magnet.setHash(hash);

@@ -79,8 +79,8 @@ public final class MSECipher {
      * @throws NetException 网络异常
      */
     public static final MSECipher newSender(byte[] secret, InfoHash infoHash) throws NetException {
-        final Key sendKey = MSECipher.buildSendKey(secret, infoHash.infoHash());
-        final Key recvKey = MSECipher.buildRecvKey(secret, infoHash.infoHash());
+        final Key sendKey = MSECipher.buildSendKey(secret, infoHash.getInfoHash());
+        final Key recvKey = MSECipher.buildRecvKey(secret, infoHash.getInfoHash());
         try {
             return new MSECipher(sendKey, recvKey);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
@@ -99,8 +99,8 @@ public final class MSECipher {
      * @throws NetException 网络异常
      */
     public static final MSECipher newRecver(byte[] secret, InfoHash infoHash) throws NetException {
-        final Key sendKey = MSECipher.buildSendKey(secret, infoHash.infoHash());
-        final Key recvKey = MSECipher.buildRecvKey(secret, infoHash.infoHash());
+        final Key sendKey = MSECipher.buildSendKey(secret, infoHash.getInfoHash());
+        final Key recvKey = MSECipher.buildRecvKey(secret, infoHash.getInfoHash());
         try {
             return new MSECipher(recvKey, sendKey);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {

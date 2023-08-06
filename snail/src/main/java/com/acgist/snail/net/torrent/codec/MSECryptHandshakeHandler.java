@@ -437,7 +437,7 @@ public final class MSECryptHandshakeHandler {
 //      HASH('req2', SKEY) xor HASH('req3', S)
         digest.reset();
         digest.update(REQ2);
-        digest.update(infoHash.infoHash());
+        digest.update(infoHash.getInfoHash());
         final byte[] req2 = digest.digest();
         digest.reset();
         digest.update(REQ3);
@@ -508,7 +508,7 @@ public final class MSECryptHandshakeHandler {
         for (InfoHash infoHashMatch : TorrentContext.getInstance().allInfoHash()) {
             digest.reset();
             digest.update(REQ2);
-            digest.update(infoHashMatch.infoHash());
+            digest.update(infoHashMatch.getInfoHash());
             final byte[] req2 = digest.digest();
             if (Arrays.equals(ArrayUtils.xor(req2, req3), req2x3Peer)) {
                 infoHash = infoHashMatch;

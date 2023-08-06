@@ -113,7 +113,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	public void request() {
 		LOGGER.debug("发送metadata消息-request");
-		final int size = this.infoHash.size();
+		final int size = this.infoHash.getSize();
 		final int messageSize = NumberUtils.ceilDiv(size, SLICE_LENGTH);
 		for (int index = 0; index < messageSize; index++) {
 			final var request = this.buildMessage(PeerConfig.MetadataType.REQUEST, index);
@@ -139,7 +139,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	public void data(int piece) {
 		LOGGER.debug("发送metadata消息-data：{}", piece);
-		final byte[] bytes = this.infoHash.info();
+		final byte[] bytes = this.infoHash.getInfo();
 		if(bytes == null) {
 			this.reject();
 			return;
@@ -157,7 +157,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		final byte[] x = new byte[length];
 		System.arraycopy(bytes, pos, x, 0, length);
 		final var data = this.buildMessage(PeerConfig.MetadataType.DATA, piece);
-		data.put(ARG_TOTAL_SIZE, this.infoHash.size());
+		data.put(ARG_TOTAL_SIZE, this.infoHash.getSize());
 		this.pushMessage(data, x);
 	}
 	
@@ -168,12 +168,12 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 	 */
 	private void data(BEncodeDecoder decoder) {
 		LOGGER.debug("处理metadata消息-data");
-		byte[] bytes = this.infoHash.info();
+		byte[] bytes = this.infoHash.getInfo();
 		if(bytes == null) {
 			// 设置种子Info
 			final int totalSize = decoder.getInteger(ARG_TOTAL_SIZE);
 			bytes = new byte[totalSize];
-			this.infoHash.info(bytes);
+			this.infoHash.setInfo(bytes);
 		}
 		final int piece = decoder.getInteger(ARG_PIECE);
 		final int pos = piece * SLICE_LENGTH;
@@ -188,7 +188,7 @@ public final class MetadataMessageHandler extends ExtensionTypeMessageHandler {
 		// 剩余数据作为Slice数据
 		final byte[] x = decoder.oddBytes();
 		System.arraycopy(x, 0, bytes, pos, length);
-		final byte[] sourceHash = this.infoHash.infoHash();
+		final byte[] sourceHash = this.infoHash.getInfoHash();
 		final byte[] targetHash = DigestUtils.sha1(bytes);
 		// 判断Hash值是否相等（相等表示已经下载完成：保存种子文件）
 		if(Arrays.equals(sourceHash, targetHash)) {

@@ -616,7 +616,7 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 		// 任务信息可能为空：任务还没有准备完成
 		if(this.taskSession == null) {
 			if(this.torrent == null) {
-				return this.infoHash.infoHashHex();
+				return this.infoHash.getInfoHashHex();
 			} else {
 				return this.torrent.name();
 			}
@@ -704,10 +704,10 @@ public final class TorrentSession implements IMultifileCompletedChecker {
 	 * 
 	 * @return 种子info数据Hash（HEX）
 	 * 
-	 * @see InfoHash#infoHashHex()
+	 * @see InfoHash#getInfoHashHex()
 	 */
 	public String infoHashHex() {
-		return this.infoHash.infoHashHex();
+		return this.infoHash.getInfoHashHex();
 	}
 	
 	/**

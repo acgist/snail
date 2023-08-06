@@ -134,7 +134,7 @@ public final class TorrentProtocol extends Protocol {
 	 */
 	private void checkExist() throws DownloadException {
 		final Torrent torrent = TorrentContext.loadTorrent(this.url);
-		if(TorrentContext.getInstance().exist(torrent.infoHash().infoHashHex())) {
+		if(TorrentContext.getInstance().exist(torrent.infoHash().getInfoHashHex())) {
 			throw new DownloadException("任务已经存在");
 		}
 	}
@@ -148,7 +148,7 @@ public final class TorrentProtocol extends Protocol {
 	private void torrent() throws DownloadException {
 		this.torrentFile = this.url;
 		this.torrentSession = TorrentContext.getInstance().newTorrentSession(this.torrentFile);
-		this.url = Protocol.Type.buildMagnet(this.torrentSession.infoHash().infoHashHex());
+		this.url = Protocol.Type.buildMagnet(this.torrentSession.infoHash().getInfoHashHex());
 	}
 	
 	/**

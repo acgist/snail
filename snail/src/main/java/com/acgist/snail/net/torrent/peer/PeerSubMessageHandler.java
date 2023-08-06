@@ -339,7 +339,7 @@ public final class PeerSubMessageHandler implements IMessageDecoder<ByteBuffer>,
 		buffer.put((byte) PeerConfig.PROTOCOL_NAME_LENGTH);
 		buffer.put(PeerConfig.PROTOCOL_NAME_BYTES);
 		buffer.put(PeerConfig.RESERVED);
-		buffer.put(this.torrentSession.infoHash().infoHash());
+		buffer.put(this.torrentSession.infoHash().getInfoHash());
 		buffer.put(PeerConfig.getInstance().getPeerId());
 		this.sendEncrypt(buffer, SystemConfig.CONNECT_TIMEOUT);
 	}

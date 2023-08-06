@@ -20,7 +20,7 @@ class TorrentBuilderTest extends Performance {
 		final var path = "E:/snail/0B156834B59B0FF64EE0C9305D4D6EDE421196E6.torrent";
 		final var session = TorrentContext.getInstance().newTorrentSession(path);
 		final var infoHash = session.infoHash();
-		this.log("HASH：{}", infoHash.infoHashHex());
+		this.log("HASH：{}", infoHash.getInfoHashHex());
 		NodeContext.getInstance().newNodeSession("12345678901234567890".getBytes(), "192.168.1.1", 18888);
 		final var trackers = List.of("https://www.acgist.com", "https://www.acgist.com/1", "https://www.acgist.com/2");
 		final var builder = TorrentBuilder.newInstance(infoHash, trackers);

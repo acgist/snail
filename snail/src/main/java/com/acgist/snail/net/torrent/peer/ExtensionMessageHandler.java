@@ -235,7 +235,7 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		message.put(EX_REQQ, DEFAULT_REQQ);
 		if(PeerConfig.ExtensionType.UT_METADATA.getNotice()) {
 			// 种子InfoHash数据长度
-			final int metadataSize = this.infoHash.size();
+			final int metadataSize = this.infoHash.getSize();
 			if(metadataSize > 0) {
 				message.put(EX_METADATA_SIZE, metadataSize);
 			}
@@ -291,8 +291,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
 		}
 		// 种子InfoHash数据长度
 		final Long metadataSize = decoder.getLong(EX_METADATA_SIZE);
-		if(metadataSize != null && this.infoHash.size() <= 0) {
-			this.infoHash.size(metadataSize.intValue());
+		if(metadataSize != null && this.infoHash.getSize() <= 0) {
+			this.infoHash.setSize(metadataSize.intValue());
 		}
 		// 设置客户端名称
 		if(this.peerSession.unknownClientName()) {

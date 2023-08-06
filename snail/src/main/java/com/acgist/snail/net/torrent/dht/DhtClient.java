@@ -83,7 +83,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
      * @param infoHash InfoHash
      */
     public void getPeers(InfoHash infoHash) {
-        this.getPeers(infoHash.infoHash());
+        this.getPeers(infoHash.getInfoHash());
     }
 
     /**
@@ -102,7 +102,7 @@ public final class DhtClient extends UdpClient<DhtMessageHandler> {
      * @param infoHash InfoHash
      */
     public void announcePeer(byte[] token, InfoHash infoHash) {
-        this.announcePeer(token, infoHash.infoHash());
+        this.announcePeer(token, infoHash.getInfoHash());
     }
 
     /**

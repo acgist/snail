@@ -140,7 +140,7 @@ public final class HttpTrackerSession extends TrackerSession {
 	protected String buildAnnounceMessageEx(Integer sid, TorrentSession torrentSession, TrackerConfig.Event event, long upload, long download, long left) {
 		final StringBuilder builder = new StringBuilder(this.announceUrl);
 		builder.append("?")
-			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl()).append("&")
+			.append("info_hash").append("=").append(torrentSession.infoHash().getInfoHashUrl()).append("&")
 			.append("peer_id").append("=").append(PeerConfig.getInstance().getPeerIdUrl()).append("&")
 			.append("port").append("=").append(SystemConfig.getTorrentPortExtShort()).append("&")
 			.append("uploaded").append("=").append(upload).append("&")
@@ -170,7 +170,7 @@ public final class HttpTrackerSession extends TrackerSession {
 		}
 		final StringBuilder builder = new StringBuilder(this.scrapeUrl);
 		builder.append("?")
-			.append("info_hash").append("=").append(torrentSession.infoHash().infoHashUrl());
+			.append("info_hash").append("=").append(torrentSession.infoHash().getInfoHashUrl());
 		return builder.toString();
 	}
 

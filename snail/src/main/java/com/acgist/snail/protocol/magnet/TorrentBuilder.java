@@ -129,7 +129,7 @@ public final class TorrentBuilder {
 	 * @throws PacketSizeException 网络包大小异常
 	 */
 	private void buildInfo(Map<String, Object> data) throws PacketSizeException {
-		final var decoder = BEncodeDecoder.newInstance(this.infoHash.info());
+		final var decoder = BEncodeDecoder.newInstance(this.infoHash.getInfo());
 		data.put(Torrent.ATTR_INFO, decoder.nextMap());
 	}
 
@@ -139,7 +139,7 @@ public final class TorrentBuilder {
 	 * @param data 种子信息
 	 */
 	private void buildNodes(Map<String, Object> data) {
-		final var sessions = NodeContext.getInstance().findNode(this.infoHash.infoHash());
+		final var sessions = NodeContext.getInstance().findNode(this.infoHash.getInfoHash());
 		if(CollectionUtils.isNotEmpty(sessions)) {
 			final var nodes = sessions.stream()
 				.filter(session -> NetUtils.ip(session.getHost()))
@@ -157,7 +157,7 @@ public final class TorrentBuilder {
 	 * @return 文件名称
 	 */
 	private String buildFileName() {
-		return this.infoHash.infoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
+		return this.infoHash.getInfoHashHex() + Protocol.Type.TORRENT.defaultSuffix();
 	}
 
 	/**

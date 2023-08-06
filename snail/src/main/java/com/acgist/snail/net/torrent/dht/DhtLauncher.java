@@ -90,7 +90,7 @@ public final class DhtLauncher implements Runnable {
      * @return DHT节点
      */
     private List<InetSocketAddress> pick() {
-        return NodeContext.getInstance().findNode(this.infoHash.infoHash()).stream()
+        return NodeContext.getInstance().findNode(this.infoHash.getInfoHash()).stream()
             .filter(NodeSession::markVerify)
             .map(node -> NetUtils.buildSocketAddress(node.getHost(), node.getPort()))
             .collect(Collectors.toList());
@@ -118,7 +118,7 @@ public final class DhtLauncher implements Runnable {
             LOGGER.debug("DHT定时任务没有节点可用");
             return;
         }
-        final byte[] infoHashValue = this.infoHash.infoHash();
+        final byte[] infoHashValue = this.infoHash.getInfoHash();
         for (final InetSocketAddress socketAddress : list) {
             DhtClient.newInstance(socketAddress).getPeers(infoHashValue);
         }

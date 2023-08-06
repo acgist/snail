@@ -170,7 +170,7 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putLong(this.connectionId);
 		buffer.putInt(TrackerConfig.Action.ANNOUNCE.getId());
 		buffer.putInt(sid);
-		buffer.put(torrentSession.infoHash().infoHash());
+		buffer.put(torrentSession.infoHash().getInfoHash());
 		buffer.put(PeerConfig.getInstance().getPeerId());
 		buffer.putLong(download);
 		buffer.putLong(left);
@@ -199,7 +199,7 @@ public final class UdpTrackerSession extends TrackerSession {
 		buffer.putLong(this.connectionId);
 		buffer.putInt(TrackerConfig.Action.SCRAPE.getId());
 		buffer.putInt(sid);
-		buffer.put(torrentSession.infoHash().infoHash());
+		buffer.put(torrentSession.infoHash().getInfoHash());
 		return buffer;
 	}
 	

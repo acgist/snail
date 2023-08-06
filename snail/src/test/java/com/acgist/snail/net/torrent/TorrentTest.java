@@ -22,7 +22,7 @@ class TorrentTest extends Performance {
 		final TorrentSession session = TorrentContext.getInstance().newTorrentSession(path);
 		final Torrent torrent = session.torrent();
 		final TorrentInfo torrentInfo = torrent.getInfo();
-		assertEquals(path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.')).toUpperCase(), session.infoHash().infoHashHex().toUpperCase());
+		assertEquals(path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.')).toUpperCase(), session.infoHash().getInfoHashHex().toUpperCase());
 		this.log("注释：" + torrent.getComment());
 		this.log("Piece数量：" + torrent.getInfo().pieceSize());
 		this.log("Piece长度：" + torrent.getInfo().getPieceLength());
