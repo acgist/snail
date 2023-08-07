@@ -8,9 +8,9 @@ import com.acgist.snail.utils.Performance;
 
 class LocalServiceDiscoveryInitializerTest extends Performance {
 
-	@Test
-	void testLocalServiceDiscoveryInitializer() {
-		assertDoesNotThrow(() -> LocalServiceDiscoveryInitializer.newInstance().sync());
-	}
-	
+    @Test
+    void testLocalServiceDiscoveryInitializer() {
+        assertDoesNotThrow(() -> LocalServiceDiscoveryInitializer.newInstance().sync());
+    }
+    
 }

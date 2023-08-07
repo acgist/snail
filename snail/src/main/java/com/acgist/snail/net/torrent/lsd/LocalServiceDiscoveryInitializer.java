@@ -9,27 +9,27 @@ import com.acgist.snail.context.Initializer;
  */
 public final class LocalServiceDiscoveryInitializer extends Initializer {
 
-	/**
-	 * 延迟时间（秒）：{@value}
-	 */
-	private static final int DELAY = 10;
-	
-	private LocalServiceDiscoveryInitializer() {
-		super("本地发现", DELAY);
-	}
-	
-	public static final LocalServiceDiscoveryInitializer newInstance() {
-		return new LocalServiceDiscoveryInitializer();
-	}
-	
-	@Override
-	protected void init() {
-		LocalServiceDiscoveryServer.getInstance();
-	}
-	
-	@Override
-	protected void release() {
-		LocalServiceDiscoveryServer.getInstance().close();
-	}
+    /**
+     * 延迟时间（秒）：{@value}
+     */
+    private static final int DELAY = 10;
+    
+    private LocalServiceDiscoveryInitializer() {
+        super("本地发现", DELAY);
+    }
+    
+    public static final LocalServiceDiscoveryInitializer newInstance() {
+        return new LocalServiceDiscoveryInitializer();
+    }
+    
+    @Override
+    protected void init() {
+        LocalServiceDiscoveryServer.getInstance();
+    }
+    
+    @Override
+    protected void release() {
+        LocalServiceDiscoveryServer.getInstance().close();
+    }
 
 }
