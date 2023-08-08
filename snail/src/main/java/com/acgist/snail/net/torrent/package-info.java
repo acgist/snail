@@ -1,7 +1,7 @@
 /**
  * Torrent协议
  * 
- * codec    MSE加密协议
+ * codec    编解码
  * dht      DHT协议
  * lsd      本地发现协议
  * peer     Peer协议
