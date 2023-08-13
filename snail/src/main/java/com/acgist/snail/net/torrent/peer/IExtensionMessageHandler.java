@@ -5,19 +5,19 @@ import java.nio.ByteBuffer;
 import com.acgist.snail.net.NetException;
 
 /**
- * <p>扩展协议接口</p>
+ * 扩展协议接口
  * 
  * @author acgist
  */
 public interface IExtensionMessageHandler {
 
-	/**
-	 * <p>处理扩展消息</p>
-	 * 
-	 * @param buffer 消息
-	 * 
-	 * @throws NetException 网络异常
-	 */
-	void onMessage(ByteBuffer buffer) throws NetException;
-	
+    /**
+     * 处理扩展消息
+     * 
+     * @param buffer 消息
+     * 
+     * @throws NetException 网络异常
+     */
+    void onMessage(ByteBuffer buffer) throws NetException;
+    
 }
