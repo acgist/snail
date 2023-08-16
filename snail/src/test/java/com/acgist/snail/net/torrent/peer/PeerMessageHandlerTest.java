@@ -9,14 +9,14 @@ import com.acgist.snail.utils.Performance;
 
 class PeerMessageHandlerTest extends Performance {
 
-	@Test
-	void testUseless() {
-		final PeerMessageHandler handler = new PeerMessageHandler();
-		assertFalse(handler.useless());
-		assertFalse(handler.useless());
-		assertFalse(handler.useless());
-		assertTrue(handler.useless());
-		this.costed(100000, () -> handler.useless());
-	}
-	
+    @Test
+    void testUseless() {
+        final PeerMessageHandler handler = new PeerMessageHandler();
+        assertFalse(handler.useless());
+        assertFalse(handler.useless());
+        assertFalse(handler.useless());
+        assertTrue(handler.useless());
+        this.costed(100000, () -> handler.useless());
+    }
+    
 }
