@@ -2,6 +2,7 @@ package com.acgist.snail.gui.javafx;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -13,14 +14,14 @@ import com.acgist.snail.utils.Performance;
 
 class IntrospectorTest extends Performance {
 
-	@Test
-	void testBeans() throws IntrospectionException {
-		final var bean = Introspector.getBeanInfo(TaskEntity.class);
-		final var properties = bean.getPropertyDescriptors();
-		for (PropertyDescriptor property : properties) {
-			this.log(property);
-		}
-		assertNotNull(bean);
-	}
-	
+    @Test
+    void testBeans() throws IntrospectionException {
+        final BeanInfo beanInfo = Introspector.getBeanInfo(TaskEntity.class);
+        final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+        for (final PropertyDescriptor property : properties) {
+            this.log(property);
+        }
+        assertNotNull(beanInfo);
+    }
+    
 }

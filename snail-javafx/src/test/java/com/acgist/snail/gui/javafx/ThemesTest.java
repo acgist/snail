@@ -8,10 +8,9 @@ import com.acgist.snail.utils.Performance;
 
 class ThemesTest extends Performance {
 
-	@Test
-	void testThemeStyle() throws Exception {
-		this.log(Themes.getStyle());
-		assertNotNull(Themes.getStyle());
-	}
+    @Test
+    void testThemeStyle() throws Exception {
+        assertNotNull(Themes.getStyle());
+    }
 
 }

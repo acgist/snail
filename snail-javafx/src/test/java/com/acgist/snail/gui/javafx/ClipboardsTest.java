@@ -12,22 +12,22 @@ import javafx.application.Platform;
 
 class ClipboardsTest extends Performance {
 
-	@Test
-	void testClipboards() throws InterruptedException {
-		Platform.startup(() -> {});
-		final CountDownLatch latch = new CountDownLatch(1);
-		Platform.runLater(() -> {
-			try {
-				final String content = "测试";
-				Clipboards.copy(content);
-				assertEquals(content, Clipboards.get());
-			} catch (Exception e) {
-				this.log("testClipboards", e);
-			} finally {
-				latch.countDown();
-			}
-		});
-		latch.await();
-	}
-	
+    @Test
+    void testClipboards() throws InterruptedException {
+        Platform.startup(() -> {});
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                final String content = "测试";
+                Clipboards.copy(content);
+                assertEquals(content, Clipboards.get());
+            } catch (Exception e) {
+                this.log("testClipboards", e);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await();
+    }
+    
 }

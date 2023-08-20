@@ -13,21 +13,23 @@ import javafx.stage.Screen;
 
 class DesktopsTest extends Performance {
 
-	@Test
-	void testOpen() {
-		assertDoesNotThrow(() -> Desktops.open(new File("E://snail")));
-	}
-	
-	@Test
-	void testBrowse() {
-		assertDoesNotThrow(() -> Desktops.browse("https://www.acgist.com"));
-	}
-	
-	@Test
-	void testHidpi() {
-		Platform.startup(() -> {});
-		this.log(Screen.getPrimary().getOutputScaleX());
-		this.log(Screen.getPrimary().getOutputScaleY());
-	}
-	
+    @Test
+    void testOpen() {
+        assertDoesNotThrow(() -> Desktops.open(new File("D:/tmp")));
+    }
+    
+    @Test
+    void testBrowse() {
+        assertDoesNotThrow(() -> Desktops.browse("https://www.acgist.com"));
+    }
+    
+    @Test
+    void testHidpi() {
+        assertDoesNotThrow(() -> {
+            Platform.startup(() -> {});
+            this.log("横向缩放：{}", Screen.getPrimary().getOutputScaleX());
+            this.log("纵向缩放：{}", Screen.getPrimary().getOutputScaleY());
+        });
+    }
+    
 }
