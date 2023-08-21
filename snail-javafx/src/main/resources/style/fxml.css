@@ -1,446 +1,380 @@
-/**
- * <p>通用样式</p>
- */
+/** 通用样式 */
 .root {
-	-fx-font-size:16px;
-	-fx-alignment:center;
-	/** 基本透明度 */
-	-fx-snail-opacity:0.94;
-	/** 主要颜色 */
-	-fx-snail-main-color:#0099CC;
-	/** 边框颜色 */
-	-fx-snail-border-color:#C8C8C8;
-	/** 元素颜色 */
-	-fx-snail-element-color:#E0E0E0;
-	/** 背景颜色 */
-	-fx-snail-background-color:#F4F4F4;
-	/** 基本颜色 */
-	-fx-snail-red-color:#DD3355;
-	-fx-snail-blue-color:#1199FF;
-	-fx-snail-gray-color:#808080;
-	-fx-snail-green-color:#008800;
-	-fx-snail-orange-color:#EE8811;
-	-fx-snail-violet-color:#8822EE;
-	/** 焦点颜色 */
-	-fx-focus-color:derive(-fx-snail-main-color, 40%);
-	/** 选中颜色 */
-	-fx-selection-bar:-fx-snail-main-color;
-	-fx-selection-bar-text:#FFFFFF;
+    -fx-font-size:16px;
+    -fx-alignment:center;
+    /** 默认透明度 */
+    -fx-snail-opacity:0.94;
+    /** 主要颜色 */
+    -fx-snail-main-color:#0099CC;
+    /** 边框颜色 */
+    -fx-snail-border-color:#C8C8C8;
+    /** 元素颜色 */
+    -fx-snail-element-color:#E0E0E0;
+    /** 背景颜色 */
+    -fx-snail-background-color:#F4F4F4;
+    /** 基本颜色 */
+    -fx-snail-red-color:#DD3355;
+    -fx-snail-blue-color:#1199FF;
+    -fx-snail-gray-color:#808080;
+    -fx-snail-green-color:#008800;
+    -fx-snail-orange-color:#EE8811;
+    -fx-snail-violet-color:#8822EE;
+    /** 焦点颜色 */
+    -fx-focus-color:derive(-fx-snail-main-color, 40%);
+    /** 选中颜色 */
+    -fx-selection-bar:-fx-snail-main-color;
+    -fx-selection-bar-text:#FFFFFF;
 }
-/**
- * <p>图标样式</p>
- */
+/** 图标样式 */
 .snail-icon {
-	-fx-font-size:16px;
-	-fx-font-family:"SnailIcon";
+    -fx-font-size:16px;
+    -fx-font-family:"SnailIcon";
 }
-/**
- * <p>托盘样式</p>
- */
+/** 托盘样式 */
 .tray {
-	-fx-font-size:16px;
+    -fx-font-size:16px;
 }
 .tray .snail-icon {
-	-fx-font-size:16px;
+    -fx-font-size:16px;
 }
-/**
- * <p>提示样式：Tooltip</p>
- */
+/** 提示样式：Tooltip */
 .root .tooltip {
-	-fx-opacity:-fx-snail-opacity;
-	-fx-text-fill:#000000;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:#FFFFFF;
-	-fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
+    -fx-opacity:-fx-snail-opacity;
+    -fx-text-fill:#000000;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:#FFFFFF;
+    -fx-effect:dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0.0, 0, 0);
 }
-/**
- * <p>按钮样式：Button</p>
- */
+/** 按钮样式：Button */
 .root .button {
-	-fx-border-width:1px;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:-fx-snail-element-color;
+    -fx-border-width:1px;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:-fx-snail-element-color;
 }
 .root .button:hover {
-	-fx-text-fill:-fx-selection-bar-text;
-	-fx-border-color:-fx-snail-main-color;
-	-fx-background-color:-fx-snail-main-color;
+    -fx-text-fill:-fx-selection-bar-text;
+    -fx-border-color:-fx-snail-main-color;
+    -fx-background-color:-fx-snail-main-color;
 }
-/**
- * <p>文本框样式：TextField</p>
- */
+/** 文本框样式：TextField */
 .root .text-field {
-	-fx-border-width:1px;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:transparent, #FFFFFF;
-	-fx-prompt-text-fill:-fx-snail-border-color;
+    -fx-border-width:1px;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:transparent, #FFFFFF;
+    -fx-prompt-text-fill:-fx-snail-border-color;
 }
 .root .text-field:hover,
 .root .text-field:focused {
-	-fx-border-color:-fx-snail-main-color;
+    -fx-border-color:-fx-snail-main-color;
 }
-/**
- * <p>文本框样式：TextArea</p>
- */
-.root .text-area {
-	-fx-border-width:1px;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:transparent, #FFFFFF;
-	-fx-prompt-text-fill:-fx-snail-border-color;
-}
-.root .text-area .content {
-	-fx-padding:1px;
-	-fx-background-color:transparent, #FFFFFF;
-}
-.root .text-area:hover,
-.root .text-area:focused {
-	-fx-border-color:-fx-snail-main-color;
-}
-/**
- * <p>下拉框样式：ChoiceBox</p>
- */
+/** 下拉框样式：ChoiceBox */
 .root .choice-box {
-	-fx-border-width:1px;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:-fx-snail-element-color;
+    -fx-border-width:1px;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:-fx-snail-element-color;
 }
 .root .choice-box:hover,
 .root .choice-box:focused {
-	-fx-border-color:-fx-snail-main-color;
+    -fx-border-color:-fx-snail-main-color;
 }
-/** 当前选中选项标记选中颜色 */
 .root .choice-box .radio-menu-item:focused:checked .left-container .radio {
-	-fx-background-color:-fx-selection-bar-text;
+    -fx-background-color:-fx-selection-bar-text;
 }
-/**
- * <p>滚动条样式：ScrollBar</p>
- */
+/** 滚动条样式：ScrollBar */
 .root .scroll-bar {
-	-fx-background-color:-fx-snail-background-color;
+    -fx-background-color:-fx-snail-background-color;
 }
 .root .scroll-bar .thumb {
-	-fx-background-radius:0;
+    -fx-background-radius:0;
 }
-/**
- * <p>菜单样式：ContextMenu</p>
- */
+/** 菜单样式：ContextMenu */
 .root .context-menu {
-	-fx-padding:1px;
-	-fx-opacity:-fx-snail-opacity;
+    -fx-padding:1px;
+    -fx-opacity:-fx-snail-opacity;
 }
 .root .context-menu .menu-item:focused .label {
-	-fx-text-fill:-fx-selection-bar-text;
+    -fx-text-fill:-fx-selection-bar-text;
 }
 .root .context-menu .menu-item:focused .snail-icon {
-	-fx-text-fill:-fx-selection-bar-text;
+    -fx-text-fill:-fx-selection-bar-text;
 }
-/**
- * <p>关于窗口：about.fxml</p>
- */
+/** 关于窗口：about.fxml */
 .about .sponsor {
-	-fx-padding:10px 0;
-	-fx-alignment:center;
+    -fx-padding:10px 0;
+    -fx-alignment:center;
 }
 .about .info-box {
-	-fx-padding:20px 0;
+    -fx-padding:20px 0;
 }
 .about .info-box TextFlow {
-	-fx-padding:0 0 5px 0;
-	-fx-text-alignment:center;
+    -fx-padding:0 0 5px 0;
+    -fx-text-alignment:center;
 }
 .about .button-box {
-	-fx-spacing:10px;
-	-fx-padding:10px 0;
-	-fx-alignment:center;
+    -fx-spacing:10px;
+    -fx-padding:10px 0;
+    -fx-alignment:center;
 }
-/**
- * <p>新建窗口：build.fxml</p>
- */
+/** 新建窗口：build.fxml */
 .build .url {
-	-fx-padding:10px 0;
+    -fx-padding:10px 0;
 }
 .build .url TextFlow {
-	-fx-padding:0 10px 0 0;
+    -fx-padding:0 10px 0 0;
 }
 .build .url TextField {
-	-fx-pref-width:400px;
+    -fx-pref-width:400px;
 }
 .build .option {
-	-fx-alignment:center_right;
+    -fx-alignment:center_right;
 }
 .build .option .cancel {
-	-fx-padding:0 10px;
+    -fx-padding:0 10px;
 }
-/**
- * <p>主窗口：main.fxml</p>
- */
+/** 主窗口：main.fxml */
 .main .header {
-	-fx-padding:2px;
-	-fx-alignment:center_left;
+    -fx-padding:2px;
+    -fx-alignment:center_left;
 }
 .main .footer {
-	-fx-padding:2px;
+    -fx-padding:2px;
 }
 .main .footer .filters {
-	-fx-alignment:center_left;
+    -fx-alignment:center_left;
 }
 .main .footer .statuses {
-	-fx-font-size:16px;
-	-fx-alignment:center_right;
+    -fx-font-size:16px;
+    -fx-alignment:center_right;
 }
 .main .footer .statuses Label {
-	-fx-padding:0 2px;
+    -fx-padding:0 2px;
 }
 .main .table-view {
-	-fx-padding:0;
-	-fx-border-width:1px 0;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
+    -fx-padding:0;
+    -fx-border-width:1px 0;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
 }
 .main .table-view .snail-icon {
-	-fx-padding:0 2px;
-	-fx-font-size:20px;
+    -fx-padding:0 2px;
+    -fx-font-size:20px;
 }
 .main .table-view .placeholder .snail-icon {
-	-fx-font-size:64px;
+    -fx-font-size:64px;
 }
-/** 空闲表头样式 */
 .main .table-view .filler,
-/** 表头样式 */
 .main .table-view .column-header {
-	-fx-pref-height:40px;
-	-fx-border-width:0 1px 1px 0;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-color:-fx-snail-element-color;
+    -fx-pref-height:40px;
+    -fx-border-width:0 1px 1px 0;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-color:-fx-snail-element-color;
 }
-/** 表格单元样式 */
 .main .table-view .table-cell {
-	/** 设置padding（垂直居中） */
-	-fx-padding:0 2px;
-	-fx-pref-height:48px;
+    -fx-padding:0 2px;
+    -fx-pref-height:48px;
 }
-/** 没有数据表格单元样式 */
-.main .table-view .table-row-cell:empty .table-cell {
-	/** 去掉没有数据表格单元竖线
-	 * -fx-border-width:0px;
-	 */
-}
-/** 表格行样式 */
 .main .table-view .table-row-cell {
-	/** 去掉表格行横线
-	 * -fx-background-insets:0;
-	 * -fx-background-radius:0;
-	 */
+    /**
+     * -fx-background-insets:0;
+     * -fx-background-radius:0;
+     */
 }
-/** 失去焦点表格行样式 */
+.main .table-view .table-row-cell:empty .table-cell {
+    /**
+     * -fx-border-width:0px;
+     */
+}
 .main .table-view .table-row-cell:selected {
-	-fx-background-color:-fx-snail-element-color;
+    -fx-background-color:-fx-snail-element-color;
 }
-/** 获得焦点表格行样式 */
 .main .table-view:focused .table-row-cell:focused {
-	/** 去掉获得焦点但是没有选中时的边框 */
-	-fx-background-insets:0, 0 0 1 0;
-	-fx-background-radius:0;
-	-fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
+    -fx-background-insets:0, 0 0 1 0;
+    -fx-background-radius:0;
+    -fx-background-color:-fx-table-cell-border-color, -fx-control-inner-background;
 }
-/** 选中表格行样式 */
 .main .table-view:focused .table-row-cell:selected {
-	-fx-background-color:-fx-snail-main-color;
+    -fx-background-color:-fx-snail-main-color;
 }
 .main .table-view:focused .table-row-cell:selected Text {
-	-fx-fill:-fx-selection-bar-text;
+    -fx-fill:-fx-selection-bar-text;
 }
 .main .table-view:focused .table-row-cell:selected .snail-icon {
-	-fx-text-fill:-fx-selection-bar-text;
+    -fx-text-fill:-fx-selection-bar-text;
 }
-/** 去掉垂直滚动条 */
 .main .table-view .virtual-flow .scroll-bar:vertical {
-	/** 去掉垂直滚动条
-	 * -fx-pref-width:0;
-	 */
+    /**
+     * -fx-pref-width:0;
+     */
 }
-/** 去掉水平滚动条 */
 .main .table-view .virtual-flow .scroll-bar:horizontal {
-	-fx-pref-height:0;
+    -fx-pref-height:0;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .increment-button .increment-arrow {
-	/** 影藏箭头 */
-	-fx-background-color:transparent;
+    -fx-background-color:transparent;
 }
 .main .table-view .virtual-flow .scroll-bar:horizontal .decrement-button .decrement-arrow {
-	/** 影藏箭头 */
-	-fx-background-color:transparent;
+    -fx-background-color:transparent;
 }
-/**
- * <p>设置窗口：setting.fxml</p>
- */
+/** 设置窗口：setting.fxml */
 .setting .scroll-pane {
-	-fx-padding:20px 0 0 0;
-	-fx-background-color:transparent;
+    -fx-padding:20px 0 0 0;
+    -fx-background-color:transparent;
 }
 .setting HBox {
-	-fx-padding:6px 0;
+    -fx-padding:6px 0;
 }
 .setting HBox TextFlow {
-	-fx-pref-width:190px;
-	-fx-text-alignment:right;
+    -fx-pref-width:190px;
+    -fx-text-alignment:right;
 }
 .setting .path .name {
-	-fx-padding:6px 0;
+    -fx-padding:6px 0;
 }
 .setting .path .path-value {
-	-fx-padding:6px;
-	-fx-pref-width:200px;
+    -fx-padding:6px;
+    -fx-pref-width:200px;
 }
 .setting .path Button {
-	-fx-padding:6px 10px;
+    -fx-padding:6px 10px;
 }
 .setting .slider {
-	-fx-pref-width:300px;
+    -fx-pref-width:300px;
 }
-/**
- * <p>统计窗口：statistics.fxml</p>
- */
+/** 统计窗口：statistics.fxml */
 .statistics .info-box TextFlow {
-	-fx-padding:10px;
-	-fx-pref-width:260px;
-	-fx-border-width:0 0 0 10px;
-	-fx-border-color:-fx-snail-main-color;
-	-fx-background-color:-fx-snail-main-color;
+    -fx-padding:10px;
+    -fx-pref-width:260px;
+    -fx-border-width:0 0 0 10px;
+    -fx-border-color:-fx-snail-main-color;
+    -fx-background-color:-fx-snail-main-color;
 }
 .statistics .info-box TextFlow Label {
-	-fx-padding:0 10px 0 0;
-	-fx-text-fill:#FFFFFF;
+    -fx-padding:0 10px 0 0;
+    -fx-text-fill:#FFFFFF;
 }
 .statistics .info-box TextFlow Text {
-	-fx-fill:#FFFFFF;
-	-fx-font-size:24px;
-	-fx-font-weight:bold;
+    -fx-fill:#FFFFFF;
+    -fx-font-size:24px;
+    -fx-font-weight:bold;
 }
-/** 背景颜色 = 边框颜色 * 透明度 */
 .statistics .info-box TextFlow.red {
-	-fx-border-color:-fx-snail-red-color;
-	-fx-background-color:derive(-fx-snail-red-color, 40%);
+    -fx-border-color:-fx-snail-red-color;
+    -fx-background-color:derive(-fx-snail-red-color, 40%);
 }
 .statistics .info-box TextFlow.green {
-	-fx-border-color:-fx-snail-green-color;
-	-fx-background-color:derive(-fx-snail-green-color, 40%);
+    -fx-border-color:-fx-snail-green-color;
+    -fx-background-color:derive(-fx-snail-green-color, 40%);
 }
 .statistics .info-box .tabs {
-	-fx-padding:2px 0;
+    -fx-padding:2px 0;
 }
 .statistics .info-box .tabs Button {
-	-fx-pref-width:130px;
-	-fx-pref-height:40px;
+    -fx-pref-width:130px;
+    -fx-pref-height:40px;
 }
 .statistics .info-box .tabs ChoiceBox {
-	-fx-pref-width:260px;
-	-fx-pref-height:40px;
+    -fx-pref-width:260px;
+    -fx-pref-height:40px;
 }
 .statistics .scroll-pane {
-	-fx-padding:0;
-	-fx-pref-width:800px;
-	-fx-pref-height:400px;
-	-fx-background-color:transparent;
+    -fx-padding:0;
+    -fx-pref-width:800px;
+    -fx-pref-height:400px;
+    -fx-background-color:transparent;
 }
 .statistics .statistics-box {
-	-fx-alignment:top_center;
-	-fx-pref-width:800px;
-	-fx-pref-height:400px;
+    -fx-alignment:top_center;
+    -fx-pref-width:800px;
+    -fx-pref-height:400px;
 }
 .statistics .statistics-box .system-info TextFlow {
-	-fx-padding:1px 0;
-	-fx-text-alignment:center;
+    -fx-padding:1px 0;
+    -fx-text-alignment:center;
 }
 .statistics .statistics-box .statistics-info {
-	-fx-padding:5px 0;
-	-fx-alignment:center;
+    -fx-padding:5px 0;
+    -fx-alignment:center;
 }
 .statistics .statistics-box .painter-info {
-	-fx-padding:5px 0;
-	-fx-alignment:center;
+    -fx-padding:5px 0;
+    -fx-alignment:center;
 }
 .statistics .statistics-box .painter-info TextFlow {
-	-fx-padding:4px;
-	-fx-text-fill:#FFFFFF;
+    -fx-padding:4px;
+    -fx-text-fill:#FFFFFF;
 }
 .statistics .statistics-box .painter-info Label {
-	-fx-padding:2px;
+    -fx-padding:2px;
 }
 .statistics .statistics-box .default-color0.chart-bar {
-	-fx-bar-fill:-fx-snail-red-color;
+    -fx-bar-fill:-fx-snail-red-color;
 }
 .statistics .statistics-box .default-color1.chart-bar {
-	-fx-bar-fill:-fx-snail-blue-color;
+    -fx-bar-fill:-fx-snail-blue-color;
 }
 .statistics .statistics-box .default-color2.chart-bar {
-	-fx-bar-fill:-fx-snail-gray-color;
+    -fx-bar-fill:-fx-snail-gray-color;
 }
 .statistics .statistics-box .default-color3.chart-bar {
-	-fx-bar-fill:-fx-snail-green-color;
+    -fx-bar-fill:-fx-snail-green-color;
 }
 .statistics .statistics-box .default-color4.chart-bar {
-	-fx-bar-fill:-fx-snail-orange-color;
+    -fx-bar-fill:-fx-snail-orange-color;
 }
 .statistics .statistics-box .default-color5.chart-bar {
-	-fx-bar-fill:-fx-snail-violet-color;
+    -fx-bar-fill:-fx-snail-violet-color;
 }
 .statistics .statistics-box .default-color0.chart-pie {
-	-fx-pie-color:-fx-snail-red-color;
+    -fx-pie-color:-fx-snail-red-color;
 }
 .statistics .statistics-box .default-color1.chart-pie {
-	-fx-pie-color:-fx-snail-blue-color;
+    -fx-pie-color:-fx-snail-blue-color;
 }
 .statistics .statistics-box .default-color2.chart-pie {
-	-fx-pie-color:-fx-snail-gray-color;
+    -fx-pie-color:-fx-snail-gray-color;
 }
 .statistics .statistics-box .default-color3.chart-pie {
-	-fx-pie-color:-fx-snail-green-color;
+    -fx-pie-color:-fx-snail-green-color;
 }
 .statistics .statistics-box .default-color4.chart-pie {
-	-fx-pie-color:-fx-snail-orange-color;
+    -fx-pie-color:-fx-snail-orange-color;
 }
 .statistics .statistics-box .default-color5.chart-pie {
-	-fx-pie-color:-fx-snail-violet-color;
+    -fx-pie-color:-fx-snail-violet-color;
 }
-/**
- * <p>编辑种子：torrent.fxml</p>
- */
+/** 编辑种子：torrent.fxml */
 .torrent .tree-view {
-	-fx-border-width:0 0 1px 0;
-	-fx-border-color:-fx-snail-border-color;
-	-fx-background-insets:0;
-	-fx-background-radius:0;
+    -fx-border-width:0 0 1px 0;
+    -fx-border-color:-fx-snail-border-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
 }
 .torrent .tree-view .tree-cell {
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:-fx-snail-background-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:-fx-snail-background-color;
 }
-/** 箭头样式 */
 .torrent .tree-view .tree-cell .arrow {
-	-fx-background-color:#000000;
+    -fx-background-color:#000000;
 }
 .torrent .tree-view .tree-cell:focused,
 .torrent .tree-view .tree-cell:selected {
-	-fx-background-insets:0;
-	-fx-background-radius:0;
-	-fx-background-color:-fx-snail-background-color;
+    -fx-background-insets:0;
+    -fx-background-radius:0;
+    -fx-background-color:-fx-snail-background-color;
 }
 .torrent .tree-view .tree-cell:selected .check-box {
-	-fx-text-fill:#000000;
+    -fx-text-fill:#000000;
 }
 .torrent .download-box {
-	-fx-padding:2px 0;
-	-fx-alignment:center;
+    -fx-padding:2px 0;
+    -fx-alignment:center;
 }
