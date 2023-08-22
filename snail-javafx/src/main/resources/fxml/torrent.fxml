@@ -6,15 +6,17 @@
 <?import javafx.scene.control.*?>
 
 <FlowPane
-	fx:id="root"
-	styleClass="root,torrent" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.window.torrent.TorrentController"
-	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-	
-	<VBox fx:id="treeBox"></VBox>
-	
-	<VBox fx:id="downloadBox" styleClass="download-box">
-		<Button fx:id="download">下载</Button>
-	</VBox>
-	
+    fx:id="root"
+    styleClass="root,torrent"
+    stylesheets="@/style/fxml.css"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.acgist.snail.gui.javafx.window.torrent.TorrentController">
+    
+    <VBox fx:id="treeBox"></VBox>
+    
+    <VBox fx:id="downloadBox" styleClass="download-box">
+        <Button fx:id="download">下载</Button>
+    </VBox>
+    
 </FlowPane>

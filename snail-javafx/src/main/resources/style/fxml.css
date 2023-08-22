@@ -256,14 +256,14 @@
     -fx-border-color:-fx-snail-main-color;
     -fx-background-color:-fx-snail-main-color;
 }
-.statistics .info-box TextFlow Label {
-    -fx-padding:0 10px 0 0;
-    -fx-text-fill:#FFFFFF;
-}
 .statistics .info-box TextFlow Text {
     -fx-fill:#FFFFFF;
     -fx-font-size:24px;
     -fx-font-weight:bold;
+}
+.statistics .info-box TextFlow Label {
+    -fx-padding:0 10px 0 0;
+    -fx-text-fill:#FFFFFF;
 }
 .statistics .info-box TextFlow.red {
     -fx-border-color:-fx-snail-red-color;
@@ -295,6 +295,9 @@
     -fx-pref-width:800px;
     -fx-pref-height:400px;
 }
+.statistics .statistics-box .chart-legend-item {
+    -fx-padding:0 2px;
+}
 .statistics .statistics-box .system-info TextFlow {
     -fx-padding:1px 0;
     -fx-text-alignment:center;
@@ -307,12 +310,12 @@
     -fx-padding:5px 0;
     -fx-alignment:center;
 }
+.statistics .statistics-box .painter-info Label {
+    -fx-padding:2px;
+}
 .statistics .statistics-box .painter-info TextFlow {
     -fx-padding:4px;
     -fx-text-fill:#FFFFFF;
-}
-.statistics .statistics-box .painter-info Label {
-    -fx-padding:2px;
 }
 .statistics .statistics-box .default-color0.chart-bar {
     -fx-bar-fill:-fx-snail-red-color;

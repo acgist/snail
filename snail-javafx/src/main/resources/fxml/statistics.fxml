@@ -6,43 +6,45 @@
 <?import javafx.scene.control.*?>
 
 <FlowPane
-	fx:id="root"
-	styleClass="root,statistics" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.window.statistics.StatisticsController"
-	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-	
-	<VBox styleClass="info-box">
-		<HBox fx:id="systemTraffic" styleClass="tabs">
-			<TextFlow styleClass="red">
-				<Label>累计上传</Label>
-				<Text fx:id="upload">0</Text>
-			</TextFlow>
-			<TextFlow styleClass="green">
-				<Label>累计下载</Label>
-				<Text fx:id="download">0</Text>
-			</TextFlow>
-		</HBox>
-		<HBox fx:id="systemTabs" styleClass="tabs">
-			<Button fx:id="system" text="系统信息" onAction="#handleSystemAction" />
-			<Button fx:id="node" text="节点统计" onAction="#handleNodeAction" />
-			<Button fx:id="tracker" text="Tracker统计" onAction="#handleTrackerAction" />
-			<Button fx:id="client" text="客户端统计" onAction="#handleClientAction" />
-		</HBox>
-		<HBox fx:id="infoHashTabs" styleClass="tabs">
-			<ChoiceBox fx:id="selectInfoHashs"></ChoiceBox>
-			<Button fx:id="refresh" text="刷新" onAction="#handleRefreshAction" />
-			<Button fx:id="memory" text="整理内存" onAction="#handleMemoryAction" />
-		</HBox>
-		<HBox fx:id="torrentTabs" styleClass="tabs">
-			<Button fx:id="source" text="来源统计" onAction="#handleSourceAction" />
-			<Button fx:id="connect" text="连接统计" onAction="#handleConnectAction" />
-			<Button fx:id="traffic" text="流量统计" onAction="#handleTrafficAction" />
-			<Button fx:id="piece" text="Piece统计" onAction="#handlePieceAction" />
-		</HBox>
-	</VBox>
-	
-	<ScrollPane vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
-		<VBox fx:id="statisticsBox" styleClass="statistics-box"></VBox>
-	</ScrollPane>
-	
+    fx:id="root"
+    styleClass="root,statistics"
+    stylesheets="@/style/fxml.css"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.acgist.snail.gui.javafx.window.statistics.StatisticsController">
+    
+    <VBox styleClass="info-box">
+        <HBox fx:id="systemTraffic" styleClass="tabs">
+            <TextFlow styleClass="red">
+                <Label>累计上传</Label>
+                <Text fx:id="upload">0</Text>
+            </TextFlow>
+            <TextFlow styleClass="green">
+                <Label>累计下载</Label>
+                <Text fx:id="download">0</Text>
+            </TextFlow>
+        </HBox>
+        <HBox fx:id="systemTabs" styleClass="tabs">
+            <Button fx:id="system"  onAction="#handleSystemAction"  text="系统信息" />
+            <Button fx:id="node"    onAction="#handleNodeAction"    text="节点统计" />
+            <Button fx:id="tracker" onAction="#handleTrackerAction" text="Tracker统计" />
+            <Button fx:id="client"  onAction="#handleClientAction"  text="客户端统计" />
+        </HBox>
+        <HBox fx:id="infoHashTabs" styleClass="tabs">
+            <ChoiceBox fx:id="selectInfoHashs"></ChoiceBox>
+            <Button fx:id="refresh" onAction="#handleRefreshAction" text="刷新" />
+            <Button fx:id="memory"  onAction="#handleMemoryAction"  text="整理内存" />
+        </HBox>
+        <HBox fx:id="torrentTabs" styleClass="tabs">
+            <Button fx:id="source"  onAction="#handleSourceAction"  text="来源统计" />
+            <Button fx:id="connect" onAction="#handleConnectAction" text="连接统计" />
+            <Button fx:id="traffic" onAction="#handleTrafficAction" text="流量统计" />
+            <Button fx:id="piece"   onAction="#handlePieceAction"   text="Piece统计" />
+        </HBox>
+    </VBox>
+    
+    <ScrollPane vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+        <VBox fx:id="statisticsBox" styleClass="statistics-box"></VBox>
+    </ScrollPane>
+    
 </FlowPane>
