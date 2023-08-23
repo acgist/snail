@@ -7,63 +7,68 @@
 <?import javafx.scene.control.*?>
 
 <BorderPane
-	fx:id="root"
-	styleClass="root,about" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.window.about.AboutController"
-	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    fx:id="root"
+    styleClass="root,about"
+    stylesheets="@/style/fxml.css"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.acgist.snail.gui.javafx.window.about.AboutController">
 
-	<top>
-		<VBox styleClass="sponsor">
-			<ImageView
-				fx:id="sponsor"
-				disable="false"
-				fitWidth="150"
-				layoutX="0" layoutY="0"
-				translateY="0" translateX="0"
-				pickOnBounds="true" preserveRatio="true">
-				<image>
-					<Image url="@/image/sponsor.png" />
-				</image>
-			</ImageView>
-		</VBox>
-	</top>
-	
-	<center>
-		<VBox styleClass="info-box">
-			<TextFlow>
-				<Label>软件名称：</Label>
-				<Text fx:id="name">蜗牛（Snail）</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>软件版本：</Label>
-				<Text fx:id="version">1.0.0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>开发语言：</Label>
-				<Text>Java</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>GUI框架：</Label>
-				<Text>JavaFX</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>开源协议：</Label>
-				<Text>Apache-2.0</Text>
-			</TextFlow>
-			<TextFlow>
-				<Label>下载协议：</Label>
-				<Text>BT、HLS、FTP、HTTP</Text>
-			</TextFlow>
-		</VBox>
-	</center>
-	
-	<bottom>
-		<HBox styleClass="button-box">
-			<Button fx:id="author" text="作者" onAction="#handleAuthorAction" />
-			<Button fx:id="update" text="检测更新" onAction="#handleUpdateAction" />
-			<Button fx:id="source" text="官网与源码" onAction="#handleSourceAction" />
-			<Button fx:id="support" text="问题与建议" onAction="#handleSupportAction" />
-		</HBox>
-	</bottom>
-	
+    <top>
+        <VBox styleClass="sponsor">
+            <ImageView
+                fx:id="sponsor"
+                disable="false"
+                fitWidth="150"
+                layoutX="0"
+                layoutY="0"
+                translateY="0"
+                translateX="0"
+                pickOnBounds="true"
+                preserveRatio="true">
+                <image>
+                    <Image url="@/image/sponsor.png" />
+                </image>
+            </ImageView>
+        </VBox>
+    </top>
+    
+    <center>
+        <VBox styleClass="info-box">
+            <TextFlow>
+                <Label>软件名称：</Label>
+                <Text fx:id="name">蜗牛（Snail）</Text>
+            </TextFlow>
+            <TextFlow>
+                <Label>软件版本：</Label>
+                <Text fx:id="version">1.0.0</Text>
+            </TextFlow>
+            <TextFlow>
+                <Label>开发语言：</Label>
+                <Text>Java</Text>
+            </TextFlow>
+            <TextFlow>
+                <Label>GUI框架：</Label>
+                <Text>JavaFX</Text>
+            </TextFlow>
+            <TextFlow>
+                <Label>开源协议：</Label>
+                <Text>Apache-2.0</Text>
+            </TextFlow>
+            <TextFlow>
+                <Label>下载协议：</Label>
+                <Text>BT、HLS、FTP、HTTP</Text>
+            </TextFlow>
+        </VBox>
+    </center>
+    
+    <bottom>
+        <HBox styleClass="button-box">
+            <Button fx:id="author"  onAction="#handleAuthorAction"  text="作者" />
+            <Button fx:id="update"  onAction="#handleUpdateAction"  text="检测更新" />
+            <Button fx:id="source"  onAction="#handleSourceAction"  text="官网与源码" />
+            <Button fx:id="support" onAction="#handleSupportAction" text="问题与建议" />
+        </HBox>
+    </bottom>
+    
 </BorderPane>

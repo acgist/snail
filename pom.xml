@@ -16,21 +16,16 @@
 		<snail.vendor>acgist</snail.vendor>
 		<snail.module>${project.groupId}.${project.artifactId}</snail.module>
 		<snail.version>${project.version}</snail.version>
-		<!-- Java版本 -->
 		<java.version>17</java.version>
-		<!-- JavaFX版本 -->
 		<javafx.version>17.0.7</javafx.version>
-		<!-- JUnit版本 -->
 		<junit.version>5.9.3</junit.version>
-		<!-- Maven插件版本 -->
 		<maven.gpg.version>3.1.0</maven.gpg.version>
 		<maven.jar.version>3.3.0</maven.jar.version>
-		<maven.source.version>3.2.1</maven.source.version>
+		<maven.source.version>3.3.0</maven.source.version>
 		<maven.javadoc.version>3.5.0</maven.javadoc.version>
 		<maven.compiler.version>3.11.0</maven.compiler.version>
 		<maven.resources.version>3.3.1</maven.resources.version>
-		<maven.dependency.version>3.5.0</maven.dependency.version>
-		<!-- 文件编码 -->
+		<maven.dependency.version>3.6.0</maven.dependency.version>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 	</properties>
 

@@ -6,26 +6,28 @@
 <?import javafx.scene.control.*?>
 
 <FlowPane
-	fx:id="root"
-	styleClass="root,build" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.window.build.BuildController"
-	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    fx:id="root"
+    styleClass="root,build"
+    stylesheets="@/style/fxml.css"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.acgist.snail.gui.javafx.window.build.BuildController">
 
-	<VBox>
-		<HBox styleClass="url">
-			<TextFlow>
-				<TextField fx:id="urlValue" />
-			</TextFlow>
-			<Button fx:id="torrent" text="选择种子" onAction="#handleTorrentAction" />
-		</HBox>
-		<HBox styleClass="option">
-			<TextFlow styleClass="cancel">
-				<Button fx:id="cancel" text="取消下载" onAction="#handleCancelAction" />
-			</TextFlow>
-			<TextFlow styleClass="build">
-				<Button fx:id="build" text="开始下载" onAction="#handleBuildAction" />
-			</TextFlow>
-		</HBox>
-	</VBox>
-	
+    <VBox>
+        <HBox styleClass="url">
+            <TextFlow>
+                <TextField fx:id="urlValue" />
+            </TextFlow>
+            <Button fx:id="torrent" text="选择种子" onAction="#handleTorrentAction" />
+        </HBox>
+        <HBox styleClass="option">
+            <TextFlow styleClass="cancel">
+                <Button fx:id="cancel" text="取消下载" onAction="#handleCancelAction" />
+            </TextFlow>
+            <TextFlow styleClass="build">
+                <Button fx:id="build"  text="开始下载" onAction="#handleBuildAction" />
+            </TextFlow>
+        </HBox>
+    </VBox>
+    
 </FlowPane>

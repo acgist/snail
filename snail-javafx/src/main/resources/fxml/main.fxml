@@ -8,88 +8,90 @@
 <?import javafx.scene.control.cell.*?>
 
 <BorderPane
-	fx:id="root"
-	styleClass="root,main" stylesheets="@/style/fxml.css"
-	fx:controller="com.acgist.snail.gui.javafx.window.main.MainController"
-	xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-	
-	<top>
-		<HBox styleClass="header">
-			<Button fx:id="build" text="新建" onAction="#handleBuildAction" />
-			<Button fx:id="start" text="开始" onAction="#handleStartAction" />
-			<Button fx:id="pause" text="暂停" onAction="#handlePauseAction" />
-			<Button fx:id="delete" text="删除" onAction="#handleDeleteAction" />
-			<Button fx:id="about" text="关于" onAction="#handleAboutAction" />
-			<Button fx:id="setting" text="设置" onAction="#handleSettingAction" />
-		</HBox>
-	</top>
-	
-	<center>
-		<TableView fx:id="taskTable">
-			<columns>
-				<!--
-				下载文件名称：轻音少女
-				-->
-				<TableColumn fx:id="name" text="名称" styleClass="name">
-					<cellValueFactory>
-						<PropertyValueFactory property="nameValue" />
-					</cellValueFactory>
-				</TableColumn>
-				<!--
-				任务状态：
-					下载：100KB/S
-					暂停：暂停
-					完成：完成
-				-->
-				<TableColumn fx:id="status" text="状态" styleClass="status">
-					<cellValueFactory>
-						<PropertyValueFactory property="statusValue" />
-					</cellValueFactory>
-				</TableColumn>
-				<!--
-				下载进度：
-					下载：200MB/4G
-					完成：4G
-				-->
-				<TableColumn fx:id="progress" text="进度" styleClass="progress">
-					<cellValueFactory>
-						<PropertyValueFactory property="progressValue" />
-					</cellValueFactory>
-				</TableColumn>
-				<!--
-				开始时间：2019-01-01 12:10
-				-->
-				<TableColumn fx:id="createDate" text="开始时间" styleClass="createDate">
-					<cellValueFactory>
-						<PropertyValueFactory property="createDateValue" />
-					</cellValueFactory>
-				</TableColumn>
-				<!--
-				完成时间：
-					下载：剩余时间：2小时
-					完成：2019-01-01 12:10
-				-->
-				<TableColumn fx:id="completedDate" text="完成时间" styleClass="completedDate">
-					<cellValueFactory>
-						<PropertyValueFactory property="completedDateValue" />
-					</cellValueFactory>
-				</TableColumn>
-			</columns>
-		</TableView>
-	</center>
-	
-	<bottom>
-		<HBox styleClass="footer">
-			<HBox fx:id="filters" styleClass="filters">
-				<Button fx:id="all" text="全部" onAction="#handleAllAction" />
-				<Button fx:id="download" text="下载" onAction="#handleDownloadAction" />
-				<Button fx:id="completed" text="完成" onAction="#handleCompletedAction" />
-			</HBox>
-			<HBox fx:id="statuses" styleClass="statuses">
-				<Label fx:id="uploadBuffer" text="0B/S" />
-				<Label fx:id="uploadStatus" styleClass="snail-icon" text="↑" />
-			</HBox>
-		</HBox>
-	</bottom>
+    fx:id="root"
+    styleClass="root,main"
+    stylesheets="@/style/fxml.css"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.acgist.snail.gui.javafx.window.main.MainController">
+    
+    <top>
+        <HBox styleClass="header">
+            <Button fx:id="build"   text="新建" onAction="#handleBuildAction" />
+            <Button fx:id="start"   text="开始" onAction="#handleStartAction" />
+            <Button fx:id="pause"   text="暂停" onAction="#handlePauseAction" />
+            <Button fx:id="delete"  text="删除" onAction="#handleDeleteAction" />
+            <Button fx:id="about"   text="关于" onAction="#handleAboutAction" />
+            <Button fx:id="setting" text="设置" onAction="#handleSettingAction" />
+        </HBox>
+    </top>
+    
+    <center>
+        <TableView fx:id="taskTable">
+            <columns>
+                <!--
+                下载文件名称：轻音少女
+                -->
+                <TableColumn fx:id="name" text="名称" styleClass="name">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="nameValue" />
+                    </cellValueFactory>
+                </TableColumn>
+                <!--
+                任务状态：
+                    下载：128KB/S
+                    暂停：暂停
+                    完成：完成
+                -->
+                <TableColumn fx:id="status" text="状态" styleClass="status">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="statusValue" />
+                    </cellValueFactory>
+                </TableColumn>
+                <!--
+                下载进度：
+                    下载：256MB/4G
+                    完成：4G
+                -->
+                <TableColumn fx:id="progress" text="进度" styleClass="progress">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="progressValue" />
+                    </cellValueFactory>
+                </TableColumn>
+                <!--
+                开始时间：2019-01-01 12:10
+                -->
+                <TableColumn fx:id="createDate" text="开始时间" styleClass="createDate">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="createDateValue" />
+                    </cellValueFactory>
+                </TableColumn>
+                <!--
+                完成时间：
+                    下载：剩余时间：2小时
+                    完成：2019-01-01 12:10
+                -->
+                <TableColumn fx:id="completedDate" text="完成时间" styleClass="completedDate">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="completedDateValue" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+    
+    <bottom>
+        <HBox styleClass="footer">
+            <HBox fx:id="filters" styleClass="filters">
+                <Button fx:id="all"       text="全部" onAction="#handleAllAction" />
+                <Button fx:id="download"  text="下载" onAction="#handleDownloadAction" />
+                <Button fx:id="completed" text="完成" onAction="#handleCompletedAction" />
+            </HBox>
+            <HBox fx:id="statuses" styleClass="statuses">
+                <Label fx:id="uploadBuffer" text="0B/S" />
+                <Label fx:id="uploadStatus" text="↑" styleClass="snail-icon" />
+            </HBox>
+        </HBox>
+    </bottom>
 
 </BorderPane>
