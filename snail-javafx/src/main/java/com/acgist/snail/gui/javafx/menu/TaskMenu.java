@@ -84,22 +84,22 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>开始</p>
 	 */
-	private EventHandler<ActionEvent> startEvent = event -> MainWindow.getInstance().controller().start();
+	private EventHandler<ActionEvent> startEvent = event -> MainWindow.getInstance().getController().start();
 	
 	/**
 	 * <p>暂停</p>
 	 */
-	private EventHandler<ActionEvent> pauseEvent = event -> MainWindow.getInstance().controller().pause();
+	private EventHandler<ActionEvent> pauseEvent = event -> MainWindow.getInstance().getController().pause();
 	
 	/**
 	 * <p>删除</p>
 	 */
-	private EventHandler<ActionEvent> deleteEvent = event -> MainWindow.getInstance().controller().delete();
+	private EventHandler<ActionEvent> deleteEvent = event -> MainWindow.getInstance().getController().delete();
 	
 	/**
 	 * <p>复制链接</p>
 	 */
-	private EventHandler<ActionEvent> copyUrlEvent = event -> MainWindow.getInstance().controller().selected().forEach(
+	private EventHandler<ActionEvent> copyUrlEvent = event -> MainWindow.getInstance().getController().selected().forEach(
 		session -> Clipboards.copy(session.getUrl())
 	);
 	
@@ -107,23 +107,23 @@ public final class TaskMenu extends Menu {
 	 * <p>文件选择</p>
 	 */
 	private EventHandler<ActionEvent> torrentEvent = event -> {
-		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(!MainWindow.getInstance().getController().hasSelectedTorrent()) {
 			return;
 		}
-		MainWindow.getInstance().controller().selectedTorrent().forEach(TorrentWindow.getInstance()::show);
+		MainWindow.getInstance().getController().selectedTorrent().forEach(TorrentWindow.getInstance()::show);
 	};
 	
 	/**
 	 * <p>导出种子</p>
 	 */
 	private EventHandler<ActionEvent> exportTorrentEvent = event -> {
-		if(!MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(!MainWindow.getInstance().getController().hasSelectedTorrent()) {
 			return;
 		}
-		final File file = Choosers.chooseDirectory(MainWindow.getInstance().stage(), "种子保存目录");
+		final File file = Choosers.chooseDirectory(MainWindow.getInstance().getStage(), "种子保存目录");
 		if (file != null) {
 			final String exportPath = file.getAbsolutePath();
-			MainWindow.getInstance().controller().selectedTorrent().forEach(session -> {
+			MainWindow.getInstance().getController().selectedTorrent().forEach(session -> {
 				final String torrent = session.getTorrent();
 				final String fileName = FileUtils.fileName(torrent);
 				final String targetFile = FileUtils.file(exportPath, fileName);
@@ -136,10 +136,10 @@ public final class TaskMenu extends Menu {
 	 * <p>文件校验</p>
 	 */
 	private EventHandler<ActionEvent> verifyEvent = event -> {
-		if(!MainWindow.getInstance().controller().hasSelected()) {
+		if(!MainWindow.getInstance().getController().hasSelected()) {
 			return;
 		}
-		Platform.runLater(() -> MainWindow.getInstance().controller().selected().forEach(session -> {
+		Platform.runLater(() -> MainWindow.getInstance().getController().selected().forEach(session -> {
 			// TODO：完成才能校验
 			if(session.verify()) {
 				Alerts.info("校验成功", session.getName());
@@ -158,7 +158,7 @@ public final class TaskMenu extends Menu {
 	/**
 	 * <p>打开目录</p>
 	 */
-	private EventHandler<ActionEvent> openFolderEvent = event -> MainWindow.getInstance().controller().selected().forEach(session -> {
+	private EventHandler<ActionEvent> openFolderEvent = event -> MainWindow.getInstance().getController().selected().forEach(session -> {
 		final File folder = session.getDownloadFolder();
 		if(folder.exists()) {
 			Desktops.open(folder);
@@ -171,7 +171,7 @@ public final class TaskMenu extends Menu {
 	 * <p>有选中BT任务时按钮可以操作：文件选择、导出种子</p>
 	 */
 	private EventHandler<WindowEvent> windowShownAction = event -> {
-		if(MainWindow.getInstance().controller().hasSelectedTorrent()) {
+		if(MainWindow.getInstance().getController().hasSelectedTorrent()) {
 			INSTANCE.torrentMenu.setDisable(false);
 			INSTANCE.exportTorrentMenu.setDisable(false);
 		} else {

@@ -53,7 +53,7 @@ public final class BuildController extends Controller {
 	 */
 	@FXML
 	public void handleTorrentAction(ActionEvent event) {
-		final List<File> files = Choosers.chooseMultipleFile(BuildWindow.getInstance().stage(), "选择种子", "种子文件", "*.torrent");
+		final List<File> files = Choosers.chooseMultipleFile(BuildWindow.getInstance().getStage(), "选择种子", "种子文件", "*.torrent");
 		if (CollectionUtils.isNotEmpty(files)) {
 			this.setUrl(files.stream().map(File::getAbsolutePath).collect(Collectors.joining(SymbolConfig.Symbol.SEMICOLON.toString())));
 		}

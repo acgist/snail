@@ -70,7 +70,7 @@ public final class SettingController extends Controller {
 	 */
 	@FXML
 	public void handlePathAction(ActionEvent event) {
-		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().stage(), "下载目录");
+		final File file = Choosers.chooseDirectory(SettingWindow.getInstance().getStage(), "下载目录");
 		if (file != null) {
 			final String path = file.getAbsolutePath();
 			DownloadConfig.setPath(path);
