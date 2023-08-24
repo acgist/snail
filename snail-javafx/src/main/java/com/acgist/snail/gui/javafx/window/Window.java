@@ -177,11 +177,8 @@ public abstract class Window<T extends Controller> extends Application {
      * @return 是否显示
      */
     public boolean isShowing() {
-        return
-            // 显示
-            this.stage.isShowing() &&
-            // 图标显示
-            !this.stage.isIconified();
+        // 显示同时不是图标显示
+        return this.stage.isShowing() && !this.stage.isIconified();
     }
 
     /**
