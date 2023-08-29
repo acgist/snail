@@ -56,7 +56,7 @@ public class CanvasPainterTest extends Application {
         );
         final HBox  hBox = new HBox();
         final Group root = new Group();
-        root.getChildren().add(painter.build().draw().canvas());
+        root.getChildren().add(painter.build().draw().getCanvas());
         final String[] tabs = new String[] { "有效数据", "无效数据" };
         for (int index = 0; index < tabs.length; index++) {
             final Text  text  = new Text(tabs[index]);

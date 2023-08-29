@@ -661,7 +661,7 @@ public final class StatisticsController extends Controller {
         // 添加节点
         final ObservableList<Node> statisticsBoxNode = this.statisticsBoxClear();
         statisticsBoxNode.add(trafficBox);
-        statisticsBoxNode.add(painter.canvas());
+        statisticsBoxNode.add(painter.getCanvas());
         statisticsBoxNode.add(painterBox);
     }
     
@@ -727,7 +727,7 @@ public final class StatisticsController extends Controller {
         // 添加节点
         final ObservableList<Node> statisticsBoxNode = this.statisticsBoxClear();
         statisticsBoxNode.add(healthBox);
-        statisticsBoxNode.add(painter.canvas());
+        statisticsBoxNode.add(painter.getCanvas());
         statisticsBoxNode.add(painterBox);
     }
     
