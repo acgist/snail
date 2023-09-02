@@ -61,7 +61,7 @@ final List<String> list = torrent.getInfo().files().stream()
     .filter(path -> path.endsWith(".mkv"))
     .collect(Collectors.toList());
 // 设置下载文件
-MultifileEventAdapter.files(MultifileSelectorWrapper.newEncoder(list).serialize());
+MultifileEventAdapter.files(DescriptionWrapper.newEncoder(list).serialize());
 // 添加下载
 snail.download(torrentPath);
 // 等待下载完成

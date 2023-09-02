@@ -95,6 +95,7 @@ snail.lockDownload();
 [开发帮助](./docs/API.md)
 [界面帮助](./docs/GUI.md)
 [使用帮助](./docs/HELP.md)
+[安卓帮助](./docs/Android.md)
 
 ## 其他
 

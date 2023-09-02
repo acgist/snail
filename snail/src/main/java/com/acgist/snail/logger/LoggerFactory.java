@@ -89,7 +89,7 @@ public final class LoggerFactory {
             t.printStackTrace(printWriter);
             printWriter.flush();
         } catch (Exception e) {
-            error(t);
+            e.printStackTrace();
         }
     }
     
