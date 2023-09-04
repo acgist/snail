@@ -18,89 +18,89 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 
 /**
- * <p>关于窗口控制器</p>
+ * 关于窗口控制器
  * 
  * @author acgist
  */
 public final class AboutController extends Controller {
-	
-	@FXML
-	private BorderPane root;
-	@FXML
-	private Text name;
-	@FXML
-	private Text version;
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.buildName();
-		this.buildVersion();
-	}
+    
+    @FXML
+    private BorderPane root;
+    @FXML
+    private Text name;
+    @FXML
+    private Text version;
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.buildName();
+        this.buildVersion();
+    }
 
-	/**
-	 * <p>作者按钮</p>
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleAuthorAction(ActionEvent event) {
-		Desktops.browse(SystemConfig.getAuthor());
-	}
-	
-	/**
-	 * <p>检测更新按钮</p>
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleUpdateAction(ActionEvent event) {
-		if(SystemContext.latestRelease()) {
-			Alerts.info("检测更新", "当前已是最新版本");
-		} else {
-			final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiContext.MessageType.CONFIRM);
-			if(Alerts.ok(optional)) {
-				Desktops.browse(SystemConfig.getSource());
-			}
-		}
-	}
-	
-	/**
-	 * <p>官网与源码按钮</p>
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleSourceAction(ActionEvent event) {
-		Desktops.browse(SystemConfig.getSource());
-	}
-	
-	/**
-	 * <p>问题与建议按钮</p>
-	 * 
-	 * @param event 事件
-	 */
-	@FXML
-	public void handleSupportAction(ActionEvent event) {
-		Desktops.browse(SystemConfig.getSupport());
-	}
+    /**
+     * 作者按钮
+     * 
+     * @param event 事件
+     */
+    @FXML
+    public void handleAuthorAction(ActionEvent event) {
+        Desktops.browse(SystemConfig.getAuthor());
+    }
+    
+    /**
+     * 检测更新按钮
+     * 
+     * @param event 事件
+     */
+    @FXML
+    public void handleUpdateAction(ActionEvent event) {
+        if(SystemContext.latestRelease()) {
+            Alerts.info("检测更新", "当前已是最新版本");
+        } else {
+            final Optional<ButtonType> optional = Alerts.build("检测更新", "是否下载最新版本？", GuiContext.MessageType.CONFIRM);
+            if(Alerts.ok(optional)) {
+                Desktops.browse(SystemConfig.getSource());
+            }
+        }
+    }
+    
+    /**
+     * 官网与源码按钮
+     * 
+     * @param event 事件
+     */
+    @FXML
+    public void handleSourceAction(ActionEvent event) {
+        Desktops.browse(SystemConfig.getSource());
+    }
+    
+    /**
+     * 问题与建议按钮
+     * 
+     * @param event 事件
+     */
+    @FXML
+    public void handleSupportAction(ActionEvent event) {
+        Desktops.browse(SystemConfig.getSupport());
+    }
 
-	/**
-	 * <p>设置软件名称</p>
-	 */
-	private void buildName() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(SystemConfig.getName())
-			.append("（")
-			.append(SystemConfig.getNameEn())
-			.append("）");
-		this.name.setText(builder.toString());
-	}
-	
-	/**
-	 * <p>设置软件版本</p>
-	 */
-	private void buildVersion() {
-		this.version.setText(SystemConfig.getVersion());
-	}
+    /**
+     * 设置软件名称
+     */
+    private void buildName() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(SystemConfig.getName())
+            .append("（")
+            .append(SystemConfig.getNameEn())
+            .append("）");
+        this.name.setText(builder.toString());
+    }
+    
+    /**
+     * 设置软件版本
+     */
+    private void buildVersion() {
+        this.version.setText(SystemConfig.getVersion());
+    }
 
 }
