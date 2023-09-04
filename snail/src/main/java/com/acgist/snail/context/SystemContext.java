@@ -28,6 +28,8 @@ public final class SystemContext implements IContext {
     /**
      * 系统类型
      * 
+     * 注意：Android需要自己适配
+     * 
      * @author acgist
      */
     public enum SystemType {
@@ -43,11 +45,7 @@ public final class SystemContext implements IContext {
         /**
          * Windows
          */
-        WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10"),
-        /**
-         * Android
-         */
-        ANDROID("Android");
+        WINDOWS("Windows XP", "Windows Vista", "Windows 7", "Windows 10");
         
         /**
          * 系统名称
