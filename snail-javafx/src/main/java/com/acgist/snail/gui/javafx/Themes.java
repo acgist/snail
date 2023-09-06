@@ -121,7 +121,7 @@ public final class Themes {
         if(themeHandler == null) {
             color = DEFAULT_THEME_COLOR;
         } else {
-            color = themeHandler.systemThemeColor();
+            color = themeHandler.getSystemThemeColor();
         }
         SYSTEM_THEME_COLOR = color;
         // 设置系统主题样式
