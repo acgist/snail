@@ -148,7 +148,7 @@ public final class MainController extends Controller {
      */
     private Node buildPlaceholder() {
         final Color color = Themes.COLOR_GRAY;
-        final Label icon  = SnailIcon.AS_DOWNLOAD3.iconLabel();
+        final Label icon  = SnailIcon.AS_DOWNLOAD3.getIconLabel();
         final Text  text  = new Text("点击新建按钮或者拖动下载链接、种子文件开始下载");
         text.setFill(color);
         icon.setTextFill(color);

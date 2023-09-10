@@ -36,7 +36,7 @@ public abstract class Menu extends ContextMenu {
         if(icon == null) {
             menuItem = new MenuItem(value);
         } else {
-            menuItem = new MenuItem(value, icon.iconLabel());
+            menuItem = new MenuItem(value, icon.getIconLabel());
         }
         this.getItems().add(menuItem);
         menuItem.setOnAction(action);

@@ -54,7 +54,7 @@ public final class TaskTableCell extends TableCell<ITaskSession, String> {
             }
             if(this.icon) {
                 final FileType fileType = taskSession.getFileType();
-                final Label fileLabel   = Fonts.fileTypeIconLabel(fileType);
+                final Label fileLabel   = Fonts.getFileTypeIconLabel(fileType);
                 final double scaleX = Screen.getPrimary().getOutputScaleX();
                 final double scaleY = Screen.getPrimary().getOutputScaleY();
                 if(scaleX != 1.0D && scaleY != 1.0D) {
