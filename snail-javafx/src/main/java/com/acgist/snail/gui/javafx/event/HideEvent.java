@@ -7,24 +7,24 @@ import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import javafx.application.Platform;
 
 /**
- * <p>GUI隐藏窗口事件</p>
+ * GUI隐藏窗口事件
  * 
  * @author acgist
  */
 public final class HideEvent extends HideEventAdapter {
 
-	private static final HideEvent INSTANCE = new HideEvent();
-	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
-	private HideEvent() {
-	}
+    private static final HideEvent INSTANCE = new HideEvent();
+    
+    public static final GuiEvent getInstance() {
+        return INSTANCE;
+    }
+    
+    private HideEvent() {
+    }
 
-	@Override
-	protected void executeNative(Object ... args) {
-		Platform.runLater(MainWindow.getInstance()::hide);
-	}
+    @Override
+    protected void executeNative(Object ... args) {
+        Platform.runLater(MainWindow.getInstance()::hide);
+    }
 
 }

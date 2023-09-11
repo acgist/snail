@@ -5,25 +5,25 @@ import com.acgist.snail.gui.event.adapter.RefreshTaskListEventAdapter;
 import com.acgist.snail.gui.javafx.window.main.TaskDisplay;
 
 /**
- * <p>GUI刷新任务列表事件</p>
+ * GUI刷新任务列表事件
  * 
  * @author acgist
  */
 public final class RefreshTaskListEvent extends RefreshTaskListEventAdapter {
 
-	private static final RefreshTaskListEvent INSTANCE = new RefreshTaskListEvent();
-	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
-	private RefreshTaskListEvent() {
-	}
-	
-	@Override
-	protected void executeNative(Object ... args) {
-		// 不用使用：Platform.runLater
-		TaskDisplay.getInstance().refreshTaskList();
-	}
+    private static final RefreshTaskListEvent INSTANCE = new RefreshTaskListEvent();
+    
+    public static final GuiEvent getInstance() {
+        return INSTANCE;
+    }
+    
+    private RefreshTaskListEvent() {
+    }
+    
+    @Override
+    protected void executeNative(Object ... args) {
+        // 不用使用：Platform.runLater
+        TaskDisplay.getInstance().refreshTaskList();
+    }
 
 }

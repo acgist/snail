@@ -7,27 +7,27 @@ import com.acgist.snail.gui.javafx.menu.TrayMenu;
 import javafx.application.Platform;
 
 /**
- * <p>GUI退出窗口事件</p>
+ * GUI退出窗口事件
  * 
  * @author acgist
  */
 public final class ExitEvent extends ExitEventAdapter {
 
-	private static final ExitEvent INSTANCE = new ExitEvent();
-	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
-	private ExitEvent() {
-	}
+    private static final ExitEvent INSTANCE = new ExitEvent();
+    
+    public static final GuiEvent getInstance() {
+        return INSTANCE;
+    }
+    
+    private ExitEvent() {
+    }
 
-	@Override
-	protected void executeNative(Object ... args) {
-		// 退出平台
-		Platform.exit();
-		// 退出托盘
-		TrayMenu.exit();
-	}
+    @Override
+    protected void executeNative(Object ... args) {
+        // 退出平台
+        Platform.exit();
+        // 退出托盘
+        TrayMenu.exit();
+    }
 
 }

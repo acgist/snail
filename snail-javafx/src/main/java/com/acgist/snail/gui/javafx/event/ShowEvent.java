@@ -7,24 +7,24 @@ import com.acgist.snail.gui.javafx.window.main.MainWindow;
 import javafx.application.Platform;
 
 /**
- * <p>GUI显示窗口事件</p>
+ * GUI显示窗口事件
  * 
  * @author acgist
  */
 public final class ShowEvent extends ShowEventAdapter {
 
-	private static final ShowEvent INSTANCE = new ShowEvent();
-	
-	public static final GuiEvent getInstance() {
-		return INSTANCE;
-	}
-	
-	private ShowEvent() {
-	}
-	
-	@Override
-	protected void executeNative(Object ... args) {
-		Platform.runLater(MainWindow.getInstance()::show);
-	}
+    private static final ShowEvent INSTANCE = new ShowEvent();
+    
+    public static final GuiEvent getInstance() {
+        return INSTANCE;
+    }
+    
+    private ShowEvent() {
+    }
+    
+    @Override
+    protected void executeNative(Object ... args) {
+        Platform.runLater(MainWindow.getInstance()::show);
+    }
 
 }
