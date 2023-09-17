@@ -23,43 +23,40 @@ import com.acgist.snail.logger.LoggerFactory;
  */
 public final class Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-	
-	/**
-	 * 启动方法
-	 * 
-	 * 参数             默认               描述
-	 * {@code mode}    {@code native}    {@code native}-本地GUI；{@code extend}-扩展GUI；
-	 * 
-	 * @param args 启动参数
-	 */
-	public static final void main(String[] args) {
-		LOGGER.info("系统开始启动");
-		SystemContext.info();
-		SystemContext.build();
-		if(Snail.available()) {
-			Application.registerGuiEvent();
-			GuiContext.getInstance().init(args).build();
-			LOGGER.info("系统启动完成");
-		} else {
-			LOGGER.info("系统启动失败");
-		}
-	}
-	
-	/**
-	 * 注册GUI事件
-	 */
-	private static final void registerGuiEvent() {
-		GuiContext.register(ShowEvent.getInstance());
-		GuiContext.register(HideEvent.getInstance());
-		GuiContext.register(ExitEvent.getInstance());
-		GuiContext.register(BuildEvent.getInstance());
-		GuiContext.register(AlertEvent.getInstance());
-		GuiContext.register(NoticeEvent.getInstance());
-		GuiContext.register(ResponseEvent.getInstance());
-		GuiContext.register(MultifileEvent.getInstance());
-		GuiContext.register(RefreshTaskListEvent.getInstance());
-		GuiContext.register(RefreshTaskStatusEvent.getInstance());
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    
+    /**
+     * 启动方法
+     * 
+     * @param args 启动参数
+     */
+    public static final void main(String[] args) {
+        LOGGER.info("系统开始启动");
+        SystemContext.info();
+        SystemContext.build();
+        if(Snail.available()) {
+            Application.registerGuiEvent();
+            GuiContext.getInstance().init(args).build();
+            LOGGER.info("系统启动完成");
+        } else {
+            LOGGER.info("系统启动失败");
+        }
+    }
+    
+    /**
+     * 注册GUI事件
+     */
+    private static final void registerGuiEvent() {
+        GuiContext.register(ShowEvent.getInstance());
+        GuiContext.register(HideEvent.getInstance());
+        GuiContext.register(ExitEvent.getInstance());
+        GuiContext.register(BuildEvent.getInstance());
+        GuiContext.register(AlertEvent.getInstance());
+        GuiContext.register(NoticeEvent.getInstance());
+        GuiContext.register(ResponseEvent.getInstance());
+        GuiContext.register(MultifileEvent.getInstance());
+        GuiContext.register(RefreshTaskListEvent.getInstance());
+        GuiContext.register(RefreshTaskStatusEvent.getInstance());
+    }
 
 }
