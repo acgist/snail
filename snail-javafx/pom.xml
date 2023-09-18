@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>com.acgist</groupId>
-		<artifactId>snail.parent</artifactId>
-		<version>1.17.1</version>
-	</parent>
-	
-	<artifactId>snail.javafx</artifactId>
-	<packaging>jar</packaging>
-	
-	<dependencies>
-		<dependency>
-			<groupId>com.acgist</groupId>
-			<artifactId>snail</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-		</dependency>
-	</dependencies>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<build>
-		<!-- Maven插件 -->
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.acgist.main.Application</mainClass>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib</classpathPrefix>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- 基本信息 -->
-	<url>https://gitee.com/acgist/snail</url>
-	<name>snail.javafx</name>
-	<description>基于JavaFX开发的Snail图形管理界面</description>
-	<inceptionYear>2019</inceptionYear>
+    <parent>
+        <groupId>com.acgist</groupId>
+        <artifactId>snail.parent</artifactId>
+        <version>1.17.1</version>
+    </parent>
 
-	<!-- 仓库信息 -->
-	<scm>
-		<tag>HEAD</tag>
-		<url>https://gitee.com/acgist/snail</url>
-		<connection>scm:git:git://gitee.com/acgist/snail</connection>
-		<developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
-	</scm>
-	
-	<!-- 开源许可 -->
-	<licenses>
-		<license>
-			<url>https://opensource.org/licenses/Apache-2.0</url>
-			<name>Apache-2.0</name>
-		</license>
-	</licenses>
+    <artifactId>snail.javafx</artifactId>
+    <packaging>jar</packaging>
 
-	<!-- 开发人员 -->
-	<developers>
-		<developer>
-			<id>acgist</id>
-			<url>https://gitee.com/acgist</url>
-			<name>Sheng Yu</name>
-			<email>admin@acgist.com</email>
-			<timezone>+8</timezone>
-			<organization>https://www.acgist.com</organization>
-			<roles>
-				<role>master</role>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
+    <dependencies>
+        <dependency>
+            <groupId>com.acgist</groupId>
+            <artifactId>snail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+        </dependency>
+    </dependencies>
 
-	<!-- 组织信息 -->
-	<organization>
-		<url>https://www.acgist.com</url>
-		<name>acgist</name>
-	</organization>
-	
-	<!-- issues -->
-	<issueManagement>
-		<url>https://gitee.com/acgist/snail/issues</url>
-		<system>Gitee Issues</system>
-	</issueManagement>
+    <build>
+        <!-- Maven插件 -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.acgist.main.Application</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- 基本信息 -->
+    <url>https://gitee.com/acgist/snail</url>
+    <name>snail.javafx</name>
+    <description>基于JavaFX开发的Snail图形管理界面</description>
+    <inceptionYear>2019</inceptionYear>
+
+    <!-- 仓库信息 -->
+    <scm>
+        <tag>HEAD</tag>
+        <url>https://gitee.com/acgist/snail</url>
+        <connection>scm:git:git://gitee.com/acgist/snail</connection>
+        <developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
+    </scm>
+
+    <!-- 开源许可 -->
+    <licenses>
+        <license>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <name>Apache-2.0</name>
+        </license>
+    </licenses>
+
+    <!-- 开发人员 -->
+    <developers>
+        <developer>
+            <id>acgist</id>
+            <url>https://gitee.com/acgist</url>
+            <name>Sheng Yu</name>
+            <email>admin@acgist.com</email>
+            <timezone>+8</timezone>
+            <organization>https://www.acgist.com</organization>
+            <roles>
+                <role>master</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- 组织信息 -->
+    <organization>
+        <url>https://www.acgist.com</url>
+        <name>acgist</name>
+    </organization>
+
+    <!-- issues -->
+    <issueManagement>
+        <url>https://gitee.com/acgist/snail/issues</url>
+        <system>Gitee Issues</system>
+    </issueManagement>
 
 </project>

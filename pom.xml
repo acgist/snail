@@ -12,21 +12,21 @@
 	<packaging>pom</packaging>
 	
 	<properties>
-		<encoding>UTF-8</encoding>
 		<snail.vendor>acgist</snail.vendor>
 		<snail.module>${project.groupId}.${project.artifactId}</snail.module>
 		<snail.version>${project.version}</snail.version>
+		<snail.encoding>UTF-8</snail.encoding>
 		<java.version>17</java.version>
-		<javafx.version>17.0.7</javafx.version>
-		<junit.version>5.9.3</junit.version>
+		<javafx.version>17.0.8</javafx.version>
+		<junit.version>5.10.0</junit.version>
 		<maven.gpg.version>3.1.0</maven.gpg.version>
 		<maven.jar.version>3.3.0</maven.jar.version>
 		<maven.source.version>3.3.0</maven.source.version>
-		<maven.javadoc.version>3.5.0</maven.javadoc.version>
+		<maven.javadoc.version>3.6.0</maven.javadoc.version>
 		<maven.compiler.version>3.11.0</maven.compiler.version>
 		<maven.resources.version>3.3.1</maven.resources.version>
 		<maven.dependency.version>3.6.0</maven.dependency.version>
-		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+		<project.build.sourceEncoding>${snail.encoding}</project.build.sourceEncoding>
 	</properties>
 
 	<!-- 模块 -->
@@ -196,9 +196,9 @@
                     <configuration>
                         <!-- 忽略警告：注解、标签等等 -->
                         <doclint>none</doclint>
-                        <charset>${encoding}</charset>
-                        <encoding>${encoding}</encoding>
-                        <docencoding>${encoding}</docencoding>
+                        <charset>${snail.encoding}</charset>
+                        <encoding>${snail.encoding}</encoding>
+                        <docencoding>${snail.encoding}</docencoding>
                         <description>${project.description}</description>
                         <!-- 忽略模块描述 -->
                         <!--
@@ -236,7 +236,7 @@
 					<configuration>
 						<source>${java.version}</source>
 						<target>${java.version}</target>
-						<encoding>${encoding}</encoding>
+						<encoding>${snail.encoding}</encoding>
 					</configuration>
 				</plugin>
 				<!--
