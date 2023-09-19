@@ -7,6 +7,7 @@ import java.awt.TrayIcon.MessageType;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.event.MouseInputAdapter;
@@ -128,7 +129,7 @@ public final class TrayMenu extends Menu {
             }
         };
         // 添加系统托盘
-        try(final var input = MainWindow.class.getResourceAsStream(Themes.LOGO_ICON_16)) {
+        try(final InputStream input = MainWindow.class.getResourceAsStream(Themes.LOGO_ICON_16)) {
             final BufferedImage image = ImageIO.read(input);
             this.trayIcon = new TrayIcon(image, SystemConfig.getName());
             this.trayIcon.addMouseListener(mouseListener);
