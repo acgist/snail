@@ -348,13 +348,15 @@ public final class GuiContext implements IContext {
     /**
      * 刷新任务状态
      * 
+     * @param args 任务信息：任务ID、任务状态
+     * 
      * @return GuiContext
      * 
      * @see Type#REFRESH_TASK_STATUS
      * @see RefreshTaskStatusEventAdapter
      */
-    public GuiContext refreshTaskStatus() {
-        return this.event(Type.REFRESH_TASK_STATUS);
+    public GuiContext refreshTaskStatus(Object ... args) {
+        return this.event(Type.REFRESH_TASK_STATUS, args);
     }
 
     /**

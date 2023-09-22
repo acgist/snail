@@ -499,7 +499,7 @@ public final class TaskSession extends StatisticsGetter implements ITaskSession 
     public void setStatus(Status status) {
         this.entity.setStatus(status);
         // 刷新状态
-        GuiContext.getInstance().refreshTaskStatus();
+        GuiContext.getInstance().refreshTaskStatus(this.getId(), this.getStatus());
     }
     
     @Override

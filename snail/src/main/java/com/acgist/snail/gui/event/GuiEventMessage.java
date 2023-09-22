@@ -16,6 +16,14 @@ import com.acgist.snail.net.application.ApplicationMessage;
 public abstract class GuiEventMessage extends GuiEventArgs {
 
     /**
+     * 任务ID
+     */
+    public static final String TASK_ID = "id";
+    /**
+     * 任务状态
+     */
+    public static final String TASK_STATUS = "status";
+    /**
      * 消息类型
      */
     public static final String MESSAGE_TYPE = "type";
