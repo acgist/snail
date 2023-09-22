@@ -140,7 +140,7 @@ d4:type4:TEXT4:body7:messagee
 |提示消息|NOTICE|[窗口消息和提示消息主体](#窗口消息和提示消息主体)|
 |选择下载文件|MULTIFILE|[文件选择消息主体](#文件选择消息主体)|
 |刷新任务列表|REFRESH_TASK_LIST|-|
-|刷新任务状态|REFRESH_TASK_STATUS|-|
+|刷新任务状态|REFRESH_TASK_STATUS|[任务状态消息主题](#任务状态消息主题)|
 |响应消息|RESPONSE|文本|
 
 #### 窗口消息和提示消息主体
@@ -161,6 +161,15 @@ d4:type4:TEXT4:body7:messagee
 |:--|:--|:--|
 |path|√|路径|
 |length|√|大小|
+
+#### 任务状态消息主题
+
+`B`编码`Map`
+
+|名称|必要|描述|
+|:--|:--|:--|
+|id|√|任务ID|
+|status|√|任务状态|
 
 ### 种子下载通知流程
 
@@ -196,7 +205,7 @@ java -server -Xms128m -Xmx256m -jar snail.javafx-{version}.jar mode=[native|exte
 |提示消息|NOTICE|NOTICE|提示消息|NoticeEventAdapter|
 |选择下载文件|MULTIFILE|MULTIFILE|选择下载文件|MultifileEventAdapter|
 |刷新任务列表|REFRESH_TASK_LIST|REFRESH_TASK_LIST|添加任务、删除任务|RefreshTaskListEventAdapter|
-|刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务|RefreshTaskStatusEventAdapter|
+|刷新任务状态|REFRESH_TASK_STATUS|REFRESH_TASK_STATUS|开始任务、暂停任务、完成任务|RefreshTaskStatusEventAdapter|
 |响应消息|RESPONSE|RESPONSE|操作响应消息|ResponseEventAdapter|
 
 ## 测试数据

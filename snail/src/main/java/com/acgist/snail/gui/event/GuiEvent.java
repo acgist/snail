@@ -52,7 +52,7 @@ public abstract class GuiEvent {
          */
         REFRESH_TASK_LIST,
         /**
-         * 刷新任务状态：开始、暂停
+         * 刷新任务状态：开始、暂停、完成
          */
         REFRESH_TASK_STATUS,
         /**
