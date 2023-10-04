@@ -81,6 +81,10 @@ public final class NetUtils {
 		"(/\\d{0,3})?" +
 		// 网卡标识
 		"(%.+)?";
+	/**
+	 * VirtualBox等等虚拟网卡
+	 */
+	private static final String ADAPTER = "Adapter";
 	
 	static {
 		final ModifyOptional<Short> localPrefixLength = ModifyOptional.newInstance();
@@ -91,7 +95,6 @@ public final class NetUtils {
 			NetworkInterface.networkInterfaces().filter(NetUtils::available)
 			// 排序：保证每次获取网卡一致
 			.sorted((source, target) -> Integer.compare(target.getIndex(), source.getIndex()))
-			// TODO：VirtualBox Host-Only Ethernet Adapter
 			.findFirst()
 			.ifPresent(networkInterface -> {
 				networkInterface.getInterfaceAddresses().forEach(interfaceAddress -> {
@@ -156,13 +159,15 @@ public final class NetUtils {
 		try {
 			return
 				// 启动状态
-				networkInterface.isUp() &&
+				networkInterface.isUp()            &&
 				// 虚拟网卡
-				!networkInterface.isVirtual() &&
+				!networkInterface.isVirtual()      &&
 				// 环回地址
-				!networkInterface.isLoopback() &&
+				!networkInterface.isLoopback()     &&
 				// 点对点网卡
-				!networkInterface.isPointToPoint();
+				!networkInterface.isPointToPoint() &&
+				// 虚拟网卡：VirtualBox等等
+				!networkInterface.getDisplayName().contains(ADAPTER);
 		} catch (SocketException e) {
 			LOGGER.error("获取网卡状态异常", e);
 		}
@@ -336,7 +341,7 @@ public final class NetUtils {
 	 * @return 是否是同个局域网
 	 */
 	public static final boolean lan(String host) {
-		if(ip(host)) {
+		if(NetUtils.ip(host)) {
 			final byte[] bytes = ipToBytes(host);
 			final byte[] localHostBytes = ipToBytes(LOCAL_HOST_ADDRESS);
 			final int index = Arrays.mismatch(bytes, localHostBytes);
