@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 
@@ -150,7 +151,7 @@ class NetUtilsTest extends Performance {
                 // 忽略
             }
             networkInterfaces.getInterfaceAddresses().stream().forEach(networkInterface -> {
-                final var address = networkInterface.getAddress();
+                final InetAddress address = networkInterface.getAddress();
                 this.log("地址：{} - {} - {} - {} - {} - {} - {} - {}",
                     networkInterface,
                     networkInterface.getBroadcast(),

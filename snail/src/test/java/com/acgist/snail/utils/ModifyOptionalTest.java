@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 
 class ModifyOptionalTest {
 
-	@Test
-	void testModifyOptional() {
-		final ModifyOptional<String> optional = ModifyOptional.newInstance();
-		assertNull(optional.get());
-		assertEquals("null", optional.get("null"));
-		optional.set("acgist");
-		assertNotNull(optional.get());
-	}
-	
+    @Test
+    void testModifyOptional() {
+        final ModifyOptional<String> optional = ModifyOptional.newInstance();
+        assertNull(optional.get());
+        assertEquals("null", optional.get("null"));
+        optional.set("acgist");
+        assertNotNull(optional.get());
+    }
+    
 }
