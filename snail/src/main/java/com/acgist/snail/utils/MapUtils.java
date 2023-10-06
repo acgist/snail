@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.acgist.snail.config.SymbolConfig;
 
@@ -37,6 +38,30 @@ public class MapUtils {
 	 */
 	public static final boolean isNotEmpty(Map<?, ?> map) {
 		return !isEmpty(map);
+	}
+	
+	/**
+	 * URL参数转为Map
+	 * 
+	 * @param query URL参数
+	 * 
+	 * @return Map
+	 */
+	public static final Map<String, String> ofUrlQuery(String query) {
+	    if(query == null) {
+	        return Map.of();
+	    }
+	    final char equals = SymbolConfig.Symbol.EQUALS.toChar();
+	    return Stream.of(SymbolConfig.Symbol.AND.split(query))
+	        .map(v -> {
+	            final int index = v.indexOf(equals);
+	            if(index < 0) {
+	                return new String[] { v, "" };
+	            } else {
+	                return new String[] { v.substring(0, index), UrlUtils.decode(v.substring(index + 1)) };
+	            }
+	        })
+	        .collect(Collectors.toMap(v -> v[0], v -> v[1]));
 	}
 	
 	/**
