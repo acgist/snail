@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 
 class IoUtilsTest extends Performance {
 
-	@Test
-	void testClose() throws IOException {
-		final InputStream inputStream = InputStream.nullInputStream();
-		IoUtils.close(inputStream);
-		assertThrows(IOException.class, () -> inputStream.available());
-	}
-	
+    @Test
+    void testClose() throws IOException {
+        final InputStream inputStream = InputStream.nullInputStream();
+        IoUtils.close(inputStream);
+        assertThrows(IOException.class, () -> inputStream.available());
+    }
+    
 }
