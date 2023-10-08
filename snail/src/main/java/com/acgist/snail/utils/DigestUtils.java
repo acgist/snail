@@ -31,7 +31,7 @@ public final class DigestUtils {
 	 * @see #digest(String)
 	 */
 	public static final MessageDigest md5() {
-		return digest(ALGO_MD5);
+		return DigestUtils.digest(ALGO_MD5);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public final class DigestUtils {
 	 * @see #digest(String)
 	 */
 	public static final MessageDigest sha1() {
-		return digest(ALGO_SHA1);
+		return DigestUtils.digest(ALGO_SHA1);
 	}
 	
 	/**
@@ -68,7 +68,18 @@ public final class DigestUtils {
 	 * @return MD5散列值
 	 */
 	public static final byte[] md5(byte[] bytes) {
-		return md5().digest(bytes);
+		return DigestUtils.md5().digest(bytes);
+	}
+	
+	/**
+	 * 计算字符串的MD5散列值
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return MD5散列值
+	 */
+	public static final String md5Hex(String value) {
+	    return StringUtils.hex(DigestUtils.md5(value.getBytes()));
 	}
 	
 	/**
@@ -79,7 +90,18 @@ public final class DigestUtils {
 	 * @return SHA-1散列值
 	 */
 	public static final byte[] sha1(byte[] bytes) {
-		return sha1().digest(bytes);
+		return DigestUtils.sha1().digest(bytes);
+	}
+	
+	/**
+	 * 计算字符串的SHA-1散列值
+	 * 
+	 * @param value 字符串
+	 * 
+	 * @return SHA-1散列值
+	 */
+	public static final String sha1Hex(String value) {
+	    return StringUtils.hex(DigestUtils.sha1(value.getBytes()));
 	}
 	
 }

@@ -62,11 +62,6 @@ class StringUtilsTest extends Performance {
     }
 
     @Test
-    void testSha1() {
-        assertEquals("69345456767060fe5970bec185c718f777348af1", StringUtils.sha1Hex("12341234123412341234".getBytes()));
-    }
-
-    @Test
     void testCharset() {
         final String source = "对啊这就是一个测试啊逗比";
         final String target = "瀵瑰晩杩欏氨鏄竴涓祴璇曞晩閫楁瘮";

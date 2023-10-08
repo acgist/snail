@@ -266,17 +266,6 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * <p>计算字节数组的十六进制SHA-1散列值字符串</p>
-	 * 
-	 * @param bytes 字节数组
-	 * 
-	 * @return 十六进制SHA-1散列值字符串
-	 */
-	public static final String sha1Hex(byte[] bytes) {
-		return StringUtils.hex(DigestUtils.sha1(bytes));
-	}
-	
-	/**
 	 * <p>字符串编码转换</p>
 	 * 
 	 * @param value 原始字符串

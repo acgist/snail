@@ -9,15 +9,15 @@ import com.acgist.snail.config.PeerConfig.Type;
 
 class EnumUtilsTest extends Performance {
 
-	@Test
-	void testEnumUtils() {
-		final Type[] index = EnumUtils.index(PeerConfig.Type.class, PeerConfig.Type::getId);
-		assertNotNull(index);
-	}
-	
-	@Test
-	void testCosted() {
-		this.costed(100000, () -> EnumUtils.index(PeerConfig.Type.class, PeerConfig.Type::getId));
-	}
-	
+    @Test
+    void testEnumUtils() {
+        final Type[] index = EnumUtils.index(PeerConfig.Type.class, PeerConfig.Type::getId);
+        assertNotNull(index);
+    }
+    
+    @Test
+    void testCosted() {
+        this.costed(100000, () -> EnumUtils.index(PeerConfig.Type.class, PeerConfig.Type::getId));
+    }
+    
 }
