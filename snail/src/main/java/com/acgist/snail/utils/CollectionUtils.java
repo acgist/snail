@@ -32,7 +32,7 @@ public final class CollectionUtils {
 	 * @return 是否非空
 	 */
 	public static final boolean isNotEmpty(Collection<?> list) {
-		return !isEmpty(list);
+		return !CollectionUtils.isEmpty(list);
 	}
 	
 	/**
