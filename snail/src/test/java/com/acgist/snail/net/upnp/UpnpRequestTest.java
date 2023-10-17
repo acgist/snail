@@ -10,14 +10,21 @@ import com.acgist.snail.utils.Performance;
 
 class UpnpRequestTest extends Performance {
 
-	@Test
-	void testRequest() {
-		final UpnpRequest request = UpnpRequest.newRequest("urn:schemas-upnp-org:service:WANIPConnection:1");
-//		final String xml = request.buildGetExternalIPAddress();
-//		final String xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.Type.TCP);
-		final String xml = request.buildAddPortMapping(8080, NetUtils.LOCAL_HOST_ADDRESS, 8080, Protocol.Type.TCP);
-		this.log(xml);
-		assertNotNull(xml);
-	}
-	
+    @Test
+    void testRequest() {
+        final UpnpRequest request = UpnpRequest.newRequest("urn:schemas-upnp-org:service:WANIPConnection:1");
+        String xml = request.buildGetExternalIPAddress();
+        this.log(xml);
+        assertNotNull(xml);
+        xml = request.buildGetSpecificPortMappingEntry(8080, Protocol.Type.TCP);
+        this.log(xml);
+        assertNotNull(xml);
+        xml = request.buildAddPortMapping(8080, NetUtils.LOCAL_HOST_ADDRESS, 8080, Protocol.Type.TCP);
+        this.log(xml);
+        assertNotNull(xml);
+        xml = request.buildDeletePortMapping(8888, Protocol.Type.TCP);
+        this.log(xml);
+        assertNotNull(xml);
+    }
+    
 }
