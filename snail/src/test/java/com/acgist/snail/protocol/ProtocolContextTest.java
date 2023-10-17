@@ -17,7 +17,7 @@ class ProtocolContextTest extends Performance {
     @Test
     void testSupport() {
         SnailBuilder.newBuilder().enableAllProtocol().buildSync();
-        var result = ProtocolContext.getInstance().support("https://www.acgist.com");
+        boolean result = ProtocolContext.getInstance().support("https://www.acgist.com");
         assertTrue(result);
         this.log(result);
         result = ProtocolContext.getInstance().support("641000d9be79ad8947701c338c06211ba69e1b09");
