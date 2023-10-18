@@ -9,11 +9,11 @@ import com.acgist.snail.utils.ThreadUtils;
 
 class UpnpClientTest extends Performance {
 
-	@Test
-	void testMSearch() {
-		UpnpClient.newInstance().mSearch();
-		ThreadUtils.sleep(1000);
-		assertTrue(UpnpContext.getInstance().available());
-	}
+    @Test
+    void testMSearch() {
+        UpnpClient.newInstance().mSearch();
+        ThreadUtils.sleep(1000);
+        assertTrue(UpnpContext.getInstance().available());
+    }
 
 }
