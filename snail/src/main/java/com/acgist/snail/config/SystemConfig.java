@@ -414,6 +414,14 @@ public final class SystemConfig extends PropertiesConfig {
     }
     
     /**
+     * @param torrentPort BT服务端口（本地端口：Peer、DHT、UTP、STUN）
+     */
+    public static final void setTorrentPort(int torrentPort) {
+        INSTANCE.torrentPort = torrentPort;
+        
+    }
+    
+    /**
      * @return BT服务端口（外网端口：Peer、DHT、UTP、STUN）
      * 
      * @see #getTorrentPort()
