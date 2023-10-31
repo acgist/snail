@@ -9,11 +9,11 @@ import com.acgist.snail.utils.Performance;
 
 class TorrentSessionTest extends Performance {
 
-	@Test
-	void testToString() throws DownloadException {
-		final var session = TorrentSession.newInstance(InfoHash.newInstance("0000000000000000000000000000000000000000"), null);
-		assertNotNull(session);
-		this.log(session);
-	}
-	
+    @Test
+    void testToString() throws DownloadException {
+        final TorrentSession session = TorrentSession.newInstance(InfoHash.newInstance("0000000000000000000000000000000000000000"), null);
+        assertNotNull(session);
+        this.log(session);
+    }
+    
 }
