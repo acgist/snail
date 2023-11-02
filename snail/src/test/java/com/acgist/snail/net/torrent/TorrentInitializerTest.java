@@ -13,13 +13,13 @@ import com.acgist.snail.utils.Performance;
 
 class TorrentInitializerTest extends Performance {
 
-	@Test
-	void testTorrentInitializer() throws IOException {
-		TorrentInitializer.newInstance().sync();
-		final Socket socket = new Socket();
-		socket.connect(new InetSocketAddress(SystemConfig.getTorrentPort()));
-		assertTrue(socket.isConnected());
-		socket.close();
-	}
-	
+    @Test
+    void testTorrentInitializer() throws IOException {
+        TorrentInitializer.newInstance().sync();
+        final Socket socket = new Socket();
+        socket.connect(new InetSocketAddress(SystemConfig.getTorrentPort()));
+        assertTrue(socket.isConnected());
+        socket.close();
+    }
+    
 }
