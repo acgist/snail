@@ -22,6 +22,7 @@ class PropertyDescriptorTest extends Performance {
         final TaskEntity task = new TaskEntity();
         task.setId(id);
         assertEquals(id, PropertyDescriptor.newInstance(task).get("id"));
+        assertEquals(task.hashCode(), PropertyDescriptor.newInstance(task).get("hashCode"));
     }
     
     @Test
