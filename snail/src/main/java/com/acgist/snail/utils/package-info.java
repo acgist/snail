@@ -1,5 +1,5 @@
 /**
- * <h1>Snail工具</h1>
+ * Snail工具
  * 
  * @author acgist
  */
