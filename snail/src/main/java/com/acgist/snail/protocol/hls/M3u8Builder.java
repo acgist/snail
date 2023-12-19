@@ -29,16 +29,16 @@ import com.acgist.snail.utils.StringUtils;
 import com.acgist.snail.utils.UrlUtils;
 
 /**
- * <p>M3U8 Builder</p>
+ * M3U8 Builder
  * 
- * <p>多级M3U8列表：</p>
- * <pre>
+ * 多级M3U8列表：
+ * 
  * #EXTM3U
  * #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=800000,RESOLUTION=1080x608
  * 1000k/hls/index.m3u8
- * </pre>
- * <p>M3U8文件列表：</p>
- * <pre>
+ * 
+ * M3U8文件列表：
+ * 
  * #EXTM3U
  * #EXT-X-VERSION:3
  * #EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000
@@ -54,7 +54,6 @@ import com.acgist.snail.utils.UrlUtils;
  * #EXTINF:2.320000,
  * 7a9cb1ab891000617.ts
  * #EXT-X-ENDLIST
- * </pre>
  * 
  * @author acgist
  */
@@ -63,86 +62,86 @@ public final class M3u8Builder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(M3u8Builder.class);
 
 	/**
-	 * <p>IV长度：{@value}</p>
+	 * IV长度：{@value}
 	 */
 	private static final int IV_LENGTH = 32;
 	/**
-	 * <p>16进制IV开头：{@value}</p>
-	 * <p>0x....</p>
+	 * 16进制IV开头：{@value}
 	 */
 	private static final String IV_HEX_PREFIX = "0x";
 	/**
-	 * <p>类型标签：{@value}</p>
+	 * 类型标签：{@value}
 	 */
 	private static final String LABEL_EXTM3U = "EXTM3U";
 	/**
-	 * <p>视频分片：{@value}</p>
+	 * 视频分片：{@value}
 	 */
 	private static final String LABEL_EXTINF = "EXTINF";
 	/**
-	 * <p>视频分片（码率）：{@value}</p>
+	 * 视频分片（码率）：{@value}
 	 */
 	private static final String LABEL_EXT_X_BITRATE = "EXT-X-BITRATE";
 	/**
-	 * <p>数据加密信息：{@value}</p>
-	 * <p>#EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000</p>
+	 * 数据加密信息：{@value}
+	 * 
+	 * #EXT-X-KEY:METHOD=AES-128,URI="https://www.acgist.com/key",IV=0x00000000
 	 */
 	private static final String LABEL_EXT_X_KEY = "EXT-X-KEY";
 	/**
-	 * <p>视频结束标记：{@value}</p>
-	 * <p>没有结束标记：直播流媒体</p>
+	 * 视频结束标记：{@value}
+	 * 没有结束标记：直播流媒体
 	 */
 	private static final String LABEL_EXT_X_ENDLIST = "EXT-X-ENDLIST";
 	/**
-	 * <p>多级M3U8列表：{@value}</p>
+	 * 多级M3U8列表：{@value}
 	 */
 	private static final String LABEL_EXT_X_STREAM_INF = "EXT-X-STREAM-INF";
 	/**
-	 * <p>序列号：{@value}</p>
-	 * <p>没有数据加密IV使用序列号</p>
+	 * 序列号：{@value}
+	 * 没有数据加密IV使用序列号
 	 * 
 	 * @see #LABEL_EXT_X_KEY
 	 */
 	private static final String LABEL_EXT_X_MEDIA_SEQUENCE = "EXT-X-MEDIA-SEQUENCE";
 	/**
-	 * <p>码率：{@value}</p>
+	 * 码率：{@value}
 	 */
 	private static final String ATTR_BANDWIDTH = "BANDWIDTH";
 	/**
-	 * <p>加密信息：{@value}</p>
+	 * 加密信息：{@value}
 	 * 
 	 * @see #LABEL_EXT_X_KEY
 	 */
 	private static final String ATTR_IV = "IV";
 	/**
-	 * <p>加密信息：{@value}</p>
+	 * 加密信息：{@value}
 	 * 
 	 * @see #LABEL_EXT_X_KEY
 	 */
 	private static final String ATTR_URI = "URI";
 	/**
-	 * <p>加密信息：{@value}</p>
+	 * 加密信息：{@value}
 	 * 
 	 * @see #LABEL_EXT_X_KEY
 	 */
 	private static final String ATTR_METHOD = "METHOD";
 	
 	/**
-	 * <p>原始链接地址</p>
+	 * 原始链接地址
 	 */
 	private final String source;
 	/**
-	 * <p>M3U8描述信息</p>
+	 * M3U8描述信息
 	 */
 	private final List<String> lines;
 	/**
-	 * <p>标签</p>
+	 * 标签
 	 */
 	private final List<Label> labels;
 	
 	/**
 	 * @param source 原始链接地址
-	 * @param lines M3U8描述信息
+	 * @param lines  M3U8描述信息
 	 */
 	private M3u8Builder(String source, List<String> lines) {
 		this.source = source;
@@ -151,9 +150,9 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建M3U8解析器</p>
+	 * 新建M3U8解析器
 	 * 
-	 * @param file 描述文件
+	 * @param file   描述文件
 	 * @param source 原始链接地址
 	 * 
 	 * @return {@link M3u8Builder}
@@ -169,10 +168,10 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建M3U8解析器</p>
+	 * 新建M3U8解析器
 	 * 
 	 * @param content 描述信息
-	 * @param source 原始链接地址
+	 * @param source  原始链接地址
 	 * 
 	 * @return {@link M3u8Builder}
 	 */
@@ -181,11 +180,11 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>解析M3U8</p>
+	 * 解析M3U8
 	 * 
 	 * @return {@link M3u8}
 	 * 
-	 * @throws NetException 网络异常
+	 * @throws NetException      网络异常
 	 * @throws DownloadException 下载异常
 	 */
 	public M3u8 build() throws NetException, DownloadException {
@@ -198,11 +197,12 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>解析标签</p>
-	 * <p>空行：忽略</p>
-	 * <p>URL：文件地址、M3U8地址</p>
-	 * <p>标签、注释：#开头</p>
-	 * <p>属性：跟在标签后面</p>
+	 * 解析标签
+	 * 
+	 * 空行：忽略
+	 * URL：文件地址、M3U8地址
+	 * 标签、注释：#开头
+	 * 属性：跟在标签后面
 	 */
 	private void buildLabels() {
 		int jndex;
@@ -240,7 +240,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>标签校验</p>
+	 * 标签校验
 	 * 
 	 * @throws DownloadException 下载异常
 	 */
@@ -256,7 +256,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建M3U8信息</p>
+	 * 新建M3U8信息
 	 * 
 	 * @return {@link M3u8}
 	 * 
@@ -283,7 +283,7 @@ public final class M3u8Builder {
 	}
 
 	/**
-	 * <p>获取M3U8类型</p>
+	 * 新建M3U8类型
 	 * 
 	 * @return {@link Type}
 	 */
@@ -305,7 +305,7 @@ public final class M3u8Builder {
 	}
 
 	/**
-	 * <p>新建加密套件</p>
+	 * 新建加密套件
 	 * 
 	 * @return 加密套件
 	 * 
@@ -334,9 +334,9 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建加密套件</p>
+	 * 新建加密套件
 	 * 
-	 * @param iv IV
+	 * @param iv  IV
 	 * @param uri URI
 	 * 
 	 * @return 加密套件
@@ -356,7 +356,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建IV</p>
+	 * 新建IV
 	 * 
 	 * @param iv IV
 	 * 
@@ -387,7 +387,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建序列号IV</p>
+	 * 新建序列号IV
 	 * 
 	 * @return IV
 	 */
@@ -412,18 +412,18 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建加密套件</p>
+	 * 新建加密套件
 	 * 
-	 * @param iv IV
-	 * @param secret 密钥
-	 * @param algorithm 加密算法名称
+	 * @param iv             IV
+	 * @param secret         密钥
+	 * @param algorithm      加密算法名称
 	 * @param transformation 算法描述
 	 * 
 	 * @return 加密套件
 	 * 
-	 * @throws InvalidKeyException 密钥异常
-	 * @throws NoSuchPaddingException 填充异常
-	 * @throws NoSuchAlgorithmException 算法异常
+	 * @throws InvalidKeyException                密钥异常
+	 * @throws NoSuchPaddingException             填充异常
+	 * @throws NoSuchAlgorithmException           算法异常
 	 * @throws InvalidAlgorithmParameterException 参数异常
 	 */
 	private Cipher buildCipher(byte[] iv, byte[] secret, String algorithm, String transformation) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
@@ -435,7 +435,7 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>新建多级M3U8链接</p>
+	 * 新建多级M3U8链接
 	 * 
 	 * @return 多级M3U8链接
 	 */
@@ -457,8 +457,6 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>获取文件链接</p>
-	 * 
 	 * @return 文件链接
 	 */
 	private List<String> buildFileLinks(String labelName) {
@@ -470,32 +468,30 @@ public final class M3u8Builder {
 	}
 	
 	/**
-	 * <p>标签</p>
+	 * 标签
 	 * 
 	 * @author acgist
 	 */
 	public static final class Label {
 		
 		/**
-		 * <p>标签名称</p>
+		 * 标签名称
 		 */
 		private String name;
 		/**
-		 * <p>标签值</p>
+		 * 标签值
 		 */
 		private String value;
 		/**
-		 * <p>标签链接</p>
+		 * 标签链接
 		 */
 		private String url;
 		/**
-		 * <p>属性Key-Value包装器</p>
+		 * 属性Key-Value包装器
 		 */
 		private KeyValueWrapper wrapper;
 
 		/**
-		 * <p>获取标签名称</p>
-		 * 
 		 * @return 标签名称
 		 */
 		public String getName() {
@@ -503,8 +499,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>设置标签名称</p>
-		 * 
 		 * @param name 标签名称
 		 */
 		public void setName(String name) {
@@ -512,8 +506,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>获取标签值</p>
-		 * 
 		 * @return 标签值
 		 */
 		public String getValue() {
@@ -521,8 +513,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>设置标签值</p>
-		 * 
 		 * @param value 标签值
 		 */
 		public void setValue(String value) {
@@ -530,8 +520,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>获取标签链接</p>
-		 * 
 		 * @return 标签链接
 		 */
 		public String getUrl() {
@@ -539,8 +527,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>设置标签链接</p>
-		 * 
 		 * @param url 标签链接
 		 */
 		public void setUrl(String url) {
@@ -548,8 +534,6 @@ public final class M3u8Builder {
 		}
 
 		/**
-		 * <p>获取属性Key-Value包装器</p>
-		 * 
 		 * @return 属性Key-Value包装器
 		 */
 		public KeyValueWrapper attrs() {
