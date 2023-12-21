@@ -132,7 +132,7 @@ public final class BEncodeDecoder {
         return switch (this.type) {
             case MAP  -> MapUtils.isEmpty(this.map);
             case LIST -> CollectionUtils.isEmpty(this.list);
-            default -> true;
+            default   -> true;
         };
     }
     
