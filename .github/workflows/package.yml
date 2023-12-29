@@ -61,12 +61,14 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
+          distribution: 'zulu'
           java-version: 17
       - name: Build with Maven
         run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
       - name: Set up HUB
         uses: geertvdc/setup-hub@master
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - name: Package Snail
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
