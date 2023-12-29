@@ -100,8 +100,8 @@ public final class ExtensionMessageHandler implements IExtensionMessageHandler {
      */
     private static final String EX_UPLOAD_ONLY = "upload_only";
     /**
-     * <p>种子InfoHash数据大小：{@value}</p>
-     * <p>ut_metadata协议使用</p>
+     * 种子InfoHash数据大小：{@value}
+     * ut_metadata协议使用
      * 
      * @see MetadataMessageHandler
      */

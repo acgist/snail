@@ -11,25 +11,25 @@ import com.acgist.snail.net.DownloadException;
  */
 public final class TrackerInitializer extends Initializer {
 
-	private TrackerInitializer() {
-		super("Tracker");
-	}
-	
-	public static final TrackerInitializer newInstance() {
-		return new TrackerInitializer();
-	}
-	
-	@Override
-	protected void init() throws DownloadException {
-		TrackerConfig.getInstance();
-		TrackerServer.getInstance();
-		TrackerContext.getInstance();
-	}
-	
-	@Override
-	protected void release() {
-		TrackerServer.getInstance().close();
-		TrackerConfig.getInstance().persistent();
-	}
+    private TrackerInitializer() {
+        super("Tracker");
+    }
+    
+    public static final TrackerInitializer newInstance() {
+        return new TrackerInitializer();
+    }
+    
+    @Override
+    protected void init() throws DownloadException {
+        TrackerConfig.getInstance();
+        TrackerServer.getInstance();
+        TrackerContext.getInstance();
+    }
+    
+    @Override
+    protected void release() {
+        TrackerServer.getInstance().close();
+        TrackerConfig.getInstance().persistent();
+    }
 
 }

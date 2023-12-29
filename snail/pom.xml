@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>com.acgist</groupId>
-		<artifactId>snail.parent</artifactId>
-		<version>1.17.1</version>
-	</parent>
-	
-	<artifactId>snail</artifactId>
-	<packaging>jar</packaging>
-	
-	<dependencies></dependencies>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.acgist</groupId>
+        <artifactId>snail.parent</artifactId>
+        <version>1.17.1</version>
+    </parent>
+    
+    <artifactId>snail</artifactId>
+    <packaging>jar</packaging>
+    
+    <dependencies></dependencies>
 
-	<build>
-		<!-- Maven插件 -->
-		<plugins></plugins>
-	</build>
+    <build>
+        <!-- Maven插件 -->
+        <plugins></plugins>
+    </build>
 
-	<!-- 基本信息 -->
-	<url>https://gitee.com/acgist/snail</url>
-	<name>snail</name>
-	<description>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子文件）、HLS（M3U8）、FTP、HTTP。</description>
-	<inceptionYear>2019</inceptionYear>
+    <!-- 基本信息 -->
+    <url>https://gitee.com/acgist/snail</url>
+    <name>snail</name>
+    <description>基于Java开发的下载工具，支持下载协议：BT（BitTorrent、磁力链接、种子文件）、HLS（M3U8）、FTP、HTTP。</description>
+    <inceptionYear>2019</inceptionYear>
 
-	<!-- 仓库信息 -->
-	<scm>
-		<tag>HEAD</tag>
-		<url>https://gitee.com/acgist/snail</url>
-		<connection>scm:git:git://gitee.com/acgist/snail</connection>
-		<developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
-	</scm>
-	
-	<!-- 开源许可 -->
-	<licenses>
-		<license>
-			<url>https://opensource.org/licenses/Apache-2.0</url>
-			<name>Apache-2.0</name>
-		</license>
-	</licenses>
+    <!-- 仓库信息 -->
+    <scm>
+        <tag>HEAD</tag>
+        <url>https://gitee.com/acgist/snail</url>
+        <connection>scm:git:git://gitee.com/acgist/snail</connection>
+        <developerConnection>scm:git:git@gitee.com:acgist/snail</developerConnection>
+    </scm>
+    
+    <!-- 开源许可 -->
+    <licenses>
+        <license>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <name>Apache-2.0</name>
+        </license>
+    </licenses>
 
-	<!-- 开发人员 -->
-	<developers>
-		<developer>
-			<id>acgist</id>
-			<url>https://gitee.com/acgist</url>
-			<name>Sheng Yu</name>
-			<email>admin@acgist.com</email>
-			<timezone>+8</timezone>
-			<organization>https://www.acgist.com</organization>
-			<roles>
-				<role>master</role>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
+    <!-- 开发人员 -->
+    <developers>
+        <developer>
+            <id>acgist</id>
+            <url>https://gitee.com/acgist</url>
+            <name>Sheng Yu</name>
+            <email>admin@acgist.com</email>
+            <timezone>+8</timezone>
+            <organization>https://www.acgist.com</organization>
+            <roles>
+                <role>master</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
-	<!-- 组织信息 -->
-	<organization>
-		<url>https://www.acgist.com</url>
-		<name>acgist</name>
-	</organization>
-	
-	<!-- issues -->
-	<issueManagement>
-		<url>https://gitee.com/acgist/snail/issues</url>
-		<system>Gitee Issues</system>
-	</issueManagement>
+    <!-- 组织信息 -->
+    <organization>
+        <url>https://www.acgist.com</url>
+        <name>acgist</name>
+    </organization>
+    
+    <!-- issues -->
+    <issueManagement>
+        <url>https://gitee.com/acgist/snail/issues</url>
+        <system>Gitee Issues</system>
+    </issueManagement>
 
 </project>

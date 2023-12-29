@@ -8,34 +8,34 @@ import com.acgist.snail.net.UdpAcceptHandler;
 import com.acgist.snail.net.UdpMessageHandler;
 
 /**
- * <p>UDP Tracker消息接收代理</p>
+ * UDP Tracker消息接收代理
  * 
  * @author acgist
  */
 public final class TrackerAcceptHandler extends UdpAcceptHandler {
-	
-	private static final TrackerAcceptHandler INSTANCE = new TrackerAcceptHandler();
-	
-	public static final TrackerAcceptHandler getInstance() {
-		return INSTANCE;
-	}
-	
-	private TrackerAcceptHandler() {
-	}
-	
-	/**
-	 * <p>消息代理</p>
-	 */
-	private final TrackerMessageHandler trackerMessageHandler = new TrackerMessageHandler();
-	
-	@Override
-	public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-		return this.trackerMessageHandler;
-	}
+    
+    private static final TrackerAcceptHandler INSTANCE = new TrackerAcceptHandler();
+    
+    public static final TrackerAcceptHandler getInstance() {
+        return INSTANCE;
+    }
+    
+    private TrackerAcceptHandler() {
+    }
+    
+    /**
+     * 消息代理
+     */
+    private final TrackerMessageHandler trackerMessageHandler = new TrackerMessageHandler();
+    
+    @Override
+    public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
+        return this.trackerMessageHandler;
+    }
 
-	@Override
-	public void handle(DatagramChannel channel) {
-		this.trackerMessageHandler.handle(channel);
-	}
-	
+    @Override
+    public void handle(DatagramChannel channel) {
+        this.trackerMessageHandler.handle(channel);
+    }
+    
 }
