@@ -120,7 +120,7 @@
                         <!-- 自动生成签名 -->
                         <execution>
                             <id>auto-build-sign</id>
-                            <phase>deploy</phase>
+                            <phase>install</phase>
                             <goals>
                                 <goal>sign</goal>
                             </goals>
