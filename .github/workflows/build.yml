@@ -15,8 +15,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
+          distribution: 'oracle'
           java-version: 17
       - name: Build with Maven
         run: mvn clean package -P release -D gpg.skip=true -D maven.test.skip=true -B -V --file pom.xml
