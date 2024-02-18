@@ -46,7 +46,7 @@ public abstract class Protocol implements IProtocol {
          */
         UDP(
             new String[] { "udp://.+" },
-            new String[] { "udp://" },
+            new String[] { "udp://"   },
             new String[] {},
             "udp://",
             ""
@@ -56,7 +56,7 @@ public abstract class Protocol implements IProtocol {
          */
         TCP(
             new String[] { "tcp://.+" },
-            new String[] { "tcp://" },
+            new String[] { "tcp://"   },
             new String[] {},
             "tcp://",
             ""
@@ -66,7 +66,7 @@ public abstract class Protocol implements IProtocol {
          */
         FTP(
             new String[] { "ftp://.+" },
-            new String[] { "ftp://" },
+            new String[] { "ftp://"   },
             new String[] {},
             "ftp://",
             ""
@@ -75,7 +75,11 @@ public abstract class Protocol implements IProtocol {
          * HLS
          */
         HLS(
-            new String[] { "http://.+\\.m3u8", "https://.+\\.m3u8" },
+            new String[] {
+                "http://.+\\.m3u8",      "https://.+\\.m3u8",
+                "http://.+\\.m3u8#.+",   "https://.+\\.m3u8#.+",
+                "http://.+\\.m3u8\\?.+", "https://.+\\.m3u8\\?.+"
+            },
             new String[] {},
             new String[] { ".m3u8" },
             "",
@@ -86,7 +90,7 @@ public abstract class Protocol implements IProtocol {
          */
         HTTP(
             new String[] { "http://.+", "https://.+" },
-            new String[] { "http://", "https://" },
+            new String[] { "http://",   "https://"   },
             new String[] {},
             "http://",
             ""
@@ -106,7 +110,7 @@ public abstract class Protocol implements IProtocol {
          */
         THUNDER(
             new String[] { "thunder://.+" },
-            new String[] { "thunder://" },
+            new String[] { "thunder://"   },
             new String[] {},
             "thunder://",
             ""

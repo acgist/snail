@@ -373,7 +373,10 @@ public final class HttpClient {
         try (
             final InputStream input = this.response()
         ) {
-            final int size     = input.available();
+            final int size = input.available();
+            if(size == 0) {
+                return input.readAllBytes();
+            }
             final byte[] bytes = new byte[size];
             final int length   = input.read(bytes);
             if(length == size) {
