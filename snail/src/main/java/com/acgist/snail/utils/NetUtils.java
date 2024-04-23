@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.config.SystemConfig;
@@ -87,9 +88,9 @@ public final class NetUtils {
     private static final String ADAPTER = "Adapter";
     
     static {
-        final ModifyOptional<Short> localPrefixLength = ModifyOptional.newInstance();
-        final ModifyOptional<String> localHostAddress = ModifyOptional.newInstance();
-        final ModifyOptional<NetworkInterface> defaultNetworkInterface = ModifyOptional.newInstance();
+        final AtomicReference<Short> localPrefixLength = new AtomicReference<>();
+        final AtomicReference<String> localHostAddress = new AtomicReference<>();
+        final AtomicReference<NetworkInterface> defaultNetworkInterface = new AtomicReference<>();
         try {
             // 处理多个物理网卡和虚拟网卡
             NetworkInterface.networkInterfaces().filter(NetUtils::available)
@@ -129,19 +130,19 @@ public final class NetUtils {
         } catch (SocketException e) {
             LOGGER.error("初始化本机网络信息异常", e);
         }
-        LOCAL_HOST_NAME = buildLocalHostName();
-        LOCAL_HOST_ADDRESS = localHostAddress.get(buildLocalHostAddress());
-        LOOPBACK_HOST_NAME = buildLoopbackHostName();
-        LOOPBACK_HOST_ADDRESS = buildLoopbackHostAddress();
-        LOCAL_PREFIX_LENGTH = localPrefixLength.get((short) 24);
+        LOCAL_HOST_NAME           = NetUtils.buildLocalHostName();
+        LOCAL_HOST_ADDRESS        = Objects.requireNonNullElse(localHostAddress.get(), NetUtils.buildLocalHostAddress());
+        LOOPBACK_HOST_NAME        = NetUtils.buildLoopbackHostName();
+        LOOPBACK_HOST_ADDRESS     = NetUtils.buildLoopbackHostAddress();
+        LOCAL_PREFIX_LENGTH       = Objects.requireNonNullElse(localPrefixLength.get(), (short) 24);
         DEFAULT_NETWORK_INTERFACE = defaultNetworkInterface.get();
-        LOCAL_PROTOCOL_FAMILY = ipv4(LOCAL_HOST_ADDRESS) ? StandardProtocolFamily.INET : StandardProtocolFamily.INET6;
-        LOGGER.debug("本机名称：{}", LOCAL_HOST_NAME);
-        LOGGER.debug("本机地址：{}", LOCAL_HOST_ADDRESS);
-        LOGGER.debug("本机环回名称：{}", LOOPBACK_HOST_NAME);
-        LOGGER.debug("本机环回地址：{}", LOOPBACK_HOST_ADDRESS);
-        LOGGER.debug("本机子网前缀：{}", LOCAL_PREFIX_LENGTH);
-        LOGGER.debug("本机IP地址协议：{}", LOCAL_PROTOCOL_FAMILY);
+        LOCAL_PROTOCOL_FAMILY     = NetUtils.ipv4(LOCAL_HOST_ADDRESS) ? StandardProtocolFamily.INET : StandardProtocolFamily.INET6;
+        LOGGER.debug("本机名称：{}",       LOCAL_HOST_NAME);
+        LOGGER.debug("本机地址：{}",       LOCAL_HOST_ADDRESS);
+        LOGGER.debug("本机环回名称：{}",    LOOPBACK_HOST_NAME);
+        LOGGER.debug("本机环回地址：{}",    LOOPBACK_HOST_ADDRESS);
+        LOGGER.debug("本机子网前缀：{}",    LOCAL_PREFIX_LENGTH);
+        LOGGER.debug("本机IP地址协议：{}",  LOCAL_PROTOCOL_FAMILY);
         LOGGER.debug("本机默认物理网卡：{}", DEFAULT_NETWORK_INTERFACE);
     }
     

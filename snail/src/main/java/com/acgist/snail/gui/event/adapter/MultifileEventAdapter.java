@@ -1,6 +1,7 @@
 package com.acgist.snail.gui.event.adapter;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import com.acgist.snail.context.ITaskSession;
@@ -15,7 +16,6 @@ import com.acgist.snail.net.application.ApplicationMessage;
 import com.acgist.snail.net.torrent.Torrent;
 import com.acgist.snail.net.torrent.TorrentContext;
 import com.acgist.snail.net.torrent.TorrentFile;
-import com.acgist.snail.utils.ModifyOptional;
 import com.acgist.snail.utils.StringUtils;
 
 /**
@@ -30,7 +30,7 @@ public class MultifileEventAdapter extends GuiEventArgs {
     /**
      * 选择下载文件列表（B编码）
      */
-    private static final ModifyOptional<String> FILES = ModifyOptional.newInstance();
+    private static final AtomicReference<String> FILES = new AtomicReference<>();
     
     public MultifileEventAdapter() {
         super(Type.MULTIFILE, "选择下载文件事件");
@@ -90,7 +90,7 @@ public class MultifileEventAdapter extends GuiEventArgs {
         } catch (DownloadException e) {
             LOGGER.error("设置选择下载文件列表异常：{}", files, e);
         } finally {
-            FILES.delete();
+            FILES.set(null);
         }
     }
     
