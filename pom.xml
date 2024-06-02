@@ -17,7 +17,7 @@
         <snail.version>${project.version}</snail.version>
         <snail.encoding>UTF-8</snail.encoding>
         <java.version>17</java.version>
-        <javafx.version>17.0.10</javafx.version>
+        <javafx.version>17.0.8</javafx.version>
         <junit.version>5.10.2</junit.version>
         <maven.gpg.version>3.2.4</maven.gpg.version>
         <maven.jar.version>3.4.1</maven.jar.version>
