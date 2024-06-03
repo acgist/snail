@@ -9,7 +9,8 @@ jobs:
     name: Build
     strategy:
       matrix:
-        runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
+        runs-on: [ ubuntu-latest, windows-latest ]
+        # macos-latest = 🤡🤡🤡
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout repository
