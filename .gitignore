@@ -1,3 +1,4 @@
+.vscode
 .project
 .settings
 .classpath
@@ -6,6 +7,7 @@
 logs
 build
 target
+config
 snail/config
 snail/download
 snail-javafx/config
