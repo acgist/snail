@@ -1,5 +1,8 @@
 package com.acgist.snail.protocol.hls;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import com.acgist.snail.config.SymbolConfig.Symbol;
 import com.acgist.snail.context.ITaskSession;
 import com.acgist.snail.context.wrapper.DescriptionWrapper;
@@ -64,15 +67,16 @@ public final class HlsProtocol extends Protocol {
     
     @Override
     protected String buildFileName() throws DownloadException {
-        final String path = URIWrapper.newInstance(this.url).decode().getPath();
-        if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
-            // 去掉斜杠和结尾
-            return path.substring(1, path.length() - INDEX_M3U8.length())
-                .replace(Symbol.SLASH.toChar(), Symbol.MINUS.toChar()) +
-                Protocol.Type.HLS.defaultSuffix();
-        } else {
-            return super.buildFileName();
+        if(Protocol.Type.HTTP.verify(this.url)) {
+            final String path = URIWrapper.newInstance(this.url).decode().getPath();
+            if(StringUtils.endsWithIgnoreCase(path, INDEX_M3U8)) {
+                // 去掉斜杠和结尾
+                return path.substring(1, path.length() - INDEX_M3U8.length())
+                    .replace(Symbol.SLASH.toChar(), Symbol.MINUS.toChar()) +
+                    Protocol.Type.HLS.defaultSuffix();
+            }
         }
+        return super.buildFileName();
     }
     
     @Override
@@ -93,10 +97,19 @@ public final class HlsProtocol extends Protocol {
      * @throws DownloadException 下载异常
      */
     private void buildM3u8() throws NetException, DownloadException {
-        final var response = HttpClient
-            .newInstance(this.url)
-            .get()
-            .responseToString();
+        final String response;
+        if(Protocol.Type.HTTP.verify(this.url)) {
+            response = HttpClient
+               .newInstance(this.url)
+               .get()
+               .responseToString();
+        } else {
+            try {
+                response = Files.readString(Paths.get(this.url));
+            } catch (Exception e) {
+                throw new DownloadException("无效文件：" + this.url, e);
+            }
+        }
         final var m3u8Check = M3u8Builder.newInstance(response, this.url).build();
         if(m3u8Check.getType() == M3u8.Type.M3U8) {
             this.url = m3u8Check.getMaxRateLink();
