@@ -76,6 +76,7 @@ public abstract class Protocol implements IProtocol {
          */
         HLS(
             new String[] {
+                ".+\\.m3u8",
                 "http://.+\\.m3u8",      "https://.+\\.m3u8",
                 "http://.+\\.m3u8#.+",   "https://.+\\.m3u8#.+",
                 "http://.+\\.m3u8\\?.+", "https://.+\\.m3u8\\?.+"
