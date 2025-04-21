@@ -57,7 +57,7 @@
 ### 编译
 
 ```bash
-mvn clean package -P release -D skipTests
+mvn clean package dependency:copy-dependencies -P release -D skipTests
 ```
 
 > 推荐使用[Release](https://gitee.com/acgist/snail/releases)版本编译

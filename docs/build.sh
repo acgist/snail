@@ -72,7 +72,7 @@ if [[ $action == "all" || $action == "pack" || $action == "build" ]]; then
   mvn clean
   rm -rf ./build/
   # 编译项目
-  mvn package -P release -D skipTests -D javafx.platform=$system
+  mvn package dependency:copy-dependencies -P release -D skipTests -D javafx.platform=$system
   mkdir -p ./build/snail/
   # 拷贝文件
   cp -vr ./snail-javafx/target/lib ./build/snail/

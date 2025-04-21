@@ -61,13 +61,13 @@
 ### 编译
 
 ```bash
-mvn clean package -P release -D skipTests
+mvn clean package dependency:copy-dependencies -P release -D skipTests
 ```
 
 > 编译系统和运行系统不一致时添加编译参数：`-D javafx.platform=win|mac|linux`
 
 ```bash
-mvn clean package -P release -D skipTests -D javafx.platform=win|mac|linux
+mvn clean package dependency:copy-dependencies -P release -D skipTests -D javafx.platform=win|mac|linux
 ```
 
 > 推荐使用[Release](https://gitee.com/acgist/snail/releases)编译

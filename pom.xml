@@ -317,6 +317,7 @@
                     </configuration>
                     <executions>
                         <!-- 自动复制依赖 -->
+                        <!--
                         <execution>
                             <id>auto-copy-dependencies</id>
                             <phase>package</phase>
@@ -324,6 +325,7 @@
                                 <goal>copy-dependencies</goal>
                             </goals>
                         </execution>
+                        -->
                     </executions>
                 </plugin>
             </plugins>
